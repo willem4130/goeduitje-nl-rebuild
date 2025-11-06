@@ -35,3 +35,22 @@ model Post {
 
   @@index([authorId])
 }
+
+model WorkshopConfig {
+  id               String   @id @default(cuid())
+  type             String   // "zakelijk" or "particulier"
+  participantCount Int
+  workshops        String[] // Array of workshop IDs
+  location         String   // "Nijmegen", "Arnhem", "Amersfoort", or "other"
+  customCity       String?  // Custom city name when location is "other"
+  date             String?  // ISO date string or "TBD"
+  time             String?  // Time string or "TBD"
+  duration         Int?     // Workshop duration in hours
+  name             String
+  email            String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
+}

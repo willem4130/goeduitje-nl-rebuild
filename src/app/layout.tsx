@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
+import { TopNavigation } from "@/components/top-navigation";
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} ${fontMono.variable} antialiased`}>
+        <TopNavigation />
         <TRPCProvider>{children}</TRPCProvider>
         <Toaster />
       </body>

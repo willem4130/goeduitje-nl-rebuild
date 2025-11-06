@@ -3,6 +3,7 @@ import { resend, FROM_EMAIL } from "@/lib/resend";
 import { ContactConfirmationEmail } from "../../../../emails/contact-confirmation";
 import { WelcomeEmail } from "../../../../emails/welcome";
 import { OrderConfirmationEmail } from "../../../../emails/order-confirmation";
+import { WorkshopConfirmationEmail } from "../../../../emails/workshop-confirmation";
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,6 +62,23 @@ export async function POST(req: NextRequest) {
             amount: data.amount,
             productName: data.productName,
             receiptUrl: data.receiptUrl,
+          }),
+        });
+        break;
+
+      case "workshop-confirmation":
+        emailData = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: [to],
+          subject: `Workshop Configuratie Bevestiging - #${data.workshopId}`,
+          react: WorkshopConfirmationEmail({
+            name: data.name,
+            workshopId: data.workshopId,
+            workshops: data.workshops,
+            participantCount: data.participantCount,
+            location: data.location,
+            date: data.date,
+            time: data.time,
           }),
         });
         break;

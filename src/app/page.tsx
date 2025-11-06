@@ -1,4 +1,5 @@
 import { AppointmentSlots } from "@/components/appointment-slots";
+import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -56,6 +57,23 @@ export default function Home() {
       <section id="booking" className="bg-muted/30 py-20">
         <div className="container">
           <AppointmentSlots />
+        </div>
+      </section>
+
+      {/* Workshop Configurator Section */}
+      <section id="workshop-configurator" className="py-20">
+        <div className="container">
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold tracking-tight">
+              Configureer Je Workshop
+            </h2>
+            <p className="text-muted-foreground mt-2">
+              Stel je ideale teamuitje samen en ontvang direct een bevestiging
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <WorkshopConfigurator />
+          </div>
         </div>
       </section>
 

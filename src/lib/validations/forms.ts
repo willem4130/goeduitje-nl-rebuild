@@ -94,3 +94,78 @@ export const profileFormSchema = z.object({
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
+
+// Workshop Configuration Schema
+export const workshopConfigSchema = z
+  .object({
+    type: z.enum(["zakelijk", "particulier"], {
+      message: "Selecteer zakelijk of particulier.",
+    }),
+    participantCount: z
+      .number()
+      .min(1, {
+        message: "Er moet minimaal 1 persoon zijn.",
+      })
+      .max(100, {
+        message: "Maximum 100 personen toegestaan.",
+      }),
+    workshops: z.array(z.string()).min(1, {
+      message: "Selecteer minimaal één workshop.",
+    }),
+    location: z.enum(["Nijmegen", "Arnhem", "Amersfoort", "other"], {
+      message: "Selecteer een locatie.",
+    }),
+    customCity: z.string().optional(),
+    date: z.string().optional(),
+    dateTbd: z.boolean().default(false),
+    time: z.string().optional(),
+    timeTbd: z.boolean().default(false),
+    duration: z.number().min(1).max(12).optional(),
+    name: z.string().min(2, {
+      message: "Naam moet minimaal 2 karakters zijn.",
+    }),
+    email: z.string().email({
+      message: "Voer een geldig e-mailadres in.",
+    }),
+  })
+  .refine(
+    (data) => {
+      // If location is "other", customCity must be provided
+      if (data.location === "other") {
+        return !!data.customCity && data.customCity.length >= 2;
+      }
+      return true;
+    },
+    {
+      message: "Voer een plaatsnaam in.",
+      path: ["customCity"],
+    }
+  )
+  .refine(
+    (data) => {
+      // If dateTbd is false, date must be provided
+      if (!data.dateTbd) {
+        return !!data.date;
+      }
+      return true;
+    },
+    {
+      message: "Selecteer een datum of kies 'Nog te bepalen'.",
+      path: ["date"],
+    }
+  )
+  .refine(
+    (data) => {
+      // If timeTbd is false, time must be provided
+      if (!data.timeTbd) {
+        return !!data.time;
+      }
+      return true;
+    },
+    {
+      message: "Selecteer een tijd of kies 'Nog te bepalen'.",
+      path: ["time"],
+    }
+  );
+
+export type WorkshopConfigValues = z.infer<typeof workshopConfigSchema>;
