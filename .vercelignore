@@ -1,0 +1,12 @@
+# Testing
+tests/
+playwright-report/
+test-results/
+coverage/
+
+# Development
+.env.local
+.env.*.local
+
+# Build
+.next/
