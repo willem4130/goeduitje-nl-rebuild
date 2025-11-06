@@ -85,13 +85,13 @@ export function CalButton({
     : "";
 
   return (
-    <button
+    <div
       className={className}
       data-cal-link={calLink}
       data-cal-config={embedConfig}
       data-cal-namespace=""
     >
       {children}
-    </button>
+    </div>
   );
 }
