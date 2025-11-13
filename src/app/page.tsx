@@ -1,141 +1,112 @@
-import { AppointmentSlots } from "@/components/appointment-slots";
+"use client";
+
+import { HeroVideo } from "@/components/hero-video";
+import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
-import { Button } from "@/components/ui/button";
+import { ImpactStats } from "@/components/impact-stats";
+import { TestimonialsCarousel } from "@/components/testimonials-carousel";
+import { InstagramFeed } from "@/components/instagram-feed";
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+/**
+ * Goeduitje.nl Homepage
+ * Matches Wireframe #1 structure
+ */
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Hero Section */}
-      <section className="border-b">
-        <div className="container flex min-h-[60vh] flex-col items-center justify-center gap-6 py-20 text-center">
-          <div className="space-y-4">
-            <div className="bg-primary/10 text-primary mx-auto mb-4 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium">
-              Now Accepting Appointments
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Book Your Next
-              <br />
-              <span className="text-primary">Appointment Today</span>
-            </h1>
-            <p className="text-muted-foreground mx-auto max-w-2xl text-lg sm:text-xl">
-              Professional service with real-time availability.
-              <br />
-              See open slots and book instantly with our smart scheduling
-              system.
-            </p>
-          </div>
+    <main className="flex min-h-screen flex-col">
+      {/* Hero Section with Video Background */}
+      <HeroVideo
+        headline="Samen iets goeds doen, dat is pas een goed uitje"
+        subheadline="Boek een workshop die impact maakt"
+        primaryCta={{
+          text: "Stel je uitje samen",
+          href: "#configurator",
+        }}
+        secondaryCta={{
+          text: "Schrijf je in voor open workshop",
+          href: "/booking",
+        }}
+      />
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" asChild>
-              <a href="#booking">View Available Slots</a>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/contact">Contact Us</Link>
-            </Button>
-          </div>
-
-          {/* Trust indicators */}
-          <div className="text-muted-foreground mt-8 flex flex-wrap items-center justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
-              <span>Real-time availability</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-blue-500" />
-              <span>Instant confirmation</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-purple-500" />
-              <span>No credit card required</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Appointment Booking Section */}
-      <section id="booking" className="bg-muted/30 py-20">
-        <div className="container">
-          <AppointmentSlots />
-        </div>
-      </section>
+      {/* Workshop Types Section */}
+      <WorkshopCarousel />
 
       {/* Workshop Configurator Section */}
-      <section id="workshop-configurator" className="py-20">
-        <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Configureer Je Workshop
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Stel je ideale teamuitje samen en ontvang direct een bevestiging
+      <section id="configurator" className="section-md bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-16 text-center">
+              <h2 className="text-primary tracking-tight">
+                Stel je uitje samen
+              </h2>
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+                Configureer je ideale teamuitje in een paar simpele stappen
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="slideUp" delay={0.2}>
+            <div className="flex justify-center">
+              <WorkshopConfigurator />
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Impact Section with Stats */}
+      <ImpactStats />
+
+      {/* Testimonials Section */}
+      <TestimonialsCarousel />
+
+      {/* Instagram Feed Section */}
+      <section className="section-md bg-background">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-16 text-center">
+              <h2 className="text-primary tracking-tight">
+                Volg ons op Instagram
+              </h2>
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+                Bekijk foto&apos;s en verhalen van onze workshops en de impact
+                die we samen maken
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="slideUp" delay={0.2}>
+            <InstagramFeed />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Contact CTA Section */}
+      <section className="section-md bg-primary text-primary-foreground">
+        <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <h2 className="mb-6 tracking-tight text-white">Heb je vragen?</h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
+              Neem contact met ons op. We helpen je graag met het samenstellen
+              van het perfecte bedrijfsuitje.
             </p>
-          </div>
-          <div className="flex justify-center">
-            <WorkshopConfigurator />
-          </div>
+            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+              <Button
+                asChild
+                size="lg"
+                variant="secondary"
+                className="text-primary shadow-editorial-lg hover:shadow-editorial-hover bg-white px-8 tracking-wide transition-all duration-300 hover:bg-white/90"
+              >
+                <Link href="/contact">Neem contact op</Link>
+              </Button>
+            </motion.div>
+          </ScrollReveal>
         </div>
       </section>
-
-      {/* How It Works Section */}
-      <section className="py-20">
-        <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">How It Works</h2>
-            <p className="text-muted-foreground mt-2">
-              Simple, fast, and reliable booking process
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <div className="bg-primary/10 text-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold">
-                1
-              </div>
-              <h3 className="mb-2 text-xl font-semibold">Check Availability</h3>
-              <p className="text-muted-foreground">
-                View real-time slot availability with our traffic light system
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-primary/10 text-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold">
-                2
-              </div>
-              <h3 className="mb-2 text-xl font-semibold">Select Your Slot</h3>
-              <p className="text-muted-foreground">
-                Choose a time that works for you and complete the booking form
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-primary/10 text-primary mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold">
-                3
-              </div>
-              <h3 className="mb-2 text-xl font-semibold">Get Confirmed</h3>
-              <p className="text-muted-foreground">
-                Receive instant confirmation and calendar invite via email
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight">
-            Ready to Schedule?
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
-            Don&apos;t wait - limited slots available. Book your appointment now
-            and secure your preferred time.
-          </p>
-          <Button size="lg" variant="secondary" asChild>
-            <a href="#booking">Book Your Appointment</a>
-          </Button>
-        </div>
-      </section>
-    </div>
+    </main>
   );
 }

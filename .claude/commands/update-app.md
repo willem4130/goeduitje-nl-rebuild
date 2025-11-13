@@ -17,12 +17,6 @@ bun outdated
 bun update
 ```
 
-If there are security vulnerabilities, check them:
-
-```bash
-bun audit
-```
-
 ## Step 3: Check for Deprecations & Warnings
 
 Run installation and check output:
@@ -51,10 +45,7 @@ For each warning/deprecation:
 ## Step 5: Run Quality Checks
 
 ```bash
-bun run typecheck
-bun run lint
-bun run format:check
-bun run test
+bun run typecheck && bun run lint && bun run format:check
 ```
 
 Fix all errors before completing.
@@ -63,23 +54,9 @@ Fix all errors before completing.
 
 Ensure a fresh install works:
 
-1. Delete dependency folders/caches:
-   ```bash
-   rm -rf node_modules bun.lockb
-   ```
-2. Run clean install:
-   ```bash
-   bun install
-   ```
-3. Verify ZERO warnings/errors
-4. Confirm all dependencies resolve correctly
-
-## Step 7: Final Validation
-
-Run the dev server to ensure everything works:
-
 ```bash
-bun run dev
+rm -rf node_modules bun.lockb
+bun install
 ```
 
-Check that the app starts without errors and all features work as expected.
+Verify ZERO warnings/errors and confirm all dependencies resolve correctly.

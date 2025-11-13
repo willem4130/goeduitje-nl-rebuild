@@ -21,9 +21,9 @@ bun run format:check
 
 Parse the output from the linting and typechecking commands. Group errors by domain:
 
-- **Type errors**: Issues from TypeScript compiler
-- **Lint errors**: Issues from ESLint
-- **Format errors**: Issues from Prettier
+- **Type errors**: Issues from TypeScript (`tsc --noEmit`)
+- **Lint errors**: Issues from eslint
+- **Format errors**: Issues from prettier
 
 Create a list of all files with issues and the specific problems in each file.
 

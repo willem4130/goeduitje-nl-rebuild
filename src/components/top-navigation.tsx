@@ -3,13 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { Instagram, Facebook, Linkedin, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navigationItems = [
-  { name: "Home", href: "/" },
-  { name: "Onze Uitjes", href: "/onze-uitjes" },
-  { name: "Booking", href: "/booking" },
-  { name: "Contact", href: "/contact" },
+  { name: "Onze uitjes", href: "/onze-uitjes" },
+  { name: "Ons verhaal", href: "/ons-verhaal" },
+  { name: "Onze medewerkers", href: "/onze-medewerkers" },
+  { name: "Onze impact", href: "/onze-impact" },
+  { name: "Jullie ervaringen", href: "/jullie-ervaringen" },
 ];
 
 export function TopNavigation() {
@@ -34,6 +36,44 @@ export function TopNavigation() {
               {item.name}
             </Link>
           ))}
+
+          {/* Social Icons */}
+          <div className="border-border flex items-center gap-3 border-l pl-6">
+            <Link
+              href="https://instagram.com/goeduitje"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-5 w-5" />
+            </Link>
+            <Link
+              href="https://facebook.com/goeduitje"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Facebook"
+            >
+              <Facebook className="h-5 w-5" />
+            </Link>
+            <Link
+              href="https://linkedin.com/company/goeduitje"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="h-5 w-5" />
+            </Link>
+            <Link
+              href="/booking"
+              className="text-primary hover:text-primary/80 transition-colors"
+              aria-label="Boek een workshop"
+            >
+              <Calendar className="h-5 w-5" />
+            </Link>
+          </div>
         </div>
 
         {/* Mobile Menu Button */}

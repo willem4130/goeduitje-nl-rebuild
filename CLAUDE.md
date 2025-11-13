@@ -1,6 +1,6 @@
-# Goeduitje.nl Full-Stack Website
+# Goeduitje.nl
 
-A production-ready Next.js 16 full-stack application with PostgreSQL, Prisma, tRPC, Stripe payments, and comprehensive UI components.
+A comprehensive web platform for booking recreational activities and team outings in the Netherlands. Features real-time booking, workshop configuration, payment processing, and admin management.
 
 ## Project Structure
 

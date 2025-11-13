@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
@@ -15,6 +15,12 @@ const fontMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const fontPoppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["200", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Goeduitje.nl - Full-Stack Web Application",
   description:
@@ -28,7 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fontSans.variable} ${fontMono.variable} antialiased`}>
+      <body
+        className={`${fontSans.variable} ${fontMono.variable} ${fontPoppins.variable} antialiased`}
+      >
         <TopNavigation />
         <TRPCProvider>{children}</TRPCProvider>
         <Toaster />
