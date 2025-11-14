@@ -6,7 +6,7 @@ const DOMAIN = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { priceId, quantity = 1 } = body;
+    const { priceId, quantity = 1, metadata = {} } = body;
 
     if (!priceId) {
       return NextResponse.json(
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: "payment", // Use "subscription" for recurring payments
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "ideal"],
       line_items: [
         {
           price: priceId,
@@ -30,7 +30,9 @@ export async function POST(req: NextRequest) {
       metadata: {
         // Add any custom metadata you want to track
         priceId,
+        ...metadata,
       },
+      customer_email: metadata.email || undefined,
     });
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
