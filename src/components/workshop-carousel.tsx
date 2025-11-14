@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { ChevronRight } from "lucide-react";
 import { EASING, ANIMATION_DURATION } from "@/lib/animations";
+import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 
 /**
  * Horizontal scrolling carousel showcasing workshop types
@@ -198,6 +199,12 @@ function WorkshopCard({ workshop, isDragging, index }: WorkshopCardProps) {
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               sizes="(max-width: 640px) 320px, 380px"
+              placeholder="blur"
+              blurDataURL={
+                WORKSHOP_BLUR_PLACEHOLDERS[
+                  workshop.id as keyof typeof WORKSHOP_BLUR_PLACEHOLDERS
+                ]
+              }
             />
             {/* Sophisticated gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-50" />

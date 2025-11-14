@@ -16,6 +16,8 @@ import {
   staggerItem,
   EASING,
 } from "@/lib/animations";
+import { useVideoLazyLoad } from "@/hooks/use-video-lazy-load";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
  * Hero section with video background and CTA overlays
@@ -23,8 +25,6 @@ import {
  */
 
 interface HeroVideoProps {
-  videoSrc?: string;
-  videoPoster?: string;
   headline?: string;
   subheadline?: string;
   primaryCta?: {
@@ -34,8 +34,6 @@ interface HeroVideoProps {
 }
 
 export function HeroVideo({
-  videoSrc = "/videos/hero-background.mp4",
-  videoPoster = "/images/hero-poster.jpg",
   headline = "Samen een geweldige ervaring creëren",
   subheadline = "Boek een workshop die impact maakt",
   primaryCta = {
@@ -43,29 +41,76 @@ export function HeroVideo({
     href: "#configurator",
   },
 }: HeroVideoProps) {
+  // Detect mobile devices
+  const isMobile = useIsMobile();
+
+  // Lazy load video with Intersection Observer
+  const { videoRef, isInView } = useVideoLazyLoad({
+    rootMargin: "200px",
+    threshold: 0.1,
+    pauseOnExit: false,
+  });
+
   // Parallax scroll effect
   const { scrollY } = useScroll();
   const videoY = useTransform(scrollY, [0, 500], [0, 150]);
+
+  // Determine poster image (mobile or desktop)
+  const posterImage = isMobile
+    ? "/images/hero/hero-poster-mobile.jpg"
+    : "/images/hero/hero-poster.jpg";
 
   return (
     <section className="relative flex h-screen min-h-[600px] w-full items-center overflow-hidden">
       {/* Parallax Video Background */}
       <motion.div style={{ y: videoY }} className="absolute inset-0 z-0">
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
-          poster={videoPoster}
+          poster={posterImage}
           className="h-full w-full object-cover"
+          preload="metadata"
         >
-          <source src={videoSrc} type="video/mp4" />
+          {/* Mobile video sources (portrait 1080x1920) */}
+          <source
+            src="/videos/hero/hero-background-mobile.webm"
+            type="video/webm"
+            media="(max-width: 768px)"
+          />
+          <source
+            src="/videos/hero/hero-background-mobile.mp4"
+            type="video/mp4"
+            media="(max-width: 768px)"
+          />
+
+          {/* Desktop video sources (landscape 1920x1080) */}
+          <source
+            src="/videos/hero/hero-background.webm"
+            type="video/webm"
+            media="(min-width: 769px)"
+          />
+          <source
+            src="/videos/hero/hero-background.mp4"
+            type="video/mp4"
+            media="(min-width: 769px)"
+          />
+
           {/* Fallback background image */}
           <div
             className="h-full w-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${videoPoster})` }}
+            style={{ backgroundImage: `url(${posterImage})` }}
           />
         </video>
+
+        {/* Loading indicator (shown while video is lazy loading) */}
+        {!isInView && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+            <div className="border-primary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+          </div>
+        )}
 
         {/* Sophisticated gradient overlay - not flat black */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
