@@ -3,7 +3,6 @@
 import { HeroVideo } from "@/components/hero-video";
 import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
-import { ImpactStats } from "@/components/impact-stats";
 import { TestimonialsCarousel } from "@/components/testimonials-carousel";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -21,25 +20,23 @@ export default function Home() {
     <main className="flex min-h-screen flex-col">
       {/* Hero Section with Video Background */}
       <HeroVideo
-        headline="Samen iets goeds doen, dat is pas een goed uitje"
+        headline="Samen een geweldige ervaring creëren"
         subheadline="Boek een workshop die impact maakt"
         primaryCta={{
           text: "Stel je uitje samen",
           href: "#configurator",
         }}
-        secondaryCta={{
-          text: "Schrijf je in voor open workshop",
-          href: "/booking",
-        }}
       />
 
-      {/* Workshop Types Section */}
-      <WorkshopCarousel />
+      {/* Workshop Types Section - Scroll Animation */}
+      <ScrollReveal animation="fade" amount={0.1}>
+        <WorkshopCarousel />
+      </ScrollReveal>
 
       {/* Workshop Configurator Section */}
       <section id="configurator" className="section-md bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp">
+          <ScrollReveal animation="slideUp" amount={0.2}>
             <div className="mb-16 text-center">
               <h2 className="text-primary tracking-tight">
                 Stel je uitje samen
@@ -50,7 +47,7 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal animation="slideUp" delay={0.2}>
+          <ScrollReveal animation="scale" delay={0.2} amount={0.2}>
             <div className="flex justify-center">
               <WorkshopConfigurator />
             </div>
@@ -58,16 +55,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Impact Section with Stats */}
-      <ImpactStats />
-
-      {/* Testimonials Section */}
-      <TestimonialsCarousel />
+      {/* Testimonials Section - Scroll Animation */}
+      <ScrollReveal animation="fade" amount={0.1}>
+        <TestimonialsCarousel />
+      </ScrollReveal>
 
       {/* Instagram Feed Section */}
       <section className="section-md bg-background">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp">
+          <ScrollReveal animation="slideUp" amount={0.3}>
             <div className="mb-16 text-center">
               <h2 className="text-primary tracking-tight">
                 Volg ons op Instagram
@@ -79,22 +75,26 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal animation="slideUp" delay={0.2}>
+          <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
             <InstagramFeed />
           </ScrollReveal>
         </div>
       </section>
 
       {/* Contact CTA Section */}
-      <section className="section-md bg-primary text-primary-foreground">
-        <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
-          <ScrollReveal animation="slideUp">
+      <ScrollReveal animation="slideUp" amount={0.4}>
+        <section className="section-md bg-primary text-primary-foreground">
+          <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
             <h2 className="mb-6 tracking-tight text-white">Heb je vragen?</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
               Neem contact met ons op. We helpen je graag met het samenstellen
               van het perfecte bedrijfsuitje.
             </p>
-            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+            <motion.div
+              whileHover={{ y: -2, scale: 1.05 }}
+              whileTap={{ y: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
               <Button
                 asChild
                 size="lg"
@@ -104,9 +104,9 @@ export default function Home() {
                 <Link href="/contact">Neem contact op</Link>
               </Button>
             </motion.div>
-          </ScrollReveal>
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollReveal>
     </main>
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  animate,
+} from "framer-motion";
+import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,24 +31,16 @@ interface HeroVideoProps {
     text: string;
     href: string;
   };
-  secondaryCta?: {
-    text: string;
-    href: string;
-  };
 }
 
 export function HeroVideo({
   videoSrc = "/videos/hero-background.mp4",
   videoPoster = "/images/hero-poster.jpg",
-  headline = "Samen iets goeds doen, dat is pas een goed uitje",
+  headline = "Samen een geweldige ervaring creëren",
   subheadline = "Boek een workshop die impact maakt",
   primaryCta = {
     text: "Stel je uitje samen",
     href: "#configurator",
-  },
-  secondaryCta = {
-    text: "Schrijf je in voor open workshop",
-    href: "/booking",
   },
 }: HeroVideoProps) {
   // Parallax scroll effect
@@ -72,15 +71,15 @@ export function HeroVideo({
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
       </motion.div>
 
-      {/* Content Overlay - Asymmetric Layout */}
+      {/* Content Overlay - Centered Layout */}
       <div className="relative z-10 h-full w-full">
-        <div className="mx-auto flex h-full max-w-7xl items-center px-6 lg:px-8">
-          {/* Left-aligned content, not centered */}
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-center px-6 lg:px-8">
+          {/* Centered content */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
-            className="max-w-3xl"
+            className="w-full max-w-4xl text-center"
           >
             {/* Headline - Refined Typography */}
             <motion.h1
@@ -93,15 +92,15 @@ export function HeroVideo({
             {/* Subheadline */}
             <motion.p
               variants={staggerItem}
-              className="mt-6 text-xl leading-relaxed tracking-wide text-white/90 sm:text-2xl"
+              className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed tracking-wide text-white/90 sm:text-2xl"
             >
               {subheadline}
             </motion.p>
 
-            {/* CTAs - Refined Hover States */}
+            {/* CTA - Two Primary Buttons */}
             <motion.div
               variants={staggerItem}
-              className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6"
+              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
             >
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Button
@@ -112,28 +111,48 @@ export function HeroVideo({
                   <Link href={primaryCta.href}>{primaryCta.text}</Link>
                 </Button>
               </motion.div>
-
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Button
                   asChild
                   size="lg"
                   variant="outline"
-                  className="shadow-editorial-lg hover:shadow-editorial-hover h-14 min-w-[240px] border border-white/30 bg-white/10 px-8 text-lg font-semibold tracking-wide text-white backdrop-blur-xl transition-all duration-300 hover:border-white/50 hover:bg-white/20"
+                  className="shadow-editorial-lg hover:shadow-editorial-hover h-14 min-w-[240px] border-white/30 bg-white/10 px-8 text-lg font-semibold tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:border-white/50 hover:bg-white/20 hover:text-white"
                 >
-                  <Link href={secondaryCta.href}>{secondaryCta.text}</Link>
+                  <Link href="/booking">
+                    Schrijf je in voor een open kookworkshop
+                  </Link>
                 </Button>
               </motion.div>
             </motion.div>
 
-            {/* USP Pills - Refined Glassmorphism */}
+            {/* Impact Stats - KPI Numbers */}
             <motion.div
               variants={fadeInUp}
-              className="mt-16 flex flex-wrap gap-3"
+              className="mx-auto mt-16 grid max-w-2xl grid-cols-2 gap-12 border-t border-white/20 pt-12"
             >
-              <USPBadge text="100% sociale impact" />
-              <USPBadge text="Voor elk team" />
-              <USPBadge text="Op elke locatie" />
-              <USPBadge text="Direct boeken" />
+              <div className="text-center">
+                <AnimatedKPI target={41} />
+                <div className="mt-2 text-sm tracking-wide text-white/80">
+                  Aantal uitjes
+                </div>
+              </div>
+              <div className="text-center">
+                <AnimatedKPI target={516} />
+                <div className="mt-2 text-sm tracking-wide text-white/80">
+                  Aantal deelnemers
+                </div>
+              </div>
+            </motion.div>
+
+            {/* USP Pills - Social Impact Focus */}
+            <motion.div
+              variants={fadeInUp}
+              className="mt-12 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-4"
+            >
+              <USPBadge text="Maak sociale impact" />
+              <USPBadge text="Met statushouders en asielzoekers" />
+              <USPBadge text="Op locatie" />
+              <USPBadge text="Op maat" />
             </motion.div>
           </motion.div>
         </div>
@@ -174,14 +193,43 @@ export function HeroVideo({
 }
 
 /**
- * USP Badge component - Refined glassmorphism
+ * USP Badge component - Social impact focused
+ * Non-interactive badges with subtle appearance
  */
 function USPBadge({ text }: { text: string }) {
   return (
-    <div className="rounded-full border border-white/20 bg-white/10 px-5 py-2 backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/15">
-      <span className="text-sm font-medium tracking-wide text-white/95">
+    <div className="flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 backdrop-blur-md">
+      <span className="text-sm font-semibold tracking-wide text-white">
         {text}
       </span>
     </div>
+  );
+}
+
+/**
+ * Animated KPI counter component using Framer Motion
+ * Animates from 0 to target value on mount
+ */
+function AnimatedKPI({ target }: { target: number }) {
+  const count = useMotionValue(0);
+
+  useEffect(() => {
+    const controls = animate(count, target, {
+      duration: 2,
+      ease: "easeOut",
+    });
+
+    return controls.stop;
+  }, [count, target]);
+
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const formatted = useTransform(rounded, (latest) =>
+    latest.toLocaleString("nl-NL")
+  );
+
+  return (
+    <motion.div className="text-5xl font-bold tracking-tight text-white">
+      {formatted}
+    </motion.div>
   );
 }

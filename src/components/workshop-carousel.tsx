@@ -97,7 +97,7 @@ interface WorkshopCarouselProps {
 
 export function WorkshopCarousel({
   workshops = DEFAULT_WORKSHOPS,
-  title = "Onze workshops",
+  title = "Onze uitjes",
   subtitle = "Kies jouw ideale uitje",
 }: WorkshopCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);

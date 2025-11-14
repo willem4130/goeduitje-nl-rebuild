@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,182 +17,262 @@ import {
   IconCalendar,
   IconStar,
 } from "@tabler/icons-react";
+import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 
-export const metadata = {
-  title: "Onze Uitjes - Workshop Configurator | Goeduitje.nl",
-  description:
-    "Configureer je ideale teamuitje. Kies uit verschillende workshops en locaties in Nederland.",
-};
+// Metadata should be in layout.tsx for client components
+// Or use generateMetadata in a separate server component
 
 export default function OnzeUitjesPage() {
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Hero Section */}
-      <section className="from-primary/5 border-b bg-gradient-to-b to-transparent">
-        <div className="container flex min-h-[40vh] flex-col items-center justify-center gap-6 py-20 text-center">
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Onze Uitjes
-            </h1>
-            <p className="text-muted-foreground mx-auto max-w-2xl text-lg sm:text-xl">
-              Configureer je perfecte teamuitje. Kies uit verschillende
-              workshops, locaties en activiteiten voor een onvergetelijke
-              ervaring.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" asChild>
-              <a href="#configurator">Start Configureren</a>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a href="#workshops">Bekijk Workshops</a>
-            </Button>
-          </div>
+    <div className="flex min-h-screen flex-col pt-20">
+      {/* Hero Section - Editorial Treatment */}
+      <section className="relative overflow-hidden border-b">
+        {/* Sophisticated background layering */}
+        <div className="absolute inset-0">
+          <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
+          <div
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
+              backgroundSize: "48px 48px",
+            }}
+          />
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Waarom Kiezen Voor Ons?
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Wat maakt onze uitjes speciaal
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader>
-                <IconUsers className="text-primary mb-2 size-10" />
-                <CardTitle>Flexibele Groepsgrootte</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Van kleine teams tot grote groepen, wij hebben de perfecte
-                  workshop voor jullie.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <IconMapPin className="text-primary mb-2 size-10" />
-                <CardTitle>Meerdere Locaties</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Workshops beschikbaar in Nijmegen, Arnhem, Amersfoort en meer
-                  steden in Nederland.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <IconCalendar className="text-primary mb-2 size-10" />
-                <CardTitle>Flexibele Planning</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Kies je datum en tijd, of laat het nog te bepalen voor
-                  maximale flexibiliteit.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <IconStar className="text-primary mb-2 size-10" />
-                <CardTitle>Professionele Begeleiding</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Ervaren begeleiders zorgen voor een onvergetelijke en leerzame
+        <div className="section-md relative">
+          <div className="container">
+            <ScrollReveal animation="slideUp">
+              <div className="mx-auto max-w-4xl">
+                <h1 className="mb-8 text-[56px] leading-[1.1] tracking-tight sm:text-[64px]">
+                  Onze Uitjes
+                </h1>
+                <p className="text-muted-foreground mb-12 max-w-2xl text-xl leading-relaxed tracking-wide">
+                  Configureer je perfecte teamuitje. Kies uit verschillende
+                  workshops, locaties en activiteiten voor een onvergetelijke
                   ervaring.
-                </CardDescription>
-              </CardContent>
-            </Card>
+                </p>
+
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                    <Button
+                      size="lg"
+                      className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
+                      asChild
+                    >
+                      <a href="#configurator">Start Configureren</a>
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="px-8 py-6 font-semibold tracking-wide transition-all duration-300"
+                      asChild
+                    >
+                      <a href="#workshops">Bekijk Workshops</a>
+                    </Button>
+                  </motion.div>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Available Workshops Section */}
-      <section id="workshops" className="bg-muted/30 py-20">
+      {/* Features Section - Editorial Grid */}
+      <section className="section-md">
         <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Beschikbare Workshops
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Onze selectie van team-building activiteiten
-            </p>
-          </div>
+          <ScrollReveal animation="slideUp">
+            <div className="mb-20 max-w-3xl">
+              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+                Waarom Kiezen Voor Ons?
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+                Wat maakt onze uitjes speciaal
+              </p>
+            </div>
+          </ScrollReveal>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {WORKSHOPS.map((workshop) => (
-              <Card key={workshop.id}>
-                <CardHeader>
-                  <CardTitle>{workshop.name}</CardTitle>
-                  <CardDescription>
-                    Minimaal {workshop.minParticipants} deelnemers
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-sm">
-                    {workshop.id === "kookworkshop" &&
-                      "Leer samen koken en geniet van een heerlijke maaltijd die jullie zelf hebben bereid."}
-                    {workshop.id === "stadsspel" &&
-                      "Ontdek de stad op een interactieve manier met uitdagende opdrachten en vragen."}
-                    {workshop.id === "the-game" &&
-                      "Spannende team-building activiteit waarbij samenwerking centraal staat."}
-                    {workshop.id === "beachvolleybal" &&
-                      "Actieve teambuilding op het strand met professionele begeleiding."}
-                    {workshop.id === "koffie-thee" &&
-                      "Ontdek de wereld van koffie en thee tijdens deze proeverij workshop."}
-                    {workshop.id === "design-tshirt" &&
-                      "Ontwerp en creëer je eigen unieke team t-shirts."}
-                  </p>
-                </CardContent>
-              </Card>
+          <StaggerChildren
+            staggerDelay={0.1}
+            className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+          >
+            {[
+              {
+                icon: IconUsers,
+                title: "Flexibele Groepsgrootte",
+                description:
+                  "Van kleine teams tot grote groepen, wij hebben de perfecte workshop voor jullie.",
+              },
+              {
+                icon: IconMapPin,
+                title: "Meerdere Locaties",
+                description:
+                  "Workshops beschikbaar in Nijmegen, Arnhem, Amersfoort en meer steden in Nederland.",
+              },
+              {
+                icon: IconCalendar,
+                title: "Flexibele Planning",
+                description:
+                  "Kies je datum en tijd, of laat het nog te bepalen voor maximale flexibiliteit.",
+              },
+              {
+                icon: IconStar,
+                title: "Professionele Begeleiding",
+                description:
+                  "Ervaren begeleiders zorgen voor een onvergetelijke en leerzame ervaring.",
+              },
+            ].map((feature) => (
+              <motion.div
+                key={feature.title}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                  <CardHeader>
+                    <feature.icon className="text-primary mb-4 size-8" />
+                    <CardTitle className="text-xl tracking-tight">
+                      {feature.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="leading-relaxed tracking-wide">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </StaggerChildren>
         </div>
       </section>
 
-      {/* Workshop Configurator Section */}
-      <section id="configurator" className="py-20">
+      {/* Available Workshops Section - Editorial Grid */}
+      <section id="workshops" className="section-md relative overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0">
+          <div className="bg-muted/50 absolute inset-0" />
+          <div className="from-background/50 absolute inset-0 bg-gradient-to-b to-transparent" />
+        </div>
+
+        <div className="relative container">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-20 max-w-3xl">
+              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+                Beschikbare Workshops
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+                Onze selectie van team-building activiteiten
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Asymmetric editorial grid */}
+          <StaggerChildren
+            staggerDelay={0.1}
+            className="grid auto-rows-fr gap-6 md:grid-cols-12"
+          >
+            {WORKSHOPS.map((workshop, index) => {
+              const workshopDescriptions: Record<string, string> = {
+                kookworkshop:
+                  "Leer samen koken en geniet van een heerlijke maaltijd die jullie zelf hebben bereid.",
+                stadsspel:
+                  "Ontdek de stad op een interactieve manier met uitdagende opdrachten en vragen.",
+                "the-game":
+                  "Spannende team-building activiteit waarbij samenwerking centraal staat.",
+                beachvolleybal:
+                  "Actieve teambuilding op het strand met professionele begeleiding.",
+                "koffie-thee":
+                  "Ontdek de wereld van koffie en thee tijdens deze proeverij workshop.",
+                "design-tshirt":
+                  "Ontwerp en creëer je eigen unieke team t-shirts.",
+              };
+
+              // Editorial grid pattern: vary column spans
+              const gridSpan =
+                index % 3 === 0
+                  ? "md:col-span-5"
+                  : index % 3 === 1
+                    ? "md:col-span-4"
+                    : "md:col-span-3";
+
+              return (
+                <motion.div
+                  key={workshop.id}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className={gridSpan}
+                >
+                  <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                    <CardHeader>
+                      <CardTitle className="text-2xl tracking-tight">
+                        {workshop.name}
+                      </CardTitle>
+                      <CardDescription className="text-base tracking-wide">
+                        Minimaal {workshop.minParticipants} deelnemers
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground leading-relaxed tracking-wide">
+                        {workshopDescriptions[workshop.id]}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </StaggerChildren>
+        </div>
+      </section>
+
+      {/* Workshop Configurator Section - Editorial */}
+      <section id="configurator" className="section-md">
         <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Configureer Je Uitje
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Vul het formulier in en ontvang direct een bevestiging
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <WorkshopConfigurator />
-          </div>
+          <ScrollReveal animation="slideUp">
+            <div className="mb-20 max-w-3xl">
+              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+                Configureer Je Uitje
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+                Vul het formulier in en ontvang direct een bevestiging
+              </p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal animation="slideUp" delay={0.2}>
+            <div className="flex justify-center">
+              <WorkshopConfigurator />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight">
-            Klaar om te Beginnen?
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
-            Configureer nu je workshop en ontvang binnen 24 uur een reactie van
-            ons team.
-          </p>
-          <Button size="lg" variant="secondary" asChild>
-            <a href="#configurator">Start Configuratie</a>
-          </Button>
+      {/* CTA Section - Editorial Treatment */}
+      <section className="bg-primary text-primary-foreground section-md relative overflow-hidden">
+        {/* Sophisticated gradient overlay */}
+        <div className="from-primary/50 absolute inset-0 bg-gradient-to-br to-transparent" />
+
+        <div className="relative container">
+          <ScrollReveal animation="slideUp">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+                Klaar om te Beginnen?
+              </h2>
+              <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
+                Configureer nu je workshop en ontvang binnen 24 uur een reactie
+                van ons team.
+              </p>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
+                  asChild
+                >
+                  <a href="#configurator">Start Configuratie</a>
+                </Button>
+              </motion.div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </div>

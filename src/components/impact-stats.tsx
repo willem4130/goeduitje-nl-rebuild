@@ -63,44 +63,64 @@ export function ImpactStats({
   showCta = true,
 }: ImpactStatsProps) {
   return (
-    <section className="bg-secondary relative overflow-hidden py-16 sm:py-24">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
+    <section className="bg-secondary section-md relative overflow-hidden">
+      {/* Sophisticated background layering */}
+      <div className="absolute inset-0">
+        {/* Base gradient */}
+        <div className="from-secondary/50 to-secondary absolute inset-0 bg-gradient-to-b" />
+        {/* Subtle pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div
+            className="h-full w-full"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Section Header - Editorial Typography */}
         <ScrollReveal animation="slideUp">
-          <div className="mb-16 text-center">
-            <h2 className="text-white">{title}</h2>
-            <p className="mt-4 text-lg text-white/90 sm:text-xl">{subtitle}</p>
+          <div className="mb-20 max-w-3xl">
+            <h2 className="text-[56px] leading-[1.1] tracking-tight text-white">
+              {title}
+            </h2>
+            <p className="mt-6 text-xl leading-relaxed tracking-wide text-white/90">
+              {subtitle}
+            </p>
           </div>
         </ScrollReveal>
 
-        {/* Stats Grid */}
+        {/* Stats Grid - Asymmetric Editorial Layout */}
         <StaggerChildren
-          staggerDelay={0.2}
-          className="grid gap-8 md:grid-cols-3"
+          staggerDelay={0.15}
+          className="grid gap-8 md:grid-cols-12"
         >
-          {stats.map((stat) => (
-            <StatCard key={stat.id} stat={stat} />
+          {stats.map((stat, index) => (
+            <div
+              key={stat.id}
+              className={
+                index === 0
+                  ? "md:col-span-5"
+                  : index === 1
+                    ? "md:col-span-4"
+                    : "md:col-span-3"
+              }
+            >
+              <StatCard stat={stat} />
+            </div>
           ))}
         </StaggerChildren>
 
-        {/* Impact Locations */}
-        <ScrollReveal animation="slideUp" delay={0.6}>
-          <div className="mt-16 text-center">
-            <p className="mb-6 text-lg text-white/90">
+        {/* Impact Locations - Refined Spacing */}
+        <ScrollReveal animation="slideUp" delay={0.5}>
+          <div className="mt-24">
+            <p className="mb-8 text-lg tracking-wide text-white/90">
               Met jouw bedrijfsuitje steun je projecten in:
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <LocationBadge name="Jemen" />
               <LocationBadge name="Syrië" />
               <LocationBadge name="Palestina" />
@@ -108,21 +128,26 @@ export function ImpactStats({
           </div>
         </ScrollReveal>
 
-        {/* CTA */}
+        {/* CTA - Editorial Button Treatment */}
         {showCta && (
-          <ScrollReveal animation="slideUp" delay={0.8}>
-            <div className="mt-12 text-center">
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="group hover:text-secondary border-2 border-white bg-white/10 text-white backdrop-blur-sm hover:bg-white"
-              >
-                <Link href="/onze-impact">
-                  Lees meer over onze impact
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
+          <ScrollReveal animation="slideUp" delay={0.7}>
+            <div className="mt-16">
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="group hover:text-secondary hover:shadow-editorial-lg border-white bg-white/10 px-8 py-6 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white"
+                >
+                  <Link
+                    href="/onze-impact"
+                    className="font-semibold tracking-wide"
+                  >
+                    Lees meer over onze impact
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                </Button>
+              </motion.div>
             </div>
           </ScrollReveal>
         )}
@@ -132,7 +157,7 @@ export function ImpactStats({
 }
 
 /**
- * Individual stat card with animated counter
+ * Individual stat card with animated counter - Editorial Treatment
  */
 function StatCard({ stat }: { stat: ImpactStat }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -144,35 +169,41 @@ function StatCard({ stat }: { stat: ImpactStat }) {
   return (
     <motion.div
       ref={ref}
-      className="rounded-lg border-2 border-white/20 bg-white/5 p-8 text-center backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10"
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3 }}
+      className="group hover:shadow-editorial-hover rounded-lg border border-white/20 bg-white/5 p-8 backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/10"
     >
-      {/* Icon */}
-      <div className="mb-6 flex justify-center">
-        <div className="rounded-full bg-white/10 p-4">
-          <IconComponent className="h-8 w-8 text-white" />
+      {/* Icon - Subtle Size */}
+      <div className="mb-8 flex">
+        <div className="rounded-full bg-white/10 p-3 transition-colors duration-300 group-hover:bg-white/20">
+          <IconComponent className="h-6 w-6 text-white/80" />
         </div>
       </div>
 
-      {/* Animated Counter */}
-      <div className="mb-4">
+      {/* Animated Counter - Large, Light Weight */}
+      <div className="mb-6">
         <AnimatedCounter
           from={0}
           to={stat.value}
           isInView={isInView}
-          className="text-5xl font-bold text-white"
+          className="text-[72px] leading-none font-light tracking-tight text-white"
         />
       </div>
 
-      {/* Label */}
-      <h3 className="mb-2 text-xl font-semibold text-white">{stat.label}</h3>
+      {/* Label - Refined Typography */}
+      <h3 className="mb-3 text-xl font-semibold tracking-tight text-white">
+        {stat.label}
+      </h3>
 
-      {/* Description */}
-      <p className="text-sm text-white/80">{stat.description}</p>
+      {/* Description - Generous Line Height */}
+      <p className="text-sm leading-relaxed tracking-wide text-white/80">
+        {stat.description}
+      </p>
 
-      {/* Location badge */}
+      {/* Location badge - Subtle */}
       {stat.location && (
-        <div className="mt-4">
-          <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white">
+        <div className="mt-6">
+          <span className="inline-block border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium tracking-wider text-white/90">
             {stat.location}
           </span>
         </div>
@@ -182,7 +213,7 @@ function StatCard({ stat }: { stat: ImpactStat }) {
 }
 
 /**
- * Animated counter component using Framer Motion
+ * Animated counter component using Framer Motion - Editorial Easing
  */
 interface AnimatedCounterProps {
   from: number;
@@ -198,8 +229,9 @@ function AnimatedCounter({
   className,
 }: AnimatedCounterProps) {
   const count = useSpring(from, {
-    stiffness: 50,
-    damping: 30,
+    stiffness: 40,
+    damping: 35,
+    restDelta: 0.001,
   });
 
   useEffect(() => {
@@ -217,18 +249,22 @@ function AnimatedCounter({
 }
 
 /**
- * Location badge component
+ * Location badge component - Editorial Refinement
  */
 function LocationBadge({ name }: { name: string }) {
   return (
-    <div className="group relative overflow-hidden rounded-full border-2 border-white/30 bg-white/10 px-6 py-3 backdrop-blur-sm transition-all hover:border-white/50 hover:bg-white/20">
-      <span className="relative z-10 text-base font-semibold text-white">
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.3 }}
+      className="group hover:shadow-editorial relative overflow-hidden border border-white/30 bg-white/10 px-6 py-3 backdrop-blur-sm transition-all duration-300 hover:border-white/50 hover:bg-white/20"
+    >
+      <span className="relative z-10 text-base font-semibold tracking-wide text-white">
         {name}
       </span>
-      <div className="absolute inset-0 -z-0 translate-y-full bg-white transition-transform group-hover:translate-y-0" />
-      <span className="text-secondary absolute inset-0 z-10 flex items-center justify-center text-base font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="absolute inset-0 -z-0 translate-y-full bg-white transition-transform duration-300 group-hover:translate-y-0" />
+      <span className="text-secondary absolute inset-0 z-10 flex items-center justify-center text-base font-semibold tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         {name}
       </span>
-    </div>
+    </motion.div>
   );
 }

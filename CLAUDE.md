@@ -108,8 +108,19 @@ Fix ALL errors/warnings before continuing.
 - **Database**: PostgreSQL + Prisma ORM
 - **API**: tRPC + TanStack Query
 - **UI**: shadcn/ui + Radix UI + Tailwind CSS 4
+- **Animation**: Framer Motion
 - **Payments**: Stripe
 - **Email**: Resend + React Email
 - **Forms**: React Hook Form + Zod
 - **Testing**: Vitest + Playwright
 - **Tools**: ESLint, Prettier, Husky
+
+## Development Guidelines
+
+**IMPORTANT: Use only standard components and frameworks that are already included in the tech stack.**
+
+- No custom implementations when standard solutions exist
+- Use Framer Motion for all animations (already included)
+- Use shadcn/ui components (already installed)
+- Leverage existing patterns from the codebase
+- Avoid reinventing the wheel

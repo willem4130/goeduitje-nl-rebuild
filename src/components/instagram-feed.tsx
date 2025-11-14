@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Instagram } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface InstagramPost {
   id: string;
@@ -53,9 +55,25 @@ export function InstagramFeed() {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <Skeleton key={i} className="aspect-square w-full" />
+      <div className="grid auto-rows-fr grid-cols-2 gap-6 md:grid-cols-8">
+        {/* Editorial masonry skeleton pattern */}
+        {[
+          "md:col-span-3 md:row-span-2",
+          "md:col-span-2",
+          "md:col-span-3",
+          "md:col-span-2 md:row-span-2",
+          "md:col-span-3",
+          "md:col-span-3",
+          "md:col-span-2",
+          "md:col-span-3 md:row-span-2",
+        ].map((className, i) => (
+          <Skeleton
+            key={i}
+            className={cn(
+              "shadow-editorial-sm aspect-square w-full",
+              className
+            )}
+          />
         ))}
       </div>
     );
@@ -104,33 +122,63 @@ export function InstagramFeed() {
     );
   }
 
+  // Editorial masonry grid pattern - varies based on index
+  const getGridSpan = (index: number) => {
+    const pattern = [
+      "md:col-span-3 md:row-span-2", // Large feature
+      "md:col-span-2", // Medium
+      "md:col-span-3", // Wide
+      "md:col-span-2 md:row-span-2", // Tall
+      "md:col-span-3", // Wide
+      "md:col-span-3", // Wide
+      "md:col-span-2", // Medium
+      "md:col-span-3 md:row-span-2", // Large feature
+    ];
+    return pattern[index % pattern.length];
+  };
+
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {posts.map((post) => (
-        <a
+    <div className="grid auto-rows-fr grid-cols-2 gap-6 md:grid-cols-8">
+      {posts.map((post, index) => (
+        <motion.a
           key={post.id}
           href={post.permalink}
           target="_blank"
           rel="noopener noreferrer"
-          className="group bg-muted relative aspect-square overflow-hidden rounded-lg transition-transform hover:scale-105"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.05 }}
+          whileHover={{ y: -4 }}
+          className={cn(
+            "group bg-muted shadow-editorial hover:shadow-editorial-hover relative aspect-square overflow-hidden transition-all duration-500",
+            getGridSpan(index)
+          )}
         >
           <Image
             src={post.media_url}
             alt={post.caption?.slice(0, 100) || "Instagram post"}
             fill
-            className="object-cover transition-opacity group-hover:opacity-75"
-            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 40vw, 30vw"
             unoptimized
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-            <Instagram className="h-8 w-8 text-white" />
+          {/* Sophisticated gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-40 transition-opacity duration-500 group-hover:opacity-70" />
+
+          {/* Icon overlay on hover */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="rounded-full border border-white/50 bg-white/10 p-4 backdrop-blur-sm">
+              <Instagram className="h-6 w-6 text-white" />
+            </div>
           </div>
+
+          {/* Carousel indicator */}
           {post.media_type === "CAROUSEL_ALBUM" && (
-            <div className="absolute top-2 right-2 rounded-full bg-black/60 p-1.5">
+            <div className="absolute top-3 right-3 rounded-full border border-white/50 bg-black/40 p-1.5 backdrop-blur-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -145,7 +193,7 @@ export function InstagramFeed() {
               </svg>
             </div>
           )}
-        </a>
+        </motion.a>
       ))}
     </div>
   );
