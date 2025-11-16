@@ -1,66 +1,43 @@
 # Goeduitje.nl
 
-A comprehensive web platform for booking recreational activities and team outings in the Netherlands. Features real-time booking, workshop configuration, payment processing, and admin management.
+Booking platform for recreational activities in the Netherlands. Features booking, payments, and admin management.
 
 ## Project Structure
 
 ```
-goeduitjefullstackwebsite/
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── api/               # API routes (tRPC, Stripe webhooks, emails)
-│   │   ├── admin/             # Admin dashboard with settings & user management
-│   │   ├── dashboard/         # User dashboard
-│   │   ├── booking/           # Cal.com booking integration
-│   │   ├── checkout/          # Stripe checkout success/cancel pages
-│   │   ├── contact/           # Contact form page
-│   │   ├── pricing/           # Pricing page
-│   │   └── layout.tsx         # Root layout with providers
-│   │
-│   ├── components/            # React components
-│   │   ├── ui/               # shadcn/ui design system components
-│   │   ├── *-form.tsx        # Form components (contact, settings, user mgmt)
-│   │   ├── *-sidebar.tsx     # Navigation components (admin, app)
-│   │   ├── data-table.tsx    # TanStack Table component
-│   │   ├── chart-*.tsx       # Recharts visualization components
-│   │   └── cal-embed.tsx     # Cal.com calendar embed
-│   │
-│   ├── server/               # Backend server code
-│   │   └── api/
-│   │       ├── trpc.ts       # tRPC configuration
-│   │       ├── root.ts       # tRPC router aggregation
-│   │       └── routers/      # tRPC procedures (user, etc)
-│   │
-│   ├── trpc/                 # tRPC client setup
-│   │   ├── client.tsx        # Client-side tRPC with React Query
-│   │   ├── server.tsx        # Server-side tRPC utilities
-│   │   └── query-client.tsx  # TanStack Query configuration
-│   │
-│   ├── lib/                  # Utilities & third-party clients
-│   │   ├── prisma.ts         # Prisma client singleton
-│   │   ├── stripe.ts         # Stripe server setup
-│   │   ├── resend.ts         # Resend email client
-│   │   ├── utils.ts          # General utilities (cn(), etc)
-│   │   └── validations/      # Zod validation schemas
-│   │
-│   └── hooks/                # Custom React hooks (use-mobile, etc)
+src/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes (tRPC, Stripe, emails, Instagram)
+│   ├── admin/             # Admin dashboard (settings, user management)
+│   ├── dashboard/         # User dashboard
+│   ├── booking/           # Cal.com booking integration
+│   ├── checkout/          # Stripe checkout pages
+│   └── layout.tsx         # Root layout with providers
 │
-├── prisma/
-│   └── schema.prisma         # Database models (User, Post)
+├── components/            # React components
+│   └── ui/               # shadcn/ui components
 │
-├── emails/                   # React Email templates
-│   ├── welcome.tsx
-│   ├── contact-confirmation.tsx
-│   └── order-confirmation.tsx
+├── server/api/           # Backend tRPC code
+│   ├── routers/          # tRPC procedures by domain
+│   ├── root.ts           # Router aggregation
+│   └── trpc.ts           # tRPC configuration
 │
-├── docs/                     # Comprehensive project documentation
-│   ├── 00-README.md through 09-SEO-GEO-GUIDE.md
-│   ├── IMPLEMENTATION-PLAN.md
-│   └── [additional guides]
+├── trpc/                 # tRPC client setup
+│   ├── client.tsx        # Client-side tRPC + React Query
+│   └── server.tsx        # Server-side tRPC
 │
-└── tests/
-    ├── e2e/                  # Playwright E2E tests
-    └── setup/                # Vitest configuration
+├── lib/                  # Utilities & third-party clients
+│   ├── prisma.ts         # Database client
+│   ├── stripe.ts         # Payment processing
+│   ├── resend.ts         # Email client
+│   └── validations/      # Zod schemas
+│
+└── hooks/                # React hooks
+
+prisma/schema.prisma      # Database models
+emails/                   # React Email templates
+tests/e2e/                # Playwright tests
+docs/                     # Project documentation
 ```
 
 ## Organization Rules
@@ -102,25 +79,21 @@ Fix ALL errors/warnings before continuing.
 3. Test affected endpoints/pages
 4. Fix ALL warnings before continuing
 
-## Tech Stack Summary
+## Tech Stack
 
-- **Framework**: Next.js 16 + React 19 + TypeScript 5
-- **Database**: PostgreSQL + Prisma ORM
-- **API**: tRPC + TanStack Query
-- **UI**: shadcn/ui + Radix UI + Tailwind CSS 4
-- **Animation**: Framer Motion
-- **Payments**: Stripe
-- **Email**: Resend + React Email
-- **Forms**: React Hook Form + Zod
-- **Testing**: Vitest + Playwright
-- **Tools**: ESLint, Prettier, Husky
+- Next.js 16 + React 19 + TypeScript 5
+- PostgreSQL + Prisma ORM
+- tRPC + TanStack Query
+- shadcn/ui + Tailwind CSS 4 + Framer Motion
+- Stripe (payments) + Resend (email) + Cal.com (booking)
+- React Hook Form + Zod (validation)
+- Vitest + Playwright (testing)
 
 ## Development Guidelines
 
-**IMPORTANT: Use only standard components and frameworks that are already included in the tech stack.**
+**Use only standard components from the tech stack above:**
 
-- No custom implementations when standard solutions exist
-- Use Framer Motion for all animations (already included)
-- Use shadcn/ui components (already installed)
+- Use Framer Motion for animations
+- Use shadcn/ui for UI components
 - Leverage existing patterns from the codebase
-- Avoid reinventing the wheel
+- No custom implementations when standard solutions exist

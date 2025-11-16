@@ -11,6 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { WORKSHOPS } from "@/lib/constants/cities";
+import Image from "next/image";
+import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 import {
   IconUsers,
   IconMapPin,
@@ -167,26 +169,49 @@ export default function OnzeUitjesPage() {
             </div>
           </ScrollReveal>
 
-          {/* Asymmetric editorial grid */}
+          {/* Asymmetric editorial grid with videos */}
           <StaggerChildren
             staggerDelay={0.1}
             className="grid auto-rows-fr gap-6 md:grid-cols-12"
           >
             {WORKSHOPS.map((workshop, index) => {
-              const workshopDescriptions: Record<string, string> = {
-                kookworkshop:
-                  "Leer samen koken en geniet van een heerlijke maaltijd die jullie zelf hebben bereid.",
-                stadsspel:
-                  "Ontdek de stad op een interactieve manier met uitdagende opdrachten en vragen.",
-                "the-game":
-                  "Spannende team-building activiteit waarbij samenwerking centraal staat.",
-                beachvolleybal:
-                  "Actieve teambuilding op het strand met professionele begeleiding.",
-                "koffie-thee":
-                  "Ontdek de wereld van koffie en thee tijdens deze proeverij workshop.",
-                "design-tshirt":
-                  "Ontwerp en creëer je eigen unieke team t-shirts.",
+              const workshopData: Record<
+                string,
+                { description: string; video?: string; image?: string }
+              > = {
+                kookworkshop: {
+                  description:
+                    "Leer samen koken en geniet van een heerlijke maaltijd die jullie zelf hebben bereid.",
+                  video: "/images/workshops/workshop 1.mp4",
+                },
+                stadsspel: {
+                  description:
+                    "Ontdek de stad op een interactieve manier met uitdagende opdrachten en vragen.",
+                  video: "/images/workshops/workshop 2.mp4",
+                },
+                "the-game": {
+                  description:
+                    "Spannende team-building activiteit waarbij samenwerking centraal staat.",
+                  image: "/images/workshops/the-game.jpg",
+                },
+                beachvolleybal: {
+                  description:
+                    "Actieve teambuilding op het strand met professionele begeleiding.",
+                  image: "/images/workshops/beachvolleybal.jpg",
+                },
+                "koffie-thee": {
+                  description:
+                    "Ontdek de wereld van koffie en thee tijdens deze proeverij workshop.",
+                  image: "/images/workshops/koffie-thee.jpg",
+                },
+                "design-tshirt": {
+                  description:
+                    "Ontwerp en creëer je eigen unieke team t-shirts.",
+                  image: "/images/workshops/design-tshirt.jpg",
+                },
               };
+
+              const data = workshopData[workshop.id];
 
               // Editorial grid pattern: vary column spans
               const gridSpan =
@@ -204,6 +229,38 @@ export default function OnzeUitjesPage() {
                   className={gridSpan}
                 >
                   <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                    {/* Media - Video or Image */}
+                    {(data?.video || data?.image) && (
+                      <div className="bg-muted relative aspect-video overflow-hidden">
+                        {data.video ? (
+                          <video
+                            src={data.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="absolute inset-0 h-full w-full object-cover"
+                          />
+                        ) : (
+                          data.image && (
+                            <Image
+                              src={data.image}
+                              alt={workshop.name}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              placeholder="blur"
+                              blurDataURL={
+                                WORKSHOP_BLUR_PLACEHOLDERS[
+                                  workshop.id as keyof typeof WORKSHOP_BLUR_PLACEHOLDERS
+                                ]
+                              }
+                            />
+                          )
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      </div>
+                    )}
                     <CardHeader>
                       <CardTitle className="text-2xl tracking-tight">
                         {workshop.name}
@@ -214,7 +271,7 @@ export default function OnzeUitjesPage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground leading-relaxed tracking-wide">
-                        {workshopDescriptions[workshop.id]}
+                        {data?.description}
                       </p>
                     </CardContent>
                   </Card>

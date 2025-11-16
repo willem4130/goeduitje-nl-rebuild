@@ -33,10 +33,10 @@ export function TopNavigation() {
   return (
     <motion.nav
       className={cn(
-        "fixed top-0 z-50 w-full transition-all duration-300",
+        "fixed top-0 z-50 w-full backdrop-blur-xl transition-all duration-300",
         isScrolled
-          ? "bg-background/80 shadow-editorial backdrop-blur-xl"
-          : "bg-transparent"
+          ? "bg-background/70 shadow-editorial"
+          : "bg-background/95 shadow-editorial-sm"
       )}
     >
       <div className="container">

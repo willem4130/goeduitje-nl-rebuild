@@ -2,6 +2,11 @@ import "./env.ts";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Specify project root to avoid lockfile warnings
+  turbopack: {
+    root: process.cwd(),
+  },
+
   images: {
     // Modern image formats for better compression
     formats: ["image/webp", "image/avif"],
