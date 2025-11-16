@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { Instagram, Facebook, Linkedin, Calendar } from "lucide-react";
@@ -41,12 +42,32 @@ export function TopNavigation() {
     >
       <div className="container">
         <div className="flex h-20 items-center justify-between">
-          {/* Logo - Editorial Typography */}
+          {/* Logo - Brand Identity */}
           <Link
             href="/"
-            className="text-xl font-semibold tracking-tight transition-colors duration-300 hover:opacity-80"
+            className="transition-opacity duration-300 hover:opacity-80"
+            aria-label="Goeduitje.nl - Home"
           >
-            Goeduitje.nl
+            {/* Desktop Logo */}
+            <Image
+              src="/images/logo/logo-nav-desktop-bg.png"
+              alt="Goeduitje.nl"
+              width={180}
+              height={60}
+              priority
+              className="hidden h-auto w-auto md:block"
+              style={{ maxHeight: "48px" }}
+            />
+            {/* Mobile Logo */}
+            <Image
+              src="/images/logo/logo-nav-mobile-bg.png"
+              alt="Goeduitje.nl"
+              width={120}
+              height={40}
+              priority
+              className="block h-auto w-auto md:hidden"
+              style={{ maxHeight: "40px" }}
+            />
           </Link>
 
           {/* Desktop Navigation - Sophisticated Hover States */}
