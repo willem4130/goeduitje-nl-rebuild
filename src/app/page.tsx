@@ -9,6 +9,7 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Instagram } from "lucide-react";
 
 /**
  * Goeduitje.nl Homepage
@@ -77,6 +78,33 @@ export default function Home() {
 
           <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
             <InstagramFeed />
+          </ScrollReveal>
+
+          {/* Follow Button */}
+          <ScrollReveal animation="slideUp" delay={0.3} amount={0.2}>
+            <div className="mt-12 flex justify-center">
+              <motion.div
+                whileHover={{ y: -2, scale: 1.05 }}
+                whileTap={{ y: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  variant="default"
+                  className="shadow-editorial-lg hover:shadow-editorial-hover gap-2 px-8 tracking-wide transition-all duration-300"
+                >
+                  <a
+                    href="https://instagram.com/goeduitje"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Instagram className="h-5 w-5" />
+                    Volg ons op Instagram
+                  </a>
+                </Button>
+              </motion.div>
+            </div>
           </ScrollReveal>
         </div>
       </section>

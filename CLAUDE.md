@@ -97,3 +97,11 @@ Fix ALL errors/warnings before continuing.
 - Use shadcn/ui for UI components
 - Leverage existing patterns from the codebase
 - No custom implementations when standard solutions exist
+
+## Third-Party Integrations
+
+**Instagram Feed:**
+
+- Use embed service (EmbedSocial recommended) instead of Instagram Graph API
+- Direct API integration requires Meta App Review (weeks of waiting)
+- Embed services are more reliable and require no maintenance

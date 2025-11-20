@@ -45,7 +45,7 @@ export function TopNavigation() {
           {/* Logo - Brand Identity */}
           <Link
             href="/"
-            className="transition-opacity duration-300 hover:opacity-80"
+            className="pl-4 transition-opacity duration-300 hover:opacity-80 md:pl-8"
             aria-label="Goeduitje.nl - Home"
           >
             {/* Desktop Logo */}

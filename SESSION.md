@@ -1,112 +1,71 @@
 # Session State - Goeduitje.nl Rebuild
 
-**Last Updated**: November 14, 2025, 09:46 UTC
+**Last Updated**: November 16, 2025, 14:55 UTC
 **Session Type**: Complex
 **Project**: Goeduitje.nl Next.js Rebuild
-**Current Phase**: Booking Page + Hero Updates + Scroll Animations Complete
+**Current Phase**: Instagram Integration Research Complete
 
 ---
 
 ## 🎯 Current Objective
 
-Build out the booking page with real Dutch cooking workshop content, refine hero section with social impact focus and animated KPIs, and implement scroll animations throughout the landing page.
+Replace Instagram Graph API integration with EmbedSocial embed service due to Meta App Review requirements blocking direct API access.
 
 ---
 
 ## Progress Summary
 
-### ✅ Completed Tasks - Current Session (Nov 14, 2025)
+### ✅ Completed Tasks - Current Session (Nov 16, 2025)
 
-**Booking Page Implementation**:
+**Instagram Integration Investigation**:
 
-- ✅ Built complete `/booking` page with 4 open cooking workshops:
-  - Kerstmenu Kookworkshop (Dec 14, 2025) - €67.50
-  - Italiaanse Kookworkshop (Dec 21, 2025) - €62.50
-  - Nieuwjaars Brunch Workshop (Jan 11, 2025) - €59.00
-  - Aziatische Streetfood (Jan 25, 2025) - €65.00
-- ✅ Each workshop includes: date, time, location, price, seats, menu details
-- ✅ Used standard shadcn/ui components (Card, Button, Badge)
-- ✅ Implemented seat management with "Bijna vol" and "Volgeboekt" badges
-- ✅ Fixed booking page layout with proper centering (max-w-6xl, mx-auto)
-- ✅ Centered info cards (3-column grid with text-center)
-- ✅ Booking button redirects to /contact?workshop={id}
+- ✅ Attempted Instagram Graph API setup following Meta documentation
+- ✅ Created Facebook App "goeduitjewebsite" (ID: 1169054208087897)
+- ✅ Added Instagram Graph API product to app
+- ✅ Generated Page Access Token with permissions (pages_show_list, pages_read_engagement, business_management)
+- ✅ Identified Instagram Business Account ID: 17841467372861243
+- ✅ Connected @goeduitje Instagram to Account Center
+- ✅ Configured Instagram account in Meta Business Suite (owned by: Goeduitje)
+- ✅ Documented complete setup process and troubleshooting steps
 
-**Hero Section Updates**:
+**Investigation Results**:
 
-- ✅ Replaced KPIs (3 old → 2 new with real metrics):
-  - Old: 15,420 Maaltijden, 8,750 Mensen, 42 Projecten
-  - New: 41 Aantal uitjes, 516 Aantal deelnemers
-- ✅ Implemented animated KPI counters using Framer Motion
-  - Animates from 0 → target on page load
-  - Dutch number formatting (nl-NL)
-  - 2-second duration with easeOut
-- ✅ Removed "Direct boeken" secondary button (single CTA focus)
-- ✅ Updated USP badges to emphasize social impact:
-  - "Maak sociale impact"
-  - "Met statushouders en asielzoekers"
-  - "Op locatie"
-  - "Op maat"
-- ✅ Removed emoji icons from USP badges (cleaner design)
-- ✅ Centered all hero section content (headline, subheadline, CTA, KPIs, USPs)
-- ✅ Changed KPI layout from 3-column to 2-column grid
+- ❌ Instagram Graph API blocked: Requires Meta App Review approval (weeks/months wait)
+- ❌ Error: "Object with ID does not exist, cannot be loaded due to missing permissions" (error_subcode: 33)
+- ❌ Despite proper setup, API permissions not granted without App Review
 
-**Scroll Animations Implementation**:
+**Solution Research**:
 
-- ✅ Added scroll animations throughout landing page using ScrollReveal:
-  - Workshop Carousel: fade animation (amount: 0.1)
-  - Configurator Section: slideUp header + scale form (delay: 0.2)
-  - Testimonials: fade animation (amount: 0.1)
-  - Instagram Feed: slideUp header + feed (delay: 0.2)
-  - Contact CTA: slideUp full section (amount: 0.4)
-- ✅ Enhanced button hover with scale animation (1.05)
-- ✅ All animations use Intersection Observer API
+- ✅ Researched Instagram embed service alternatives
+- ✅ Compared EmbedSocial, SnapWidget, Elfsight
+- ✅ **Recommended: EmbedSocial** (professional quality, free tier, no API maintenance)
 
-**Bug Fixes**:
+**Documentation**:
 
-- ✅ Fixed Framer Motion SSR error:
-  - Changed from `useSpring` (causing SSR issues)
-  - To `useMotionValue` + `animate()` function
-  - Proper cleanup with `controls.stop` in useEffect
-- ✅ Fixed spelling: "creeren" → "creëren" (proper Dutch diaeresis)
-- ✅ Removed unused useState from booking page
+- ✅ Updated CLAUDE.md with Instagram integration guidance
+- ✅ Added "Third-Party Integrations" section documenting embed service recommendation
+- ✅ Updated with rationale (Meta App Review barrier, reliability of embed services)
 
-**Documentation Updates**:
+**Code Quality**:
 
-- ✅ Updated CLAUDE.md:
-  - Added Framer Motion to tech stack summary
-  - Created new "Development Guidelines" section
-  - Emphasized using only standard components and frameworks
-
-**Quality Assurance**:
-
-- ✅ TypeScript typecheck: Passed (0 errors)
-- ✅ ESLint: Passed (1 pre-existing warning in data-table.tsx)
-- ✅ Dev server: Running on port 3099
-- ✅ Page compiles successfully: GET /booking 200
+- ✅ Ran code quality checks (typecheck, lint, format)
+- ✅ Fixed 2 formatting issues (CLAUDE.md, site.webmanifest)
+- ✅ All checks passing (0 errors, 1 pre-existing warning)
 
 ### 🚧 In Progress
 
-- 🚧 Verify scroll animations are working correctly (SSR error fixed, needs user verification)
+- 🚧 EmbedSocial implementation guide (documented below)
 
 ### 📋 Pending Tasks - Next Steps
 
-**Immediate** (from continuation plan):
+**Immediate**:
 
-1. **Test scroll animations** - User reported they don't appear to be working
-2. **Verify Framer Motion fix** - Check that AnimatedKPI works without SSR errors
+1. **Implement EmbedSocial** - Replace current Instagram component with embed
+2. **Remove Instagram API code** - Clean up unused API route and dependencies
+3. **Update .env** - Remove Instagram API credentials
+4. **Test integration** - Verify feed displays correctly
 
-**From Previous Session** (Still Pending):
-
-3. Upgrade `top-navigation.tsx` - Add floating glassmorphism on scroll
-4. Upgrade `impact-stats.tsx` - Editorial treatment with asymmetric layout
-5. Upgrade `instagram-feed.tsx` - Magazine-style masonry grid
-6. Build content pages: /onze-uitjes, /ons-verhaal, /onze-medewerkers, /onze-impact, /jullie-ervaringen
-7. Add real photography and image assets
-8. Extract Dutch content from Wix site
-9. SEO optimization (meta tags, structured data)
-10. Performance optimization (image optimization, lazy loading)
-11. Accessibility audit (WCAG AA compliance)
-12. Final testing and deployment
+**From Previous Sessions** (Still Pending): 5. Upgrade `top-navigation.tsx` - Add floating glassmorphism on scroll 6. Upgrade `impact-stats.tsx` - Editorial treatment with asymmetric layout 7. Build content pages: /onze-uitjes, /ons-verhaal, /onze-medewerkers, /onze-impact, /jullie-ervaringen 8. Add real photography and image assets 9. Extract Dutch content from Wix site 10. SEO optimization (meta tags, structured data) 11. Performance optimization (image optimization, lazy loading) 12. Accessibility audit (WCAG AA compliance) 13. Final testing and deployment
 
 ---
 
@@ -114,195 +73,122 @@ Build out the booking page with real Dutch cooking workshop content, refine hero
 
 ### Current Session
 
-**KPI Replacement Strategy**
+**Instagram Integration Approach**
 
-- **Choice**: Replace 3 donation-focused KPIs with 2 business-metric KPIs
-- **Rationale**: Show actual business performance (41 events, 516 participants) vs theoretical impact
-- **Alternatives Considered**: Keep donation metrics, add business metrics alongside
-- **Impact**: More authentic, verifiable metrics. Cleaner 2-column layout.
+- **Choice**: Use EmbedSocial embed service instead of Instagram Graph API
+- **Rationale**:
+  - Instagram Graph API requires Meta App Review (weeks/months wait)
+  - Even with proper setup, API returns permission errors (error_subcode 33)
+  - Embed services are maintenance-free, reliable, and work immediately
+  - EmbedSocial offers professional quality with free tier
+- **Alternatives Considered**:
+  - Instagram Graph API (blocked by App Review)
+  - SnapWidget (has ads on free tier, less professional)
+  - Elfsight (no free tier, $5/month)
+  - Instagram oEmbed API (limited functionality)
+- **Impact**: Faster implementation, no API maintenance, no review process, more reliable uptime
 
-**Animated Counter Implementation**
+**Embed Service Selection**
 
-- **Choice**: Use Framer Motion's `useMotionValue` + `animate()` for KPI counters
-- **Rationale**: `useSpring` caused SSR module factory errors in Next.js
-- **Alternatives Considered**: useSpring (SSR issue), CSS counters (less smooth), static numbers
-- **Impact**: Smooth 2-second animation, proper SSR compatibility, Dutch formatting
+- **Choice**: EmbedSocial over SnapWidget and Elfsight
+- **Rationale**:
+  - Free tier available (500 posts/month)
+  - Professional appearance matches site quality
+  - Responsive grids with customizable styling
+  - GDPR compliant
+  - 99.9% uptime
+  - Auto-updates (no manual refresh needed)
+- **Alternatives Considered**:
+  - SnapWidget (simpler but basic, has ads)
+  - Elfsight (better customization but requires $5/month)
+- **Impact**: Professional quality without cost, matches editorial design system
 
-**Hero CTA Simplification**
+**Documentation Strategy**
 
-- **Choice**: Remove secondary "Direct boeken" button, keep only primary CTA
-- **Rationale**: Single focused action reduces decision fatigue
-- **Alternatives Considered**: Keep both buttons, swap button positions
-- **Impact**: Cleaner hero, stronger focus on primary action
-
-**USP Social Impact Focus**
-
-- **Choice**: Change USPs to emphasize social mission (statushouders, asielzoekers)
-- **Rationale**: Differentiate brand through social impact, not generic benefits
-- **Alternatives Considered**: Keep generic USPs (100% sociale impact, Voor elk team, etc.)
-- **Impact**: Stronger brand positioning, clearer mission communication
-
-**USP Badge Design**
-
-- **Choice**: Remove emoji icons, use text-only badges
-- **Rationale**: Cleaner, more professional look. Icons felt too casual.
-- **Alternatives Considered**: Keep emoji icons, use SVG icons instead
-- **Impact**: More sophisticated appearance, better readability
-
-**Booking Page Component Choice**
-
-- **Choice**: Use only standard shadcn/ui components (Card, Button, Badge)
-- **Rationale**: Follow project guideline: "Use only standard components and frameworks"
-- **Alternatives Considered**: Custom-designed booking components
-- **Impact**: Faster development, consistent design, easier maintenance
-
-**Scroll Animation Strategy**
-
-- **Choice**: Wrap entire sections in ScrollReveal vs individual elements
-- **Rationale**: Smoother page experience, easier to implement, fewer animation conflicts
-- **Alternatives Considered**: Animate individual elements, use CSS-only animations
-- **Impact**: Cohesive scroll experience, better performance, simpler codebase
+- **Choice**: Document Instagram integration recommendation in CLAUDE.md
+- **Rationale**: Prevent future developers from attempting direct API integration again
+- **Alternatives Considered**: Separate documentation file, inline code comments only
+- **Impact**: Clear guidance for future development, saves time on re-investigation
 
 ---
 
 ## 📁 Files Modified
 
-### Created This Session
-
-- `src/app/booking/page.tsx` (320 lines) - Complete booking page with 4 Dutch cooking workshops, seat management, centered layout
-
 ### Modified This Session
 
-- `src/components/hero-video.tsx` (220 lines total, ~80 lines changed):
-  - Replaced 3 KPIs with 2 new ones (41 uitjes, 516 deelnemers)
-  - Added AnimatedKPI component with Framer Motion
-  - Removed secondary CTA button
-  - Updated 4 USP badges to social impact focus
-  - Removed icons from USP badges
-  - Centered all content (justify-center, text-center, mx-auto)
-  - Changed from useSpring to useMotionValue + animate
-  - Changed imports: removed useSpring, added useMotionValue, animate
+- `CLAUDE.md` (107 lines total, +7 lines):
+  - Added "Third-Party Integrations" section
+  - Documented Instagram feed recommendation (EmbedSocial)
+  - Explained why direct API integration doesn't work (App Review requirement)
+  - Formatted by Prettier
 
-- `src/app/page.tsx` (117 lines total, ~30 lines changed):
-  - Wrapped WorkshopCarousel in ScrollReveal (fade, amount: 0.1)
-  - Added scale animation to configurator form (delay: 0.2)
-  - Wrapped TestimonialsCarousel in ScrollReveal (fade, amount: 0.1)
-  - Added ScrollReveal to Instagram section (slideUp, delay: 0.2)
-  - Wrapped Contact CTA section in ScrollReveal (slideUp, amount: 0.4)
-  - Added scale effect to Contact button hover (1.05)
-  - Removed secondaryCta prop from HeroVideo
+- `.env` (31 lines, attempted update):
+  - Added Instagram credentials (blocked by API permissions)
+  - INSTAGRAM_USER_ID="17841467372861243"
+  - INSTAGRAM_ACCESS_TOKEN="[Page Access Token]"
+  - Note: These will be removed when implementing EmbedSocial
 
-- `CLAUDE.md` (127 lines total, +11 lines):
-  - Added "Animation: Framer Motion" to Tech Stack Summary
-  - Created new "Development Guidelines" section
-  - Emphasized using only standard components/frameworks
-
-**Total Session Changes**: 4 files changed, ~450 insertions, ~30 deletions
+**Total Session Changes**: 2 files modified
 
 ---
 
 ## 🏗️ Patterns & Architecture
 
-### Animated Counter Pattern (NEW)
+### Instagram API Investigation (Attempted Pattern)
 
-**Implementation**:
+**What We Tried**:
 
-```typescript
-function AnimatedKPI({ target }: { target: number }) {
-  const count = useMotionValue(0);
+```bash
+# 1. Get Page Access Token
+curl "https://graph.facebook.com/v21.0/me/accounts?fields=instagram_business_account,access_token&access_token=USER_TOKEN"
 
-  useEffect(() => {
-    const controls = animate(count, target, {
-      duration: 2,
-      ease: "easeOut",
-    });
-    return controls.stop;
-  }, [count, target]);
+# 2. Try to fetch Instagram posts
+curl "https://graph.facebook.com/v21.0/INSTAGRAM_ID/media?fields=id,media_type,media_url&access_token=PAGE_TOKEN"
 
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const formatted = useTransform(rounded, (latest) =>
-    latest.toLocaleString("nl-NL")
-  );
-
-  return <motion.div>{formatted}</motion.div>;
-}
+# Result: Error 100, subcode 33 (missing permissions)
 ```
 
-**Key Decisions**:
+**Why It Failed**:
 
-- Use `useMotionValue` instead of `useSpring` (SSR compatibility)
-- Use `animate()` function for declarative animations
-- Transform chain: count → rounded → formatted (separation of concerns)
-- Dutch locale formatting for numbers
-- Cleanup function to stop animation on unmount
+- Instagram Graph API requires App Review for production access
+- Development mode only allows access to developer's own accounts
+- Business accounts require approved app status
+- Review process takes weeks and requires:
+  - Business verification
+  - Privacy policy
+  - Use case documentation
+  - App demonstration video
 
-### Scroll Animation Pattern (Enhanced)
+**Lesson Learned**:
 
-**Section-Level Wrapping**:
+- For "display Instagram feed" use case → Use embed services
+- For "Instagram post automation" or "analytics" → Worth pursuing App Review
+- Instagram Basic Display API is deprecated (as of Dec 2024)
+
+### EmbedSocial Implementation Pattern (Planned)
+
+**Component Structure**:
 
 ```tsx
-{
-  /* Wrap entire sections, not individual elements */
-}
-<ScrollReveal animation="fade" amount={0.1}>
-  <WorkshopCarousel />
-</ScrollReveal>;
-
-{
-  /* Nested animations with delays */
-}
-<section>
-  <ScrollReveal animation="slideUp" amount={0.3}>
-    <Header />
-  </ScrollReveal>
-  <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
-    <Content />
-  </ScrollReveal>
-</section>;
+// Replace current instagram-feed.tsx with embed
+<div className="embedsocial-instagram" data-ref="[UNIQUE_ID]">
+  <script>
+    (function(d, s, id) {
+      var js; if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://embedsocial.com/cdn/ht.js";
+      d.getElementsByTagName("head")[0].appendChild(js);
+    }(document, "script", "EmbedSocialHashtagScript"));
+  </script>
+</div>
 ```
 
-**Amount Thresholds**:
+**Next.js Integration Considerations**:
 
-- 0.1 (10%): Early trigger for large sections
-- 0.2 (20%): Standard trigger for content
-- 0.3-0.4 (30-40%): Late trigger for emphasis
-
-### Booking Page Pattern (NEW)
-
-**Workshop Data Structure**:
-
-```typescript
-interface Workshop {
-  id: string;
-  title: string;
-  date: string;
-  dateDisplay: string;
-  time: string;
-  duration: string;
-  location: string;
-  address: string;
-  price: number;
-  totalSeats: number;
-  bookedSeats: number;
-  description: string;
-  menu: string[];
-}
-```
-
-**Seat Management Logic**:
-
-```typescript
-const availableSeats = totalSeats - bookedSeats;
-const isAlmostFull = availableSeats <= 3 && availableSeats > 0;
-const isFull = availableSeats <= 0;
-```
-
-**Layout Pattern**:
-
-- Container: `max-w-6xl mx-auto px-6 lg:px-8`
-- Info cards: `max-w-4xl mx-auto` + `text-center`
-- Generous spacing: `space-y-12` between sections
-- Workshop cards: Full width within container
+- Use `next/script` component for proper script loading
+- Add `strategy="lazyOnload"` for performance
+- Keep existing editorial styling wrapper
+- Maintain scroll animations (ScrollReveal wrapper)
 
 ---
 
@@ -310,76 +196,173 @@ const isFull = availableSeats <= 0;
 
 ### Important Context
 
-**Booking Page Workshop Data**:
+**Instagram Account Details**:
 
-Current workshops are realistic Dutch cooking workshops with:
+- Instagram handle: @goeduitje
+- Instagram Business Account ID: 17841467372861243
+- Facebook Page: "Goeduitje" (ID: 300895319781326)
+- Connected in Meta Business Suite
+- 212 followers (as of session)
 
-- Real pricing (€59-€67.50 per person)
-- Realistic dates (December 2025 - January 2026)
-- Dutch locations (Nijmegen, Arnhem, Amersfoort)
-- Detailed menus (3 courses each)
-- Seat availability tracking
-- All content in Dutch
+**Facebook App Details**:
 
-**Hero Section Changes Rationale**:
+- App Name: goeduitjewebsite
+- App ID: 1169054208087897
+- Products: Instagram Graph API, Facebook Login
+- Mode: Development (not approved for production)
+- Created during this session
 
-The hero was updated to emphasize:
+**Token Details** (will be deprecated after EmbedSocial implementation):
 
-1. **Social Impact**: "Met statushouders en asielzoekers" - working with refugees
-2. **Real Metrics**: Actual business performance (41 events, 516 participants)
-3. **Mission Clarity**: Focus on social good, not just activities
-4. **Simplicity**: Single CTA, cleaner layout, centered content
+- User Access Token generated with permissions
+- Page Access Token: EAAQnP6TL11kBP... (expires in 60 days)
+- Instagram permissions attempted: instagram_basic, pages_show_list, pages_read_engagement
 
-**Framer Motion SSR Issue**:
+**Complete Setup Process Attempted**:
 
-The `useSpring` hook was causing: `Module factory is not available` error during SSR. Solution:
-
-- Use `useMotionValue(0)` to create mutable value
-- Use `animate(value, target, options)` to animate it
-- Return `controls.stop` from useEffect for cleanup
-- Works perfectly with Next.js 16 SSR
+1. Created Facebook App
+2. Added Instagram Graph API product
+3. Converted Instagram to Business account
+4. Connected Instagram to Facebook Page
+5. Connected both to Account Center
+6. Generated access tokens with permissions
+7. Attempted API calls → Blocked by App Review requirement
 
 ### Gotchas & Edge Cases
 
-1. **Framer Motion SSR**:
-   - NEVER use `useSpring` in server components
-   - Always use `useMotionValue` + `animate()` instead
-   - Remember cleanup: `return controls.stop`
+1. **Instagram Graph API Trap**:
+   - Meta documentation makes it seem simple
+   - Reality: Requires App Review for any production use
+   - Development mode only works for app developers' own accounts
+   - Business accounts need approved app status
+   - **Lesson**: Always check if App Review is required before investing time
 
-2. **Dutch Number Formatting**:
-   - Use `.toLocaleString("nl-NL")` for proper formatting
-   - Dutch uses period for thousands (1.000 not 1,000)
-   - Comma for decimals (1,5 not 1.5)
+2. **Instagram Account Types**:
+   - Personal accounts: Can't use Graph API at all
+   - Creator accounts: Limited API access
+   - Business accounts: Full API access BUT requires App Review
+   - **Current status**: @goeduitje is Business account, properly configured
 
-3. **Scroll Animation Amount**:
-   - Too high (0.5+): Animations trigger too late, feel sluggish
-   - Too low (0.05): Animations trigger before element visible
-   - Sweet spot: 0.1-0.4 depending on element size
+3. **Meta Business Suite Connection**:
+   - Showing Instagram in Business Suite ≠ API access granted
+   - API access requires App Review approval
+   - The "Login needed" warning was a red herring (fixed by re-auth)
+   - Real blocker: App Review requirement
 
-4. **Booking Page Routing**:
-   - Button links to `/contact?workshop={id}`
-   - Contact page needs to read query param
-   - Currently just redirects (toast notification)
+4. **Token Expiration**:
+   - Short-lived tokens: 1 hour
+   - Long-lived tokens: 60 days
+   - Need to implement refresh mechanism for production
+   - With embed services: No token management needed
 
-5. **Development Guidelines**:
-   - Always use standard components (shadcn/ui)
-   - Never create custom components unless necessary
-   - Leverage existing patterns from codebase
-   - Follow CLAUDE.md guidelines
+5. **EmbedSocial Free Tier Limits**:
+   - 500 posts/month (plenty for most use cases)
+   - Watermark on free tier (small "Powered by EmbedSocial")
+   - Can upgrade to remove watermark if needed
+   - No ads or tracking on free tier
 
 ### Documentation References
 
-- **Design System**: `/docs/HIGH_END_UI_UPGRADE.md` (editorial design guide)
-- **Project Guidelines**: `CLAUDE.md` (tech stack, organization, quality checks)
-- **Planning**: `/docs/planning/REBUILD_PLAN.md` (implementation roadmap)
-- **Brand Guide**: `/docs/planning/BRAND_GUIDE_EXTRACTED.md` (colors, typography)
+**Current Session**:
 
-**External References**:
+- Instagram Graph API Docs: https://developers.facebook.com/docs/instagram-api/
+- Meta App Review: https://developers.facebook.com/docs/app-review/
+- EmbedSocial: https://embedsocial.com/
+- SnapWidget: https://snapwidget.com/
+- Elfsight: https://elfsight.com/instagram-feed-instashow/
 
-- Framer Motion animate: https://www.framer.com/motion/animation/
-- Framer Motion useMotionValue: https://www.framer.com/motion/motionvalue/
-- ScrollReveal component: `src/components/scroll-reveal.tsx`
-- Dutch locale codes: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
+**Meta Developer Tools Used**:
+
+- Facebook Apps Dashboard: https://developers.facebook.com/apps/
+- Graph API Explorer: https://developers.facebook.com/tools/explorer/
+- Meta Business Suite: https://business.facebook.com/
+
+**Project Documentation**:
+
+- CLAUDE.md: Development guidelines and third-party integration recommendations
+- Current Instagram component: `src/components/instagram-feed.tsx`
+- Current API route: `src/app/api/instagram/route.ts` (to be removed)
+
+---
+
+## 📋 EmbedSocial Implementation Guide
+
+### Step-by-Step Implementation Plan
+
+**Phase 1: Setup EmbedSocial Account** (User action required):
+
+1. Go to https://embedsocial.com/
+2. Sign up for free account
+3. Connect Instagram account (@goeduitje)
+   - Click "Add Source" → Instagram
+   - Login with Instagram credentials
+   - Authorize EmbedSocial to access account
+4. Create Instagram feed widget
+   - Choose feed type: Grid or Masonry
+   - Customize styling to match editorial design
+   - Select number of posts to display
+   - Configure layout (recommend: Masonry for editorial feel)
+5. Copy embed code (will look like):
+   ```html
+   <div class="embedsocial-instagram" data-ref="UNIQUE_ID"></div>
+   <script>
+     (function(d, s, id){...}(document, "script", "EmbedSocialHashtagScript"));
+   </script>
+   ```
+6. Save the UNIQUE_ID from the embed code
+
+**Phase 2: Update Next.js Component** (I can do this):
+
+1. Read current `src/components/instagram-feed.tsx`
+2. Replace API fetch logic with embed code
+3. Use `next/script` for proper script loading
+4. Maintain editorial styling wrapper
+5. Keep ScrollReveal animation wrapper
+6. Add proper TypeScript types for embed
+
+**Phase 3: Clean Up API Code** (I can do this):
+
+1. Delete `src/app/api/instagram/route.ts`
+2. Remove Instagram env variables from `.env`
+3. Remove Instagram API dependencies if not used elsewhere
+4. Update any references to API route
+
+**Phase 4: Test & Verify**:
+
+1. Run dev server
+2. Navigate to homepage
+3. Scroll to Instagram section
+4. Verify feed displays correctly
+5. Verify scroll animations still work
+6. Check responsive behavior (mobile, tablet, desktop)
+7. Verify editorial styling matches design system
+
+### What I Can Do Automatically
+
+**Once you provide the EmbedSocial UNIQUE_ID, I can**:
+
+- ✅ Update `src/components/instagram-feed.tsx` with embed code
+- ✅ Integrate with Next.js Script component
+- ✅ Maintain existing scroll animations
+- ✅ Keep editorial styling intact
+- ✅ Delete `/app/api/instagram/route.ts`
+- ✅ Remove Instagram credentials from `.env`
+- ✅ Run code quality checks
+- ✅ Test locally (if dev server running)
+
+**What requires your manual action**:
+
+- ❌ Creating EmbedSocial account (requires email verification)
+- ❌ Connecting Instagram to EmbedSocial (requires Instagram login)
+- ❌ Customizing feed appearance (visual preferences)
+- ❌ Getting the embed code / UNIQUE_ID
+
+### Expected Timeline
+
+- **User Setup** (EmbedSocial account): 10-15 minutes
+- **Code Implementation** (me): 5 minutes
+- **Testing & Verification**: 5 minutes
+- **Total**: ~25 minutes vs weeks for App Review
 
 ---
 
@@ -391,57 +374,75 @@ The `useSpring` hook was causing: `Module factory is not available` error during
 
 I'm continuing work on Goeduitje.nl rebuild. Here's where we left off:
 
-**Current Goal**: Booking page and hero updates complete. Need to verify scroll animations are working, then continue with remaining component upgrades.
+**Current Goal**: Implement EmbedSocial for Instagram feed integration after discovering Instagram Graph API requires Meta App Review approval.
 
 **Just Completed**:
 
-- ✅ Built complete `/booking` page with 4 Dutch cooking workshops (realistic data, seat management)
-- ✅ Updated hero section with animated KPIs (41 uitjes, 516 deelnemers)
-- ✅ Removed secondary "Direct boeken" button (single CTA focus)
-- ✅ Changed USPs to emphasize social impact (statushouders, asielzoekers)
-- ✅ Centered all hero content (headline, CTA, KPIs, USPs)
-- ✅ Added scroll animations throughout landing page (WorkshopCarousel, Configurator, Testimonials, Instagram, Contact)
-- ✅ Fixed Framer Motion SSR error (useSpring → useMotionValue + animate)
-- ✅ Updated CLAUDE.md with development guidelines
-- ✅ All TypeScript and ESLint checks passing
+- ✅ Comprehensive Instagram Graph API setup attempt
+- ✅ Created Facebook App with Instagram Graph API product
+- ✅ Connected @goeduitje Instagram Business account to Meta ecosystem
+- ✅ Identified API blocker: App Review requirement (weeks/months wait)
+- ✅ Researched embed service alternatives
+- ✅ **Selected EmbedSocial** as best solution (professional, free tier, reliable)
+- ✅ Updated CLAUDE.md with integration guidance
+- ✅ All code quality checks passing
 
 **Next Steps**:
 
-1. **Verify scroll animations working** - User reported they don't seem to be functioning
-2. **Test AnimatedKPI** - Ensure counters animate without SSR errors
-3. **Upgrade TopNavigation** - Add floating glassmorphism on scroll (useScroll hook, backdrop-blur-xl)
-4. **Upgrade ImpactStats** - Editorial treatment with asymmetric layout
-5. **Upgrade InstagramFeed** - Magazine-style masonry grid
-6. **Build content pages** - /onze-uitjes, /ons-verhaal, /onze-medewerkers, /onze-impact, /jullie-ervaringen
+1. **User: Create EmbedSocial account** and get embed code with UNIQUE_ID
+2. **Me: Update instagram-feed.tsx** with EmbedSocial embed
+3. **Me: Remove API code** (delete route, clean .env, remove dependencies)
+4. **Test integration** - Verify feed displays with scroll animations
+5. Continue with component upgrades (TopNavigation, ImpactStats)
 
 **Context**:
 
-- **Design system follows**: `/docs/HIGH_END_UI_UPGRADE.md` (editorial design guide)
-- **Development guidelines**: `CLAUDE.md` (use standard components only)
-- **Booking page**: Uses shadcn/ui Card, Button, Badge components exclusively
-- **Hero KPIs**: AnimatedKPI component in `src/components/hero-video.tsx` (lines 198-220)
-- **Scroll animations**: ScrollReveal wrappers in `src/app/page.tsx`
-- **Dev server**: Running on port 3099
+- **Instagram account**: @goeduitje (Business account, 212 followers, ID: 17841467372861243)
+- **Facebook App**: goeduitjewebsite (ID: 1169054208087897) - can be archived
+- **Current implementation**: `src/components/instagram-feed.tsx` (editorial masonry grid)
+- **Current API route**: `src/app/api/instagram/route.ts` (to be deleted)
+- **Why embed service**: Meta App Review blocks direct API, embed services are maintenance-free
+- **Design requirement**: Must maintain editorial styling and scroll animations
 
 **Files to Focus On**:
 
-- `src/app/page.tsx` - Verify scroll animation implementations
-- `src/components/hero-video.tsx` - AnimatedKPI component (SSR fix applied)
-- `src/components/scroll-reveal.tsx` - Scroll animation utility (existing)
-- `src/app/booking/page.tsx` - New booking page (complete)
+- `src/components/instagram-feed.tsx` - Replace with EmbedSocial embed
+- `src/app/api/instagram/route.ts` - Delete this file
+- `.env` - Remove INSTAGRAM_USER_ID and INSTAGRAM_ACCESS_TOKEN
+- `src/app/page.tsx` - Instagram section (keep ScrollReveal wrapper)
 
-**Key Patterns**:
+**Key Implementation Pattern**:
 
-- **Animated counters**: Use `useMotionValue` + `animate()`, NEVER `useSpring` (SSR issues)
-- **Scroll animations**: Wrap sections in `<ScrollReveal animation="..." amount={0.1-0.4}>`
-- **Dutch formatting**: Use `.toLocaleString("nl-NL")` for numbers
-- **Centered layouts**: `max-w-6xl mx-auto px-6 lg:px-8` + `text-center` for cards
-- **Standard components**: Always use shadcn/ui, never create custom unless necessary
+```tsx
+// instagram-feed.tsx (planned update)
+import Script from "next/script";
+
+export function InstagramFeed() {
+  return (
+    <>
+      <div className="embedsocial-instagram" data-ref="UNIQUE_ID">
+        {/* Feed loads here */}
+      </div>
+      <Script
+        src="https://embedsocial.com/cdn/ht.js"
+        strategy="lazyOnload"
+        id="EmbedSocialHashtagScript"
+      />
+    </>
+  );
+}
+```
+
+**Decision: EmbedSocial vs Direct API**:
+
+- Direct API: Requires App Review, weeks wait, ongoing token management
+- EmbedSocial: 10-minute setup, no maintenance, professional quality, free tier
+- **Winner**: EmbedSocial (pragmatic choice for display-only use case)
 
 **Questions/Blockers**:
 
-- Scroll animations may need verification/debugging (user reported not working)
-- AnimatedKPI SSR fix needs testing
+- Waiting for user to create EmbedSocial account and provide UNIQUE_ID
+- Once provided, implementation is straightforward (~5 minutes)
 
 ---
 
@@ -449,42 +450,55 @@ I'm continuing work on Goeduitje.nl rebuild. Here's where we left off:
 
 ## 📚 Previous Session Notes
 
-### High-End UI Upgrade Session (November 13, 2025, 16:15 UTC)
+### Booking Page & Hero Updates (November 14, 2025, 09:46 UTC)
 
 **Completed**:
 
-- ✅ Upgraded UI from basic Shadcn to Kinfolk/Bon Appétit magazine-level design (Commit 36d7b6b)
-- ✅ Refined typography (H1: 70px → 56px), borders (2px → 1px subtle), shadows (editorial system)
-- ✅ Created editorial spacing scale (section-sm/md/lg) and enhanced animation library
-- ✅ Upgraded HeroVideo, WorkshopCarousel, TestimonialsCarousel with editorial design
-- ✅ Created HIGH_END_UI_UPGRADE.md (912-line comprehensive guide)
-- ✅ All quality checks passed
+- ✅ Built `/booking` page with 4 Dutch cooking workshops (realistic data, seat management)
+- ✅ Updated hero with animated KPIs (41 uitjes, 516 deelnemers) using Framer Motion
+- ✅ Removed secondary CTA, focused on single action
+- ✅ Changed USPs to social impact messaging (statushouders, asielzoekers)
+- ✅ Added scroll animations throughout landing page
+- ✅ Fixed Framer Motion SSR error (useSpring → useMotionValue + animate)
+
+**Key Decisions**:
+
+- Use useMotionValue instead of useSpring for SSR compatibility
+- Wrap sections in ScrollReveal instead of individual elements
+- Use only standard shadcn/ui components (no custom booking UI)
+- Dutch locale formatting for numbers
+
+### High-End UI Upgrade (November 13, 2025, 16:15 UTC)
+
+**Completed**:
+
+- ✅ Upgraded from basic Shadcn to editorial magazine design
+- ✅ Created comprehensive HIGH_END_UI_UPGRADE.md guide
+- ✅ Refined typography, borders, shadows, spacing, animations
+- ✅ Upgraded HeroVideo, WorkshopCarousel, TestimonialsCarousel
 
 **Key Decisions**:
 
 - Kinfolk/Bon Appétit editorial aesthetic
-- Subtle 1px borders (15% opacity) vs harsh 2px black
-- Custom editorial shadows (0.02-0.08 opacity)
-- Generous spacing (120px sections) for sophistication
-- Slower animations (300-700ms) with custom easing
-- Asymmetric editorial layouts
+- Subtle 1px borders instead of 2px
+- Editorial shadow system (0.02-0.08 opacity)
+- Generous spacing (120px sections)
+- Slower animations (300-700ms)
 
-### Foundation Phase Session (November 13, 2025, 14:45 UTC)
+### Foundation Phase (November 13, 2025, 14:45 UTC)
 
 **Completed**:
 
-- ✅ Complete design system setup (oklch colors, Poppins typography)
-- ✅ Framer Motion animation system (1500+ lines)
-- ✅ Comprehensive documentation (1800+ lines)
-- ✅ Created core components (hero-video, workshop-carousel, testimonials, impact-stats, instagram-feed)
-- ✅ Restructured homepage to match Wireframe #1
+- ✅ Design system setup (oklch colors, Poppins typography)
+- ✅ Framer Motion animation library
+- ✅ Core components (hero-video, workshop-carousel, etc.)
+- ✅ Restructured homepage to match wireframes
 
 **Key Decisions**:
 
 - oklch color format for Tailwind CSS 4
-- Poppins fonts instead of Avenir (commercial license)
+- Poppins fonts (Avenir has licensing issues)
 - Sharp corners (0rem radius)
 - Framer Motion for animations
-- Intersection Observer for scroll detection
 
 ---
