@@ -282,11 +282,11 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* Workshop Configurator Section - Editorial */}
+      {/* Workshop Configurator Section - Two Column Layout */}
       <section id="configurator" className="section-md">
         <div className="container">
           <ScrollReveal animation="slideUp">
-            <div className="mb-20 max-w-3xl">
+            <div className="mb-12 max-w-3xl">
               <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
                 Configureer Je Uitje
               </h2>
@@ -295,11 +295,177 @@ export default function OnzeUitjesPage() {
               </p>
             </div>
           </ScrollReveal>
-          <ScrollReveal animation="slideUp" delay={0.2}>
-            <div className="flex justify-center">
+
+          {/* Two Column Layout: Form + Visual Content */}
+          <div className="grid gap-8 lg:grid-cols-[1fr,380px] xl:grid-cols-[1fr,440px]">
+            {/* Left Column: Configurator Form */}
+            <ScrollReveal animation="slideUp" delay={0.1}>
               <WorkshopConfigurator />
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+
+            {/* Right Column: Visual Content & Stats */}
+            <ScrollReveal animation="slideUp" delay={0.2}>
+              <div className="space-y-6">
+                {/* Stats Card */}
+                <Card className="shadow-editorial border">
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="text-center">
+                        <IconUsers className="text-primary mx-auto mb-2 size-8" />
+                        <div className="mb-1 text-3xl font-bold">150+</div>
+                        <div className="text-muted-foreground text-sm">
+                          Teams
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <IconStar className="text-primary mx-auto mb-2 size-8" />
+                        <div className="mb-1 text-3xl font-bold">4.9</div>
+                        <div className="text-muted-foreground text-sm">
+                          Rating
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-primary mx-auto mb-2 flex size-8 items-center justify-center text-2xl">
+                          🏆
+                        </div>
+                        <div className="mb-1 text-3xl font-bold">Top</div>
+                        <div className="text-muted-foreground text-sm">
+                          Rated
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-primary mx-auto mb-2 flex size-8 items-center justify-center text-2xl">
+                          📈
+                        </div>
+                        <div className="mb-1 text-3xl font-bold">95%</div>
+                        <div className="text-muted-foreground text-sm">
+                          Rebook
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Workshop Preview Video */}
+                <Card className="shadow-editorial overflow-hidden border">
+                  <div className="bg-muted relative aspect-[4/3]">
+                    <video
+                      src="/images/workshops/workshop 1.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute right-4 bottom-4 left-4 text-white">
+                      <h3 className="mb-1 text-xl font-bold">
+                        Onze Populairste Workshops
+                      </h3>
+                      <p className="text-sm opacity-90">
+                        Unieke teambuildingservaringen
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Testimonial */}
+                <Card className="shadow-editorial border">
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <IconStar
+                          key={i}
+                          className="text-primary size-4 fill-current"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-foreground mb-4 leading-relaxed">
+                      &ldquo;Het stadsspel was precies wat we nodig hadden -
+                      uitdagend, leuk en betekenisvol.&rdquo;
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 flex size-10 items-center justify-center rounded-full">
+                        <span className="text-primary text-sm font-bold">
+                          LV
+                        </span>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Lisa de Vries</div>
+                        <div className="text-muted-foreground text-sm">
+                          Operations Director
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Workshop Collage */}
+                <Card className="shadow-editorial overflow-hidden border">
+                  <CardContent className="p-0">
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/the-game.jpg"
+                          alt="The Game workshop"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={WORKSHOP_BLUR_PLACEHOLDERS["the-game"]}
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/beachvolleybal.jpg"
+                          alt="Beachvolleybal"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["beachvolleybal"]
+                          }
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/koffie-thee.jpg"
+                          alt="Koffie & Thee workshop"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["koffie-thee"]
+                          }
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/design-tshirt.jpg"
+                          alt="Design Your T-shirt"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["design-tshirt"]
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="mb-1 font-bold">Kies uit 6+ Workshops</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Van actief tot creatief - voor elk team wat wils
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 

@@ -10,8 +10,11 @@ import { InstagramFeed } from "@/components/instagram-feed";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Instagram } from "lucide-react";
+import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 
 /**
  * Goeduitje.nl Homepage
@@ -58,14 +61,101 @@ export default function Home() {
               </div>
             </ScrollReveal>
 
-            {/* Right Column - Sidebar */}
+            {/* Right Column - Sidebar with Visual Content */}
             <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
-              <div className="w-full space-y-6 lg:w-[380px]">
+              <div className="w-full space-y-6 lg:w-[400px] xl:w-[440px]">
                 {/* Social Proof Stats */}
                 <SocialProofStats />
 
+                {/* Workshop Preview Video */}
+                <Card className="shadow-editorial overflow-hidden border">
+                  <div className="bg-muted relative aspect-[4/3]">
+                    <video
+                      src="/images/workshops/workshop 1.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute right-4 bottom-4 left-4 text-white">
+                      <h3 className="mb-1 text-lg font-bold">
+                        Onze Populairste Workshops
+                      </h3>
+                      <p className="text-sm opacity-90">
+                        Unieke teambuildingservaringen
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
                 {/* Compact Testimonials */}
                 <CompactTestimonials />
+
+                {/* Workshop Collage */}
+                <Card className="shadow-editorial overflow-hidden border">
+                  <CardContent className="p-0">
+                    <div className="grid grid-cols-2 gap-1">
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/the-game.jpg"
+                          alt="The Game workshop"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={WORKSHOP_BLUR_PLACEHOLDERS["the-game"]}
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/beachvolleybal.jpg"
+                          alt="Beachvolleybal"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["beachvolleybal"]
+                          }
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/koffie-thee.jpg"
+                          alt="Koffie & Thee workshop"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["koffie-thee"]
+                          }
+                        />
+                      </div>
+                      <div className="bg-muted relative aspect-square">
+                        <Image
+                          src="/images/workshops/design-tshirt.jpg"
+                          alt="Design Your T-shirt"
+                          fill
+                          className="object-cover"
+                          sizes="220px"
+                          placeholder="blur"
+                          blurDataURL={
+                            WORKSHOP_BLUR_PLACEHOLDERS["design-tshirt"]
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="mb-1 font-bold">Kies uit 6+ Workshops</h3>
+                      <p className="text-muted-foreground text-sm">
+                        Van actief tot creatief - voor elk team wat wils
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </ScrollReveal>
           </div>

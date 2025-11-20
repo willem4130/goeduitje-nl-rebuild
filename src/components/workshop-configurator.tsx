@@ -15,7 +15,6 @@ import {
   IconClock,
   IconArrowLeft,
   IconArrowRight,
-  IconCheck,
 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -229,68 +228,39 @@ export function WorkshopConfigurator() {
   };
 
   return (
-    <Card className="w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle>Workshop Configurator</CardTitle>
-        <CardDescription>
+    <Card className="mx-auto w-full max-w-4xl">
+      <CardHeader className="space-y-2">
+        <CardTitle className="text-2xl sm:text-3xl">
+          Workshop Configurator
+        </CardTitle>
+        <CardDescription className="text-base">
           Configureer je workshop en ontvang direct een bevestiging
         </CardDescription>
 
-        {/* Progress Indicator */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            {STEPS.map((step, index) => (
-              <div key={step.number} className="flex flex-1 items-center">
-                <div className="flex flex-1 flex-col items-center">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all ${
-                      currentStep > step.number
-                        ? "bg-primary border-primary text-primary-foreground"
-                        : currentStep === step.number
-                          ? "border-primary text-primary"
-                          : "border-muted-foreground/30 text-muted-foreground"
-                    }`}
-                  >
-                    {currentStep > step.number ? (
-                      <IconCheck className="h-5 w-5" />
-                    ) : (
-                      step.number
-                    )}
-                  </div>
-                  <div className="mt-2 hidden text-center sm:block">
-                    <div
-                      className={`text-sm font-medium ${
-                        currentStep >= step.number
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {step.title}
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {step.description}
-                    </div>
-                  </div>
-                </div>
-                {index < STEPS.length - 1 && (
-                  <div
-                    className={`h-0.5 w-full transition-all ${
-                      currentStep > step.number
-                        ? "bg-primary"
-                        : "bg-muted-foreground/20"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
+        {/* Compact Progress Indicator */}
+        <div className="mt-4">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-foreground text-sm font-medium">
+              Stap {currentStep} van {STEPS.length}:{" "}
+              {STEPS[currentStep - 1]?.title}
+            </span>
+            <span className="text-muted-foreground text-xs">
+              {Math.round((currentStep / STEPS.length) * 100)}%
+            </span>
+          </div>
+          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+            <div
+              className="bg-primary h-full transition-all duration-300 ease-out"
+              style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
+            />
           </div>
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-4 sm:p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="relative min-h-[400px]">
+            <div className="min-h-[400px] overflow-hidden sm:min-h-[500px]">
               <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
                   key={currentStep}
@@ -303,11 +273,11 @@ export function WorkshopConfigurator() {
                     x: { type: "spring", stiffness: 300, damping: 30 },
                     opacity: { duration: 0.2 },
                   }}
-                  className="absolute inset-0"
+                  className="w-full"
                 >
                   {/* Step 1: Configure Workshop - All related fields together */}
                   {currentStep === 1 && (
-                    <div className="max-h-[600px] space-y-6 overflow-y-auto pr-2">
+                    <div className="space-y-4 sm:space-y-6">
                       <FormField
                         control={form.control}
                         name="type"
@@ -346,7 +316,7 @@ export function WorkshopConfigurator() {
                       />
 
                       {type === "zakelijk" && (
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                           <FormField
                             control={form.control}
                             name="companyName"
@@ -425,7 +395,7 @@ export function WorkshopConfigurator() {
                                 ? "Let op: Sommige workshops vereisen minimaal 6 deelnemers"
                                 : "Selecteer één of meerdere workshops"}
                             </FormDescription>
-                            <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                               {WORKSHOPS.map((workshop) => {
                                 const available = isWorkshopAvailable(
                                   workshop.id
@@ -437,7 +407,7 @@ export function WorkshopConfigurator() {
                                     name="workshops"
                                     render={({ field }) => (
                                       <FormItem
-                                        className={`flex items-center space-y-0 space-x-3 rounded-md border p-4 ${
+                                        className={`flex items-center space-y-0 space-x-3 rounded-md border p-3 sm:p-4 ${
                                           !available
                                             ? "border-muted bg-muted/20 opacity-60"
                                             : "border-border"
@@ -541,7 +511,7 @@ export function WorkshopConfigurator() {
                       )}
 
                       {/* Date and Time */}
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                         <FormField
                           control={form.control}
                           name="date"
@@ -583,7 +553,7 @@ export function WorkshopConfigurator() {
                         />
                       </div>
 
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                         <FormField
                           control={form.control}
                           name="time"
@@ -671,8 +641,8 @@ export function WorkshopConfigurator() {
 
                   {/* Step 2: Contact & Review */}
                   {currentStep === 2 && (
-                    <div className="space-y-6">
-                      <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-4 sm:space-y-6">
+                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                         <FormField
                           control={form.control}
                           name="name"
@@ -746,24 +716,33 @@ export function WorkshopConfigurator() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between border-t pt-6">
+            <div className="flex flex-col-reverse gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
+                className="w-full sm:w-auto"
               >
                 <IconArrowLeft className="mr-2 size-4" />
                 Vorige
               </Button>
 
               {currentStep < STEPS.length ? (
-                <Button type="button" onClick={nextStep}>
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  className="w-full sm:w-auto"
+                >
                   Volgende
                   <IconArrowRight className="ml-2 size-4" />
                 </Button>
               ) : (
-                <Button type="submit" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full sm:w-auto"
+                >
                   {isLoading ? (
                     <>
                       <IconLoader2 className="mr-2 size-4 animate-spin" />
