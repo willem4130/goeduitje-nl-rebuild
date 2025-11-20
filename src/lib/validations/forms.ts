@@ -121,6 +121,8 @@ export const workshopConfigSchema = z
     time: z.string().optional(),
     timeTbd: z.boolean().default(false),
     duration: z.number().min(1).max(12).optional(),
+    companyName: z.string().optional(),
+    btwNumber: z.string().optional(),
     name: z.string().min(2, {
       message: "Naam moet minimaal 2 karakters zijn.",
     }),
@@ -165,6 +167,19 @@ export const workshopConfigSchema = z
     {
       message: "Selecteer een tijd of kies 'Nog te bepalen'.",
       path: ["time"],
+    }
+  )
+  .refine(
+    (data) => {
+      // If type is "zakelijk", companyName must be provided
+      if (data.type === "zakelijk") {
+        return !!data.companyName && data.companyName.length >= 2;
+      }
+      return true;
+    },
+    {
+      message: "Bedrijfsnaam is verplicht voor zakelijke boekingen.",
+      path: ["companyName"],
     }
   );
 

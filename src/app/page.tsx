@@ -4,6 +4,8 @@ import { HeroVideo } from "@/components/hero-video";
 import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { TestimonialsCarousel } from "@/components/testimonials-carousel";
+import { CompactTestimonials } from "@/components/compact-testimonials";
+import { SocialProofStats } from "@/components/social-proof-stats";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
@@ -34,11 +36,11 @@ export default function Home() {
         <WorkshopCarousel />
       </ScrollReveal>
 
-      {/* Workshop Configurator Section */}
-      <section id="configurator" className="section-md bg-muted/30">
+      {/* Workshop Configurator Section - Two Column Layout */}
+      <section id="configurator" className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.2}>
-            <div className="mb-10 text-center">
+            <div className="mb-8 text-center">
               <h2 className="text-primary tracking-tight">
                 Stel je uitje samen
               </h2>
@@ -48,11 +50,25 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal animation="scale" delay={0.2} amount={0.2}>
-            <div className="flex justify-center">
-              <WorkshopConfigurator />
-            </div>
-          </ScrollReveal>
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
+            {/* Left Column - Form */}
+            <ScrollReveal animation="slideUp" delay={0.1} amount={0.2}>
+              <div className="flex justify-center lg:justify-start">
+                <WorkshopConfigurator />
+              </div>
+            </ScrollReveal>
+
+            {/* Right Column - Sidebar */}
+            <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
+              <div className="w-full space-y-6 lg:w-[380px]">
+                {/* Social Proof Stats */}
+                <SocialProofStats />
+
+                {/* Compact Testimonials */}
+                <CompactTestimonials />
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
