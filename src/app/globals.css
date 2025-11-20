@@ -254,28 +254,28 @@
       0 12px 32px rgba(0, 0, 0, 0.08);
   }
 
-  /* Editorial spacing scale - generous, varied */
+  /* Compact spacing scale - optimized for viewport usage */
   .section-sm {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
   .section-md {
-    padding-top: 7.5rem;
-    padding-bottom: 7.5rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
   .section-lg {
-    padding-top: 10rem;
-    padding-bottom: 10rem;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
 
   /* Asymmetric section spacing */
   .section-asymmetric-1 {
-    padding-top: 8rem;
-    padding-bottom: 5rem;
+    padding-top: 5rem;
+    padding-bottom: 3rem;
   }
   .section-asymmetric-2 {
-    padding-top: 5rem;
-    padding-bottom: 8rem;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
   }
 
   /* Content stacking - vertical rhythm */

@@ -104,7 +104,7 @@ export function TestimonialsCarousel({
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Section Header */}
         <ScrollReveal animation="slideUp">
-          <div className="mb-16 text-center">
+          <div className="mb-10 text-center">
             <h2 className="text-primary tracking-tight">{title}</h2>
             <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
               {subtitle}

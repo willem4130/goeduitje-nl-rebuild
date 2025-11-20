@@ -38,7 +38,7 @@ export default function Home() {
       <section id="configurator" className="section-md bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.2}>
-            <div className="mb-16 text-center">
+            <div className="mb-10 text-center">
               <h2 className="text-primary tracking-tight">
                 Stel je uitje samen
               </h2>
@@ -65,7 +65,7 @@ export default function Home() {
       <section className="section-md bg-background">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.3}>
-            <div className="mb-16 text-center">
+            <div className="mb-10 text-center">
               <h2 className="text-primary tracking-tight">
                 Volg ons op Instagram
               </h2>

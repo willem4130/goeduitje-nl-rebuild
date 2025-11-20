@@ -1,20 +1,18 @@
 "use client";
 
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { EASING, ANIMATION_DURATION } from "@/lib/animations";
 import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
+import { cn } from "@/lib/utils";
 
 /**
- * Modern carousel showcasing workshop types with Embla
- * Features autoplay, navigation arrows, and responsive design showing 4-5 items
+ * Workshop grid with clean 3x2 layout
+ * Optimized to fit viewport - 3 columns on desktop, responsive on smaller screens
  */
 
 export interface Workshop {
@@ -104,49 +102,12 @@ export function WorkshopCarousel({
   title = "Onze uitjes",
   subtitle = "Kies jouw ideale uitje",
 }: WorkshopCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "start",
-      slidesToScroll: 1,
-      breakpoints: {
-        "(min-width: 640px)": { slidesToScroll: 2 },
-        "(min-width: 1024px)": { slidesToScroll: 3 },
-      },
-    },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
-  );
-
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-  }, [emblaApi, onSelect]);
-
   return (
     <section className="bg-background section-md relative overflow-hidden">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="container mx-auto px-2 lg:px-4 xl:px-6">
         {/* Section Header */}
         <ScrollReveal animation="slideUp">
-          <div className="mb-16 text-center">
+          <div className="mb-6 text-center">
             <h2 className="text-primary tracking-tight">{title}</h2>
             <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
               {subtitle}
@@ -154,46 +115,16 @@ export function WorkshopCarousel({
           </div>
         </ScrollReveal>
 
-        {/* Carousel Container */}
+        {/* Workshop Grid - Full-width 5x1 Layout on desktop */}
         <ScrollReveal animation="slideUp" delay={0.2}>
-          <div className="relative">
-            {/* Embla Viewport */}
-            <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex gap-4 md:gap-6">
-                {workshops.map((workshop, index) => (
-                  <WorkshopCard
-                    key={workshop.id}
-                    workshop={workshop}
-                    index={index}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Navigation Arrows */}
-            <div className="absolute top-1/2 right-0 left-0 z-10 flex -translate-y-1/2 justify-between px-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={scrollPrev}
-                disabled={!canScrollPrev}
-                className="bg-background/90 shadow-editorial hover:shadow-editorial-lg flex h-12 w-12 items-center justify-center rounded-full backdrop-blur-sm transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-30"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={scrollNext}
-                disabled={!canScrollNext}
-                className="bg-background/90 shadow-editorial hover:shadow-editorial-lg flex h-12 w-12 items-center justify-center rounded-full backdrop-blur-sm transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-30"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </motion.button>
-            </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+            {workshops.map((workshop, index) => (
+              <WorkshopCard
+                key={workshop.id}
+                workshop={workshop}
+                index={index}
+              />
+            ))}
           </div>
         </ScrollReveal>
 
@@ -214,14 +145,15 @@ export function WorkshopCarousel({
 }
 
 /**
- * Individual workshop card component with video support
+ * Standard workshop card for grid items
  */
 interface WorkshopCardProps {
   workshop: Workshop;
   index: number;
+  className?: string;
 }
 
-function WorkshopCard({ workshop, index }: WorkshopCardProps) {
+function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -231,12 +163,12 @@ function WorkshopCard({ workshop, index }: WorkshopCardProps) {
         duration: ANIMATION_DURATION.slow,
         ease: EASING.editorial,
       }}
-      className="group relative min-w-0 flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_30%] lg:flex-[0_0_23%]"
+      className={cn("group relative", className)}
     >
       <Link href={`/onze-uitjes/${workshop.slug}`} className="block">
-        <div className="bg-card border-border shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500">
-          {/* Media - Video or Image */}
-          <div className="bg-muted relative aspect-[4/3] overflow-hidden">
+        <div className="bg-card border-border shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500 hover:scale-[1.02]">
+          {/* Media - Portrait aspect ratio for maximum prominence */}
+          <div className="bg-muted relative aspect-[4/5] overflow-hidden">
             {workshop.video ? (
               <video
                 src={workshop.video}
@@ -244,15 +176,15 @@ function WorkshopCard({ workshop, index }: WorkshopCardProps) {
                 loop
                 muted
                 playsInline
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />
             ) : (
               <Image
                 src={workshop.image || ""}
                 alt={workshop.title}
                 fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                sizes="(max-width: 640px) 85vw, (max-width: 768px) 45vw, (max-width: 1024px) 30vw, 23vw"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 placeholder="blur"
                 blurDataURL={
                   WORKSHOP_BLUR_PLACEHOLDERS[
@@ -261,47 +193,46 @@ function WorkshopCard({ workshop, index }: WorkshopCardProps) {
                 }
               />
             )}
-            {/* Sophisticated gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />
 
-            {/* Refined price badge */}
-            <div className="bg-primary shadow-editorial-sm absolute top-3 right-3 rounded-full px-3 py-1">
-              <span className="text-primary-foreground text-xs font-semibold tracking-wide">
+            {/* Price badge */}
+            <div className="bg-primary shadow-editorial absolute top-3 right-3 rounded-full px-3 py-1">
+              <span className="text-primary-foreground text-xs font-bold tracking-wide">
                 {workshop.price}
               </span>
             </div>
           </div>
 
-          {/* Content - Compact spacing for smaller cards */}
-          <div className="p-4">
-            <h3 className="text-foreground mb-1 line-clamp-1 text-lg font-semibold tracking-tight">
+          {/* Content - Ultra compact layout */}
+          <div className="p-3">
+            <h3 className="text-foreground mb-1 line-clamp-1 text-lg font-bold tracking-tight">
               {workshop.title}
             </h3>
-            <p className="text-primary mb-2 line-clamp-1 text-sm font-medium tracking-tight">
+            <p className="text-primary mb-2 line-clamp-1 text-sm font-semibold tracking-tight">
               {workshop.subtitle}
             </p>
-            <p className="text-muted-foreground mb-3 line-clamp-2 text-sm leading-relaxed tracking-wide">
+            <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">
               {workshop.description}
             </p>
 
-            {/* Meta info - refined borders */}
-            <div className="border-border text-muted-foreground space-y-1 border-t pt-3 text-xs tracking-wide">
+            {/* Meta info */}
+            <div className="border-border text-muted-foreground space-y-1 border-t pt-2 text-xs">
               <div className="flex items-center justify-between">
-                <span className="font-medium">Duur:</span>
+                <span className="font-semibold">Duur:</span>
                 <span>{workshop.duration}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-medium">Groepsgrootte:</span>
+                <span className="font-semibold">Groepsgrootte:</span>
                 <span className="line-clamp-1">{workshop.groupSize}</span>
               </div>
             </div>
 
-            {/* CTA - refined animation */}
+            {/* CTA */}
             <div className="mt-3 flex items-center justify-between">
-              <span className="text-primary text-sm font-semibold tracking-wide">
+              <span className="text-primary text-sm font-bold tracking-wide">
                 Meer info
               </span>
-              <ChevronRight className="text-primary h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ChevronRight className="text-primary h-4 w-4 transition-transform duration-300 group-hover:translate-x-2" />
             </div>
           </div>
         </div>
