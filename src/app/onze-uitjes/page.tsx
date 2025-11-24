@@ -1,7 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
+import { WorkshopCarousel } from "@/components/workshop-carousel";
+import { SocialProofStats } from "@/components/social-proof-stats";
+import { CompactTestimonials } from "@/components/compact-testimonials";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,26 +14,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { WORKSHOPS } from "@/lib/constants/cities";
-import Image from "next/image";
-import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
-import {
-  IconUsers,
-  IconMapPin,
-  IconCalendar,
-  IconStar,
-} from "@tabler/icons-react";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
-
-// Metadata should be in layout.tsx for client components
-// Or use generateMetadata in a separate server component
+import { Users, MapPin, Calendar, Star } from "lucide-react";
+import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 
 export default function OnzeUitjesPage() {
   return (
-    <div className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section - Editorial Treatment */}
+    <main className="flex min-h-screen flex-col pt-20">
+      {/* Hero Section */}
       <section className="relative overflow-hidden border-b">
-        {/* Sophisticated background layering */}
         <div className="absolute inset-0">
           <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
           <div
@@ -42,33 +35,41 @@ export default function OnzeUitjesPage() {
         </div>
 
         <div className="section-md relative">
-          <div className="container">
+          <div className="container mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal animation="slideUp">
-              <div className="mx-auto max-w-4xl">
-                <h1 className="mb-8 text-[56px] leading-[1.1] tracking-tight sm:text-[64px]">
+              <div className="mx-auto max-w-4xl text-center">
+                <h1 className="text-primary mb-8 tracking-tight">
                   Onze Uitjes
                 </h1>
-                <p className="text-muted-foreground mb-12 max-w-2xl text-xl leading-relaxed tracking-wide">
+                <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
                   Configureer je perfecte teamuitje. Kies uit verschillende
                   workshops, locaties en activiteiten voor een onvergetelijke
                   ervaring.
                 </p>
 
-                <div className="flex flex-col gap-4 sm:flex-row">
-                  <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <div className="flex flex-col justify-center gap-4 sm:flex-row">
+                  <motion.div
+                    whileHover={{ y: -2, scale: 1.05 }}
+                    whileTap={{ y: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <Button
                       size="lg"
-                      className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
+                      className="shadow-editorial-lg hover:shadow-editorial-hover px-8 tracking-wide transition-all duration-300"
                       asChild
                     >
                       <a href="#configurator">Start Configureren</a>
                     </Button>
                   </motion.div>
-                  <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                  <motion.div
+                    whileHover={{ y: -2, scale: 1.05 }}
+                    whileTap={{ y: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <Button
                       variant="outline"
                       size="lg"
-                      className="px-8 py-6 font-semibold tracking-wide transition-all duration-300"
+                      className="px-8 tracking-wide transition-all duration-300"
                       asChild
                     >
                       <a href="#workshops">Bekijk Workshops</a>
@@ -81,15 +82,15 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* Features Section - Editorial Grid */}
+      {/* Features Section */}
       <section className="section-md">
-        <div className="container">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mb-20 max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+            <div className="mb-8 text-center">
+              <h2 className="text-primary tracking-tight">
                 Waarom Kiezen Voor Ons?
               </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
                 Wat maakt onze uitjes speciaal
               </p>
             </div>
@@ -101,25 +102,25 @@ export default function OnzeUitjesPage() {
           >
             {[
               {
-                icon: IconUsers,
+                icon: Users,
                 title: "Flexibele Groepsgrootte",
                 description:
                   "Van kleine teams tot grote groepen, wij hebben de perfecte workshop voor jullie.",
               },
               {
-                icon: IconMapPin,
+                icon: MapPin,
                 title: "Meerdere Locaties",
                 description:
                   "Workshops beschikbaar in Nijmegen, Arnhem, Amersfoort en meer steden in Nederland.",
               },
               {
-                icon: IconCalendar,
+                icon: Calendar,
                 title: "Flexibele Planning",
                 description:
                   "Kies je datum en tijd, of laat het nog te bepalen voor maximale flexibiliteit.",
               },
               {
-                icon: IconStar,
+                icon: Star,
                 title: "Professionele Begeleiding",
                 description:
                   "Ervaren begeleiders zorgen voor een onvergetelijke en leerzame ervaring.",
@@ -149,202 +150,43 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* Available Workshops Section - Editorial Grid */}
-      <section id="workshops" className="section-md relative overflow-hidden">
-        {/* Layered background */}
-        <div className="absolute inset-0">
-          <div className="bg-muted/50 absolute inset-0" />
-          <div className="from-background/50 absolute inset-0 bg-gradient-to-b to-transparent" />
-        </div>
+      {/* Available Workshops Section - Reuse WorkshopCarousel */}
+      <div id="workshops">
+        <ScrollReveal animation="fade" amount={0.1}>
+          <WorkshopCarousel
+            title="Beschikbare Workshops"
+            subtitle="Onze selectie van team-building activiteiten"
+          />
+        </ScrollReveal>
+      </div>
 
-        <div className="relative container">
-          <ScrollReveal animation="slideUp">
-            <div className="mb-20 max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Beschikbare Workshops
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
-                Onze selectie van team-building activiteiten
-              </p>
-            </div>
-          </ScrollReveal>
-
-          {/* Asymmetric editorial grid with videos */}
-          <StaggerChildren
-            staggerDelay={0.1}
-            className="grid auto-rows-fr gap-6 md:grid-cols-12"
-          >
-            {WORKSHOPS.map((workshop, index) => {
-              const workshopData: Record<
-                string,
-                { description: string; video?: string; image?: string }
-              > = {
-                kookworkshop: {
-                  description:
-                    "Leer samen koken en geniet van een heerlijke maaltijd die jullie zelf hebben bereid.",
-                  video: "/images/workshops/workshop 1.mp4",
-                },
-                stadsspel: {
-                  description:
-                    "Ontdek de stad op een interactieve manier met uitdagende opdrachten en vragen.",
-                  video: "/images/workshops/workshop 2.mp4",
-                },
-                "the-game": {
-                  description:
-                    "Spannende team-building activiteit waarbij samenwerking centraal staat.",
-                  image: "/images/workshops/the-game.jpg",
-                },
-                beachvolleybal: {
-                  description:
-                    "Actieve teambuilding op het strand met professionele begeleiding.",
-                  image: "/images/workshops/beachvolleybal.jpg",
-                },
-                "koffie-thee": {
-                  description:
-                    "Ontdek de wereld van koffie en thee tijdens deze proeverij workshop.",
-                  image: "/images/workshops/koffie-thee.jpg",
-                },
-                "design-tshirt": {
-                  description:
-                    "Ontwerp en creëer je eigen unieke team t-shirts.",
-                  image: "/images/workshops/design-tshirt.jpg",
-                },
-              };
-
-              const data = workshopData[workshop.id];
-
-              // Editorial grid pattern: vary column spans
-              const gridSpan =
-                index % 3 === 0
-                  ? "md:col-span-5"
-                  : index % 3 === 1
-                    ? "md:col-span-4"
-                    : "md:col-span-3";
-
-              return (
-                <motion.div
-                  key={workshop.id}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className={gridSpan}
-                >
-                  <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                    {/* Media - Video or Image */}
-                    {(data?.video || data?.image) && (
-                      <div className="bg-muted relative aspect-video overflow-hidden">
-                        {data.video ? (
-                          <video
-                            src={data.video}
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            className="absolute inset-0 h-full w-full object-cover"
-                          />
-                        ) : (
-                          data.image && (
-                            <Image
-                              src={data.image}
-                              alt={workshop.name}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                              placeholder="blur"
-                              blurDataURL={
-                                WORKSHOP_BLUR_PLACEHOLDERS[
-                                  workshop.id as keyof typeof WORKSHOP_BLUR_PLACEHOLDERS
-                                ]
-                              }
-                            />
-                          )
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                      </div>
-                    )}
-                    <CardHeader>
-                      <CardTitle className="text-2xl tracking-tight">
-                        {workshop.name}
-                      </CardTitle>
-                      <CardDescription className="text-base tracking-wide">
-                        Minimaal {workshop.minParticipants} deelnemers
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground leading-relaxed tracking-wide">
-                        {data?.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </StaggerChildren>
-        </div>
-      </section>
-
-      {/* Workshop Configurator Section - Two Column Layout */}
-      <section id="configurator" className="section-md">
-        <div className="container">
-          <ScrollReveal animation="slideUp">
-            <div className="mb-12 max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+      {/* Workshop Configurator Section */}
+      <section id="configurator" className="section-sm bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp" amount={0.2}>
+            <div className="mb-8 text-center">
+              <h2 className="text-primary tracking-tight">
                 Configureer Je Uitje
               </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
                 Vul het formulier in en ontvang direct een bevestiging
               </p>
             </div>
           </ScrollReveal>
 
-          {/* Two Column Layout: Form + Visual Content */}
-          <div className="grid gap-8 lg:grid-cols-[1fr,380px] xl:grid-cols-[1fr,440px]">
-            {/* Left Column: Configurator Form */}
-            <ScrollReveal animation="slideUp" delay={0.1}>
-              <WorkshopConfigurator />
+          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
+            {/* Left Column - Form */}
+            <ScrollReveal animation="slideUp" delay={0.1} amount={0.2}>
+              <div className="flex justify-center lg:justify-start">
+                <WorkshopConfigurator />
+              </div>
             </ScrollReveal>
 
-            {/* Right Column: Visual Content & Stats */}
-            <ScrollReveal animation="slideUp" delay={0.2}>
-              <div className="space-y-6">
-                {/* Stats Card */}
-                <Card className="shadow-editorial border">
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="text-center">
-                        <IconUsers className="text-primary mx-auto mb-2 size-8" />
-                        <div className="mb-1 text-3xl font-bold">150+</div>
-                        <div className="text-muted-foreground text-sm">
-                          Teams
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <IconStar className="text-primary mx-auto mb-2 size-8" />
-                        <div className="mb-1 text-3xl font-bold">4.9</div>
-                        <div className="text-muted-foreground text-sm">
-                          Rating
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-primary mx-auto mb-2 flex size-8 items-center justify-center text-2xl">
-                          🏆
-                        </div>
-                        <div className="mb-1 text-3xl font-bold">Top</div>
-                        <div className="text-muted-foreground text-sm">
-                          Rated
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-primary mx-auto mb-2 flex size-8 items-center justify-center text-2xl">
-                          📈
-                        </div>
-                        <div className="mb-1 text-3xl font-bold">95%</div>
-                        <div className="text-muted-foreground text-sm">
-                          Rebook
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            {/* Right Column - Sidebar */}
+            <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
+              <div className="w-full space-y-6 lg:w-[400px] xl:w-[440px]">
+                {/* Social Proof Stats */}
+                <SocialProofStats />
 
                 {/* Workshop Preview Video */}
                 <Card className="shadow-editorial overflow-hidden border">
@@ -359,7 +201,7 @@ export default function OnzeUitjesPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute right-4 bottom-4 left-4 text-white">
-                      <h3 className="mb-1 text-xl font-bold">
+                      <h3 className="mb-1 text-lg font-bold">
                         Onze Populairste Workshops
                       </h3>
                       <p className="text-sm opacity-90">
@@ -369,36 +211,8 @@ export default function OnzeUitjesPage() {
                   </div>
                 </Card>
 
-                {/* Testimonial */}
-                <Card className="shadow-editorial border">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex items-center gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <IconStar
-                          key={i}
-                          className="text-primary size-4 fill-current"
-                        />
-                      ))}
-                    </div>
-                    <p className="text-foreground mb-4 leading-relaxed">
-                      &ldquo;Het stadsspel was precies wat we nodig hadden -
-                      uitdagend, leuk en betekenisvol.&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 flex size-10 items-center justify-center rounded-full">
-                        <span className="text-primary text-sm font-bold">
-                          LV
-                        </span>
-                      </div>
-                      <div>
-                        <div className="font-semibold">Lisa de Vries</div>
-                        <div className="text-muted-foreground text-sm">
-                          Operations Director
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Compact Testimonials */}
+                <CompactTestimonials />
 
                 {/* Workshop Collage */}
                 <Card className="shadow-editorial overflow-hidden border">
@@ -469,35 +283,34 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* CTA Section - Editorial Treatment */}
-      <section className="bg-primary text-primary-foreground section-md relative overflow-hidden">
-        {/* Sophisticated gradient overlay */}
-        <div className="from-primary/50 absolute inset-0 bg-gradient-to-br to-transparent" />
-
-        <div className="relative container">
-          <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Klaar om te Beginnen?
-              </h2>
-              <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
-                Configureer nu je workshop en ontvang binnen 24 uur een reactie
-                van ons team.
-              </p>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
-                  asChild
-                >
-                  <a href="#configurator">Start Configuratie</a>
-                </Button>
-              </motion.div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-    </div>
+      {/* CTA Section */}
+      <ScrollReveal animation="slideUp" amount={0.4}>
+        <section className="section-md bg-primary text-primary-foreground">
+          <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
+            <h2 className="mb-6 tracking-tight text-white">
+              Klaar om te Beginnen?
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
+              Configureer nu je workshop en ontvang binnen 24 uur een reactie
+              van ons team.
+            </p>
+            <motion.div
+              whileHover={{ y: -2, scale: 1.05 }}
+              whileTap={{ y: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-primary shadow-editorial-lg hover:shadow-editorial-hover bg-white px-8 tracking-wide transition-all duration-300 hover:bg-white/90"
+                asChild
+              >
+                <a href="#configurator">Start Configuratie</a>
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+      </ScrollReveal>
+    </main>
   );
 }
