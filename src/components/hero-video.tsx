@@ -7,7 +7,7 @@ import {
   useMotionValue,
   animate,
 } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,6 +60,14 @@ export function HeroVideo({
     ? "/images/hero/hero-poster-mobile.jpg"
     : "/images/hero/hero-poster.jpg";
 
+  // Handle video end - return to first frame
+  const handleVideoEnded = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.pause();
+    }
+  }, [videoRef]);
+
   return (
     <section className="relative flex h-screen min-h-[600px] w-full items-center overflow-hidden">
       {/* Parallax Video Background */}
@@ -67,12 +75,12 @@ export function HeroVideo({
         <video
           ref={videoRef}
           autoPlay
-          loop
           muted
           playsInline
           poster={posterImage}
           className="h-full w-full object-cover"
           preload="metadata"
+          onEnded={handleVideoEnded}
         >
           {/* Mobile video sources (portrait 1080x1920) */}
           <source
