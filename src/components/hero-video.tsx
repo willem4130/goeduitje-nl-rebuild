@@ -7,7 +7,7 @@ import {
   useMotionValue,
   animate,
 } from "framer-motion";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,6 @@ import {
   staggerItem,
   EASING,
 } from "@/lib/animations";
-import { useVideoLazyLoad } from "@/hooks/use-video-lazy-load";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
@@ -44,12 +43,9 @@ export function HeroVideo({
   // Detect mobile devices
   const isMobile = useIsMobile();
 
-  // Lazy load video with Intersection Observer
-  const { videoRef, isInView } = useVideoLazyLoad({
-    rootMargin: "200px",
-    threshold: 0.1,
-    pauseOnExit: false,
-  });
+  // Video ref and state
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasEnded, setHasEnded] = useState(false);
 
   // Parallax scroll effect
   const { scrollY } = useScroll();
@@ -60,13 +56,32 @@ export function HeroVideo({
     ? "/images/hero/hero-poster-mobile.jpg"
     : "/images/hero/hero-poster.jpg";
 
-  // Handle video end - return to first frame
+  // Handle video end - return to first frame and stay there
   const handleVideoEnded = useCallback(() => {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.pause();
+      setHasEnded(true);
     }
-  }, [videoRef]);
+  }, []);
+
+  // Start video playback once on mount (no loop, no restart)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || hasEnded) return;
+
+    // Attempt to play video once
+    const playVideo = async () => {
+      try {
+        await video.play();
+      } catch (error) {
+        // Autoplay might be blocked by browser - that's okay
+        console.warn("Video autoplay blocked:", error);
+      }
+    };
+
+    playVideo();
+  }, [hasEnded]);
 
   return (
     <section className="relative flex h-screen min-h-[600px] w-full items-center overflow-hidden">
@@ -74,12 +89,11 @@ export function HeroVideo({
       <motion.div style={{ y: videoY }} className="absolute inset-0 z-0">
         <video
           ref={videoRef}
-          autoPlay
           muted
           playsInline
           poster={posterImage}
           className="h-full w-full object-cover"
-          preload="metadata"
+          preload="auto"
           onEnded={handleVideoEnded}
         >
           {/* Mobile video sources (portrait 1080x1920) */}
@@ -112,13 +126,6 @@ export function HeroVideo({
             style={{ backgroundImage: `url(${posterImage})` }}
           />
         </video>
-
-        {/* Loading indicator (shown while video is lazy loading) */}
-        {!isInView && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-            <div className="border-primary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
-          </div>
-        )}
 
         {/* Sophisticated gradient overlay - not flat black */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/60" />
