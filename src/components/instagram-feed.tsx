@@ -13,7 +13,7 @@ export function InstagramFeed() {
 
       {/* LightWidget iframe embed */}
       <iframe
-        src="//lightwidget.com/widgets/ca86e6e88cb159f7a9378caae8951c9a.html"
+        src="https://lightwidget.com/widgets/ca86e6e88cb159f7a9378caae8951c9a.html"
         scrolling="no"
         allowTransparency={true}
         className="lightwidget-widget w-full overflow-hidden border-0"
