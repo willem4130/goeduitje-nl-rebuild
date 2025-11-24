@@ -7,15 +7,8 @@ import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { SocialProofStats } from "@/components/social-proof-stats";
 import { CompactTestimonials } from "@/components/compact-testimonials";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
-import { Users, MapPin, Calendar, Star } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 
 export default function OnzeUitjesPage() {
@@ -82,71 +75,27 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="section-md">
+      {/* USP Badges Section */}
+      <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mb-8 text-center">
-              <h2 className="text-primary tracking-tight">
-                Waarom Kiezen Voor Ons?
-              </h2>
-              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
-                Wat maakt onze uitjes speciaal
-              </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              {["Maak sociale impact", "Op locatie naar keuze", "Op maat"].map(
+                (text) => (
+                  <motion.div
+                    key={text}
+                    whileHover={{ y: -2, scale: 1.02 }}
+                    transition={{ duration: 0.2 }}
+                    className="border-primary/20 bg-primary/5 flex items-center justify-center rounded-full border px-6 py-3"
+                  >
+                    <span className="text-primary text-sm font-semibold tracking-wide">
+                      {text}
+                    </span>
+                  </motion.div>
+                )
+              )}
             </div>
           </ScrollReveal>
-
-          <StaggerChildren
-            staggerDelay={0.1}
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
-          >
-            {[
-              {
-                icon: Users,
-                title: "Flexibele Groepsgrootte",
-                description:
-                  "Van kleine teams tot grote groepen, wij hebben de perfecte workshop voor jullie.",
-              },
-              {
-                icon: MapPin,
-                title: "Meerdere Locaties",
-                description:
-                  "Workshops beschikbaar in Nijmegen, Arnhem, Amersfoort en meer steden in Nederland.",
-              },
-              {
-                icon: Calendar,
-                title: "Flexibele Planning",
-                description:
-                  "Kies je datum en tijd, of laat het nog te bepalen voor maximale flexibiliteit.",
-              },
-              {
-                icon: Star,
-                title: "Professionele Begeleiding",
-                description:
-                  "Ervaren begeleiders zorgen voor een onvergetelijke en leerzame ervaring.",
-              },
-            ].map((feature) => (
-              <motion.div
-                key={feature.title}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                  <CardHeader>
-                    <feature.icon className="text-primary mb-4 size-8" />
-                    <CardTitle className="text-xl tracking-tight">
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="leading-relaxed tracking-wide">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </StaggerChildren>
         </div>
       </section>
 

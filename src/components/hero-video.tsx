@@ -210,8 +210,7 @@ export function HeroVideo({
               className="mt-12 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-4"
             >
               <USPBadge text="Maak sociale impact" />
-              <USPBadge text="Met statushouders en asielzoekers" />
-              <USPBadge text="Op locatie" />
+              <USPBadge text="Op locatie naar keuze" />
               <USPBadge text="Op maat" />
             </motion.div>
           </motion.div>
