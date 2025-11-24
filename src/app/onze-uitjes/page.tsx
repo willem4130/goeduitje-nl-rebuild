@@ -75,25 +75,42 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* USP Badges Section */}
+      {/* USP Cards Section */}
       <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="flex flex-wrap justify-center gap-4">
-              {["Maak sociale impact", "Op locatie naar keuze", "Op maat"].map(
-                (text) => (
-                  <motion.div
-                    key={text}
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                    className="border-primary/20 bg-primary/5 flex items-center justify-center rounded-full border px-6 py-3"
-                  >
-                    <span className="text-primary text-sm font-semibold tracking-wide">
-                      {text}
-                    </span>
-                  </motion.div>
-                )
-              )}
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  title: "Maak sociale impact",
+                  description:
+                    "Onze workshops worden begeleid door statushouders en nieuwkomers, waarmee je direct bijdraagt aan hun integratie.",
+                },
+                {
+                  title: "Op locatie naar keuze",
+                  description:
+                    "Wij komen naar jullie toe of organiseren op een van onze locaties in Nijmegen, Arnhem of Amersfoort.",
+                },
+                {
+                  title: "Op maat",
+                  description:
+                    "Elk uitje wordt aangepast aan jullie wensen, groepsgrootte en budget voor een perfecte ervaring.",
+                },
+              ].map((item) => (
+                <motion.div
+                  key={item.title}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-primary/10 bg-primary/5 rounded-2xl border p-6 text-center"
+                >
+                  <h3 className="text-primary mb-2 text-lg font-bold tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </ScrollReveal>
         </div>
