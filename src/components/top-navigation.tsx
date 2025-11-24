@@ -48,25 +48,14 @@ export function TopNavigation() {
             className="pl-4 transition-opacity duration-300 hover:opacity-80 md:pl-8"
             aria-label="Goeduitje.nl - Home"
           >
-            {/* Desktop Logo */}
             <Image
-              src="/images/logo/logo-nav-desktop-bg.png"
-              alt="Goeduitje.nl"
-              width={180}
-              height={60}
+              src="/images/logo/logo-nav.png"
+              alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
+              width={200}
+              height={70}
               priority
-              className="hidden h-auto w-auto md:block"
-              style={{ maxHeight: "48px" }}
-            />
-            {/* Mobile Logo */}
-            <Image
-              src="/images/logo/logo-nav-mobile-bg.png"
-              alt="Goeduitje.nl"
-              width={120}
-              height={40}
-              priority
-              className="block h-auto w-auto md:hidden"
-              style={{ maxHeight: "40px" }}
+              className="h-auto w-auto"
+              style={{ maxHeight: "56px" }}
             />
           </Link>
 
