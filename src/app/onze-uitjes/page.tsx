@@ -156,6 +156,7 @@ export default function OnzeUitjesPage() {
           <WorkshopCarousel
             title="Beschikbare Workshops"
             subtitle="Onze selectie van team-building activiteiten"
+            showViewAllButton={false}
           />
         </ScrollReveal>
       </div>

@@ -95,12 +95,14 @@ interface WorkshopCarouselProps {
   workshops?: Workshop[];
   title?: string;
   subtitle?: string;
+  showViewAllButton?: boolean;
 }
 
 export function WorkshopCarousel({
   workshops = DEFAULT_WORKSHOPS,
   title = "Onze uitjes",
   subtitle = "Kies jouw ideale uitje",
+  showViewAllButton = true,
 }: WorkshopCarouselProps) {
   return (
     <section className="bg-background section-md relative overflow-hidden">
@@ -129,16 +131,18 @@ export function WorkshopCarousel({
         </ScrollReveal>
 
         {/* View All CTA */}
-        <ScrollReveal animation="slideUp" delay={0.4}>
-          <div className="mt-12 text-center">
-            <Button asChild size="lg" variant="outline">
-              <Link href="/onze-uitjes" className="group">
-                Bekijk alle workshops
-                <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-        </ScrollReveal>
+        {showViewAllButton && (
+          <ScrollReveal animation="slideUp" delay={0.4}>
+            <div className="mt-12 text-center">
+              <Button asChild size="lg" variant="outline">
+                <Link href="/onze-uitjes" className="group">
+                  Bekijk alle workshops
+                  <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+            </div>
+          </ScrollReveal>
+        )}
       </div>
     </section>
   );
