@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resend, FROM_EMAIL } from "@/lib/resend";
-import { ContactConfirmationEmail } from "../../../../emails/contact-confirmation";
-import { WelcomeEmail } from "../../../../emails/welcome";
-import { OrderConfirmationEmail } from "../../../../emails/order-confirmation";
-import { WorkshopConfirmationEmail } from "../../../../emails/workshop-confirmation";
+import { ContactConfirmationEmail } from "@/emails/contact-confirmation";
+import { WelcomeEmail } from "@/emails/welcome";
+import { OrderConfirmationEmail } from "@/emails/order-confirmation";
+import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 
 export async function POST(req: NextRequest) {
   try {

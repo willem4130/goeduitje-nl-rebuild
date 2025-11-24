@@ -32,7 +32,7 @@ interface UseVideoLazyLoadReturn {
   /**
    * Ref to attach to the video element
    */
-  videoRef: React.RefObject<HTMLVideoElement | null>;
+  videoRef: React.RefObject<HTMLVideoElement>;
 
   /**
    * Whether the video is currently in viewport

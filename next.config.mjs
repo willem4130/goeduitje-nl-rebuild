@@ -2,9 +2,13 @@ import "./env.ts";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Specify project root to avoid lockfile warnings
-  turbopack: {
-    root: process.cwd(),
+  // Webpack config to exclude emails from error page rendering
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Exclude @react-email from the error page bundle
+      config.externals = [...(config.externals || []), "@react-email/components"];
+    }
+    return config;
   },
 
   images: {

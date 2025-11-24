@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 import "./globals.css";
-import { TRPCProvider } from "@/trpc/client";
-import { Toaster } from "@/components/ui/sonner";
-import { TopNavigation } from "@/components/top-navigation";
-import { Footer } from "@/components/footer";
+import { ClientLayout } from "@/components/client-layout";
+
+// Force all pages to use dynamic rendering to avoid prerender issues
+export const dynamic = "force-dynamic";
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -116,10 +116,7 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} ${fontPoppins.variable} antialiased`}
       >
-        <TopNavigation />
-        <TRPCProvider>{children}</TRPCProvider>
-        <Footer />
-        <Toaster />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
