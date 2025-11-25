@@ -1,61 +1,112 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Instagram, Linkedin, Mail } from "lucide-react";
-import Link from "next/link";
+import { Heart, Users, Quote, ArrowRight } from "lucide-react";
 
-// Team member data
+// Team member data - placeholders until real content is provided
 const teamMembers = [
   {
     id: 1,
-    name: "Sarah van den Berg",
-    role: "Oprichter & Creative Director",
-    bio: "Sarah startte Goeduitje.nl vanuit de overtuiging dat bedrijfsuitjes meer kunnen zijn dan alleen plezier maken. Met haar achtergrond in event management en passie voor sociale impact, legt ze de brug tussen bedrijven en goede doelen.",
-    image: "/team/sarah.jpg", // Placeholder
-    instagram: "https://instagram.com/sarahvdberg",
-    linkedin: "https://linkedin.com/in/sarahvdberg",
-    email: "sarah@goeduitje.nl",
+    name: "Ahmad",
+    role: "Workshop Begeleider",
+    origin: "Syrië",
+    bio: "Ahmad deelt met passie de rijke culinaire tradities uit zijn thuisland. Zijn kookworkshops brengen teams samen rond heerlijke Arabische gerechten.",
+    image: "/images/team/placeholder-1.jpg",
+    quote: "Koken verbindt mensen, ongeacht waar je vandaan komt.",
   },
   {
     id: 2,
-    name: "Michael Janssen",
-    role: "Workshop Coördinator",
-    bio: "Michael zorgt ervoor dat elke workshop perfect verloopt. Met zijn oog voor detail en enthousiasme creëert hij onvergetelijke ervaringen voor teams.",
-    image: "/team/michael.jpg", // Placeholder
-    linkedin: "https://linkedin.com/in/michaeljanssen",
-    email: "michael@goeduitje.nl",
+    name: "Fatima",
+    role: "Workshop Begeleidster",
+    origin: "Jemen",
+    bio: "Fatima brengt de kunst van Jemenitische gastvrijheid naar elke workshop. Haar warmte en enthousiasme maken elk uitje bijzonder.",
+    image: "/images/team/placeholder-2.jpg",
+    quote: "Samen eten is samen leven.",
   },
   {
     id: 3,
-    name: "Emma de Vries",
-    role: "Impact Manager",
-    bio: "Emma beheert de relaties met onze partnerorganisaties in Jemen, Syrië en Palestina. Ze zorgt ervoor dat elke euro impact maakt waar het nodig is.",
-    image: "/team/emma.jpg", // Placeholder
-    linkedin: "https://linkedin.com/in/emmadevries",
-    email: "emma@goeduitje.nl",
+    name: "Mohammed",
+    role: "Activiteitenbegeleider",
+    origin: "Palestina",
+    bio: "Mohammed organiseert teambuilding activiteiten waarbij plezier en verbinding centraal staan. Zijn energie werkt aanstekelijk.",
+    image: "/images/team/placeholder-3.jpg",
+    quote: "Sport en spel brengen mensen dichter bij elkaar.",
   },
   {
     id: 4,
-    name: "David Bakker",
+    name: "Layla",
+    role: "Workshop Begeleidster",
+    origin: "Syrië",
+    bio: "Layla combineert creativiteit met cultuur in haar workshops. Ze deelt graag de verhalen en tradities van haar achtergrond.",
+    image: "/images/team/placeholder-4.jpg",
+    quote: "Elke workshop is een kans om iets nieuws te leren.",
+  },
+  {
+    id: 5,
+    name: "Hassan",
     role: "Kookworkshop Specialist",
-    bio: "David is chef-kok en teambuilding expert. Zijn kookworkshops combineren culinaire vaardigheden met teamwerk en lachen.",
-    image: "/team/david.jpg", // Placeholder
-    instagram: "https://instagram.com/chefbakker",
-    email: "david@goeduitje.nl",
+    origin: "Irak",
+    bio: "Hassan is een meester in het bereiden van traditionele Midden-Oosterse gerechten. Zijn passie voor eten is voelbaar in elke hap.",
+    image: "/images/team/placeholder-5.jpg",
+    quote: "De beste gesprekken ontstaan aan tafel.",
+  },
+  {
+    id: 6,
+    name: "Nour",
+    role: "Workshop Begeleidster",
+    origin: "Jemen",
+    bio: "Nour brengt haar rijke culturele achtergrond naar elke workshop. Ze zorgt ervoor dat deelnemers zich welkom en gewaardeerd voelen.",
+    image: "/images/team/placeholder-6.jpg",
+    quote: "Gastvrijheid is de sleutel tot verbinding.",
+  },
+];
+
+// Masonry grid pattern - varying heights for visual interest
+const gridPatterns = [
+  {
+    colSpan: "md:col-span-4",
+    rowSpan: "md:row-span-2",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    colSpan: "md:col-span-4",
+    rowSpan: "md:row-span-1",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    colSpan: "md:col-span-4",
+    rowSpan: "md:row-span-1",
+    aspect: "aspect-[4/3]",
+  },
+  {
+    colSpan: "md:col-span-4",
+    rowSpan: "md:row-span-2",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    colSpan: "md:col-span-8",
+    rowSpan: "md:row-span-1",
+    aspect: "aspect-[16/9]",
+  },
+  {
+    colSpan: "md:col-span-4",
+    rowSpan: "md:row-span-1",
+    aspect: "aspect-[4/3]",
   },
 ];
 
 export default function OnzeMedewerkersPage() {
   return (
     <div className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section - Editorial */}
+      {/* Hero Section - Editorial Style matching other pages */}
       <section className="relative overflow-hidden border-b">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="from-primary/10 via-secondary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
+          <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
           <div
             className="absolute inset-0 opacity-[0.02]"
             style={{
@@ -66,16 +117,17 @@ export default function OnzeMedewerkersPage() {
         </div>
 
         <div className="section-md relative">
-          <div className="container">
+          <div className="container mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal animation="slideUp">
-              <div className="max-w-4xl">
-                <h1 className="mb-8 text-[56px] leading-[1.1] tracking-tight sm:text-[64px]">
-                  Ons Team
+              <div className="mx-auto max-w-4xl text-center">
+                <h1 className="text-primary mb-8 tracking-tight">
+                  Onze Medewerkers
                 </h1>
-                <p className="text-muted-foreground max-w-2xl text-xl leading-relaxed tracking-wide">
-                  Ontmoet de mensen achter Goeduitje.nl. Een diverse groep
-                  professionals die geloven in de kracht van samenkomen en
-                  sociale verandering.
+                <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
+                  Ontmoet het team dat jullie bedrijfsuitjes tot een
+                  onvergetelijke ervaring maakt. Onze medewerkers zijn
+                  statushouders en asielzoekers die met passie hun cultuur en
+                  vaardigheden delen.
                 </p>
               </div>
             </ScrollReveal>
@@ -83,161 +135,136 @@ export default function OnzeMedewerkersPage() {
         </div>
       </section>
 
-      {/* Team Grid Section - Asymmetric Editorial Layout */}
-      <section className="section-md">
-        <div className="container">
+      {/* Introduction Section */}
+      <section className="section-sm">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  icon: Heart,
+                  title: "Met Passie",
+                  description:
+                    "Onze medewerkers delen met enthousiasme hun cultuur, tradities en vaardigheden met jullie team.",
+                },
+                {
+                  icon: Users,
+                  title: "Verbinding",
+                  description:
+                    "Door samen te koken, spelen en leren ontstaan echte verbindingen tussen culturen.",
+                },
+                {
+                  icon: Quote,
+                  title: "Verhalen",
+                  description:
+                    "Elk teamlid heeft een uniek verhaal dat inspireert en nieuwe perspectieven biedt.",
+                },
+              ].map((item) => (
+                <motion.div
+                  key={item.title}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-primary/10 bg-primary/5 rounded-2xl border p-6 text-center"
+                >
+                  <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-3">
+                    <item.icon className="text-primary h-6 w-6" />
+                  </div>
+                  <h3 className="text-primary mb-2 text-lg font-bold tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Team Gallery - Masonry Grid */}
+      <section className="section-md bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-12 text-center">
+              <h2 className="text-primary mb-4 tracking-tight">
+                Maak Kennis Met Ons Team
+              </h2>
+              <p className="text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed">
+                De mensen die jullie workshops begeleiden en hun cultuur met
+                jullie delen
+              </p>
+            </div>
+          </ScrollReveal>
+
           <StaggerChildren
-            staggerDelay={0.15}
-            className="grid auto-rows-fr gap-8 md:grid-cols-12"
+            staggerDelay={0.1}
+            className="grid auto-rows-[200px] gap-4 md:grid-cols-12"
           >
             {teamMembers.map((member, index) => {
-              // Editorial grid pattern: vary column spans for asymmetry
-              const gridSpan =
-                index % 3 === 0
-                  ? "md:col-span-6"
-                  : index % 3 === 1
-                    ? "md:col-span-6"
-                    : "md:col-span-12";
+              const pattern = gridPatterns[index % gridPatterns.length];
 
               return (
                 <motion.div
                   key={member.id}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
-                  className={gridSpan}
+                  className={`${pattern.colSpan} ${pattern.rowSpan}`}
                 >
-                  <Card className="group shadow-editorial hover:shadow-editorial-hover h-full overflow-hidden border transition-all duration-300">
-                    <CardContent className="p-0">
-                      {/* Layout varies: first two side-by-side, third full-width horizontal */}
-                      {index % 3 === 2 ? (
-                        // Horizontal layout for every third card
-                        <div className="grid md:grid-cols-2">
-                          {/* Image */}
-                          <div className="bg-muted relative aspect-[4/3] overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
-                            <div className="flex h-full items-center justify-center">
-                              <span className="text-muted-foreground/50 text-sm">
-                                Foto volgt
-                              </span>
-                            </div>
-                          </div>
+                  <Card className="group shadow-editorial hover:shadow-editorial-hover h-full overflow-hidden border transition-all duration-500">
+                    <CardContent className="relative h-full p-0">
+                      {/* Image with placeholder */}
+                      <div className="bg-muted relative h-full w-full overflow-hidden">
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
 
-                          {/* Content */}
-                          <div className="stack-normal p-8">
-                            <div>
-                              <h3 className="mb-2 text-2xl font-semibold tracking-tight">
-                                {member.name}
-                              </h3>
-                              <p className="text-primary mb-4 text-sm font-medium tracking-wide">
-                                {member.role}
-                              </p>
-                            </div>
+                        {/* Placeholder pattern - warm earth tones */}
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background: `linear-gradient(135deg,
+                              hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
+                              hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
+                          }}
+                        />
 
-                            <p className="text-muted-foreground leading-relaxed tracking-wide">
-                              {member.bio}
-                            </p>
+                        {/* Decorative pattern overlay */}
+                        <div
+                          className="absolute inset-0 opacity-10"
+                          style={{
+                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                          }}
+                        />
 
-                            {/* Social Links */}
-                            <div className="flex gap-3 pt-4">
-                              {member.instagram && (
-                                <a
-                                  href={member.instagram}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="Instagram"
-                                >
-                                  <Instagram className="h-5 w-5" />
-                                </a>
-                              )}
-                              {member.linkedin && (
-                                <a
-                                  href={member.linkedin}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="LinkedIn"
-                                >
-                                  <Linkedin className="h-5 w-5" />
-                                </a>
-                              )}
-                              {member.email && (
-                                <a
-                                  href={`mailto:${member.email}`}
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="Email"
-                                >
-                                  <Mail className="h-5 w-5" />
-                                </a>
-                              )}
-                            </div>
+                        {/* User icon placeholder */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
+                            <Users className="h-12 w-12 text-white/80" />
                           </div>
                         </div>
-                      ) : (
-                        // Vertical layout for first two cards
-                        <>
-                          {/* Image */}
-                          <div className="bg-muted relative aspect-[3/4] overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-40" />
-                            <div className="flex h-full items-center justify-center">
-                              <span className="text-muted-foreground/50 text-sm">
-                                Foto volgt
-                              </span>
-                            </div>
-                          </div>
 
-                          {/* Content */}
-                          <div className="stack-normal p-8">
-                            <div>
-                              <h3 className="mb-2 text-2xl font-semibold tracking-tight">
-                                {member.name}
-                              </h3>
-                              <p className="text-primary mb-4 text-sm font-medium tracking-wide">
-                                {member.role}
-                              </p>
-                            </div>
-
-                            <p className="text-muted-foreground leading-relaxed tracking-wide">
-                              {member.bio}
+                        {/* Content overlay */}
+                        <div className="absolute right-0 bottom-0 left-0 z-20 p-6 text-white">
+                          <div className="translate-y-2 transform transition-transform duration-300 group-hover:translate-y-0">
+                            <p className="mb-1 text-xs font-medium tracking-wider text-white/70 uppercase">
+                              {member.origin}
+                            </p>
+                            <h3 className="mb-1 text-xl font-bold tracking-tight">
+                              {member.name}
+                            </h3>
+                            <p className="text-sm font-medium text-white/90">
+                              {member.role}
                             </p>
 
-                            {/* Social Links */}
-                            <div className="flex gap-3 pt-4">
-                              {member.instagram && (
-                                <a
-                                  href={member.instagram}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="Instagram"
-                                >
-                                  <Instagram className="h-5 w-5" />
-                                </a>
-                              )}
-                              {member.linkedin && (
-                                <a
-                                  href={member.linkedin}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="LinkedIn"
-                                >
-                                  <Linkedin className="h-5 w-5" />
-                                </a>
-                              )}
-                              {member.email && (
-                                <a
-                                  href={`mailto:${member.email}`}
-                                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                                  aria-label="Email"
-                                >
-                                  <Mail className="h-5 w-5" />
-                                </a>
-                              )}
-                            </div>
+                            {/* Quote - shows on hover for larger cards */}
+                            {(index === 0 || index === 3 || index === 4) && (
+                              <p className="mt-3 max-h-0 overflow-hidden text-sm leading-relaxed text-white/80 italic opacity-0 transition-all duration-300 group-hover:max-h-20 group-hover:opacity-100">
+                                &ldquo;{member.quote}&rdquo;
+                              </p>
+                            )}
                           </div>
-                        </>
-                      )}
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -247,68 +274,198 @@ export default function OnzeMedewerkersPage() {
         </div>
       </section>
 
-      {/* Join Team Section */}
-      <section className="section-md relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="bg-muted/50 absolute inset-0" />
-          <div className="from-background/80 absolute inset-0 bg-gradient-to-b to-transparent" />
-        </div>
-
-        <div className="relative container">
+      {/* Quote Section */}
+      <section className="section-sm">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Wordt Onderdeel van Ons Team
-              </h2>
-              <p className="text-muted-foreground mb-12 text-xl leading-relaxed tracking-wide">
-                We zijn altijd op zoek naar gepassioneerde mensen die geloven in
-                de kracht van samenkomen en sociale impact. Heb jij een
-                bijzondere vaardigheid of passie die je wilt delen?
-              </p>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button
-                  size="lg"
-                  className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
-                  asChild
-                >
-                  <a href="mailto:team@goeduitje.nl">Neem Contact Op</a>
-                </Button>
-              </motion.div>
+            <div className="mx-auto max-w-4xl text-center">
+              <span className="text-primary/30 mb-4 block font-serif text-6xl leading-none">
+                &ldquo;
+              </span>
+              <blockquote className="text-foreground mb-6 text-xl leading-relaxed font-light tracking-wide italic sm:text-2xl">
+                Onze medewerkers brengen niet alleen hun vaardigheden, maar ook
+                hun verhalen, cultuur en warmte. Samen creëren we ervaringen die
+                verder gaan dan een gewoon bedrijfsuitje.
+              </blockquote>
+              <div className="border-border inline-block border-t pt-4">
+                <p className="font-semibold tracking-tight">Goeduitje Team</p>
+                <p className="text-muted-foreground text-sm tracking-wide">
+                  Verbinden door samen te doen
+                </p>
+              </div>
             </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Behind the Scenes - What Makes Our Team Special */}
+      <section className="section-sm bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-8 text-center">
+              <h2 className="text-primary mb-4 tracking-tight">
+                Wat Maakt Ons Team Bijzonder
+              </h2>
+              <p className="text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed">
+                Ontdek waarom een workshop met ons team zo&apos;n unieke
+                ervaring is
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <StaggerChildren
+            staggerDelay={0.15}
+            className="grid gap-6 md:grid-cols-2"
+          >
+            {/* Card 1 */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <h3 className="mb-4 text-xl font-semibold tracking-tight">
+                    Authentieke Cultuur
+                  </h3>
+                  <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
+                    Onze medewerkers delen de authentieke tradities uit hun
+                    thuislanden. Van Arabische kookkunst tot Perzische
+                    gastvrijheid - elke workshop is een culturele
+                    ontdekkingsreis.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <h3 className="mb-4 text-xl font-semibold tracking-tight">
+                    Persoonlijke Verhalen
+                  </h3>
+                  <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
+                    Achter elke medewerker schuilt een inspirerend verhaal.
+                    Tijdens de workshops delen zij hun ervaringen, waardoor
+                    deelnemers nieuwe perspectieven krijgen.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <h3 className="mb-4 text-xl font-semibold tracking-tight">
+                    Werkervaring & Integratie
+                  </h3>
+                  <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
+                    Door te werken bij Goeduitje doen onze medewerkers
+                    waardevolle werkervaring op. Zij oefenen de taal, vergroten
+                    hun netwerk en bouwen aan hun toekomst in Nederland.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Card 4 */}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <h3 className="mb-4 text-xl font-semibold tracking-tight">
+                    Sociale Impact
+                  </h3>
+                  <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
+                    Door te kiezen voor een workshop bij ons draag je direct bij
+                    aan de integratie van nieuwkomers en het vergroten van
+                    wederzijds begrip in onze samenleving.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </StaggerChildren>
+        </div>
+      </section>
+
+      {/* Link to Ons Verhaal */}
+      <section className="section-sm">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <Card className="shadow-editorial hover:shadow-editorial-hover border transition-all duration-300">
+              <CardContent className="flex flex-col items-center gap-6 p-8 md:flex-row md:justify-between">
+                <div>
+                  <h3 className="mb-2 text-xl font-semibold tracking-tight">
+                    Meer Weten Over Onze Missie?
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Ontdek het verhaal achter Goeduitje en onze sociale impact.
+                  </p>
+                </div>
+                <motion.div
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ y: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Button
+                    variant="outline"
+                    className="group tracking-wide"
+                    asChild
+                  >
+                    <Link href="/ons-verhaal">
+                      Lees Ons Verhaal
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </motion.div>
+              </CardContent>
+            </Card>
           </ScrollReveal>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground section-md relative overflow-hidden">
-        {/* Sophisticated gradient overlay */}
-        <div className="from-primary/50 absolute inset-0 bg-gradient-to-br to-transparent" />
-
-        <div className="relative container">
-          <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Klaar Voor Een Onvergetelijk Teamuitje?
-              </h2>
-              <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
-                Laat ons team voor jullie een workshop organiseren die niet
-                alleen jullie team versterkt, maar ook levens verandert.
-              </p>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
-                  asChild
-                >
-                  <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
-                </Button>
-              </motion.div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      <ScrollReveal animation="slideUp" amount={0.4}>
+        <section className="section-md bg-primary text-primary-foreground">
+          <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
+            <h2 className="mb-6 tracking-tight text-white">
+              Wil je ons team ontmoeten?
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
+              Boek een workshop en maak persoonlijk kennis met onze medewerkers.
+              Ervaar hun gastvrijheid, leer over hun cultuur en creëer samen
+              onvergetelijke herinneringen.
+            </p>
+            <motion.div
+              whileHover={{ y: -2, scale: 1.05 }}
+              whileTap={{ y: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button
+                asChild
+                size="lg"
+                variant="secondary"
+                className="text-primary shadow-editorial-lg hover:shadow-editorial-hover bg-white px-8 tracking-wide transition-all duration-300 hover:bg-white/90"
+              >
+                <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+      </ScrollReveal>
     </div>
   );
 }
