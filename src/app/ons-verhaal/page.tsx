@@ -4,7 +4,18 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Users, Globe, TrendingUp } from "lucide-react";
+import {
+  Heart,
+  Utensils,
+  GraduationCap,
+  Globe,
+  Eye,
+  Target,
+  TrendingUp,
+  Users,
+  Award,
+  ArrowRight,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function OnsVerhaalPage() {
@@ -38,9 +49,9 @@ export default function OnsVerhaalPage() {
                   Ons Verhaal
                 </h1>
                 <p className="text-muted-foreground max-w-2xl text-xl leading-relaxed tracking-wide">
-                  Van een simpel idee tot een beweging die bedrijfsuitjes
-                  combineert met sociale impact. Ontdek hoe Goeduitje.nl
-                  ontstond en wat ons drijft.
+                  Wij zijn een sociale onderneming waar statushouders en
+                  asielzoekers uw bedrijfsuitjes organiseren en u een
+                  onvergetelijke dag bezorgen.
                 </p>
               </div>
             </ScrollReveal>
@@ -48,14 +59,21 @@ export default function OnsVerhaalPage() {
         </div>
       </section>
 
-      {/* Mission Section - Asymmetric Layout */}
+      {/* Sociale Onderneming Section - Asymmetric Layout */}
       <section className="section-md">
         <div className="container">
           <div className="grid gap-16 md:grid-cols-12 md:items-start">
             <ScrollReveal animation="slideUp" className="md:col-span-5">
-              <h2 className="text-[48px] leading-[1.2] tracking-tight">
-                Onze Missie
-              </h2>
+              <div className="flex items-center gap-4">
+                <div className="bg-primary/10 rounded-full p-3">
+                  <Heart className="text-primary h-8 w-8" />
+                </div>
+                <h2 className="text-[48px] leading-[1.2] tracking-tight">
+                  Sociale
+                  <br />
+                  Onderneming
+                </h2>
+              </div>
             </ScrollReveal>
             <ScrollReveal
               animation="slideUp"
@@ -64,19 +82,66 @@ export default function OnsVerhaalPage() {
             >
               <div className="stack-normal">
                 <p className="text-muted-foreground text-xl leading-relaxed tracking-wide">
-                  Wij geloven dat bedrijfsuitjes meer kunnen zijn dan alleen een
-                  leuke dag uit. Ze kunnen een krachtig middel zijn om sociale
-                  verandering te bewerkstelligen.
+                  Onze bedrijfsuitjes bestaan uit een mix van actieve en minder
+                  actieve Uitjes met vaak een cultureel tintje al dan niet
+                  gecombineerd met heerlijk eten uit de Arabische of Perzische
+                  keuken.
                 </p>
                 <p className="text-muted-foreground text-xl leading-relaxed tracking-wide">
-                  Door workshops te organiseren die niet alleen teams dichter
-                  bij elkaar brengen, maar ook bijdragen aan projecten in Jemen,
-                  Syrië en Palestina, creëren we een win-win situatie. Jullie
-                  team groeit, en families in nood krijgen hulp.
+                  Onze medewerkers organiseren en begeleiden de workshops en
+                  activiteiten, waardoor zij kennismaken met de Nederlandse
+                  werkcultuur en gewoonten en contact hebben met deelnemers.
                 </p>
               </div>
             </ScrollReveal>
           </div>
+        </div>
+      </section>
+
+      {/* Feature Cards Section - 3 Column Grid like onze-uitjes */}
+      <section className="section-sm bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  icon: Utensils,
+                  title: "Doen én Bijzonder Eten",
+                  description:
+                    "Onze bedrijfsuitjes bestaan uit een mix van actieve en minder actieve uitjes met vaak een cultureel tintje, gecombineerd met heerlijk eten uit de Arabische of Perzische keuken.",
+                },
+                {
+                  icon: GraduationCap,
+                  title: "Ervaring op Doen",
+                  description:
+                    "Dit biedt een praktische omgeving om de taal te oefenen, vaardigheden te ontwikkelen voor de arbeidsmarkt, hun netwerk te vergroten en een waardevolle referentie op te bouwen.",
+                },
+                {
+                  icon: Globe,
+                  title: "Nieuwe Culturen Leren Kennen",
+                  description:
+                    "Tijdens onze workshops stimuleren wij interactie tussen deelnemers en medewerkers om kennis te maken met hun cultuur en achtergrond, waardoor we onze samenleving inclusiever maken.",
+                },
+              ].map((item) => (
+                <motion.div
+                  key={item.title}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className="border-primary/10 bg-background rounded-2xl border p-6"
+                >
+                  <div className="bg-primary/10 mb-4 w-fit rounded-full p-3">
+                    <item.icon className="text-primary h-6 w-6" />
+                  </div>
+                  <h3 className="text-primary mb-2 text-lg font-bold tracking-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -102,16 +167,19 @@ export default function OnsVerhaalPage() {
                 {/* Quote content */}
                 <div className="col-span-10">
                   <blockquote className="text-foreground mb-8 text-[32px] leading-[1.5] font-light tracking-wide italic sm:text-[36px]">
-                    Een bedrijfsuitje dat niet alleen jullie team versterkt,
-                    maar ook levens verandert aan de andere kant van de wereld.
+                    Wij vergroten de kennis van deelnemers over de achtergrond
+                    en cultuur van onze medewerkers waardoor zij meer openstaan
+                    voor statushouders en asielzoekers.
                   </blockquote>
 
                   {/* Attribution */}
                   <div className="border-border flex items-center gap-4 border-t pt-6">
                     <div>
-                      <p className="font-semibold tracking-tight">Het Team</p>
+                      <p className="font-semibold tracking-tight">
+                        Het Goeduitje Team
+                      </p>
                       <p className="text-muted-foreground text-sm tracking-wide">
-                        Goeduitje.nl
+                        Be a part of it!
                       </p>
                     </div>
                   </div>
@@ -122,16 +190,16 @@ export default function OnsVerhaalPage() {
         </div>
       </section>
 
-      {/* Values Section - Editorial Grid */}
+      {/* Visie & Missie Section - 2 Column Layout */}
       <section className="section-md">
         <div className="container">
           <ScrollReveal animation="slideUp">
-            <div className="mb-20 max-w-3xl">
+            <div className="mb-12 max-w-3xl">
               <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Onze Waarden
+                Visie & Missie
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
-                De principes die ons werk vormgeven
+                Waar we voor staan en wat we willen bereiken
               </p>
             </div>
           </ScrollReveal>
@@ -140,122 +208,146 @@ export default function OnsVerhaalPage() {
             staggerDelay={0.15}
             className="grid gap-8 md:grid-cols-2"
           >
-            {[
-              {
-                icon: Heart,
-                title: "Sociale Impact",
-                description:
-                  "Elk bedrijfsuitje draagt direct bij aan hulpprojecten voor families in nood. We geloven in business met een hart.",
-              },
-              {
-                icon: Users,
-                title: "Teambuilding",
-                description:
-                  "We creëren ervaringen die teams samenbrengen, vertrouwen opbouwen en blijvende herinneringen creëren.",
-              },
-              {
-                icon: Globe,
-                title: "Transparantie",
-                description:
-                  "We delen openlijk hoe elke euro wordt besteed en welke projecten worden ondersteund. Geen verborgen kosten.",
-              },
-              {
-                icon: TrendingUp,
-                title: "Kwaliteit",
-                description:
-                  "Professionele begeleiding, zorgvuldig geselecteerde locaties en activiteiten die bijblijven.",
-              },
-            ].map((value) => (
-              <motion.div
-                key={value.title}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                  <CardContent className="stack-normal p-8">
-                    <div className="bg-primary/10 w-fit rounded-full p-4">
-                      <value.icon className="text-primary h-8 w-8" />
-                    </div>
-                    <h3 className="text-2xl font-semibold tracking-tight">
-                      {value.title}
-                    </h3>
+            {/* Visie Card */}
+            <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="stack-normal p-8">
+                  <div className="bg-primary/10 w-fit rounded-full p-4">
+                    <Eye className="text-primary h-8 w-8" />
+                  </div>
+                  <h3 className="text-2xl font-semibold tracking-tight">
+                    Onze Visie
+                  </h3>
+                  <div className="stack-normal">
                     <p className="text-muted-foreground leading-relaxed tracking-wide">
-                      {value.description}
+                      Wij streven naar een samenleving waarin diversiteit wordt
+                      gevierd en iedereen gelijke kansen heeft op de
+                      arbeidsmarkt.
                     </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                    <p className="text-muted-foreground leading-relaxed tracking-wide">
+                      Door het potentieel van statushouders en asielzoekers te
+                      erkennen en te benutten, bouwen we bruggen tussen culturen
+                      en versterken we de sociale cohesie.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed tracking-wide">
+                      We zien een toekomst voor ons waarin onze organisatie een
+                      toonaangevende rol speelt in het creëren van inclusieve
+                      werkplekken, waar talenten uit alle hoeken van de wereld
+                      samenkomen en bijdragen aan gezamenlijke groei en
+                      welvaart.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Missie Card */}
+            <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="stack-normal p-8">
+                  <div className="bg-primary/10 w-fit rounded-full p-4">
+                    <Target className="text-primary h-8 w-8" />
+                  </div>
+                  <h3 className="text-2xl font-semibold tracking-tight">
+                    Onze Missie
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed tracking-wide">
+                    Het is onze missie om statushouders en asielzoekers in hun
+                    baan bij Goeduitje voor te bereiden op een baan die aansluit
+                    bij hun kennis, ervaring en interesses en Nederlanders
+                    kennis te laten maken met onze medewerkers en hun cultuur
+                    zodat zij statushouders en asielzoekers waarderen om hun
+                    kennis en kwaliteiten.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </StaggerChildren>
         </div>
       </section>
 
-      {/* Timeline Section - Staggered Content */}
-      <section className="section-md relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="bg-muted/30 absolute inset-0" />
-          <div className="from-background/50 absolute inset-0 bg-gradient-to-b to-transparent" />
-        </div>
-
-        <div className="relative container">
-          <ScrollReveal animation="slideUp">
-            <div className="mb-20 max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Onze Reis
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
-                Belangrijke mijlpalen in ons verhaal
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="space-y-16">
-            {[
-              {
-                year: "2023",
-                title: "De Start",
-                description:
-                  "Het idee ontstond: bedrijfsuitjes die ook sociale impact maken. De eerste workshops werden georganiseerd in Nijmegen.",
-              },
-              {
-                year: "2024",
-                title: "Groei & Uitbreiding",
-                description:
-                  "Uitbreiding naar meerdere steden in Nederland. Meer dan 100 teams werkten samen aan een betere wereld.",
-              },
-              {
-                year: "2025",
-                title: "Impact die Telt",
-                description:
-                  "Meer dan 15.000 maaltijden gedoneerd, 8.750 mensen geholpen, en 42 projecten ondersteund. En dit is pas het begin.",
-              },
-            ].map((milestone, index) => (
-              <ScrollReveal
-                key={milestone.year}
-                animation="slideUp"
-                delay={index * 0.1}
-              >
-                <div className="grid gap-12 md:grid-cols-12 md:items-start">
-                  {/* Year - Large Typography */}
-                  <div className="md:col-span-3">
-                    <span className="text-primary/20 text-[80px] leading-none font-light tracking-tight">
-                      {milestone.year}
-                    </span>
+      {/* Impact & Team Teaser Section */}
+      <section className="section-md bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Impact Teaser */}
+            <ScrollReveal animation="slideUp">
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <div className="bg-primary/10 mb-6 w-fit rounded-full p-4">
+                    <TrendingUp className="text-primary h-8 w-8" />
                   </div>
-
-                  {/* Content */}
-                  <div className="md:col-span-9">
-                    <h3 className="mb-4 text-3xl font-semibold tracking-tight">
-                      {milestone.title}
-                    </h3>
-                    <p className="text-muted-foreground max-w-2xl text-lg leading-relaxed tracking-wide">
-                      {milestone.description}
-                    </p>
+                  <h3 className="mb-4 text-2xl font-semibold tracking-tight">
+                    Onze Impact
+                  </h3>
+                  <p className="text-muted-foreground mb-6 flex-grow leading-relaxed tracking-wide">
+                    Wil je meer weten over de impact die we gemaakt hebben en
+                    willen gaan maken? Over onze Theory of Change of onze
+                    jaarcijfers?
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Award className="text-primary h-5 w-5" />
+                      <span className="text-muted-foreground text-sm">
+                        Code Sociale Ondernemingen
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                  <motion.div
+                    className="mt-6"
+                    whileHover={{ y: -2, scale: 1.02 }}
+                    whileTap={{ y: 0, scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Button
+                      variant="outline"
+                      className="group w-full tracking-wide"
+                      asChild
+                    >
+                      <Link href="/onze-impact">
+                        Bekijk onze impact
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </ScrollReveal>
+
+            {/* Team Teaser */}
+            <ScrollReveal animation="slideUp" delay={0.15}>
+              <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
+                <CardContent className="flex h-full flex-col p-8">
+                  <div className="bg-primary/10 mb-6 w-fit rounded-full p-4">
+                    <Users className="text-primary h-8 w-8" />
+                  </div>
+                  <h3 className="mb-4 text-2xl font-semibold tracking-tight">
+                    Onze Medewerkers
+                  </h3>
+                  <p className="text-muted-foreground mb-6 flex-grow leading-relaxed tracking-wide">
+                    Benieuwd naar onze medewerkers? Ontmoet het team dat jullie
+                    bedrijfsuitjes tot een onvergetelijke ervaring maakt en leer
+                    meer over hun achtergrond en cultuur.
+                  </p>
+                  <motion.div
+                    whileHover={{ y: -2, scale: 1.02 }}
+                    whileTap={{ y: 0, scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Button
+                      variant="outline"
+                      className="group w-full tracking-wide"
+                      asChild
+                    >
+                      <Link href="/ons-team">
+                        Ontmoet het team
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </CardContent>
+              </Card>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -267,13 +359,14 @@ export default function OnsVerhaalPage() {
 
         <div className="relative container">
           <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-3xl">
+            <div className="mx-auto max-w-3xl text-center">
               <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Wordt Deel van Ons Verhaal
+                Word Deel van Ons Verhaal
               </h2>
               <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
                 Organiseer een bedrijfsuitje dat verder gaat dan teambuilding.
-                Maak impact die telt.
+                Maak impact die telt en draag bij aan een inclusievere
+                samenleving.
               </p>
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Button
