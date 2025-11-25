@@ -315,7 +315,7 @@ export default function JullieErvaringenPage() {
           <ScrollReveal animation="slideUp">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="mb-6 tracking-tight">
-                Wordt Het Volgende Succesverhaal
+                Word Het Volgende Succesverhaal
               </h2>
               <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide opacity-90 sm:text-xl">
                 Organiseer een workshop die jullie team samenbrengt en impact
