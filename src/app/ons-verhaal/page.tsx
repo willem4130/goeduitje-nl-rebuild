@@ -167,30 +167,34 @@ export default function OnsVerhaalPage() {
 
           <StaggerChildren
             staggerDelay={0.15}
-            className="grid gap-8 md:grid-cols-2"
+            className="grid gap-6 md:grid-cols-2"
           >
             {/* Visie Card */}
-            <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="stack-normal p-8">
-                  <div className="bg-primary/10 w-fit rounded-full p-4">
+                <CardContent className="flex h-full flex-col p-8">
+                  <div className="bg-primary/10 mb-4 w-fit rounded-full p-4">
                     <Eye className="text-primary h-8 w-8" />
                   </div>
-                  <h3 className="text-2xl font-semibold tracking-tight">
+                  <h3 className="mb-4 text-2xl font-semibold tracking-tight">
                     Onze Visie
                   </h3>
-                  <div className="stack-normal">
-                    <p className="text-muted-foreground leading-relaxed tracking-wide">
+                  <div className="text-muted-foreground flex-grow space-y-4 leading-relaxed tracking-wide">
+                    <p>
                       Wij streven naar een samenleving waarin diversiteit wordt
                       gevierd en iedereen gelijke kansen heeft op de
                       arbeidsmarkt.
                     </p>
-                    <p className="text-muted-foreground leading-relaxed tracking-wide">
+                    <p>
                       Door het potentieel van statushouders en asielzoekers te
                       erkennen en te benutten, bouwen we bruggen tussen culturen
                       en versterken we de sociale cohesie.
                     </p>
-                    <p className="text-muted-foreground leading-relaxed tracking-wide">
+                    <p>
                       We zien een toekomst voor ons waarin onze organisatie een
                       toonaangevende rol speelt in het creëren van inclusieve
                       werkplekken, waar talenten uit alle hoeken van de wereld
@@ -203,16 +207,20 @@ export default function OnsVerhaalPage() {
             </motion.div>
 
             {/* Missie Card */}
-            <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="stack-normal p-8">
-                  <div className="bg-primary/10 w-fit rounded-full p-4">
+                <CardContent className="flex h-full flex-col p-8">
+                  <div className="bg-primary/10 mb-4 w-fit rounded-full p-4">
                     <Target className="text-primary h-8 w-8" />
                   </div>
-                  <h3 className="text-2xl font-semibold tracking-tight">
+                  <h3 className="mb-4 text-2xl font-semibold tracking-tight">
                     Onze Missie
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed tracking-wide">
+                  <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
                     Het is onze missie om statushouders en asielzoekers in hun
                     baan bij Goeduitje voor te bereiden op een baan die aansluit
                     bij hun kennis, ervaring en interesses en Nederlanders
