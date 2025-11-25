@@ -80,13 +80,13 @@ export default function JullieErvaringenPage() {
 
   return (
     <div className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section - Parallax with Editorial Typography */}
-      <section className="relative min-h-[60vh] overflow-hidden">
+      {/* Hero Section - Consistent with other pages */}
+      <section className="relative overflow-hidden border-b">
         {/* Parallax background */}
         <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
-          <div className="from-primary/20 via-secondary/20 to-primary/10 absolute inset-0 bg-gradient-to-br" />
+          <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.02]"
             style={{
               backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
               backgroundSize: "48px 48px",
@@ -94,17 +94,14 @@ export default function JullieErvaringenPage() {
           />
         </motion.div>
 
-        {/* Sophisticated gradient overlay */}
-        <div className="via-background/50 to-background absolute inset-0 bg-gradient-to-b from-transparent" />
-
-        <div className="section-md relative flex items-center">
-          <div className="container">
+        <div className="section-md relative">
+          <div className="container mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal animation="slideUp">
-              <div className="max-w-4xl">
-                <h1 className="mb-8 text-[56px] leading-[1.1] tracking-tight sm:text-[64px]">
+              <div className="mx-auto max-w-4xl text-center">
+                <h1 className="text-primary mb-8 tracking-tight">
                   Jullie Ervaringen
                 </h1>
-                <p className="text-muted-foreground max-w-2xl text-xl leading-relaxed tracking-wide">
+                <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
                   Echte reviews van echte teams. Ontdek wat anderen zeggen over
                   hun ervaring met Goeduitje.nl.
                 </p>
@@ -115,8 +112,8 @@ export default function JullieErvaringenPage() {
       </section>
 
       {/* Stats Overview - with live Google data */}
-      <section className="section-md border-b">
-        <div className="container">
+      <section className="section-sm bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           {statsLoading ? (
             <ReviewsStatsSkeleton className="justify-center" />
           ) : (
@@ -181,7 +178,7 @@ export default function JullieErvaringenPage() {
 
       {/* Reviews Section */}
       <section className="section-md">
-        <div className="container">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           {/* Loading State */}
           {reviewsLoading && (
             <>
@@ -222,9 +219,14 @@ export default function JullieErvaringenPage() {
               {featuredReviews.length > 0 && (
                 <div className="mb-20">
                   <ScrollReveal animation="slideUp">
-                    <h2 className="mb-12 text-[32px] font-semibold tracking-tight">
-                      Uitgelichte Reviews
-                    </h2>
+                    <div className="mb-12 text-center">
+                      <h2 className="text-primary tracking-tight">
+                        Uitgelichte Reviews
+                      </h2>
+                      <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg leading-relaxed">
+                        Onze meest gewaardeerde ervaringen
+                      </p>
+                    </div>
                   </ScrollReveal>
 
                   <div className="space-y-8">
@@ -250,9 +252,14 @@ export default function JullieErvaringenPage() {
               {gridReviews.length > 0 && (
                 <div>
                   <ScrollReveal animation="slideUp">
-                    <h2 className="mb-12 text-[32px] font-semibold tracking-tight">
-                      Alle Reviews
-                    </h2>
+                    <div className="mb-12 text-center">
+                      <h2 className="text-primary tracking-tight">
+                        Alle Reviews
+                      </h2>
+                      <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg leading-relaxed">
+                        Bekijk alle ervaringen van onze deelnemers
+                      </p>
+                    </div>
                   </ScrollReveal>
 
                   <StaggerChildren
@@ -300,18 +307,17 @@ export default function JullieErvaringenPage() {
         </div>
       </section>
 
-      {/* CTA Section - Editorial Treatment */}
+      {/* CTA Section - Consistent with other pages */}
       <section className="bg-primary text-primary-foreground section-md relative overflow-hidden">
-        {/* Sophisticated gradient overlay */}
         <div className="from-primary/50 absolute inset-0 bg-gradient-to-br to-transparent" />
 
-        <div className="relative container">
+        <div className="relative container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
+              <h2 className="mb-6 tracking-tight">
                 Wordt Het Volgende Succesverhaal
               </h2>
-              <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
+              <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide opacity-90 sm:text-xl">
                 Organiseer een workshop die jullie team samenbrengt en impact
                 maakt die telt.
               </p>
