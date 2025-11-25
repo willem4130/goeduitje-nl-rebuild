@@ -1,10 +1,22 @@
 import { Resend } from "resend";
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is not set in environment variables");
+// Lazy initialization to avoid build-time errors when RESEND_API_KEY is not set
+let resendInstance: Resend | null = null;
+
+export function getResend(): Resend {
+  if (!resendInstance) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not set in environment variables");
+    }
+    resendInstance = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendInstance;
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+// Legacy export for backwards compatibility - will be null if not configured
+export const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : (null as unknown as Resend);
 
 // Default sender email - Update this to your verified domain
 export const FROM_EMAIL = process.env.FROM_EMAIL || "onboarding@resend.dev";
