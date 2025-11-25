@@ -25,12 +25,12 @@ export default function OnsVerhaalPage() {
   return (
     <div className="flex min-h-screen flex-col pt-20">
       {/* Hero Section - Parallax with Editorial Typography */}
-      <section className="relative min-h-[70vh] overflow-hidden">
+      <section className="relative overflow-hidden border-b">
         {/* Parallax background */}
         <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
-          <div className="from-primary/20 via-secondary/20 to-primary/10 absolute inset-0 bg-gradient-to-br" />
+          <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.02]"
             style={{
               backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
               backgroundSize: "48px 48px",
@@ -38,17 +38,14 @@ export default function OnsVerhaalPage() {
           />
         </motion.div>
 
-        {/* Sophisticated gradient overlay */}
-        <div className="via-background/50 to-background absolute inset-0 bg-gradient-to-b from-transparent" />
-
-        <div className="section-md relative flex items-center">
-          <div className="container">
+        <div className="section-md relative">
+          <div className="container mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal animation="slideUp">
-              <div className="max-w-4xl">
-                <h1 className="mb-8 text-[64px] leading-[1.1] tracking-tight sm:text-[72px]">
+              <div className="mx-auto max-w-4xl text-center">
+                <h1 className="text-primary mb-8 tracking-tight">
                   Ons Verhaal
                 </h1>
-                <p className="text-muted-foreground max-w-2xl text-xl leading-relaxed tracking-wide">
+                <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
                   Wij zijn een sociale onderneming waar statushouders en
                   asielzoekers uw bedrijfsuitjes organiseren en u een
                   onvergetelijke dag bezorgen.
@@ -59,42 +56,27 @@ export default function OnsVerhaalPage() {
         </div>
       </section>
 
-      {/* Sociale Onderneming Section - Asymmetric Layout */}
-      <section className="section-md">
-        <div className="container">
-          <div className="grid gap-16 md:grid-cols-12 md:items-start">
-            <ScrollReveal animation="slideUp" className="md:col-span-5">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 rounded-full p-3">
-                  <Heart className="text-primary h-8 w-8" />
-                </div>
-                <h2 className="text-[48px] leading-[1.2] tracking-tight">
-                  Sociale
-                  <br />
-                  Onderneming
-                </h2>
+      {/* Sociale Onderneming Section */}
+      <section className="section-sm">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-8 text-center">
+              <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-3">
+                <Heart className="text-primary h-8 w-8" />
               </div>
-            </ScrollReveal>
-            <ScrollReveal
-              animation="slideUp"
-              delay={0.2}
-              className="md:col-span-7"
-            >
-              <div className="stack-normal">
-                <p className="text-muted-foreground text-xl leading-relaxed tracking-wide">
-                  Onze bedrijfsuitjes bestaan uit een mix van actieve en minder
-                  actieve Uitjes met vaak een cultureel tintje al dan niet
-                  gecombineerd met heerlijk eten uit de Arabische of Perzische
-                  keuken.
-                </p>
-                <p className="text-muted-foreground text-xl leading-relaxed tracking-wide">
-                  Onze medewerkers organiseren en begeleiden de workshops en
-                  activiteiten, waardoor zij kennismaken met de Nederlandse
-                  werkcultuur en gewoonten en contact hebben met deelnemers.
-                </p>
-              </div>
-            </ScrollReveal>
-          </div>
+              <h2 className="text-primary tracking-tight">
+                Sociale Onderneming
+              </h2>
+              <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-lg leading-relaxed tracking-wide sm:text-xl">
+                Onze bedrijfsuitjes bestaan uit een mix van actieve en minder
+                actieve uitjes met vaak een cultureel tintje, gecombineerd met
+                heerlijk eten uit de Arabische of Perzische keuken. Onze
+                medewerkers organiseren en begeleiden de workshops en
+                activiteiten, waardoor zij kennismaken met de Nederlandse
+                werkcultuur en contact hebben met deelnemers.
+              </p>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -146,44 +128,25 @@ export default function OnsVerhaalPage() {
       </section>
 
       {/* Pull Quote - Editorial Layout */}
-      <section className="section-md relative overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="bg-muted/50 absolute inset-0" />
-          <div className="from-background/80 absolute inset-0 bg-gradient-to-b to-transparent" />
-        </div>
-
-        <div className="relative container">
+      <section className="section-sm bg-muted/30">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-5xl">
-              <div className="grid grid-cols-12 items-start gap-8">
-                {/* Large typographic quote mark */}
-                <div className="col-span-2 md:col-span-2">
-                  <span className="text-primary/20 font-serif text-[120px] leading-none">
-                    &ldquo;
-                  </span>
-                </div>
-
-                {/* Quote content */}
-                <div className="col-span-10">
-                  <blockquote className="text-foreground mb-8 text-[32px] leading-[1.5] font-light tracking-wide italic sm:text-[36px]">
-                    Wij vergroten de kennis van deelnemers over de achtergrond
-                    en cultuur van onze medewerkers waardoor zij meer openstaan
-                    voor statushouders en asielzoekers.
-                  </blockquote>
-
-                  {/* Attribution */}
-                  <div className="border-border flex items-center gap-4 border-t pt-6">
-                    <div>
-                      <p className="font-semibold tracking-tight">
-                        Het Goeduitje Team
-                      </p>
-                      <p className="text-muted-foreground text-sm tracking-wide">
-                        Be a part of it!
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            <div className="mx-auto max-w-4xl text-center">
+              <span className="text-primary/30 mb-4 block font-serif text-6xl leading-none">
+                &ldquo;
+              </span>
+              <blockquote className="text-foreground mb-6 text-xl leading-relaxed font-light tracking-wide italic sm:text-2xl">
+                Wij vergroten de kennis van deelnemers over de achtergrond en
+                cultuur van onze medewerkers waardoor zij meer openstaan voor
+                statushouders en asielzoekers.
+              </blockquote>
+              <div className="border-border inline-block border-t pt-4">
+                <p className="font-semibold tracking-tight">
+                  Het Goeduitje Team
+                </p>
+                <p className="text-muted-foreground text-sm tracking-wide">
+                  Be a part of it!
+                </p>
               </div>
             </div>
           </ScrollReveal>
@@ -191,14 +154,12 @@ export default function OnsVerhaalPage() {
       </section>
 
       {/* Visie & Missie Section - 2 Column Layout */}
-      <section className="section-md">
-        <div className="container">
+      <section className="section-sm">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mb-12 max-w-3xl">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Visie & Missie
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed tracking-wide">
+            <div className="mb-8 text-center">
+              <h2 className="text-primary tracking-tight">Visie & Missie</h2>
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
                 Waar we voor staan en wat we willen bereiken
               </p>
             </div>
@@ -267,9 +228,17 @@ export default function OnsVerhaalPage() {
       </section>
 
       {/* Impact & Team Teaser Section */}
-      <section className="section-md bg-muted/30">
+      <section className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-2">
+          <ScrollReveal animation="slideUp">
+            <div className="mb-8 text-center">
+              <h2 className="text-primary tracking-tight">Meer Ontdekken</h2>
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+                Leer meer over onze impact en ontmoet het team
+              </p>
+            </div>
+          </ScrollReveal>
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Impact Teaser */}
             <ScrollReveal animation="slideUp">
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
@@ -352,36 +321,35 @@ export default function OnsVerhaalPage() {
         </div>
       </section>
 
-      {/* CTA Section - Editorial Treatment */}
-      <section className="bg-primary text-primary-foreground section-md relative overflow-hidden">
-        {/* Sophisticated gradient overlay */}
-        <div className="from-primary/50 absolute inset-0 bg-gradient-to-br to-transparent" />
-
-        <div className="relative container">
-          <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-6 text-[48px] leading-[1.2] tracking-tight">
-                Word Deel van Ons Verhaal
-              </h2>
-              <p className="mb-12 text-xl leading-relaxed tracking-wide opacity-90">
-                Organiseer een bedrijfsuitje dat verder gaat dan teambuilding.
-                Maak impact die telt en draag bij aan een inclusievere
-                samenleving.
-              </p>
-              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
-                  asChild
-                >
-                  <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
-                </Button>
-              </motion.div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+      {/* CTA Section */}
+      <ScrollReveal animation="slideUp" amount={0.4}>
+        <section className="section-md bg-primary text-primary-foreground">
+          <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
+            <h2 className="mb-6 tracking-tight text-white">
+              Word Deel van Ons Verhaal
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
+              Organiseer een bedrijfsuitje dat verder gaat dan teambuilding.
+              Maak impact die telt en draag bij aan een inclusievere
+              samenleving.
+            </p>
+            <motion.div
+              whileHover={{ y: -2, scale: 1.05 }}
+              whileTap={{ y: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-primary shadow-editorial-lg hover:shadow-editorial-hover bg-white px-8 tracking-wide transition-all duration-300 hover:bg-white/90"
+                asChild
+              >
+                <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+      </ScrollReveal>
     </div>
   );
 }
