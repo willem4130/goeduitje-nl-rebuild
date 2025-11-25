@@ -27,19 +27,19 @@ export default function Home() {
       {/* Hero Section with Video Background */}
       <HeroVideo
         headline="Samen een geweldige ervaring creëren"
-        subheadline="Boek een workshop die impact maakt"
+        subheadline="Boek een uitje die impact maakt"
         primaryCta={{
           text: "Stel je uitje samen",
           href: "#configurator",
         }}
       />
 
-      {/* Workshop Types Section - Scroll Animation */}
+      {/* Uitjes Section - Scroll Animation */}
       <ScrollReveal animation="fade" amount={0.1}>
         <WorkshopCarousel />
       </ScrollReveal>
 
-      {/* Workshop Configurator Section - Two Column Layout */}
+      {/* Uitje Configurator Section - Two Column Layout */}
       <section id="configurator" className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.2}>
@@ -67,7 +67,7 @@ export default function Home() {
                 {/* Social Proof Stats */}
                 <SocialProofStats />
 
-                {/* Workshop Preview Video */}
+                {/* Uitje Preview Video */}
                 <Card className="shadow-editorial overflow-hidden border">
                   <div className="bg-muted relative aspect-[4/3]">
                     <video
@@ -81,7 +81,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute right-4 bottom-4 left-4 text-white">
                       <h3 className="mb-1 text-lg font-bold">
-                        Onze Populairste Workshops
+                        Onze Populairste Uitjes
                       </h3>
                       <p className="text-sm opacity-90">
                         Unieke teambuildingservaringen
@@ -93,7 +93,7 @@ export default function Home() {
                 {/* Compact Testimonials */}
                 <CompactTestimonials />
 
-                {/* Workshop Collage */}
+                {/* Uitje Collage */}
                 <Card className="shadow-editorial overflow-hidden border">
                   <CardContent className="p-0">
                     <div className="grid grid-cols-2 gap-1">
@@ -149,7 +149,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="mb-1 font-bold">Kies uit 6+ Workshops</h3>
+                      <h3 className="mb-1 font-bold">Kies uit 6+ Uitjes</h3>
                       <p className="text-muted-foreground text-sm">
                         Van actief tot creatief - voor elk team wat wils
                       </p>
@@ -176,8 +176,8 @@ export default function Home() {
                 Volg ons op Instagram
               </h2>
               <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
-                Bekijk foto&apos;s en verhalen van onze workshops en de impact
-                die we samen maken
+                Bekijk foto&apos;s en verhalen van onze uitjes en de impact die
+                we samen maken
               </p>
             </div>
           </ScrollReveal>

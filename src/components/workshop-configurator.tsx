@@ -52,7 +52,7 @@ import { WORKSHOPS } from "@/lib/constants/cities";
 import { api } from "@/trpc/client";
 
 const STEPS = [
-  { number: 1, title: "Configureren", description: "Workshop details" },
+  { number: 1, title: "Configureren", description: "Uitje details" },
   { number: 2, title: "Afronden", description: "Contact & bevestiging" },
 ];
 
@@ -115,9 +115,9 @@ export function WorkshopConfigurator() {
 
       if (validWorkshops.length !== selectedWorkshops.length) {
         form.setValue("workshops", validWorkshops);
-        toast.info("Sommige workshops zijn verwijderd", {
+        toast.info("Sommige uitjes zijn verwijderd", {
           description:
-            "Deze workshops vereisen minimaal 6 deelnemers en zijn daarom verwijderd uit je selectie.",
+            "Deze uitjes vereisen minimaal 6 deelnemers en zijn daarom verwijderd uit je selectie.",
         });
       }
     }
@@ -231,10 +231,10 @@ export function WorkshopConfigurator() {
     <Card className="mx-auto w-full max-w-4xl">
       <CardHeader className="space-y-2">
         <CardTitle className="text-2xl sm:text-3xl">
-          Workshop Configurator
+          Uitje Configurator
         </CardTitle>
         <CardDescription className="text-base">
-          Configureer je workshop en ontvang direct een bevestiging
+          Configureer je uitje en ontvang direct een bevestiging
         </CardDescription>
 
         {/* Compact Progress Indicator */}
@@ -383,17 +383,17 @@ export function WorkshopConfigurator() {
                           </FormItem>
                         )}
                       />
-                      {/* Workshops Selection */}
+                      {/* Uitjes Selection */}
                       <FormField
                         control={form.control}
                         name="workshops"
                         render={() => (
                           <FormItem>
-                            <FormLabel>Workshops</FormLabel>
+                            <FormLabel>Uitjes</FormLabel>
                             <FormDescription>
                               {participantCount < 6
-                                ? "Let op: Sommige workshops vereisen minimaal 6 deelnemers"
-                                : "Selecteer één of meerdere workshops"}
+                                ? "Let op: Sommige uitjes vereisen minimaal 6 deelnemers"
+                                : "Selecteer één of meerdere uitjes"}
                             </FormDescription>
                             <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                               {WORKSHOPS.map((workshop) => {
@@ -630,7 +630,7 @@ export function WorkshopConfigurator() {
                               </SelectContent>
                             </Select>
                             <FormDescription>
-                              Selecteer de verwachte duur van de workshop
+                              Selecteer de verwachte duur van het uitje
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -691,7 +691,7 @@ export function WorkshopConfigurator() {
                             {participantCount}
                           </div>
                           <div>
-                            <span className="font-medium">Workshops:</span>{" "}
+                            <span className="font-medium">Uitjes:</span>{" "}
                             {selectedWorkshops.length > 0
                               ? selectedWorkshops
                                   .map(

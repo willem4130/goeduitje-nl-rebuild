@@ -136,7 +136,7 @@ export function WorkshopCarousel({
             <div className="mt-12 text-center">
               <Button asChild size="lg" variant="outline">
                 <Link href="/onze-uitjes" className="group">
-                  Bekijk alle workshops
+                  Bekijk alle uitjes
                   <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>

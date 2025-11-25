@@ -228,7 +228,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
             className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-2 text-sm transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Terug naar alle workshops
+            Terug naar alle uitjes
           </Link>
 
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -333,7 +333,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
           <div className="grid gap-12 lg:grid-cols-3">
             {/* Description */}
             <div className="lg:col-span-2">
-              <h2 className="mb-6 text-2xl font-bold">Over deze workshop</h2>
+              <h2 className="mb-6 text-2xl font-bold">Over dit uitje</h2>
               <div className="prose prose-gray dark:prose-invert max-w-none">
                 {workshop.longDescription.split("\n\n").map((paragraph, i) => (
                   <p key={i} className="text-muted-foreground mb-4">
@@ -380,8 +380,8 @@ export default async function WorkshopDetailPage({ params }: Props) {
             Klaar om te boeken?
           </h2>
           <p className="text-muted-foreground mb-8 text-lg">
-            Heb je vragen of wil je een workshop op maat? Neem gerust contact
-            met ons op voor een vrijblijvende offerte.
+            Heb je vragen of wil je een uitje op maat? Neem gerust contact met
+            ons op voor een vrijblijvende offerte.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button asChild size="lg">

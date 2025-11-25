@@ -36,7 +36,7 @@ export default function OnzeUitjesPage() {
                 </h1>
                 <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
                   Configureer je perfecte teamuitje. Kies uit verschillende
-                  workshops, locaties en activiteiten voor een onvergetelijke
+                  uitjes, locaties en activiteiten voor een onvergetelijke
                   ervaring.
                 </p>
 
@@ -65,7 +65,7 @@ export default function OnzeUitjesPage() {
                       className="px-8 tracking-wide transition-all duration-300"
                       asChild
                     >
-                      <a href="#workshops">Bekijk Workshops</a>
+                      <a href="#uitjes">Bekijk Uitjes</a>
                     </Button>
                   </motion.div>
                 </div>
@@ -84,7 +84,7 @@ export default function OnzeUitjesPage() {
                 {
                   title: "Maak sociale impact",
                   description:
-                    "Onze workshops worden begeleid door statushouders en nieuwkomers, waarmee je direct bijdraagt aan hun integratie.",
+                    "Onze uitjes worden begeleid door statushouders en nieuwkomers, waarmee je direct bijdraagt aan hun integratie.",
                 },
                 {
                   title: "Op locatie naar keuze",
@@ -116,18 +116,18 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
-      {/* Available Workshops Section - Reuse WorkshopCarousel */}
-      <div id="workshops">
+      {/* Available Uitjes Section - Reuse WorkshopCarousel */}
+      <div id="uitjes">
         <ScrollReveal animation="fade" amount={0.1}>
           <WorkshopCarousel
-            title="Beschikbare Workshops"
+            title="Beschikbare Uitjes"
             subtitle="Onze selectie van team-building activiteiten"
             showViewAllButton={false}
           />
         </ScrollReveal>
       </div>
 
-      {/* Workshop Configurator Section */}
+      {/* Uitje Configurator Section */}
       <section id="configurator" className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.2}>
@@ -155,7 +155,7 @@ export default function OnzeUitjesPage() {
                 {/* Social Proof Stats */}
                 <SocialProofStats />
 
-                {/* Workshop Preview Video */}
+                {/* Uitje Preview Video */}
                 <Card className="shadow-editorial overflow-hidden border">
                   <div className="bg-muted relative aspect-[4/3]">
                     <video
@@ -169,7 +169,7 @@ export default function OnzeUitjesPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute right-4 bottom-4 left-4 text-white">
                       <h3 className="mb-1 text-lg font-bold">
-                        Onze Populairste Workshops
+                        Onze Populairste Uitjes
                       </h3>
                       <p className="text-sm opacity-90">
                         Unieke teambuildingservaringen
@@ -181,7 +181,7 @@ export default function OnzeUitjesPage() {
                 {/* Compact Testimonials */}
                 <CompactTestimonials />
 
-                {/* Workshop Collage */}
+                {/* Uitje Collage */}
                 <Card className="shadow-editorial overflow-hidden border">
                   <CardContent className="p-0">
                     <div className="grid grid-cols-2 gap-1">
@@ -237,7 +237,7 @@ export default function OnzeUitjesPage() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="mb-1 font-bold">Kies uit 6+ Workshops</h3>
+                      <h3 className="mb-1 font-bold">Kies uit 6+ Uitjes</h3>
                       <p className="text-muted-foreground text-sm">
                         Van actief tot creatief - voor elk team wat wils
                       </p>
@@ -258,8 +258,8 @@ export default function OnzeUitjesPage() {
               Klaar om te Beginnen?
             </h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
-              Configureer nu je workshop en ontvang binnen 24 uur een reactie
-              van ons team.
+              Configureer nu je uitje en ontvang binnen 24 uur een reactie van
+              ons team.
             </p>
             <motion.div
               whileHover={{ y: -2, scale: 1.05 }}

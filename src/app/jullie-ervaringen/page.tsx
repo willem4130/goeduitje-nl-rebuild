@@ -168,7 +168,7 @@ export default function JullieErvaringenPage() {
                   200+
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">
-                  Workshops
+                  Uitjes
                 </div>
               </div>
             </StaggerChildren>
@@ -318,8 +318,8 @@ export default function JullieErvaringenPage() {
                 Word Het Volgende Succesverhaal
               </h2>
               <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide opacity-90 sm:text-xl">
-                Organiseer een workshop die jullie team samenbrengt en impact
-                maakt die telt.
+                Organiseer een uitje die jullie team samenbrengt en impact maakt
+                die telt.
               </p>
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Button
@@ -328,7 +328,7 @@ export default function JullieErvaringenPage() {
                   className="shadow-editorial hover:shadow-editorial-lg px-8 py-6 font-semibold tracking-wide transition-all duration-300"
                   asChild
                 >
-                  <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
+                  <Link href="/onze-uitjes">Bekijk Onze Uitjes</Link>
                 </Button>
               </motion.div>
             </div>
