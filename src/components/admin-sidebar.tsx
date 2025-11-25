@@ -11,6 +11,7 @@ import {
   IconSearch,
   IconSettings,
   IconShoppingCart,
+  IconStar,
   IconUsers,
 } from "@tabler/icons-react";
 
@@ -44,6 +45,11 @@ const data = {
       title: "Users",
       url: "/admin/users",
       icon: IconUsers,
+    },
+    {
+      title: "Reviews",
+      url: "/admin/reviews",
+      icon: IconStar,
     },
     {
       title: "Products",

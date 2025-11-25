@@ -162,9 +162,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section - Scroll Animation */}
+      {/* Testimonials Section - Google Reviews */}
       <ScrollReveal animation="fade" amount={0.1}>
-        <TestimonialsCarousel />
+        <TestimonialsCarousel useGoogleReviews />
       </ScrollReveal>
 
       {/* Instagram Feed Section */}

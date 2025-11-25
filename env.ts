@@ -14,6 +14,11 @@ export const env = createEnv({
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
     STRIPE_PRICE_COOKING_WORKSHOP: z.string().optional(),
+    // Google Places API for reviews
+    GOOGLE_PLACES_API_KEY: z.string().optional(),
+    GOOGLE_PLACE_ID: z.string().optional(),
+    // Vercel Cron secret for protected endpoints
+    CRON_SECRET: z.string().optional(),
   },
 
   /**
@@ -40,6 +45,11 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_STRIPE_PRICE_COOKING_WORKSHOP:
       process.env.NEXT_PUBLIC_STRIPE_PRICE_COOKING_WORKSHOP,
+    // Google Places API
+    GOOGLE_PLACES_API_KEY: process.env.GOOGLE_PLACES_API_KEY,
+    GOOGLE_PLACE_ID: process.env.GOOGLE_PLACE_ID,
+    // Vercel Cron
+    CRON_SECRET: process.env.CRON_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

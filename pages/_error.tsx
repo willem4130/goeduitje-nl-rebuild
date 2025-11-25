@@ -18,9 +18,7 @@ function Error({ statusCode }: ErrorProps) {
     >
       <h1 style={{ fontSize: "4rem", margin: 0 }}>{statusCode || "Error"}</h1>
       <p style={{ fontSize: "1.25rem", color: "#666" }}>
-        {statusCode === 404
-          ? "Pagina niet gevonden"
-          : "Er is iets misgegaan"}
+        {statusCode === 404 ? "Pagina niet gevonden" : "Er is iets misgegaan"}
       </p>
       <a
         href="/"

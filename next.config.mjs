@@ -6,7 +6,10 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     if (isServer) {
       // Exclude @react-email from the error page bundle
-      config.externals = [...(config.externals || []), "@react-email/components"];
+      config.externals = [
+        ...(config.externals || []),
+        "@react-email/components",
+      ];
     }
     return config;
   },
