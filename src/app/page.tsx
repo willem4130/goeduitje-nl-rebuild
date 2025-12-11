@@ -27,7 +27,7 @@ export default function Home() {
       {/* Hero Section with Video Background */}
       <HeroVideo
         headline="Samen een geweldige ervaring creëren"
-        subheadline="Boek een uitje die impact maakt"
+        subheadline="Boek een uitje dat impact maakt"
         primaryCta={{
           text: "Stel je uitje samen",
           href: "#configurator",

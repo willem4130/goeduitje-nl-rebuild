@@ -206,6 +206,21 @@ const form = useForm<FormData>({
 - **Booking**: Cal.com embed
 - **Email**: Resend with React Email templates
 
+## Deployment Pipeline
+
+**Git → GitHub → Vercel (Auto-deploy)**
+
+- **Repository**: `willem4130/goeduitje-nl-rebuild`
+- **Production URL**: https://goeduitje-nl-rebuild.vercel.app/
+- **Custom Domain**: https://www.goeduitje.nl
+
+**Deployment Process:**
+
+1. Commit changes: `git commit -m "message"`
+2. Push to main: `git push origin main`
+3. Vercel auto-deploys from `main` branch
+4. Verify deployment at production URL
+
 ## Never Do
 
 ❌ Create custom UI primitives (use shadcn/ui)

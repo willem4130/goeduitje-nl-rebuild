@@ -94,3 +94,44 @@ model GoogleReviewsCache {
 
   @@map("google_reviews_cache")
 }
+
+// Recipe model for the /recepten page
+model Recipe {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  prepTime    Int?     // In minutes
+  cookTime    Int?     // In minutes
+  servings    Int?
+  difficulty  String?  // "makkelijk", "gemiddeld", "moeilijk"
+  category    String?  // "Arabisch", "Turks", "Mediterraan", etc.
+  ingredients String[] // Array of ingredients
+  steps       String[] // Array of cooking steps
+  tips        String?  // Cooking tips
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([category])
+  @@index([isPublished])
+}
+
+// Feedback model for the /feedback page
+model Feedback {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  rating    Int?     // 1-5 stars (optional)
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isRead])
+  @@index([createdAt])
+}
