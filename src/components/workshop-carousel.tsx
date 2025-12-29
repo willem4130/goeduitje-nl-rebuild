@@ -96,6 +96,7 @@ interface WorkshopCarouselProps {
   title?: string;
   subtitle?: string;
   showViewAllButton?: boolean;
+  compact?: boolean;
 }
 
 export function WorkshopCarousel({
@@ -103,19 +104,24 @@ export function WorkshopCarousel({
   title = "Onze uitjes",
   subtitle = "Kies jouw ideale uitje",
   showViewAllButton = true,
+  compact = false,
 }: WorkshopCarouselProps) {
   return (
-    <section className="bg-background section-md relative overflow-hidden">
+    <section
+      className={`bg-background relative overflow-hidden ${compact ? "" : "section-md"}`}
+    >
       <div className="container mx-auto px-2 lg:px-4 xl:px-6">
         {/* Section Header */}
-        <ScrollReveal animation="slideUp">
-          <div className="mb-6 text-center">
-            <h2 className="text-primary tracking-tight">{title}</h2>
-            <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
-              {subtitle}
-            </p>
-          </div>
-        </ScrollReveal>
+        {!compact && (
+          <ScrollReveal animation="slideUp">
+            <div className="mb-6 text-center">
+              <h2 className="text-primary tracking-tight">{title}</h2>
+              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+                {subtitle}
+              </p>
+            </div>
+          </ScrollReveal>
+        )}
 
         {/* Workshop Grid - Full-width 5x1 Layout on desktop */}
         <ScrollReveal animation="slideUp" delay={0.2}>

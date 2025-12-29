@@ -14,132 +14,85 @@ import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 export default function OnzeUitjesPage() {
   return (
     <main className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden border-b">
+      {/* Compact Hero Section */}
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
-          <div
-            className="absolute inset-0 opacity-[0.02]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-              backgroundSize: "48px 48px",
-            }}
-          />
         </div>
 
-        <div className="section-md relative">
+        <div className="relative py-4">
           <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-            <ScrollReveal animation="slideUp">
-              <div className="mx-auto max-w-4xl text-center">
-                <h1 className="text-primary mb-8 tracking-tight">
-                  Onze Uitjes
-                </h1>
-                <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
-                  Configureer je perfecte teamuitje. Kies uit verschillende
-                  uitjes, locaties en activiteiten voor een onvergetelijke
-                  ervaring.
-                </p>
-
-                <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                  <motion.div
-                    whileHover={{ y: -2, scale: 1.05 }}
-                    whileTap={{ y: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Button
-                      size="lg"
-                      className="shadow-editorial-lg hover:shadow-editorial-hover px-8 tracking-wide transition-all duration-300"
-                      asChild
-                    >
-                      <a href="#configurator">Start Configureren</a>
-                    </Button>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ y: -2, scale: 1.05 }}
-                    whileTap={{ y: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="px-8 tracking-wide transition-all duration-300"
-                      asChild
-                    >
-                      <a href="#uitjes">Bekijk Uitjes</a>
-                    </Button>
-                  </motion.div>
-                </div>
-              </div>
-            </ScrollReveal>
+            <div className="mx-auto max-w-4xl text-center">
+              <h1 className="text-primary mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                Onze Uitjes
+              </h1>
+              <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed sm:text-lg">
+                Configureer je perfecte teamuitje en kies uit verschillende
+                activiteiten
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Available Uitjes Section - First in viewport */}
-      <div id="uitjes">
-        <ScrollReveal animation="fade" amount={0.1}>
-          <WorkshopCarousel
-            title="Beschikbare Uitjes"
-            subtitle="Onze selectie van team-building activiteiten"
-            showViewAllButton={false}
-          />
-        </ScrollReveal>
+      {/* Available Uitjes Section - Immediately visible */}
+      <div id="uitjes" className="py-4">
+        <WorkshopCarousel
+          title="Beschikbare Uitjes"
+          subtitle="Onze selectie van team-building activiteiten"
+          showViewAllButton={false}
+          compact
+        />
       </div>
 
       {/* USP Cards Section */}
-      <section className="section-sm">
+      <section className="py-4">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp">
-            <div className="grid gap-6 md:grid-cols-3">
-              {[
-                {
-                  title: "Maak sociale impact",
-                  description:
-                    "Onze uitjes worden begeleid door statushouders en nieuwkomers, waarmee je direct bijdraagt aan hun integratie.",
-                },
-                {
-                  title: "Op locatie naar keuze",
-                  description:
-                    "Wij komen naar jullie toe of organiseren op een van onze locaties in Nijmegen, Arnhem of Amersfoort.",
-                },
-                {
-                  title: "Op maat",
-                  description:
-                    "Elk uitje wordt aangepast aan jullie wensen, groepsgrootte en budget voor een perfecte ervaring.",
-                },
-              ].map((item) => (
-                <motion.div
-                  key={item.title}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="border-primary/10 bg-primary/5 rounded-2xl border p-6 text-center"
-                >
-                  <h3 className="text-primary mb-2 text-lg font-bold tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {item.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </ScrollReveal>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                title: "Maak sociale impact",
+                description:
+                  "Onze uitjes worden begeleid door statushouders en nieuwkomers.",
+              },
+              {
+                title: "Op locatie naar keuze",
+                description:
+                  "Wij komen naar jullie toe of organiseren op onze locaties.",
+              },
+              {
+                title: "Op maat",
+                description:
+                  "Elk uitje wordt aangepast aan jullie wensen en budget.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="border-primary/10 bg-primary/5 rounded-xl border p-4 text-center"
+              >
+                <h3 className="text-primary mb-1 font-bold tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-snug">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Uitje Configurator Section */}
-      <section id="configurator" className="section-sm bg-muted/30">
+      <section id="configurator" className="bg-muted/30 py-6">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp" amount={0.2}>
-            <div className="mb-8 text-center">
-              <h2 className="text-primary tracking-tight">
-                Configureer Je Uitje
-              </h2>
-              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
-                Vul het formulier in en ontvang direct een bevestiging
-              </p>
-            </div>
-          </ScrollReveal>
+          <div className="mb-4 text-center">
+            <h2 className="text-primary text-xl font-bold tracking-tight sm:text-2xl">
+              Configureer Je Uitje
+            </h2>
+            <p className="text-muted-foreground mt-2 text-base leading-relaxed">
+              Vul het formulier in en ontvang direct een bevestiging
+            </p>
+          </div>
 
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
             {/* Left Column - Form */}

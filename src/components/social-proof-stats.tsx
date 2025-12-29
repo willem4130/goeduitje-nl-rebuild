@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users, Star, Award, TrendingUp } from "lucide-react";
+import { api } from "@/trpc/client";
 
 interface StatItem {
   icon: React.ElementType;
@@ -9,28 +10,32 @@ interface StatItem {
   label: string;
 }
 
-const stats: StatItem[] = [
-  {
-    icon: Users,
-    value: "150+",
-    label: "Teams",
-  },
-  {
-    icon: Star,
-    value: "4.9",
-    label: "Rating",
-  },
-  {
-    icon: Award,
-    value: "Top",
-    label: "Rated",
-  },
-  {
-    icon: TrendingUp,
-    value: "95%",
-    label: "Rebook",
-  },
-];
+function useStats(): StatItem[] {
+  const { data: reviewStats } = api.reviews.getStats.useQuery();
+
+  return [
+    {
+      icon: Users,
+      value: "150+",
+      label: "Teams",
+    },
+    {
+      icon: Star,
+      value: reviewStats?.averageRating?.toFixed(1) || "5.0",
+      label: "Rating",
+    },
+    {
+      icon: Award,
+      value: "Top",
+      label: "Rated",
+    },
+    {
+      icon: TrendingUp,
+      value: "95%",
+      label: "Rebook",
+    },
+  ];
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,6 +61,8 @@ const itemVariants = {
 };
 
 export function SocialProofStats() {
+  const stats = useStats();
+
   return (
     <motion.div
       variants={containerVariants}
