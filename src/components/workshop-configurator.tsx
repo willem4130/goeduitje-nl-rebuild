@@ -43,7 +43,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   workshopConfigSchema,
   type WorkshopConfigValues,
@@ -81,7 +80,7 @@ export function WorkshopConfigurator() {
   const form = useForm({
     resolver: zodResolver(workshopConfigSchema),
     defaultValues: {
-      type: "zakelijk" as const,
+      type: "particulier" as const,
       participantCount: 10,
       workshops: [] as string[],
       location: "Nijmegen" as const,
@@ -95,6 +94,7 @@ export function WorkshopConfigurator() {
       btwNumber: "",
       name: "",
       email: "",
+      phone: "",
     },
   });
 
@@ -229,38 +229,19 @@ export function WorkshopConfigurator() {
 
   return (
     <Card className="mx-auto w-full max-w-4xl">
-      <CardHeader className="space-y-2">
-        <CardTitle className="text-2xl sm:text-3xl">
+      <CardHeader className="space-y-1 pb-2">
+        <CardTitle className="text-xl sm:text-2xl">
           Uitje Configurator
         </CardTitle>
-        <CardDescription className="text-base">
+        <CardDescription className="text-sm">
           Configureer je uitje en ontvang direct een bevestiging
         </CardDescription>
-
-        {/* Compact Progress Indicator */}
-        <div className="mt-4">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-foreground text-sm font-medium">
-              Stap {currentStep} van {STEPS.length}:{" "}
-              {STEPS[currentStep - 1]?.title}
-            </span>
-            <span className="text-muted-foreground text-xs">
-              {Math.round((currentStep / STEPS.length) * 100)}%
-            </span>
-          </div>
-          <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
-            <div
-              className="bg-primary h-full transition-all duration-300 ease-out"
-              style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
-            />
-          </div>
-        </div>
       </CardHeader>
 
-      <CardContent className="p-4 sm:p-6">
+      <CardContent className="p-3 sm:p-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="min-h-[400px] overflow-hidden sm:min-h-[500px]">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="min-h-[350px] overflow-hidden">
               <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
                   key={currentStep}
@@ -275,48 +256,39 @@ export function WorkshopConfigurator() {
                   }}
                   className="w-full"
                 >
-                  {/* Step 1: Configure Workshop - All related fields together */}
+                  {/* Step 1: Configure Uitje - All related fields together */}
                   {currentStep === 1 && (
-                    <div className="space-y-4 sm:space-y-6">
+                    <div className="space-y-3 sm:space-y-4">
+                      {/* Zakelijk checkbox - shows business fields when checked */}
                       <FormField
                         control={form.control}
                         name="type"
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Type</FormLabel>
+                          <FormItem className="flex items-start space-y-0 space-x-3 rounded-md border p-3">
                             <FormControl>
-                              <ToggleGroup
-                                type="single"
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                className="grid w-full grid-cols-2 gap-2"
-                              >
-                                <ToggleGroupItem
-                                  value="zakelijk"
-                                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                >
-                                  Zakelijk
-                                </ToggleGroupItem>
-                                <ToggleGroupItem
-                                  value="particulier"
-                                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                                >
-                                  Particulier
-                                </ToggleGroupItem>
-                              </ToggleGroup>
+                              <Checkbox
+                                checked={field.value === "zakelijk"}
+                                onCheckedChange={(checked) =>
+                                  field.onChange(
+                                    checked ? "zakelijk" : "particulier"
+                                  )
+                                }
+                              />
                             </FormControl>
-                            <FormDescription>
-                              {type === "zakelijk"
-                                ? "Voor bedrijfsuitjes en teambuilding"
-                                : "Voor vrienden, familie en privé evenementen"}
-                            </FormDescription>
-                            <FormMessage />
+                            <div className="space-y-1 leading-none">
+                              <FormLabel className="cursor-pointer">
+                                Zakelijke aanvraag
+                              </FormLabel>
+                              <FormDescription className="text-xs">
+                                Vink aan voor bedrijfsuitjes en teambuilding
+                              </FormDescription>
+                            </div>
                           </FormItem>
                         )}
                       />
 
                       {type === "zakelijk" && (
-                        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                        <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                           <FormField
                             control={form.control}
                             name="companyName"
@@ -395,7 +367,7 @@ export function WorkshopConfigurator() {
                                 ? "Let op: Sommige uitjes vereisen minimaal 6 deelnemers"
                                 : "Selecteer één of meerdere uitjes"}
                             </FormDescription>
-                            <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+                            <div className="grid gap-2 sm:grid-cols-2">
                               {WORKSHOPS.map((workshop) => {
                                 const available = isWorkshopAvailable(
                                   workshop.id
@@ -407,7 +379,7 @@ export function WorkshopConfigurator() {
                                     name="workshops"
                                     render={({ field }) => (
                                       <FormItem
-                                        className={`flex items-center space-y-0 space-x-3 rounded-md border p-3 sm:p-4 ${
+                                        className={`flex items-center space-y-0 space-x-3 rounded-md border p-2 sm:p-3 ${
                                           !available
                                             ? "border-muted bg-muted/20 opacity-60"
                                             : "border-border"
@@ -511,7 +483,7 @@ export function WorkshopConfigurator() {
                       )}
 
                       {/* Date and Time */}
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                         <FormField
                           control={form.control}
                           name="date"
@@ -553,7 +525,7 @@ export function WorkshopConfigurator() {
                         />
                       </div>
 
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                         <FormField
                           control={form.control}
                           name="time"
@@ -561,16 +533,32 @@ export function WorkshopConfigurator() {
                             <FormItem>
                               <FormLabel>
                                 <IconClock className="mr-2 inline size-4" />
-                                Aanvangsttijd
+                                Aanvangstijd
                               </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="time"
-                                  disabled={timeTbd}
-                                  {...field}
-                                  value={field.value || ""}
-                                />
-                              </FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value || ""}
+                                disabled={timeTbd}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Selecteer tijd" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {Array.from({ length: 57 }, (_, i) => {
+                                    const hour = Math.floor(i / 4) + 8;
+                                    const minute = (i % 4) * 15;
+                                    if (hour > 22) return null;
+                                    const timeStr = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+                                    return (
+                                      <SelectItem key={timeStr} value={timeStr}>
+                                        {timeStr}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -595,7 +583,7 @@ export function WorkshopConfigurator() {
                         />
                       </div>
 
-                      {/* Duration */}
+                      {/* Duration - 30 minute steps */}
                       <FormField
                         control={form.control}
                         name="duration"
@@ -607,31 +595,35 @@ export function WorkshopConfigurator() {
                             </FormLabel>
                             <Select
                               onValueChange={(value) =>
-                                field.onChange(parseInt(value))
+                                field.onChange(parseFloat(value))
                               }
                               value={field.value?.toString()}
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Selecteer aantal uren" />
+                                  <SelectValue placeholder="Selecteer duur" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(
-                                  (hours) => (
-                                    <SelectItem
-                                      key={hours}
-                                      value={hours.toString()}
-                                    >
-                                      {hours} {hours === 1 ? "uur" : "uren"}
-                                    </SelectItem>
-                                  )
-                                )}
+                                {[
+                                  0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5,
+                                  6, 6.5, 7, 7.5, 8,
+                                ].map((hours) => (
+                                  <SelectItem
+                                    key={hours}
+                                    value={hours.toString()}
+                                  >
+                                    {hours === 0.5
+                                      ? "30 minuten"
+                                      : hours === 1
+                                        ? "1 uur"
+                                        : hours % 1 === 0.5
+                                          ? `${Math.floor(hours)} uur 30 min`
+                                          : `${hours} uur`}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
-                            <FormDescription>
-                              Selecteer de verwachte duur van het uitje
-                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -641,8 +633,8 @@ export function WorkshopConfigurator() {
 
                   {/* Step 2: Contact & Review */}
                   {currentStep === 2 && (
-                    <div className="space-y-4 sm:space-y-6">
-                      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
                         <FormField
                           control={form.control}
                           name="name"
@@ -675,6 +667,24 @@ export function WorkshopConfigurator() {
                           )}
                         />
                       </div>
+
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefoonnummer</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="tel"
+                                placeholder="06 12345678"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
                       {/* Review Summary */}
                       <div className="bg-muted/50 mt-6 rounded-lg border p-4">
@@ -716,7 +726,7 @@ export function WorkshopConfigurator() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex flex-col-reverse gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
+            <div className="flex flex-col-reverse gap-2 border-t pt-3 sm:flex-row sm:items-center sm:justify-between sm:pt-4">
               <Button
                 type="button"
                 variant="outline"

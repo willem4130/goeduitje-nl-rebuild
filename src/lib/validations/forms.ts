@@ -110,7 +110,7 @@ export const workshopConfigSchema = z
         message: "Maximum 100 personen toegestaan.",
       }),
     workshops: z.array(z.string()).min(1, {
-      message: "Selecteer minimaal één workshop.",
+      message: "Selecteer minimaal één uitje.",
     }),
     location: z.enum(["Nijmegen", "Arnhem", "Amersfoort", "other"], {
       message: "Selecteer een locatie.",
@@ -129,6 +129,13 @@ export const workshopConfigSchema = z
     email: z.string().email({
       message: "Voer een geldig e-mailadres in.",
     }),
+    phone: z
+      .string()
+      .min(10, {
+        message: "Telefoonnummer moet minimaal 10 cijfers zijn.",
+      })
+      .optional()
+      .or(z.literal("")),
   })
   .refine(
     (data) => {

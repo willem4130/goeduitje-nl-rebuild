@@ -75,6 +75,17 @@ export default function OnzeUitjesPage() {
         </div>
       </section>
 
+      {/* Available Uitjes Section - First in viewport */}
+      <div id="uitjes">
+        <ScrollReveal animation="fade" amount={0.1}>
+          <WorkshopCarousel
+            title="Beschikbare Uitjes"
+            subtitle="Onze selectie van team-building activiteiten"
+            showViewAllButton={false}
+          />
+        </ScrollReveal>
+      </div>
+
       {/* USP Cards Section */}
       <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
@@ -115,17 +126,6 @@ export default function OnzeUitjesPage() {
           </ScrollReveal>
         </div>
       </section>
-
-      {/* Available Uitjes Section - Reuse WorkshopCarousel */}
-      <div id="uitjes">
-        <ScrollReveal animation="fade" amount={0.1}>
-          <WorkshopCarousel
-            title="Beschikbare Uitjes"
-            subtitle="Onze selectie van team-building activiteiten"
-            showViewAllButton={false}
-          />
-        </ScrollReveal>
-      </div>
 
       {/* Uitje Configurator Section */}
       <section id="configurator" className="section-sm bg-muted/30">

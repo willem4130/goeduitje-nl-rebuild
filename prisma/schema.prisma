@@ -45,9 +45,10 @@ model WorkshopConfig {
   customCity       String?  // Custom city name when location is "other"
   date             String?  // ISO date string or "TBD"
   time             String?  // Time string or "TBD"
-  duration         Int?     // Workshop duration in hours
+  duration         Float?   // Uitje duration in hours (supports 0.5 increments)
   name             String
   email            String
+  phone            String?  // Contact phone number
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

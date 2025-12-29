@@ -33,15 +33,15 @@ export const WorkshopConfirmationEmail = ({
 }: WorkshopConfirmationEmailProps) => (
   <Html>
     <Head />
-    <Preview>Bevestiging workshop configuratie - {workshopId}</Preview>
+    <Preview>Bevestiging uitje configuratie - {workshopId}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={box}>
-          <Heading style={heading}>Workshop Configuratie Ontvangen!</Heading>
+          <Heading style={heading}>Uitje Configuratie Ontvangen!</Heading>
           <Text style={paragraph}>Hallo {name},</Text>
           <Text style={paragraph}>
-            Bedankt voor je aanvraag! We hebben je workshop configuratie
-            succesvol ontvangen en zullen deze zo snel mogelijk verwerken.
+            Bedankt voor je aanvraag! We hebben je uitje configuratie succesvol
+            ontvangen en zullen deze zo snel mogelijk verwerken.
           </Text>
 
           <Hr style={hr} />
@@ -53,7 +53,7 @@ export const WorkshopConfirmationEmail = ({
           </Text>
 
           <Text style={detailItem}>
-            <strong>Geselecteerde workshops:</strong>
+            <strong>Geselecteerde uitjes:</strong>
           </Text>
           <ul style={list}>
             {workshops.map((workshop, index) => (

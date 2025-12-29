@@ -41,7 +41,12 @@ export function TopNavigation() {
       )}
     >
       <div className="container">
-        <div className="flex h-20 items-center justify-between">
+        <div
+          className={cn(
+            "flex items-center justify-between transition-all duration-300",
+            isScrolled ? "h-16" : "h-20"
+          )}
+        >
           {/* Logo - Brand Identity */}
           <Link
             href="/"
@@ -51,11 +56,11 @@ export function TopNavigation() {
             <Image
               src="/images/logo/logo-nav.png"
               alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
-              width={200}
-              height={70}
+              width={240}
+              height={90}
               priority
-              className="h-auto w-auto"
-              style={{ maxHeight: "56px" }}
+              className="h-auto w-auto transition-all duration-300"
+              style={{ maxHeight: isScrolled ? "48px" : "72px" }}
             />
           </Link>
 

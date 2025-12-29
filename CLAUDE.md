@@ -1,10 +1,60 @@
-# Goeduitje.nl
+# Goeduitje.nl - FRONTEND
+
+⚠️ **CRITICAL: THIS IS THE FRONTEND REPOSITORY**
 
 Booking platform for recreational activities in the Netherlands. Features workshop booking, payments, and admin management with focus on exceptional UX/UI.
 
+---
+
+## 🚨 REPOSITORY SEPARATION RULES - NEVER MIX THESE UP!
+
+### THIS REPOSITORY (goeduitje-nl-rebuild) - FRONTEND ONLY
+
+✅ **Commit HERE for:**
+
+- Frontend UI changes (pages, components, styles)
+- Workshop configurator form
+- Booking pages
+- Public-facing pages (homepage, contact, etc.)
+- Client-side code in `/src/app`, `/src/components`
+- Frontend API routes that DON'T involve workshop management backend
+- tRPC client calls
+- Feedback page
+- Email templates in `/src/emails`
+
+### BACKEND REPOSITORY (goeduitje-backend) - BACKEND ONLY
+
+✅ **Commit THERE for:**
+
+- Workshop request processing backend
+- Admin CMS for workshop management
+- Database schema for workshops (Drizzle ORM)
+- tRPC routers for workshop requests, confirmed workshops
+- Quote generation (PDF + AI emails)
+- Media gallery management backend
+- Workshop status workflow
+- Confirmed workshops database
+- All backend-specific code in separate `goeduitje-backend` folder
+
+### ⛔ NEVER DO THIS:
+
+- ❌ Commit backend workshop management code to frontend repo
+- ❌ Commit frontend UI code to backend repo
+- ❌ Mix workshop backend logic with frontend in same commit
+- ❌ Push to both repos in same commit
+
+### 🔍 BEFORE EVERY COMMIT - ASK YOURSELF:
+
+1. **"Is this code for the public website UI?"** → Frontend repo
+2. **"Is this code for workshop admin/backend?"** → Backend repo
+3. **"Does this involve the workshop request database?"** → Backend repo
+4. **"Does this change how users see the website?"** → Frontend repo
+
+---
+
 ## Tech Stack - Standard Tools Only
 
-- **Framework**: Next.js 16 + React 19 + TypeScript 5
+- **Framework**: Next.js 14 + React 18 + TypeScript 5
 - **Database**: PostgreSQL + Prisma ORM
 - **API**: tRPC + TanStack Query
 - **UI Components**: shadcn/ui (Radix UI primitives)
@@ -206,20 +256,235 @@ const form = useForm<FormData>({
 - **Booking**: Cal.com embed
 - **Email**: Resend with React Email templates
 
-## Deployment Pipeline
+## OTAP Pipeline - CRITICAL SETUP
 
-**Git → GitHub → Vercel (Auto-deploy)**
+### 🎯 TWO SEPARATE PIPELINES - NEVER MIX!
 
-- **Repository**: `willem4130/goeduitje-nl-rebuild`
-- **Production URL**: https://goeduitje-nl-rebuild.vercel.app/
-- **Custom Domain**: https://www.goeduitje.nl
+---
 
-**Deployment Process:**
+### FRONTEND PIPELINE (THIS REPO)
 
-1. Commit changes: `git commit -m "message"`
-2. Push to main: `git push origin main`
-3. Vercel auto-deploys from `main` branch
-4. Verify deployment at production URL
+**Repository**: https://github.com/willem4130/goeduitje-nl-rebuild.git
+
+#### Development (Local)
+
+- Branch: `develop` or feature branches
+- Run: `bun run dev` (http://localhost:3000)
+- Test: `bun run test` + `bun run test:e2e`
+- Quality: `bun run typecheck && bun run lint && bun run format:check`
+
+#### Staging/Preview (Vercel Preview)
+
+- **Trigger**: Push to any branch except `main`
+- **URL**: Auto-generated preview URL (https://goeduitje-nl-rebuild-xxx.vercel.app)
+- **Purpose**: Test features before production
+- **Database**: Use staging database
+- **Process**:
+  1. Create feature branch: `git checkout -b feature/new-feature`
+  2. Make changes and commit: `git commit -m "feat: description"`
+  3. Push: `git push origin feature/new-feature`
+  4. Vercel auto-deploys preview
+  5. Test on preview URL
+  6. Create PR to main when ready
+
+#### Production (Vercel)
+
+- **Branch**: `main` only
+- **URL**: https://goeduitje-nl-rebuild.vercel.app/ → https://www.goeduitje.nl
+- **Trigger**: Merge to `main` or direct push to `main`
+- **Database**: Production PostgreSQL
+- **Process**:
+  1. Ensure all checks pass: `bun run typecheck && bun run lint`
+  2. Merge PR to main OR commit directly to main
+  3. Push: `git push origin main`
+  4. Vercel auto-deploys to production
+  5. **CRITICAL**: Verify deployment at https://www.goeduitje.nl
+  6. Monitor for errors in Vercel dashboard
+
+---
+
+### BACKEND PIPELINE (SEPARATE REPO)
+
+**Repository**: `willem4130/goeduitje-backend` (TO BE CREATED)
+
+#### Development (Local)
+
+- Branch: `develop` or feature branches
+- Run: `bun run dev` (port 3003)
+- Test: Backend-specific tests
+- Quality: `bun run typecheck && bun run lint && bun run format:check`
+- **Database**: Separate development database
+
+#### Staging/Preview (Vercel Preview)
+
+- **Trigger**: Push to any branch except `main`
+- **URL**: Auto-generated preview URL
+- **Database**: Staging backend database (SEPARATE from frontend!)
+- **Process**: Same as frontend staging
+
+#### Production (Vercel)
+
+- **Branch**: `main` only
+- **URL**: Backend production URL (to be configured)
+- **Database**: Production PostgreSQL (SEPARATE from frontend!)
+- **Trigger**: Merge to `main`
+
+---
+
+### 🚨 DEPLOYMENT RULES - FOLLOW STRICTLY
+
+#### Before ANY Commit:
+
+```bash
+# Run quality checks
+bun run typecheck && bun run lint && bun run format:check
+
+# Fix ALL errors before continuing
+# NO exceptions!
+```
+
+#### Frontend Deployment Checklist:
+
+- [ ] All quality checks pass
+- [ ] Changes are ONLY frontend-related (UI, pages, components)
+- [ ] Tested locally on `localhost:3000`
+- [ ] Commit to **frontend repo** only
+- [ ] Push to correct branch (feature → preview, main → production)
+- [ ] Verify deployment on Vercel
+- [ ] Check production URL works
+
+#### Backend Deployment Checklist:
+
+- [ ] All quality checks pass
+- [ ] Changes are ONLY backend-related (admin, CMS, database, APIs)
+- [ ] Tested locally on `localhost:3003`
+- [ ] Commit to **backend repo** only
+- [ ] Separate database used
+- [ ] Push to correct branch
+- [ ] Verify deployment
+- [ ] Test API endpoints
+
+---
+
+### 🔥 CRITICAL: Database Separation
+
+**Frontend Database** (goeduitje-nl-rebuild):
+
+- Current tRPC endpoints (recipes, reviews, etc.)
+- User accounts (if applicable)
+- Existing Prisma models
+
+**Backend Database** (goeduitje-backend):
+
+- Workshop requests
+- Confirmed workshops
+- Admin data
+- Media gallery
+- Feedback
+- **COMPLETELY SEPARATE** - different DATABASE_URL
+
+**NEVER** share databases between frontend and backend!
+
+---
+
+### 📋 Git Workflow Best Practices
+
+#### Feature Development:
+
+```bash
+# 1. Create feature branch from develop
+git checkout develop
+git pull origin develop
+git checkout -b feature/workshop-form-validation
+
+# 2. Make changes, commit often
+git add -A
+git commit -m "feat: add email validation to workshop form"
+
+# 3. Push and create PR
+git push origin feature/workshop-form-validation
+# Create PR on GitHub: feature/workshop-form-validation → main
+
+# 4. After PR approved, merge to main
+# Vercel auto-deploys to production
+```
+
+#### Hotfix (Emergency Production Fix):
+
+```bash
+# 1. Create hotfix branch from main
+git checkout main
+git pull origin main
+git checkout -b hotfix/critical-bug
+
+# 2. Fix bug, test thoroughly
+# 3. Commit and push
+git commit -m "fix: resolve payment processing error"
+git push origin hotfix/critical-bug
+
+# 4. Create PR, get quick review, merge ASAP
+# 5. Verify production deployment immediately
+```
+
+---
+
+### 🛠️ Environment Variables
+
+#### Frontend (.env.local):
+
+```env
+DATABASE_URL="postgresql://..."           # Frontend database
+STRIPE_SECRET_KEY="sk_..."
+RESEND_API_KEY="re_..."
+NEXTAUTH_SECRET="..."
+NEXTAUTH_URL="https://www.goeduitje.nl"
+```
+
+#### Backend (.env.local):
+
+```env
+DATABASE_URL="postgresql://..."           # DIFFERENT backend database!
+RESEND_API_KEY="re_..."                   # Shared (same account)
+BLOB_READ_WRITE_TOKEN="vercel_blob_..."   # Shared (same account)
+ANTHROPIC_API_KEY="sk-ant-..."            # For quote email generation
+NEXTAUTH_SECRET="..."                     # Different from frontend
+NEXTAUTH_URL="http://localhost:3003"
+```
+
+**NEVER commit .env files to git!**
+
+---
+
+### 📊 Monitoring & Rollback
+
+#### Monitor Deployments:
+
+- Vercel Dashboard: https://vercel.com/willem4130
+- Check deployment logs for errors
+- Monitor Sentry (if configured) for runtime errors
+
+#### Rollback if Needed:
+
+1. Go to Vercel dashboard
+2. Find previous working deployment
+3. Click "Promote to Production"
+4. Or: `git revert` bad commit and redeploy
+
+---
+
+### ✅ Pre-Deployment Checklist
+
+Before merging to `main` (production):
+
+- [ ] All tests pass (`bun run test`)
+- [ ] Type checking passes (`bun run typecheck`)
+- [ ] Linting passes (`bun run lint`)
+- [ ] Code formatted (`bun run format:check`)
+- [ ] Tested on preview deployment
+- [ ] Database migrations run (if applicable)
+- [ ] Environment variables configured in Vercel
+- [ ] Breaking changes documented
+- [ ] Team notified of deployment
 
 ## Never Do
 

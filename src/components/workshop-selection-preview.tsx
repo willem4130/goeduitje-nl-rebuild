@@ -88,13 +88,11 @@ export function WorkshopSelectionPreview({
           </motion.div>
         )}
 
-        {/* Selected Workshops */}
+        {/* Selected Uitjes */}
         {selectedWorkshops.length > 0 ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-foreground text-sm font-semibold">
-                Workshops
-              </h3>
+              <h3 className="text-foreground text-sm font-semibold">Uitjes</h3>
               <Badge variant="secondary">{selectedWorkshops.length}</Badge>
             </div>
             <AnimatePresence mode="popLayout">
@@ -145,7 +143,7 @@ export function WorkshopSelectionPreview({
           >
             <CalendarDays className="text-muted-foreground/30 mx-auto mb-3 h-12 w-12" />
             <p className="text-muted-foreground text-sm">
-              Selecteer workshops om te beginnen
+              Selecteer uitjes om te beginnen
             </p>
           </motion.div>
         )}

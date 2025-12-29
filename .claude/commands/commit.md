@@ -1,7 +1,9 @@
 ---
 name: commit
-description: Run checks, commit with AI message, and push
+description: Run checks, commit with AI message, and push to FRONTEND repo
 ---
+
+⚠️ **FRONTEND REPO ONLY** - For backend changes, use backend repo's /commit
 
 1. Run quality checks:
 
@@ -13,14 +15,15 @@ description: Run checks, commit with AI message, and push
 
 2. Review changes: `git status` and `git diff`
 
-3. Generate commit message:
-   - Start with verb (Add/Update/Fix/Remove/Refactor)
-   - Be specific and concise
-   - One line preferred
+3. Generate commit message following Conventional Commits:
+   - Format: `type: description`
+   - Types: feat/fix/docs/style/refactor/test/chore
+   - Be specific and concise (one line)
+   - Example: `feat: add workshop configurator form validation`
 
-4. Commit and push:
+4. Commit and push to **FRONTEND** repo (https://github.com/willem4130/goeduitje-nl-rebuild.git):
    ```bash
    git add -A
-   git commit -m "your generated message"
-   git push
+   git commit -m "[your generated message]"
+   git push origin main
    ```

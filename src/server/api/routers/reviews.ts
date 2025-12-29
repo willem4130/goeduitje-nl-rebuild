@@ -67,7 +67,7 @@ export const reviewsRouter = createTRPCRouter({
           rating: { gte: 4 },
           text: { not: null },
         },
-        orderBy: [{ rating: "desc" }, { reviewTime: "desc" }],
+        orderBy: { reviewTime: "desc" },
         take: limit,
       });
 
