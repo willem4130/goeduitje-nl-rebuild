@@ -40,20 +40,20 @@ export default function Home() {
       </ScrollReveal>
 
       {/* Uitje Configurator Section - Two Column Layout */}
-      <section id="configurator" className="section-sm bg-muted/30">
-        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+      <section id="configurator" className="bg-muted/30 py-6 lg:py-8">
+        <div className="container mx-auto max-w-7xl px-4 lg:px-6">
           <ScrollReveal animation="slideUp" amount={0.2}>
-            <div className="mb-8 text-center">
-              <h2 className="text-primary tracking-tight">
+            <div className="mb-4 text-center">
+              <h2 className="text-primary text-2xl tracking-tight lg:text-3xl">
                 Stel je uitje samen
               </h2>
-              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+              <p className="text-muted-foreground mt-2 text-base leading-relaxed lg:text-lg">
                 Configureer je ideale teamuitje in een paar simpele stappen
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:gap-6">
             {/* Left Column - Form */}
             <ScrollReveal animation="slideUp" delay={0.1} amount={0.2}>
               <div className="flex justify-center lg:justify-start">
@@ -63,32 +63,9 @@ export default function Home() {
 
             {/* Right Column - Sidebar with Visual Content */}
             <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
-              <div className="w-full space-y-6 lg:w-[400px] xl:w-[440px]">
+              <div className="w-full space-y-3 lg:w-[320px] xl:w-[360px]">
                 {/* Social Proof Stats */}
                 <SocialProofStats />
-
-                {/* Uitje Preview Video */}
-                <Card className="shadow-editorial overflow-hidden border">
-                  <div className="bg-muted relative aspect-[4/3]">
-                    <video
-                      src="/images/workshops/workshop 1.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <div className="absolute right-4 bottom-4 left-4 text-white">
-                      <h3 className="mb-1 text-lg font-bold">
-                        Onze Populairste Uitjes
-                      </h3>
-                      <p className="text-sm opacity-90">
-                        Unieke teambuildingservaringen
-                      </p>
-                    </div>
-                  </div>
-                </Card>
 
                 {/* Compact Testimonials */}
                 <CompactTestimonials />
