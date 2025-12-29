@@ -181,15 +181,14 @@ export function TestimonialsCarousel({
             onMouseLeave={() => setIsPaused(false)}
           >
             {/* Testimonial Container */}
-            <div className="relative min-h-[400px] overflow-hidden">
+            <div className="relative">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentIndex}
-                  initial={{ opacity: 0, x: 100 }}
+                  initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute inset-0"
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
                   {showGoogleReviews ? (
                     <GoogleReviewCard review={googleReviews[currentIndex]!} />
@@ -268,13 +267,13 @@ export function TestimonialsCarousel({
  */
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="bg-background shadow-editorial-lg relative overflow-hidden p-8 sm:p-16">
+    <div className="mx-auto max-w-4xl">
+      <div className="bg-background shadow-editorial-lg relative overflow-hidden rounded-lg p-6 sm:p-10">
         {/* Asymmetric quote layout */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12 lg:gap-6">
           {/* Large decorative quote mark */}
           <div className="hidden lg:col-span-2 lg:block">
-            <span className="text-primary/15 font-serif text-[120px] leading-none">
+            <span className="text-primary/15 font-serif text-[80px] leading-none">
               &ldquo;
             </span>
           </div>
@@ -282,24 +281,24 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           {/* Quote content */}
           <div className="lg:col-span-10">
             {testimonial.rating && (
-              <div className="mb-4">
-                <StarRating rating={testimonial.rating} size="lg" />
+              <div className="mb-3">
+                <StarRating rating={testimonial.rating} size="md" />
               </div>
             )}
 
-            <blockquote className="mb-8">
-              <p className="text-quote text-foreground leading-relaxed">
+            <blockquote className="mb-5">
+              <p className="text-foreground text-lg leading-relaxed italic sm:text-xl">
                 {testimonial.quote}
               </p>
             </blockquote>
 
             {/* Refined attribution */}
-            <div className="border-border flex items-center gap-4 border-t pt-6">
+            <div className="border-border flex items-center gap-3 border-t pt-4">
               <div>
-                <p className="text-foreground text-lg font-semibold tracking-tight">
+                <p className="text-foreground font-semibold tracking-tight">
                   {testimonial.author}
                 </p>
-                <p className="text-muted-foreground mt-1 text-sm tracking-wide">
+                <p className="text-muted-foreground text-sm tracking-wide">
                   {testimonial.role} · {testimonial.company}
                 </p>
               </div>
@@ -328,13 +327,13 @@ function getInitials(name: string): string {
  */
 function GoogleReviewCard({ review }: { review: GoogleReviewData }) {
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="bg-background shadow-editorial-lg relative overflow-hidden p-8 sm:p-16">
+    <div className="mx-auto max-w-4xl">
+      <div className="bg-background shadow-editorial-lg relative overflow-hidden rounded-lg p-6 sm:p-10">
         {/* Asymmetric quote layout */}
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12 lg:gap-6">
           {/* Large decorative quote mark */}
           <div className="hidden lg:col-span-2 lg:block">
-            <span className="text-primary/15 font-serif text-[120px] leading-none">
+            <span className="text-primary/15 font-serif text-[80px] leading-none">
               &ldquo;
             </span>
           </div>
@@ -342,34 +341,34 @@ function GoogleReviewCard({ review }: { review: GoogleReviewData }) {
           {/* Quote content */}
           <div className="lg:col-span-10">
             {/* Star Rating */}
-            <div className="mb-4">
-              <StarRating rating={review.rating} size="lg" />
+            <div className="mb-3">
+              <StarRating rating={review.rating} size="md" />
             </div>
 
-            <blockquote className="mb-8">
-              <p className="text-quote text-foreground leading-relaxed">
+            <blockquote className="mb-5">
+              <p className="text-foreground text-lg leading-relaxed italic sm:text-xl">
                 {review.text || "Geweldige ervaring!"}
               </p>
             </blockquote>
 
             {/* Attribution with avatar */}
-            <div className="border-border flex items-center gap-4 border-t pt-6">
-              <Avatar className="h-12 w-12">
+            <div className="border-border flex items-center gap-3 border-t pt-4">
+              <Avatar className="h-10 w-10">
                 {review.authorPhotoUrl && (
                   <AvatarImage
                     src={review.authorPhotoUrl}
                     alt={review.authorName}
                   />
                 )}
-                <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
                   {getInitials(review.authorName)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-foreground text-lg font-semibold tracking-tight">
+                <p className="text-foreground font-semibold tracking-tight">
                   {review.authorName}
                 </p>
-                <div className="text-muted-foreground mt-1 flex items-center gap-2 text-sm tracking-wide">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm tracking-wide">
                   <GoogleIcon className="h-4 w-4" />
                   <span>Google Review · {review.relativeTime}</span>
                 </div>
