@@ -10,11 +10,8 @@ import { InstagramFeed } from "@/components/instagram-feed";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Instagram } from "lucide-react";
-import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 
 /**
  * Goeduitje.nl Homepage
@@ -69,70 +66,6 @@ export default function Home() {
 
                 {/* Compact Testimonials */}
                 <CompactTestimonials />
-
-                {/* Uitje Collage */}
-                <Card className="shadow-editorial overflow-hidden border">
-                  <CardContent className="p-0">
-                    <div className="grid grid-cols-2 gap-1">
-                      <div className="bg-muted relative aspect-square">
-                        <Image
-                          src="/images/workshops/the-game.jpg"
-                          alt="The Game workshop"
-                          fill
-                          className="object-cover"
-                          sizes="220px"
-                          placeholder="blur"
-                          blurDataURL={WORKSHOP_BLUR_PLACEHOLDERS["the-game"]}
-                        />
-                      </div>
-                      <div className="bg-muted relative aspect-square">
-                        <Image
-                          src="/images/workshops/beachvolleybal.jpg"
-                          alt="Beachvolleybal"
-                          fill
-                          className="object-cover"
-                          sizes="220px"
-                          placeholder="blur"
-                          blurDataURL={
-                            WORKSHOP_BLUR_PLACEHOLDERS["beachvolleybal"]
-                          }
-                        />
-                      </div>
-                      <div className="bg-muted relative aspect-square">
-                        <Image
-                          src="/images/workshops/koffie-thee.jpg"
-                          alt="Koffie & Thee workshop"
-                          fill
-                          className="object-cover"
-                          sizes="220px"
-                          placeholder="blur"
-                          blurDataURL={
-                            WORKSHOP_BLUR_PLACEHOLDERS["koffie-thee"]
-                          }
-                        />
-                      </div>
-                      <div className="bg-muted relative aspect-square">
-                        <Image
-                          src="/images/workshops/design-tshirt.jpg"
-                          alt="Design Your T-shirt"
-                          fill
-                          className="object-cover"
-                          sizes="220px"
-                          placeholder="blur"
-                          blurDataURL={
-                            WORKSHOP_BLUR_PLACEHOLDERS["design-tshirt"]
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="mb-1 font-bold">Kies uit 6+ Uitjes</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Van actief tot creatief - voor elk team wat wils
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </ScrollReveal>
           </div>
