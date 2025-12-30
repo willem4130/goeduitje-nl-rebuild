@@ -1,13 +1,15 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
-import { Quote, Star } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Quote, Star, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { api } from "@/trpc/client";
 
 /**
  * Compact testimonials carousel for sidebar display
  * Features automatic rotation and pause on hover
+ * Supports database fetching via useCustomTestimonials prop
  */
 
 export interface Testimonial {
@@ -20,7 +22,7 @@ export interface Testimonial {
   rating?: number;
 }
 
-// Featured testimonials for the configurator sidebar
+// Fallback testimonials for the configurator sidebar
 const FEATURED_TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
@@ -54,18 +56,57 @@ const FEATURED_TESTIMONIALS: Testimonial[] = [
 interface CompactTestimonialsProps {
   testimonials?: Testimonial[];
   autoPlayInterval?: number;
+  useCustomTestimonials?: boolean;
 }
 
 export function CompactTestimonials({
-  testimonials = FEATURED_TESTIMONIALS,
+  testimonials: propTestimonials,
   autoPlayInterval = 5000,
+  useCustomTestimonials = false,
 }: CompactTestimonialsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  // Fetch from database when useCustomTestimonials is enabled
+  const { data: dbTestimonials, isLoading } =
+    api.testimonials.getFeatured.useQuery(undefined, {
+      enabled: useCustomTestimonials && !propTestimonials,
+      staleTime: 5 * 60 * 1000,
+    });
+
+  // Transform database testimonials to component format
+  const transformedDbTestimonials = useMemo(() => {
+    if (!dbTestimonials) return [];
+    return dbTestimonials.map((t) => ({
+      id: t.id,
+      quote: t.quote,
+      author: t.author,
+      role: t.role ?? "",
+      company: t.company ?? "",
+      image: t.image ?? undefined,
+      rating: t.rating,
+    }));
+  }, [dbTestimonials]);
+
+  // Priority: props > database > fallback
+  const testimonials = useMemo(() => {
+    if (propTestimonials && propTestimonials.length > 0) {
+      return propTestimonials;
+    }
+    if (useCustomTestimonials && transformedDbTestimonials.length > 0) {
+      return transformedDbTestimonials;
+    }
+    return FEATURED_TESTIMONIALS;
+  }, [propTestimonials, useCustomTestimonials, transformedDbTestimonials]);
+
   const nextTestimonial = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   }, [testimonials.length]);
+
+  // Reset index when testimonials change
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [testimonials]);
 
   // Auto-play functionality
   useEffect(() => {
@@ -78,6 +119,17 @@ export function CompactTestimonials({
 
   const currentTestimonial =
     testimonials[currentIndex] ?? FEATURED_TESTIMONIALS[0];
+
+  // Show loading state when fetching from database
+  if (useCustomTestimonials && isLoading) {
+    return (
+      <Card className="shadow-editorial overflow-hidden">
+        <CardContent className="flex items-center justify-center p-6">
+          <Loader2 className="text-primary h-6 w-6 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div

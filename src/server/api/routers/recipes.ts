@@ -2,9 +2,25 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
+const recipeInputSchema = z.object({
+  title: z.string().min(1, "Titel is verplicht"),
+  slug: z.string().min(1, "Slug is verplicht"),
+  description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  prepTime: z.number().int().positive().optional(),
+  cookTime: z.number().int().positive().optional(),
+  servings: z.number().int().positive().optional(),
+  difficulty: z.string().optional(),
+  category: z.string().optional(),
+  ingredients: z.array(z.string()).default([]),
+  steps: z.array(z.string()).default([]),
+  tips: z.string().optional(),
+  isPublished: z.boolean().optional(),
+});
+
 export const recipesRouter = createTRPCRouter({
   /**
-   * Get all published recipes with optional filtering
+   * Get all recipes (for admin, includes unpublished)
    */
   getAll: publicProcedure
     .input(
@@ -14,15 +30,22 @@ export const recipesRouter = createTRPCRouter({
           difficulty: z.string().optional(),
           search: z.string().optional(),
           limit: z.number().min(1).max(100).default(50),
+          includeUnpublished: z.boolean().optional(),
         })
         .optional()
     )
     .query(async ({ input }) => {
-      const { category, difficulty, search, limit = 50 } = input ?? {};
+      const {
+        category,
+        difficulty,
+        search,
+        limit = 50,
+        includeUnpublished,
+      } = input ?? {};
 
       const recipes = await prisma.recipe.findMany({
         where: {
-          isPublished: true,
+          ...(includeUnpublished ? {} : { isPublished: true }),
           ...(category && { category }),
           ...(difficulty && { difficulty }),
           ...(search && {
@@ -53,6 +76,17 @@ export const recipesRouter = createTRPCRouter({
     }),
 
   /**
+   * Get a single recipe by ID (for admin editing)
+   */
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      return await prisma.recipe.findUnique({
+        where: { id: input.id },
+      });
+    }),
+
+  /**
    * Get all unique categories in the correct order
    */
   getCategories: publicProcedure.query(async () => {
@@ -78,7 +112,6 @@ export const recipesRouter = createTRPCRouter({
     return categories.sort((a, b) => {
       const indexA = categoryOrder.indexOf(a);
       const indexB = categoryOrder.indexOf(b);
-      // If category not in order array, put it at the end
       if (indexA === -1) return 1;
       if (indexB === -1) return -1;
       return indexA - indexB;
@@ -113,4 +146,64 @@ export const recipesRouter = createTRPCRouter({
       ),
     };
   }),
+
+  /**
+   * Create a new recipe
+   */
+  create: publicProcedure
+    .input(recipeInputSchema)
+    .mutation(async ({ input }) => {
+      return await prisma.recipe.create({
+        data: {
+          title: input.title,
+          slug: input.slug,
+          description: input.description,
+          imageUrl: input.imageUrl,
+          prepTime: input.prepTime,
+          cookTime: input.cookTime,
+          servings: input.servings,
+          difficulty: input.difficulty,
+          category: input.category,
+          ingredients: input.ingredients,
+          steps: input.steps,
+          tips: input.tips,
+          isPublished: input.isPublished ?? true,
+        },
+      });
+    }),
+
+  /**
+   * Update a recipe
+   */
+  update: publicProcedure
+    .input(z.object({ id: z.string() }).merge(recipeInputSchema.partial()))
+    .mutation(async ({ input }) => {
+      const { id, ...data } = input;
+      return await prisma.recipe.update({
+        where: { id },
+        data,
+      });
+    }),
+
+  /**
+   * Delete a recipe
+   */
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      await prisma.recipe.delete({ where: { id: input.id } });
+      return { success: true };
+    }),
+
+  /**
+   * Toggle publish status
+   */
+  togglePublish: publicProcedure
+    .input(z.object({ id: z.string(), isPublished: z.boolean() }))
+    .mutation(async ({ input }) => {
+      return await prisma.recipe.update({
+        where: { id: input.id },
+        data: { isPublished: input.isPublished },
+      });
+    }),
 });

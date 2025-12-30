@@ -14,18 +14,95 @@ import {
   Users,
   Award,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import { api } from "@/trpc/client";
+
+// Fallback content if database is empty
+const FALLBACK = {
+  hero: {
+    title: "Ons Verhaal",
+    description:
+      "Wij zijn een sociale onderneming waar statushouders* en asielzoekers uw bedrijfsuitjes organiseren en u een onvergetelijke dag bezorgen.",
+  },
+  doen: {
+    title: "Doen én bijzonder eten",
+    description:
+      "Onze bedrijfsuitjes bestaan uit een mix van actieve en minder actieve Uitjes met vaak een cultureel tintje al dan niet gecombineerd met heerlijk eten uit de Arabische of Perzische keuken.",
+  },
+  ervaring: {
+    title: "Ervaring opdoen",
+    description:
+      "Onze medewerkers organiseren en begeleiden de workshops en activiteiten, waardoor zij kennismaken met de Nederlandse werkcultuur en gewoonten en contact hebben met deelnemers.",
+  },
+  culturen: {
+    title: "Nieuwe culturen leren kennen",
+    description1:
+      "Tijdens onze workshops en activiteiten stimuleren wij interactie tussen deelnemers en medewerkers.",
+    description2:
+      "Daarmee vergroten wij de kennis van deelnemers over de achtergrond en cultuur van onze medewerkers.",
+  },
+  quote: {
+    text: "Wij vergroten de kennis van deelnemers over de achtergrond en cultuur van onze medewerkers.",
+    author: "Het Goeduitje Team",
+    subtitle: "Be a part of it!",
+  },
+  visie: {
+    title: "Onze Visie",
+    paragraph1:
+      "Wij streven naar een samenleving waarin diversiteit wordt gevierd.",
+    paragraph2:
+      "Door het potentieel van statushouders te erkennen, bouwen we bruggen tussen culturen.",
+    paragraph3:
+      "We zien een toekomst waarin onze organisatie een toonaangevende rol speelt.",
+  },
+  missie: {
+    title: "Onze Missie",
+    description:
+      "Het is onze missie om statushouders en asielzoekers voor te bereiden op een baan die aansluit bij hun kennis en ervaring.",
+  },
+  cta: {
+    title: "Word Deel van Ons Verhaal",
+    description:
+      "Organiseer een bedrijfsuitje dat verder gaat dan teambuilding. Maak impact die telt.",
+    buttonText: "Bekijk Onze Workshops",
+  },
+  footnote: {
+    text: "*statushouder: Asielzoeker die een verblijfsvergunning heeft en in Nederland mag blijven.",
+  },
+};
 
 export default function OnsVerhaalPage() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
 
+  const { data: content, isLoading } = api.content.getByPage.useQuery(
+    { page: "ons-verhaal" },
+    { staleTime: 5 * 60 * 1000 }
+  );
+
+  // Helper to get content with fallback
+  const get = (section: keyof typeof FALLBACK, key: string): string => {
+    return (
+      content?.[section]?.[key] ??
+      (FALLBACK[section] as Record<string, string>)[key] ??
+      ""
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center pt-20">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section - Parallax with Editorial Typography */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden border-b">
-        {/* Parallax background */}
         <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
           <div className="from-primary/10 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
           <div
@@ -42,12 +119,10 @@ export default function OnsVerhaalPage() {
             <ScrollReveal animation="slideUp">
               <div className="mx-auto max-w-4xl text-center">
                 <h1 className="text-primary mb-8 tracking-tight">
-                  Ons Verhaal
+                  {get("hero", "title")}
                 </h1>
                 <p className="text-muted-foreground mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
-                  Wij zijn een sociale onderneming waar statushouders* en
-                  asielzoekers uw bedrijfsuitjes organiseren en u een
-                  onvergetelijke dag bezorgen.
+                  {get("hero", "description")}
                 </p>
               </div>
             </ScrollReveal>
@@ -64,13 +139,10 @@ export default function OnsVerhaalPage() {
                 <Utensils className="text-primary h-8 w-8" />
               </div>
               <h2 className="text-primary tracking-tight">
-                Doen én bijzonder eten
+                {get("doen", "title")}
               </h2>
               <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-lg leading-relaxed tracking-wide sm:text-xl">
-                Onze bedrijfsuitjes bestaan uit een mix van actieve en minder
-                actieve Uitjes met vaak een cultureel tintje al dan niet
-                gecombineerd met heerlijk eten uit de Arabische of Perzische
-                keuken.
+                {get("doen", "description")}
               </p>
             </div>
           </ScrollReveal>
@@ -85,15 +157,11 @@ export default function OnsVerhaalPage() {
               <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-3">
                 <GraduationCap className="text-primary h-8 w-8" />
               </div>
-              <h2 className="text-primary tracking-tight">Ervaring opdoen</h2>
+              <h2 className="text-primary tracking-tight">
+                {get("ervaring", "title")}
+              </h2>
               <p className="text-muted-foreground mx-auto mt-4 max-w-3xl text-lg leading-relaxed tracking-wide sm:text-xl">
-                Onze medewerkers organiseren en begeleiden de workshops en
-                activiteiten, waardoor zij kennismaken met de Nederlandse
-                werkcultuur en gewoonten en contact hebben met deelnemers. Dit
-                biedt een praktische omgeving om de taal te oefenen,
-                vaardigheden te ontwikkelen voor de arbeidsmarkt, hun netwerk te
-                vergroten en een waardevolle referentie op te bouwen voor een
-                toekomstige baan bij een Nederlandse organisatie.
+                {get("ervaring", "description")}
               </p>
               <motion.div
                 className="mt-6"
@@ -126,28 +194,18 @@ export default function OnsVerhaalPage() {
                 <Globe className="text-primary h-8 w-8" />
               </div>
               <h2 className="text-primary tracking-tight">
-                Nieuwe culturen leren kennen
+                {get("culturen", "title")}
               </h2>
               <div className="text-muted-foreground mx-auto mt-4 max-w-3xl space-y-4 text-lg leading-relaxed tracking-wide sm:text-xl">
-                <p>
-                  Tijdens onze workshops en activiteiten stimuleren wij
-                  interactie tussen deelnemers en medewerkers om zodoende
-                  deelnemers kennis te laten maken met onze medewerkers, hun
-                  cultuur en hun achtergrond.
-                </p>
-                <p>
-                  Daarmee vergroten wij de kennis van deelnemers over de
-                  achtergrond en cultuur van onze medewerkers waardoor zij meer
-                  openstaan voor statushouders en asielzoekers en we onze
-                  samenleving inclusiever maken.
-                </p>
+                <p>{get("culturen", "description1")}</p>
+                <p>{get("culturen", "description2")}</p>
               </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Pull Quote - Editorial Layout */}
+      {/* Pull Quote */}
       <section className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
@@ -156,16 +214,14 @@ export default function OnsVerhaalPage() {
                 &ldquo;
               </span>
               <blockquote className="text-foreground mb-6 text-xl leading-relaxed font-light tracking-wide italic sm:text-2xl">
-                Wij vergroten de kennis van deelnemers over de achtergrond en
-                cultuur van onze medewerkers waardoor zij meer openstaan voor
-                statushouders en asielzoekers.
+                {get("quote", "text")}
               </blockquote>
               <div className="border-border inline-block border-t pt-4">
                 <p className="font-semibold tracking-tight">
-                  Het Goeduitje Team
+                  {get("quote", "author")}
                 </p>
                 <p className="text-muted-foreground text-sm tracking-wide">
-                  Be a part of it!
+                  {get("quote", "subtitle")}
                 </p>
               </div>
             </div>
@@ -173,7 +229,7 @@ export default function OnsVerhaalPage() {
         </div>
       </section>
 
-      {/* Visie & Missie Section - 2 Column Layout */}
+      {/* Visie & Missie Section */}
       <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
@@ -201,26 +257,12 @@ export default function OnsVerhaalPage() {
                     <Eye className="text-primary h-8 w-8" />
                   </div>
                   <h3 className="mb-4 text-2xl font-semibold tracking-tight">
-                    Onze Visie
+                    {get("visie", "title")}
                   </h3>
                   <div className="text-muted-foreground flex-grow space-y-4 leading-relaxed tracking-wide">
-                    <p>
-                      Wij streven naar een samenleving waarin diversiteit wordt
-                      gevierd en iedereen gelijke kansen heeft op de
-                      arbeidsmarkt.
-                    </p>
-                    <p>
-                      Door het potentieel van statushouders en asielzoekers te
-                      erkennen en te benutten, bouwen we bruggen tussen culturen
-                      en versterken we de sociale cohesie.
-                    </p>
-                    <p>
-                      We zien een toekomst voor ons waarin onze organisatie een
-                      toonaangevende rol speelt in het creëren van inclusieve
-                      werkplekken, waar talenten uit alle hoeken van de wereld
-                      samenkomen en bijdragen aan gezamenlijke groei en
-                      welvaart.
-                    </p>
+                    <p>{get("visie", "paragraph1")}</p>
+                    <p>{get("visie", "paragraph2")}</p>
+                    <p>{get("visie", "paragraph3")}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -238,15 +280,10 @@ export default function OnsVerhaalPage() {
                     <Target className="text-primary h-8 w-8" />
                   </div>
                   <h3 className="mb-4 text-2xl font-semibold tracking-tight">
-                    Onze Missie
+                    {get("missie", "title")}
                   </h3>
                   <p className="text-muted-foreground flex-grow leading-relaxed tracking-wide">
-                    Het is onze missie om statushouders en asielzoekers in hun
-                    baan bij Goeduitje voor te bereiden op een baan die aansluit
-                    bij hun kennis, ervaring en interesses en Nederlanders
-                    kennis te laten maken met onze medewerkers en hun cultuur
-                    zodat zij statushouders en asielzoekers waarderen om hun
-                    kennis en kwaliteiten.
+                    {get("missie", "description")}
                   </p>
                 </CardContent>
               </Card>
@@ -354,12 +391,10 @@ export default function OnsVerhaalPage() {
         <section className="section-md bg-primary text-primary-foreground">
           <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
             <h2 className="mb-6 tracking-tight text-white">
-              Word Deel van Ons Verhaal
+              {get("cta", "title")}
             </h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
-              Organiseer een bedrijfsuitje dat verder gaat dan teambuilding.
-              Maak impact die telt en draag bij aan een inclusievere
-              samenleving.
+              {get("cta", "description")}
             </p>
             <motion.div
               whileHover={{ y: -2, scale: 1.05 }}
@@ -372,7 +407,7 @@ export default function OnsVerhaalPage() {
                 className="text-primary shadow-editorial-lg hover:shadow-editorial-hover bg-white px-8 tracking-wide transition-all duration-300 hover:bg-white/90"
                 asChild
               >
-                <Link href="/onze-uitjes">Bekijk Onze Workshops</Link>
+                <Link href="/onze-uitjes">{get("cta", "buttonText")}</Link>
               </Button>
             </motion.div>
           </div>
@@ -383,8 +418,7 @@ export default function OnsVerhaalPage() {
       <section className="border-t py-8">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <p className="text-muted-foreground text-sm leading-relaxed">
-            *statushouder: Asielzoeker die een verblijfsvergunning heeft en in
-            Nederland mag blijven.
+            {get("footnote", "text")}
           </p>
         </div>
       </section>
