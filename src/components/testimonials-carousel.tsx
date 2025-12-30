@@ -36,45 +36,6 @@ export interface GoogleReviewData {
   relativeTime: string;
 }
 
-const DEFAULT_TESTIMONIALS: Testimonial[] = [
-  {
-    id: "1",
-    quote:
-      "Een geweldige ervaring! Het team van Goeduitje heeft ons bedrijfsuitje tot een onvergetelijke dag gemaakt. De combinatie van plezier en sociale impact is uniek.",
-    author: "Sarah van der Berg",
-    role: "HR Manager",
-    company: "TechCorp Amsterdam",
-    rating: 5,
-  },
-  {
-    id: "2",
-    quote:
-      "De kookworkshop was fantastisch. Niet alleen hebben we als team beter leren samenwerken, maar we weten ook dat we tegelijkertijd iets goeds hebben gedaan voor mensen in nood.",
-    author: "Mohammed Al-Hassan",
-    role: "Team Lead",
-    company: "Design Studio Rotterdam",
-    rating: 5,
-  },
-  {
-    id: "3",
-    quote:
-      "Het stadsspel was precies wat we nodig hadden - uitdagend, leuk en betekenisvol. Onze collega's praten er nog steeds over!",
-    author: "Lisa de Vries",
-    role: "Operations Director",
-    company: "Sustainable Solutions",
-    rating: 5,
-  },
-  {
-    id: "4",
-    quote:
-      "Goeduitje denkt écht met je mee. Van begin tot eind was alles perfect geregeld. De sociale impact maakt het extra bijzonder.",
-    author: "Jasper Winters",
-    role: "CEO",
-    company: "Innovation Hub Utrecht",
-    rating: 5,
-  },
-];
-
 interface TestimonialsCarouselProps {
   testimonials?: Testimonial[];
   autoPlayInterval?: number;
@@ -128,13 +89,12 @@ export function TestimonialsCarousel({
       }))
     : [];
 
-  // Priority: props > database > static fallback
+  // Priority: props > database > null (no fallback to fake data)
   const testimonials =
     propTestimonials ||
     (useCustomTestimonials && customTestimonials.length > 0
       ? customTestimonials
-      : null) ||
-    DEFAULT_TESTIMONIALS;
+      : []);
 
   const isLoading =
     isLoadingGoogle || (useCustomTestimonials && isLoadingCustom);
@@ -170,7 +130,7 @@ export function TestimonialsCarousel({
       return { first, second, isGoogle: true };
     }
     const startIndex = showPaired ? currentIndex * 2 : currentIndex;
-    const first = testimonials[startIndex] ?? DEFAULT_TESTIMONIALS[0];
+    const first = testimonials[startIndex];
     const second = showPaired ? testimonials[startIndex + 1] : undefined;
     return { first, second, isGoogle: false };
   };
@@ -210,8 +170,13 @@ export function TestimonialsCarousel({
     );
   }
 
-  // Fallback to default testimonials if Google Reviews fails or is empty
+  // Check if Google Reviews available
   const showGoogleReviews = hasGoogleReviews && !googleError;
+
+  // Return null if no data available (no fake fallbacks)
+  if (!showGoogleReviews && testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section className="bg-accent section-md relative">
@@ -247,13 +212,9 @@ export function TestimonialsCarousel({
                     <PairedTestimonials pair={getCurrentPair()} />
                   ) : showGoogleReviews ? (
                     <GoogleReviewCard review={googleReviews[currentIndex]!} />
-                  ) : (
-                    <TestimonialCard
-                      testimonial={
-                        testimonials[currentIndex] ?? DEFAULT_TESTIMONIALS[0]
-                      }
-                    />
-                  )}
+                  ) : testimonials[currentIndex] ? (
+                    <TestimonialCard testimonial={testimonials[currentIndex]} />
+                  ) : null}
                 </motion.div>
               </AnimatePresence>
             </div>

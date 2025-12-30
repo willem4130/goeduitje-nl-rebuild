@@ -22,37 +22,6 @@ export interface Testimonial {
   rating?: number;
 }
 
-// Fallback testimonials for the configurator sidebar
-const FEATURED_TESTIMONIALS: Testimonial[] = [
-  {
-    id: "1",
-    quote:
-      "Een geweldige ervaring! Het team van Goeduitje heeft ons bedrijfsuitje tot een onvergetelijke dag gemaakt.",
-    author: "Sarah van der Berg",
-    role: "HR Manager",
-    company: "TechCorp Amsterdam",
-    rating: 5,
-  },
-  {
-    id: "2",
-    quote:
-      "De kookworkshop was fantastisch. Niet alleen hebben we als team beter leren samenwerken.",
-    author: "Mohammed Al-Hassan",
-    role: "Team Lead",
-    company: "Design Studio Rotterdam",
-    rating: 5,
-  },
-  {
-    id: "3",
-    quote:
-      "Het stadsspel was precies wat we nodig hadden - uitdagend, leuk en betekenisvol.",
-    author: "Lisa de Vries",
-    role: "Operations Director",
-    company: "Sustainable Solutions",
-    rating: 5,
-  },
-];
-
 interface CompactTestimonialsProps {
   testimonials?: Testimonial[];
   autoPlayInterval?: number;
@@ -88,7 +57,7 @@ export function CompactTestimonials({
     }));
   }, [dbTestimonials]);
 
-  // Priority: props > database > fallback
+  // Priority: props > database > empty (no fake fallbacks)
   const testimonials = useMemo(() => {
     if (propTestimonials && propTestimonials.length > 0) {
       return propTestimonials;
@@ -96,7 +65,7 @@ export function CompactTestimonials({
     if (useCustomTestimonials && transformedDbTestimonials.length > 0) {
       return transformedDbTestimonials;
     }
-    return FEATURED_TESTIMONIALS;
+    return [];
   }, [propTestimonials, useCustomTestimonials, transformedDbTestimonials]);
 
   const nextTestimonial = useCallback(() => {
@@ -117,8 +86,7 @@ export function CompactTestimonials({
     return () => clearInterval(interval);
   }, [isPaused, nextTestimonial, autoPlayInterval, testimonials.length]);
 
-  const currentTestimonial =
-    testimonials[currentIndex] ?? FEATURED_TESTIMONIALS[0];
+  const currentTestimonial = testimonials[currentIndex];
 
   // Show loading state when fetching from database
   if (useCustomTestimonials && isLoading) {
@@ -129,6 +97,11 @@ export function CompactTestimonials({
         </CardContent>
       </Card>
     );
+  }
+
+  // Return null if no testimonials available (no fake fallbacks)
+  if (testimonials.length === 0 || !currentTestimonial) {
+    return null;
   }
 
   return (
