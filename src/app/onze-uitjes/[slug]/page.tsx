@@ -171,11 +171,11 @@ const WORKSHOPS: WorkshopData[] = [
         ],
       },
       {
-        id: "vegetarisch",
-        name: "Vegetarische Kookworkshop",
+        id: "koken-op-maat",
+        name: "Koken op Maat",
         description:
-          "Onder begeleiding van gepassioneerde koks leer je samen koken met seizoensgebonden, lokale ingrediënten. De samenwerking wordt op een speelse manier beoordeeld, met een optionele prijsuitreiking als leuke afsluiter. Keuze uit plantaardige menu's geïnspireerd door diverse wereldkeukens.",
-        duration: "vanaf 2,5 uur",
+          "Goeduitje.nl creëert graag een workshop op maat! De chef komt naar jou toe en kan zo persoonlijke begeleiding bieden afgestemd op jouw wensen. De ervaring wordt volledig aangepast aan jouw voorkeuren. Samen maken we van koken niet alleen een feestje voor de smaakpapillen, maar vooral voor het hart.",
+        duration: "in overleg",
         priceTiers: [
           {
             groupSize: "8-10 personen",
@@ -191,25 +191,11 @@ const WORKSHOPS: WorkshopData[] = [
           },
         ],
         includes: [
-          "Begeleiding door gepassioneerde koks",
-          "Seizoensgebonden, lokale ingrediënten",
-          "Plantaardige menu's",
-          "Complete maaltijd",
-          "Optionele prijsuitreiking",
-        ],
-      },
-      {
-        id: "open",
-        name: "Open Kookworkshops",
-        description:
-          "In kleine groepjes kook je twee heerlijke hoofdgerechten, die daarna gezellig samen worden opgegeten. Ideaal om kennis te maken met onze workshops of voor particulieren.",
-        duration: "3 uur",
-        priceTiers: [{ groupSize: "Per persoon", price: "€50 p.p." }],
-        includes: [
-          "Koken in kleine groepjes",
-          "Twee hoofdgerechten",
-          "Gezellig samen eten",
-          "Begeleiding door koks",
+          "Chef komt naar jouw locatie",
+          "Volledig aangepast aan jouw wensen",
+          "Persoonlijke begeleiding",
+          "Alle ingrediënten en materialen",
+          "Keuze uit vlees, vegetarisch of veganistisch",
         ],
       },
     ],
