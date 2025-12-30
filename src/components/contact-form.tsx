@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -29,10 +28,9 @@ import {
   contactFormSchema,
   type ContactFormValues,
 } from "@/lib/validations/forms";
+import { api } from "@/trpc/client";
 
 export function ContactForm() {
-  const [isLoading, setIsLoading] = useState(false);
-
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -43,44 +41,48 @@ export function ContactForm() {
     },
   });
 
-  async function onSubmit(data: ContactFormValues) {
-    setIsLoading(true);
-
-    try {
-      // Send confirmation email
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "contact-confirmation",
-          to: data.email,
-          data: {
-            name: `${data.voornaam} ${data.achternaam}`,
-            subject: "Contact formulier",
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send confirmation email");
+  const submitFeedback = api.feedback.submit.useMutation({
+    onSuccess: async (_, variables) => {
+      // Also send confirmation email
+      try {
+        await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "contact-confirmation",
+            to: variables.email,
+            data: {
+              name: variables.name,
+              subject: "Contact formulier",
+            },
+          }),
+        });
+      } catch {
+        // Email failed but feedback was saved - still show success
       }
 
-      console.log("Form data:", data);
       toast.success("Bericht verzonden!", {
         description: "Controleer je e-mail voor een bevestiging.",
       });
-
       form.reset();
-    } catch {
+    },
+    onError: () => {
       toast.error("Er ging iets mis!", {
         description: "Probeer het later opnieuw.",
       });
-    } finally {
-      setIsLoading(false);
-    }
+    },
+  });
+
+  async function onSubmit(data: ContactFormValues) {
+    submitFeedback.mutate({
+      name: `${data.voornaam} ${data.achternaam}`,
+      email: data.email,
+      message: data.bericht,
+      subject: "Contact formulier",
+    });
   }
+
+  const isLoading = submitFeedback.isPending;
 
   return (
     <Card className="w-full max-w-2xl">

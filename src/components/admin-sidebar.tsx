@@ -6,12 +6,13 @@ import {
   IconDashboard,
   IconFileDescription,
   IconHelp,
+  IconInbox,
   IconInnerShadowTop,
-  IconPackage,
   IconSearch,
   IconSettings,
   IconShoppingCart,
   IconStar,
+  IconToolsKitchen2,
   IconUsers,
 } from "@tabler/icons-react";
 
@@ -42,9 +43,14 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Users",
-      url: "/admin/users",
-      icon: IconUsers,
+      title: "Workshops",
+      url: "/admin/workshops",
+      icon: IconToolsKitchen2,
+    },
+    {
+      title: "Berichten",
+      url: "/admin/feedback",
+      icon: IconInbox,
     },
     {
       title: "Reviews",
@@ -52,13 +58,13 @@ const data = {
       icon: IconStar,
     },
     {
-      title: "Products",
-      url: "/admin/products",
-      icon: IconPackage,
+      title: "Gebruikers",
+      url: "/admin/users",
+      icon: IconUsers,
     },
     {
-      title: "Orders",
-      url: "/admin/orders",
+      title: "Boekingen",
+      url: "/admin/bookings",
       icon: IconShoppingCart,
     },
     {

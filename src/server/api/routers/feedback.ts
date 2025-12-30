@@ -74,17 +74,28 @@ export const feedbackRouter = createTRPCRouter({
     }),
 
   /**
-   * Mark feedback as read
+   * Mark feedback as read/unread
    */
-  markAsRead: publicProcedure
-    .input(z.object({ id: z.string() }))
+  toggleRead: publicProcedure
+    .input(z.object({ id: z.string(), isRead: z.boolean() }))
     .mutation(async ({ input }) => {
       const feedback = await prisma.feedback.update({
         where: { id: input.id },
-        data: { isRead: true },
+        data: { isRead: input.isRead },
       });
-
       return feedback;
+    }),
+
+  /**
+   * Delete feedback
+   */
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      await prisma.feedback.delete({
+        where: { id: input.id },
+      });
+      return { success: true };
     }),
 
   /**
