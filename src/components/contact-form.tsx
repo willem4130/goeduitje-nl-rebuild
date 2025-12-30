@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { IconLoader2, IconSend } from "@tabler/icons-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,10 +36,10 @@ export function ContactForm() {
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      name: "",
+      voornaam: "",
+      achternaam: "",
       email: "",
-      subject: "",
-      message: "",
+      bericht: "",
     },
   });
 
@@ -56,8 +57,8 @@ export function ContactForm() {
           type: "contact-confirmation",
           to: data.email,
           data: {
-            name: data.name,
-            subject: data.subject,
+            name: `${data.voornaam} ${data.achternaam}`,
+            subject: "Contact formulier",
           },
         }),
       });
@@ -67,14 +68,14 @@ export function ContactForm() {
       }
 
       console.log("Form data:", data);
-      toast.success("Message sent!", {
-        description: "Check your email for confirmation.",
+      toast.success("Bericht verzonden!", {
+        description: "Controleer je e-mail voor een bevestiging.",
       });
 
       form.reset();
     } catch {
-      toast.error("Something went wrong!", {
-        description: "Please try again later.",
+      toast.error("Er ging iets mis!", {
+        description: "Probeer het later opnieuw.",
       });
     } finally {
       setIsLoading(false);
@@ -84,38 +85,73 @@ export function ContactForm() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Get in Touch</CardTitle>
-        <CardDescription>
-          Have a question or want to work together? Send us a message!
+        <CardTitle>Neem contact op</CardTitle>
+        <CardDescription className="space-y-2">
+          <span>
+            Wil je een uitje boeken? Gebruik dan onze{" "}
+            <Link
+              href="/onze-uitjes#configurator"
+              className="text-primary font-medium underline underline-offset-4 hover:no-underline"
+            >
+              uitjes configurator
+            </Link>
+            . Bekijk de{" "}
+            <Link
+              href="/open-kookworkshops"
+              className="text-primary font-medium underline underline-offset-4 hover:no-underline"
+            >
+              agenda voor open workshops
+            </Link>
+            .
+          </span>
+          <span className="block">
+            Voor andere vragen kun je onderstaand formulier invullen.
+          </span>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="voornaam"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Voornaam</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Jan" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="achternaam"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Achternaam</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Jansen" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>E-mail</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder="jan@voorbeeld.nl"
                       {...field}
                     />
                   </FormControl>
@@ -126,27 +162,13 @@ export function ContactForm() {
 
             <FormField
               control={form.control}
-              name="subject"
+              name="bericht"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Subject</FormLabel>
-                  <FormControl>
-                    <Input placeholder="What's this about?" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message</FormLabel>
+                  <FormLabel>Bericht</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us more..."
+                      placeholder="Schrijf hier je bericht..."
                       className="min-h-32 resize-none"
                       {...field}
                     />
@@ -160,12 +182,12 @@ export function ContactForm() {
               {isLoading ? (
                 <>
                   <IconLoader2 className="mr-2 size-4 animate-spin" />
-                  Sending...
+                  Verzenden...
                 </>
               ) : (
                 <>
                   <IconSend className="mr-2 size-4" />
-                  Send Message
+                  Verstuur bericht
                 </>
               )}
             </Button>

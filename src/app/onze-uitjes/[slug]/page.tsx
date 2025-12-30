@@ -14,139 +14,161 @@ import {
   Calendar,
 } from "lucide-react";
 
-// Workshop data - in a real app this would come from a database
+// Workshop data - content from goeduitje.nl
 const WORKSHOPS = [
   {
     id: "kookworkshop",
     slug: "kookworkshop",
-    title: "Kookworkshop",
+    title: "Arabische Kookworkshop",
     subtitle: "Samen koken, samen genieten",
     description:
-      "Bereid samen een heerlijke maaltijd en leer nieuwe recepten terwijl je impact maakt",
+      "Bereid samen een heerlijke maaltijd onder begeleiding van gepassioneerde koks uit de Arabische keuken",
     longDescription: `
-      Onze kookworkshops zijn de perfecte combinatie van lekker eten, samenwerken en plezier maken.
-      Onder begeleiding van een professionele chef bereid je samen met je team een heerlijke maaltijd.
+      Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van de Arabische keuken.
+      Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen.
 
-      Van Italiaanse pasta tot Aziatische fusion - er is voor elk team een passende culinaire uitdaging.
-      Terwijl je snijdt, roert en proeft, werk je ongemerkt aan teambuilding en communicatie.
+      In teams van 2-3 personen bereid je heerlijke Arabische gerechten. De samenwerking wordt op een speelse manier beoordeeld,
+      met een optionele prijsuitreiking als leuke afsluiter.
 
-      Na afloop geniet je samen van het door jullie bereide diner, inclusief bijpassende wijnen of andere dranken.
+      Na afloop geniet je samen van het door jullie bereide diner. Keuze uit vlees, vegetarisch en veganistisch.
+      Ook beschikbaar: Oogsten, Koken & Genieten waarbij je eerst ingrediënten oogst in de pluktuin.
     `,
     video: "/images/workshops/workshop 1.mp4",
     image: "/images/workshops/kookworkshop.jpg",
-    duration: "3-4 uur",
+    duration: "vanaf 2,5 uur",
     groupSize: "8-30 personen",
-    price: "Vanaf €45 p.p.",
-    priceFrom: 45,
-    location: "Diverse locaties door heel Nederland",
+    price: "Vanaf €55 p.p.",
+    priceFrom: 55,
+    priceTiers: [
+      { groupSize: "8-10 personen", price: "€70 excl btw (€85 incl btw) p.p." },
+      {
+        groupSize: "11-15 personen",
+        price: "€60 excl btw (€73 incl btw) p.p.",
+      },
+      { groupSize: "16+ personen", price: "€55 excl btw (€67 incl btw) p.p." },
+    ],
+    location: "Op locatie naar keuze of bij u op locatie",
     includes: [
-      "Professionele chef-kok begeleiding",
+      "Begeleiding door gepassioneerde koks",
       "Alle ingrediënten en materialen",
       "Recepten om mee naar huis te nemen",
-      "Drie-gangen diner",
-      "Drankpakket (wijn, bier, fris)",
-      "Persoonlijke aandenken",
+      "Complete maaltijd",
+      "Keuze uit vlees, vegetarisch of veganistisch",
+      "Sociale impact - draag bij aan arbeidsparticipatie",
     ],
-    categories: ["Koken", "Teambuilding", "Indoor"],
+    categories: ["Koken", "Teambuilding", "Cultureel"],
   },
   {
     id: "stadsspel",
     slug: "stadsspel",
-    title: "Stadsspel",
+    title: "Stadsspel / Citygame",
     subtitle: "Ontdek de stad op een nieuwe manier",
     description:
-      "Een interactieve speurtocht door de stad met uitdagende opdrachten en verrassende ontdekkingen",
+      "Een interactieve speurtocht door de stad met culturele uitdagingen en verrassende ontmoetingen",
     longDescription: `
-      Ontdek de stad op een manier die je nooit eerder hebt meegemaakt! Ons stadsspel combineert
-      sightseeing met spannende challenges en teamopdrachten.
+      Ons culture stadsspel is uniek door de integratie van statushouders en asielzoekers in het spel.
+      Het spel kan zich afspelen in de stad, in de natuur of zelfs binnen.
 
-      Met een tablet of smartphone in de hand los je puzzels op, voer je opdrachten uit en
-      ontdek je verborgen plekjes die zelfs locals niet kennen.
+      Kies uit twee varianten:
+      - Teamspel: Competitief spel waar je strijdt tegen andere teams
+      - "Team up and crack it!" (Koffer): Als één team op zoek naar de code om de koffer te openen
 
-      Perfect voor teams die op zoek zijn naar een actieve, leerzame en vooral leuke ervaring
-      in het hart van de stad.
+      Perfect voor teams die op zoek zijn naar een actieve, culturele en vooral leuke ervaring.
     `,
     video: "/images/workshops/workshop 2.mp4",
     image: "/images/workshops/stadsspel.jpg",
     duration: "2-3 uur",
-    groupSize: "8-40 personen",
-    price: "Vanaf €35 p.p.",
-    priceFrom: 35,
-    location: "Amsterdam, Rotterdam, Utrecht, Den Haag en meer",
+    groupSize: "10-20 personen",
+    price: "Vanaf €22,50 p.p.",
+    priceFrom: 22.5,
+    priceTiers: [
+      { groupSize: "Teamspel", price: "vanaf €22,50 excl btw p.p." },
+      { groupSize: "Koffer teambuilding", price: "vanaf €32,50 excl btw p.p." },
+    ],
+    location: "Nijmegen, Arnhem en andere steden",
     includes: [
-      "Tablets/app voor het spel",
       "Professionele begeleiding",
       "Spannende challenges en puzzels",
+      "Culturele ontmoetingen",
       "Prijzen voor het winnende team",
       "Optioneel: lunch of borrel achteraf",
-      "Foto's van de dag",
+      "Sociale impact - ontmoet statushouders",
     ],
-    categories: ["Outdoor", "Teambuilding", "Actief"],
+    categories: ["Outdoor", "Teambuilding", "Cultureel"],
   },
   {
     id: "the-game",
     slug: "the-game",
-    title: "The Game",
-    subtitle: "Teamwork onder druk",
+    title: "The Game - Koffer Challenge",
+    subtitle: "Team up and crack it!",
     description:
-      "Een intense team challenge waarbij samenwerking en strategie centraal staan",
+      "Zoek samen de code om de koffer te openen. Vereist afstemming, communicatie en samenwerking",
     longDescription: `
-      The Game is onze meest intensieve teambuilding ervaring. In dit spannende spel
-      wordt je team uitgedaagd om onder tijdsdruk samen te werken en strategische beslissingen te nemen.
+      "Team up and crack it!" - Als één team ga je op zoek naar de code om de koffer te openen.
+      Dit vereist afstemming, communicatie en samenwerking tussen alle teamleden.
+
+      Uniek door de integratie van statushouders en asielzoekers in het spel. Zij begeleiden
+      de activiteit en maken het tot een bijzondere culturele ervaring.
 
       Communicatie, leiderschap en probleemoplossend denken worden op de proef gesteld
-      terwijl jullie puzzels oplossen en obstakels overwinnen.
-
-      Een onvergetelijke ervaring die je team dichter bij elkaar brengt en verborgen talenten naar boven haalt.
+      terwijl jullie samen de puzzel oplossen.
     `,
     image: "/images/workshops/the-game.jpg",
     duration: "2-3 uur",
-    groupSize: "10-50 personen",
-    price: "Vanaf €40 p.p.",
-    priceFrom: 40,
-    location: "Diverse indoor locaties",
+    groupSize: "10-20 personen",
+    price: "Vanaf €32,50 p.p.",
+    priceFrom: 32.5,
+    priceTiers: [
+      { groupSize: "Koffer teambuilding", price: "vanaf €32,50 excl btw p.p." },
+    ],
+    location: "Diverse locaties in overleg",
     includes: [
-      "Professionele game masters",
+      "Professionele begeleiding",
       "Alle benodigde materialen",
-      "Introductie en uitleg",
+      "Culturele uitwisseling",
       "Teamevaluatie achteraf",
       "Drankjes tijdens het spel",
-      "Winnaarsprijzen",
+      "Sociale impact - werk samen met statushouders",
     ],
-    categories: ["Indoor", "Teambuilding", "Strategie"],
+    categories: ["Indoor", "Teambuilding", "Cultureel"],
   },
   {
     id: "koffie-thee-workshop",
     slug: "koffie-thee-workshop",
     title: "Koffie & Thee Workshop",
-    subtitle: "De kunst van brouwen",
+    subtitle: "De kunst van Arabische koffie en thee",
     description:
-      "Leer alles over koffiebonen en thee, van herkomst tot perfecte bereiding",
+      "Leer hoe Arabische koffie en thee gemaakt worden en experimenteer met kruiden en specerijen",
     longDescription: `
-      Duik in de fascinerende wereld van koffie en thee! In deze workshop leer je alles
-      over de herkomst, het brandproces en de perfecte bereidingswijzen.
+      Onze medewerkers laten zien hoe Arabische koffie gemaakt wordt. Daarna maakt u in groepjes zelf koffie
+      en experimenteert u met verschillende kruiden en specerijen om de perfecte smaak te ontdekken.
 
-      Proef verschillende soorten koffie en thee uit alle hoeken van de wereld en
-      ontdek welke smaken het beste bij jou passen.
+      U kunt de koffie van collega's of teamgenoten proeven en samen bepalen hoe de lekkerste Arabische koffie te maken.
+      Theeliefhebbers kunnen ook aan de slag met diverse kruiden en specerijen.
 
-      Ga naar huis met kennis die je elke dag kunt toepassen en een nieuwe waardering
-      voor je dagelijkse bakje koffie of thee.
+      Tijdens de workshop serveren ze heerlijke Arabische lekkernijen. Optioneel te combineren met een maaltijd
+      uit de Arabische keuken.
     `,
     image: "/images/workshops/koffie-thee.jpg",
-    duration: "2-3 uur",
+    duration: "in overleg",
     groupSize: "8-25 personen",
-    price: "Vanaf €40 p.p.",
-    priceFrom: 40,
-    location: "Amsterdam, Utrecht, Rotterdam",
-    includes: [
-      "Expert barista begeleiding",
-      "Proeverij diverse koffie- en theesoorten",
-      "Theorie over herkomst en bereiding",
-      "Praktische oefening",
-      "Pakketje koffie/thee voor thuis",
-      "Bijpassend gebak",
+    price: "Vanaf €32,50 p.p.",
+    priceFrom: 32.5,
+    priceTiers: [
+      { groupSize: "Workshop", price: "vanaf €32,50 excl btw p.p." },
+      { groupSize: "Met maaltijd", price: "prijs in overleg" },
     ],
-    categories: ["Workshop", "Indoor", "Culinair"],
+    location:
+      "Bij u op locatie (binnen of buiten) of gezamenlijk gekozen locatie",
+    includes: [
+      "Begeleiding door onze medewerkers",
+      "Diverse koffie- en theesoorten",
+      "Kruiden en specerijen om mee te experimenteren",
+      "Arabische lekkernijen",
+      "Culturele uitwisseling",
+      "Optioneel: maaltijd uit de Arabische keuken",
+    ],
+    categories: ["Workshop", "Cultureel", "Culinair"],
   },
   {
     id: "beachvolleybal-workshop",
@@ -154,30 +176,35 @@ const WORKSHOPS = [
     title: "Beachvolleybal Workshop",
     subtitle: "Sport, zon en strand",
     description:
-      "Actieve teambuilding op het strand met professionele coaching en leuke challenges",
+      "Actieve teambuilding met gecertificeerde trainers. Clinic, toernooi of combinatie van beide",
     longDescription: `
-      Combineer teambuilding met beweging en plezier op het strand! Onze beachvolleybal
-      workshop is perfect voor teams die van een actieve uitdaging houden.
+      Onder leiding van gecertificeerde beachvolleybaltrainers leer je de beginselen van het beachvolleybal
+      of breid je je volleybalskills uit. Serveren, passen, duiken en aanvallen komen allemaal aan bod.
 
-      Onder begeleiding van ervaren coaches leer je de basistechnieken of verbeter je
-      je bestaande skills. Daarna is het tijd voor een spannend toernooi!
+      Kies uit verschillende opties:
+      - Dynamische clinic door gecertificeerde trainer
+      - Spannend toernooi
+      - Combinatie van beide
 
-      Met de zon op je gezicht en zand tussen je tenen creëer je herinneringen die
-      je team nog lang zal bijblijven.
+      Geschikt voor beginners én gevorderden. Met de zon op je gezicht en zand tussen je tenen
+      creëer je herinneringen die je team nog lang zal bijblijven.
     `,
     image: "/images/workshops/beachvolleybal.jpg",
-    duration: "2-3 uur",
+    duration: "2-4 uur",
     groupSize: "12-40 personen",
-    price: "Vanaf €35 p.p.",
-    priceFrom: 35,
+    price: "Vanaf €25 p.p.",
+    priceFrom: 25,
+    priceTiers: [
+      { groupSize: "Per persoon", price: "vanaf €25 excl btw p.p." },
+    ],
     location: "Beachclubs in heel Nederland",
     includes: [
-      "Professionele volleybalcoaches",
+      "Gecertificeerde volleybalcoaches",
       "Gebruik van velden en materiaal",
       "Warming-up en techniektraining",
       "Toernooi met prijzen",
-      "Drankjes en hapjes",
-      "Kleedkamers en douches",
+      "Geschikt voor beginners én gevorderden",
+      "Optioneel: drankjes en hapjes",
     ],
     categories: ["Outdoor", "Sport", "Teambuilding"],
   },
@@ -313,9 +340,9 @@ export default async function WorkshopDetailPage({ params }: Props) {
               {/* CTA */}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="lg" className="flex-1">
-                  <Link href="/booking">
+                  <Link href="/onze-uitjes#configurator">
                     <Calendar className="mr-2 h-5 w-5" />
-                    Direct boeken
+                    Configureer uitje
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="flex-1">
@@ -364,8 +391,29 @@ export default async function WorkshopDetailPage({ params }: Props) {
                     per persoon
                   </span>
                 </p>
+
+                {/* Price tiers */}
+                {workshop.priceTiers && workshop.priceTiers.length > 0 && (
+                  <div className="mb-4 space-y-2">
+                    <p className="text-sm font-semibold">
+                      Prijzen per groepsgrootte:
+                    </p>
+                    {workshop.priceTiers.map((tier, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-muted-foreground">
+                          {tier.groupSize}
+                        </span>
+                        <span className="font-medium">{tier.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <Button asChild className="w-full">
-                  <Link href="/booking">Nu boeken</Link>
+                  <Link href="/onze-uitjes#configurator">Nu boeken</Link>
                 </Button>
               </div>
             </div>
@@ -385,7 +433,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button asChild size="lg">
-              <Link href="/booking">Direct boeken</Link>
+              <Link href="/onze-uitjes#configurator">Configureer je uitje</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link href="/contact">Contact opnemen</Link>

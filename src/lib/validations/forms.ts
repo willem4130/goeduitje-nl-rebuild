@@ -2,17 +2,17 @@ import { z } from "zod";
 
 // Contact Form Schema
 export const contactFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+  voornaam: z.string().min(2, {
+    message: "Voornaam moet minimaal 2 karakters zijn.",
+  }),
+  achternaam: z.string().min(2, {
+    message: "Achternaam moet minimaal 2 karakters zijn.",
   }),
   email: z.string().email({
-    message: "Please enter a valid email address.",
+    message: "Voer een geldig e-mailadres in.",
   }),
-  subject: z.string().min(5, {
-    message: "Subject must be at least 5 characters.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
+  bericht: z.string().min(10, {
+    message: "Bericht moet minimaal 10 karakters zijn.",
   }),
 });
 

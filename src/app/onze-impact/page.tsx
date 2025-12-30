@@ -4,74 +4,12 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  FileText,
-  Target,
-  Users,
-  TrendingUp,
-  Lightbulb,
-  ChevronRight,
-} from "lucide-react";
+import { FileText, Target, Users, TrendingUp, Lightbulb } from "lucide-react";
 import Link from "next/link";
-
-// Theory of Change data - Medewerker
-const tocMedewerker = {
-  activiteiten: [
-    "Oriëntatiegesprek met werknemer",
-    "Aannameproces met selectiecriteria",
-    "Bezoek van gemeente",
-    "Uitvoeren intake tijdens sollicitatie",
-    "Leiden van workshops",
-    "Evaluatie van workshops",
-    "Samenwerken met coördinatoren",
-    "Social media planning & uitvoering",
-    "Administratie en boekhouding",
-  ],
-  outputs: [
-    "Medewerkers: stage, freelance & loondienstverband",
-    "Bronnen ongeacht tot: con van Goeduitje",
-    "Professionele referentie",
-    "Sociale netwerking",
-    "Feedback deelnemers & teambuilding",
-    "Evaluatiegesprek",
-    "Content creatie & content",
-    "Verkoopdoelen & planning",
-  ],
-  directeEffecten: [
-    "Ontwikkeld werkproces: vaardigheden (vb. teamwork, professionele communicatie)",
-    "Vergroten netwerk en positieve contactmomenten",
-    "Indruk en gevoel op de werkvloer",
-    "Eigenaar maken Nederlandse culturele normen",
-    "Ontwikkelen persoonlijke en beroepsmatige kwaliteiten",
-    "Inzichtelijk en goede ervaring van Nederlandse waarden",
-  ],
-  indirecteEffecten: [
-    "Medewerkers vinden positie binnen bedrijfsleven die aansluit bij hun kennis, ervaring en interesseert",
-  ],
-};
-
-// Theory of Change data - Klant/Deelnemer
-const tocDeelnemer = {
-  activiteiten: [
-    "Opdracht en workshops",
-    "Leiderschapsspel met medewerkers",
-    "Locatiebezoek met inspectie",
-  ],
-  outputs: [
-    "Sociale interactie met stagehouden en asielzoekers",
-    "Kennismaken met culturen, ervaringen en achtergronden",
-    "Informatie over achtergrond",
-  ],
-  directeEffecten: [
-    "Positieve ervaring op de dag zelf/goede sfeer en uitkomst van de activiteiten",
-    "Positieve en goede reactie naar medewerkers als teamgebouw",
-    "Open staan om zulke initiatieven vaker te steunen en meedoen",
-  ],
-  indirecteEffecten: [
-    "Organisaties rusten beter statushouders als sollicitanten de verbreed bij hun niveau van opleidingen",
-    "Meer inclusieve samenleving",
-  ],
-};
+import {
+  TheoryOfChangeMedewerker,
+  TheoryOfChangeDeelnemer,
+} from "@/components/theory-of-change";
 
 // Documents data
 const impactDocuments = [
@@ -161,8 +99,10 @@ export default function OnzeImpactPage() {
                   Onze Impact
                 </h1>
                 <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
-                  Ontdek hoe wij impact maken voor onze medewerkers, klanten en
-                  de samenleving.
+                  Als sociale onderneming vinden wij het belangrijk te weten
+                  welke impact we maken. Jaarlijks meten we impact op vier
+                  gebieden: arbeidsparticipatie, opleiding, impact op
+                  medewerkers en impact op de samenleving.
                 </p>
               </div>
             </ScrollReveal>
@@ -203,186 +143,14 @@ export default function OnzeImpactPage() {
       {/* Theory of Change - Medewerker */}
       <section className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp">
-            <div className="mb-8">
-              <h3 className="text-primary mb-6 text-2xl font-bold tracking-tight">
-                Theory of Change medewerker
-              </h3>
-
-              {/* ToC Flow Diagram - Medewerker */}
-              <div className="overflow-x-auto">
-                <div className="min-w-[900px]">
-                  <div className="grid grid-cols-4 gap-4">
-                    {/* Column Headers */}
-                    <div className="bg-primary rounded-lg p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Activiteiten
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-yellow-500 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Outputs
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-orange-500 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Directe effecten
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-red-600 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Indirecte effecten
-                      </span>
-                    </div>
-
-                    {/* Content Columns */}
-                    <div className="space-y-2">
-                      {tocMedewerker.activiteiten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="border-primary/20 bg-primary/5 rounded-lg border p-2 text-xs"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocMedewerker.outputs.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-yellow-500/20 bg-yellow-50 p-2 text-xs dark:bg-yellow-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocMedewerker.directeEffecten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-orange-500/20 bg-orange-50 p-2 text-xs dark:bg-orange-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocMedewerker.indirecteEffecten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-red-600/20 bg-red-50 p-2 text-xs dark:bg-red-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Arrow indicators */}
-                  <div className="mt-4 flex justify-center gap-4">
-                    <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                      <span>Flow:</span>
-                      <ChevronRight className="h-4 w-4" />
-                      <span>Activiteiten naar Indirecte effecten</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
+          <TheoryOfChangeMedewerker />
         </div>
       </section>
 
       {/* Theory of Change - Klant/Deelnemer */}
       <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal animation="slideUp">
-            <div className="mb-8">
-              <h3 className="text-primary mb-6 text-2xl font-bold tracking-tight">
-                Theory of Change klant / deelnemer
-              </h3>
-
-              {/* ToC Flow Diagram - Deelnemer */}
-              <div className="overflow-x-auto">
-                <div className="min-w-[900px]">
-                  <div className="grid grid-cols-4 gap-4">
-                    {/* Column Headers */}
-                    <div className="bg-primary rounded-lg p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Activiteiten
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-yellow-500 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Outputs
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-orange-500 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Directe effecten
-                      </span>
-                    </div>
-                    <div className="rounded-lg bg-red-600 p-3 text-center">
-                      <span className="text-sm font-semibold text-white">
-                        Indirecte effecten
-                      </span>
-                    </div>
-
-                    {/* Content Columns */}
-                    <div className="space-y-2">
-                      {tocDeelnemer.activiteiten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="border-primary/20 bg-primary/5 rounded-lg border p-2 text-xs"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocDeelnemer.outputs.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-yellow-500/20 bg-yellow-50 p-2 text-xs dark:bg-yellow-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocDeelnemer.directeEffecten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-orange-500/20 bg-orange-50 p-2 text-xs dark:bg-orange-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-2">
-                      {tocDeelnemer.indirecteEffecten.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-lg border border-red-600/20 bg-red-50 p-2 text-xs dark:bg-red-950/20"
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Arrow indicators */}
-                  <div className="mt-4 flex justify-center gap-4">
-                    <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                      <span>Flow:</span>
-                      <ChevronRight className="h-4 w-4" />
-                      <span>Activiteiten naar Indirecte effecten</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
+          <TheoryOfChangeDeelnemer />
         </div>
       </section>
 

@@ -52,44 +52,165 @@ export const DUTCH_CITIES = [
   "Waddinxveen",
 ] as const;
 
-// Workshops configuration
-export const WORKSHOPS = [
+// Price tier type
+export interface PriceTier {
+  minParticipants: number;
+  maxParticipants: number | null;
+  priceExclBtw: number;
+  priceInclBtw: number;
+}
+
+// Workshop configuration with pricing
+export interface Workshop {
+  id: string;
+  name: string;
+  minParticipants: number;
+  maxParticipants: number | null;
+  priceTiers: PriceTier[];
+  basePrice: number; // Lowest price tier (excl btw)
+}
+
+// Workshops configuration with pricing tiers from goeduitje.nl
+export const WORKSHOPS: Workshop[] = [
   {
     id: "kookworkshop",
     name: "Kookworkshop",
-    minParticipants: 1,
-    maxParticipants: null, // no max limit
+    minParticipants: 8,
+    maxParticipants: null,
+    basePrice: 55,
+    priceTiers: [
+      {
+        minParticipants: 8,
+        maxParticipants: 10,
+        priceExclBtw: 70,
+        priceInclBtw: 85,
+      },
+      {
+        minParticipants: 11,
+        maxParticipants: 15,
+        priceExclBtw: 60,
+        priceInclBtw: 73,
+      },
+      {
+        minParticipants: 16,
+        maxParticipants: null,
+        priceExclBtw: 55,
+        priceInclBtw: 67,
+      },
+    ],
   },
   {
     id: "stadsspel",
     name: "Stadsspel",
-    minParticipants: 6,
-    maxParticipants: null,
+    minParticipants: 10,
+    maxParticipants: 20,
+    basePrice: 22.5,
+    priceTiers: [
+      {
+        minParticipants: 10,
+        maxParticipants: null,
+        priceExclBtw: 22.5,
+        priceInclBtw: 27,
+      },
+    ],
   },
   {
     id: "the-game",
-    name: "The Game",
-    minParticipants: 6,
-    maxParticipants: null,
+    name: "The Game (Koffer)",
+    minParticipants: 10,
+    maxParticipants: 20,
+    basePrice: 32.5,
+    priceTiers: [
+      {
+        minParticipants: 10,
+        maxParticipants: null,
+        priceExclBtw: 32.5,
+        priceInclBtw: 39,
+      },
+    ],
   },
   {
     id: "beachvolleybal",
     name: "Beachvolleybal",
-    minParticipants: 6,
-    maxParticipants: null,
+    minParticipants: 12,
+    maxParticipants: 40,
+    basePrice: 25,
+    priceTiers: [
+      {
+        minParticipants: 12,
+        maxParticipants: null,
+        priceExclBtw: 25,
+        priceInclBtw: 30,
+      },
+    ],
   },
   {
     id: "koffie-thee",
     name: "Koffie & Thee",
-    minParticipants: 6,
-    maxParticipants: null,
+    minParticipants: 8,
+    maxParticipants: 25,
+    basePrice: 32.5,
+    priceTiers: [
+      {
+        minParticipants: 8,
+        maxParticipants: null,
+        priceExclBtw: 32.5,
+        priceInclBtw: 39,
+      },
+    ],
   },
   {
     id: "design-tshirt",
     name: "Design Your T-shirt",
-    minParticipants: 6,
+    minParticipants: 8,
     maxParticipants: null,
+    basePrice: 35,
+    priceTiers: [
+      {
+        minParticipants: 8,
+        maxParticipants: null,
+        priceExclBtw: 35,
+        priceInclBtw: 42,
+      },
+    ],
   },
-] as const;
+];
+
+// Helper function to get price for a workshop based on participant count
+export function getWorkshopPrice(
+  workshopId: string,
+  participantCount: number
+): PriceTier | null {
+  const workshop = WORKSHOPS.find((w) => w.id === workshopId);
+  if (!workshop) return null;
+
+  // Find the matching price tier
+  const tier = workshop.priceTiers.find(
+    (t) =>
+      participantCount >= t.minParticipants &&
+      (t.maxParticipants === null || participantCount <= t.maxParticipants)
+  );
+
+  return tier || workshop.priceTiers[workshop.priceTiers.length - 1] || null;
+}
+
+// Calculate total estimated price for selected workshops
+export function calculateEstimatedPrice(
+  workshopIds: string[],
+  participantCount: number,
+  includeVat: boolean = false
+): number {
+  let total = 0;
+
+  for (const workshopId of workshopIds) {
+    const tier = getWorkshopPrice(workshopId, participantCount);
+    if (tier) {
+      const pricePerPerson = includeVat ? tier.priceInclBtw : tier.priceExclBtw;
+      total += pricePerPerson * participantCount;
+    }
+  }
+
+  return total;
+}
 
 export type WorkshopId = (typeof WORKSHOPS)[number]["id"];

@@ -47,7 +47,11 @@ import {
   workshopConfigSchema,
   type WorkshopConfigValues,
 } from "@/lib/validations/forms";
-import { WORKSHOPS } from "@/lib/constants/cities";
+import {
+  WORKSHOPS,
+  getWorkshopPrice,
+  calculateEstimatedPrice,
+} from "@/lib/constants/cities";
 import { api } from "@/trpc/client";
 
 const STEPS = [
@@ -403,10 +407,14 @@ export function WorkshopConfigurator() {
                                         <div className="min-w-0 flex-1">
                                           <FormLabel className="cursor-pointer text-sm leading-tight font-normal">
                                             {workshop.name}
-                                            {!available && (
+                                            {!available ? (
                                               <span className="text-muted-foreground ml-1 text-[10px]">
                                                 (min. {workshop.minParticipants}
                                                 )
+                                              </span>
+                                            ) : (
+                                              <span className="text-primary ml-1 text-[10px] font-medium">
+                                                €{workshop.basePrice} p.p.
                                               </span>
                                             )}
                                           </FormLabel>
@@ -713,6 +721,58 @@ export function WorkshopConfigurator() {
                               : location}
                           </div>
                         </div>
+
+                        {/* Price Estimate */}
+                        {selectedWorkshops.length > 0 &&
+                          participantCount >= 8 && (
+                            <div className="mt-4 border-t pt-4">
+                              <h4 className="text-foreground mb-2 text-sm font-semibold">
+                                Geschatte prijs
+                              </h4>
+                              <div className="space-y-1 text-sm">
+                                {selectedWorkshops.map((workshopId) => {
+                                  const workshop = WORKSHOPS.find(
+                                    (w) => w.id === workshopId
+                                  );
+                                  const tier = getWorkshopPrice(
+                                    workshopId,
+                                    participantCount
+                                  );
+                                  if (!workshop || !tier) return null;
+                                  return (
+                                    <div
+                                      key={workshopId}
+                                      className="flex justify-between"
+                                    >
+                                      <span className="text-muted-foreground">
+                                        {workshop.name}:
+                                      </span>
+                                      <span>
+                                        €{tier.priceExclBtw} p.p. excl btw
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                                <div className="mt-2 flex justify-between border-t pt-2 font-semibold">
+                                  <span>
+                                    Totaal ({participantCount} pers.):
+                                  </span>
+                                  <span className="text-primary">
+                                    €
+                                    {calculateEstimatedPrice(
+                                      selectedWorkshops,
+                                      participantCount
+                                    ).toFixed(2)}{" "}
+                                    excl btw
+                                  </span>
+                                </div>
+                                <p className="text-muted-foreground mt-1 text-xs">
+                                  * Indicatieve prijs. Definitieve offerte volgt
+                                  na aanvraag.
+                                </p>
+                              </div>
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}
