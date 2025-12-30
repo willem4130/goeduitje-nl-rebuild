@@ -236,6 +236,94 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
     },
   });
 
+  // Kookworkshop Variant 5: Vegetarische Kookworkshop
+  const vegetarisch = await prisma.workshopVariant.create({
+    data: {
+      workshopId: kookworkshop.id,
+      name: "Vegetarische Kookworkshop",
+      description:
+        "Een vegetarische kookworkshop gericht op teambuilding, waarbij je leert koken met seizoensgebonden, lokale ingrediënten onder begeleiding van gepassioneerde koks (statushouders en asielzoekers). We bieden volledig vegetarische kookworkshops waarbij we rekening houden met dieetwensen en allergieën.",
+      duration: "2,5 tot 3 uur",
+      includes: [
+        "Begeleiding door gepassioneerde koks",
+        "Seizoensgebonden, lokale ingrediënten",
+        "Volledig vegetarisch menu",
+        "Recepten om mee naar huis te nemen",
+        "Complete maaltijd",
+        "Locatie in overleg",
+      ],
+      sortOrder: 5,
+    },
+  });
+
+  await prisma.priceTier.createMany({
+    data: [
+      {
+        workshopId: kookworkshop.id,
+        variantId: vegetarisch.id,
+        groupSize: "8-10 personen",
+        minParticipants: 8,
+        maxParticipants: 10,
+        priceExclBtw: 70,
+        priceInclBtw: 85,
+        sortOrder: 1,
+      },
+      {
+        workshopId: kookworkshop.id,
+        variantId: vegetarisch.id,
+        groupSize: "11-15 personen",
+        minParticipants: 11,
+        maxParticipants: 15,
+        priceExclBtw: 60,
+        priceInclBtw: 73,
+        sortOrder: 2,
+      },
+      {
+        workshopId: kookworkshop.id,
+        variantId: vegetarisch.id,
+        groupSize: "16+ personen",
+        minParticipants: 16,
+        maxParticipants: null,
+        priceExclBtw: 55,
+        priceInclBtw: 67,
+        sortOrder: 3,
+      },
+    ],
+  });
+
+  // Kookworkshop Variant 6: Open Kookworkshops
+  const openWorkshop = await prisma.workshopVariant.create({
+    data: {
+      workshopId: kookworkshop.id,
+      name: "Open Kookworkshops",
+      description:
+        "De open kookworkshops vinden plaats op verschillende locaties in Nijmegen. In kleine groepjes worden twee heerlijke hoofdgerechten gekookt, die daarna gezellig samen worden opgegeten. De workshop wordt afgesloten met een zelfgemaakt toetje. Perfect voor particulieren die willen kennismaken met onze workshops.",
+      duration: "2,5 tot 3 uur",
+      includes: [
+        "Begeleiding door koks",
+        "Alle ingrediënten",
+        "Twee hoofdgerechten",
+        "Zelfgemaakt toetje",
+        "Gezellig samen eten",
+        "Locatie: Nijmegen",
+      ],
+      sortOrder: 6,
+    },
+  });
+
+  await prisma.priceTier.create({
+    data: {
+      workshopId: kookworkshop.id,
+      variantId: openWorkshop.id,
+      groupSize: "Per persoon",
+      minParticipants: 1,
+      maxParticipants: null,
+      priceExclBtw: 41.32,
+      priceInclBtw: 50,
+      sortOrder: 1,
+    },
+  });
+
   // 2. Stadsspel
   const stadsspel = await prisma.workshop.create({
     data: {
