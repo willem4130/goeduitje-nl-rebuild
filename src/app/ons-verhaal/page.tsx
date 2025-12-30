@@ -19,82 +19,51 @@ import {
 import Link from "next/link";
 import { api } from "@/trpc/client";
 
-// Fallback content if database is empty
-const FALLBACK = {
-  hero: {
-    title: "Ons Verhaal",
-    description:
-      "Wij zijn een sociale onderneming waar statushouders* en asielzoekers uw bedrijfsuitjes organiseren en u een onvergetelijke dag bezorgen.",
-  },
-  doen: {
-    title: "Doen én bijzonder eten",
-    description:
-      "Onze bedrijfsuitjes bestaan uit een mix van actieve en minder actieve Uitjes met vaak een cultureel tintje al dan niet gecombineerd met heerlijk eten uit de Arabische of Perzische keuken.",
-  },
-  ervaring: {
-    title: "Ervaring opdoen",
-    description:
-      "Onze medewerkers organiseren en begeleiden de workshops en activiteiten, waardoor zij kennismaken met de Nederlandse werkcultuur en gewoonten en contact hebben met deelnemers.",
-  },
-  culturen: {
-    title: "Nieuwe culturen leren kennen",
-    description1:
-      "Tijdens onze workshops en activiteiten stimuleren wij interactie tussen deelnemers en medewerkers.",
-    description2:
-      "Daarmee vergroten wij de kennis van deelnemers over de achtergrond en cultuur van onze medewerkers.",
-  },
-  quote: {
-    text: "Wij vergroten de kennis van deelnemers over de achtergrond en cultuur van onze medewerkers.",
-    author: "Het Goeduitje Team",
-    subtitle: "Be a part of it!",
-  },
-  visie: {
-    title: "Onze Visie",
-    paragraph1:
-      "Wij streven naar een samenleving waarin diversiteit wordt gevierd.",
-    paragraph2:
-      "Door het potentieel van statushouders te erkennen, bouwen we bruggen tussen culturen.",
-    paragraph3:
-      "We zien een toekomst waarin onze organisatie een toonaangevende rol speelt.",
-  },
-  missie: {
-    title: "Onze Missie",
-    description:
-      "Het is onze missie om statushouders en asielzoekers voor te bereiden op een baan die aansluit bij hun kennis en ervaring.",
-  },
-  cta: {
-    title: "Word Deel van Ons Verhaal",
-    description:
-      "Organiseer een bedrijfsuitje dat verder gaat dan teambuilding. Maak impact die telt.",
-    buttonText: "Bekijk Onze Workshops",
-  },
-  footnote: {
-    text: "*statushouder: Asielzoeker die een verblijfsvergunning heeft en in Nederland mag blijven.",
-  },
-};
-
 export default function OnsVerhaalPage() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
 
-  const { data: content, isLoading } = api.content.getByPage.useQuery(
+  const {
+    data: content,
+    isLoading,
+    error,
+  } = api.content.getByPage.useQuery(
     { page: "ons-verhaal" },
     { staleTime: 5 * 60 * 1000 }
   );
 
-  // Helper to get content with fallback
-  const get = (section: keyof typeof FALLBACK, key: string): string => {
-    return (
-      content?.[section]?.[key] ??
-      (FALLBACK[section] as Record<string, string>)[key] ??
-      ""
-    );
+  // Helper to get content value
+  const get = (section: string, key: string): string => {
+    return content?.[section]?.[key] ?? "";
   };
+
+  // Check if required content sections exist
+  const hasRequiredContent =
+    content && content.hero?.title && content.hero?.description;
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center pt-20">
         <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !hasRequiredContent) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center pt-20">
+        <div className="max-w-md px-4 text-center">
+          <h1 className="mb-4 text-2xl font-semibold">
+            Content niet beschikbaar
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            De pagina-inhoud is nog niet geconfigureerd. Neem contact op met de
+            beheerder.
+          </p>
+          <Button asChild>
+            <Link href="/">Terug naar home</Link>
+          </Button>
+        </div>
       </div>
     );
   }

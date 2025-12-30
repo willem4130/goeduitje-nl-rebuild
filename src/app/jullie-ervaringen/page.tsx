@@ -64,6 +64,12 @@ export default function JullieErvaringenPage() {
   const { data: stats, isLoading: statsLoading } =
     api.reviews.getStats.useQuery();
 
+  // Fetch site stats (companies count, activities count)
+  const { data: siteStats } = api.content.getByPage.useQuery(
+    { page: "site-stats" },
+    { staleTime: 5 * 60 * 1000 }
+  );
+
   // Get featured reviews (4-5 stars with longer text)
   const featuredReviews = (
     reviews?.filter(
@@ -153,7 +159,7 @@ export default function JullieErvaringenPage() {
                   <Building2 className="text-primary h-8 w-8" />
                 </div>
                 <div className="mb-2 text-[48px] leading-none font-light tracking-tight">
-                  80+
+                  {siteStats?.public?.companiesCount || "80+"}
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">
                   Bedrijven
@@ -165,7 +171,7 @@ export default function JullieErvaringenPage() {
                   <Calendar className="text-primary h-8 w-8" />
                 </div>
                 <div className="mb-2 text-[48px] leading-none font-light tracking-tight">
-                  200+
+                  {siteStats?.public?.activitiesCount || "200+"}
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">
                   Uitjes
