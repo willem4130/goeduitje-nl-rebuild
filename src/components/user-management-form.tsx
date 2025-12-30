@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -33,17 +32,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { userFormSchema, type UserFormValues } from "@/lib/validations/forms";
+import { api } from "@/trpc/client";
 
 interface UserManagementFormProps {
-  user?: UserFormValues;
+  user?: UserFormValues & { id?: string };
   mode?: "create" | "edit";
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 export function UserManagementForm({
   user,
   mode = "create",
+  onSuccess,
+  onCancel,
 }: UserManagementFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const utils = api.useUtils();
+
+  const createUser = api.user.create.useMutation({
+    onSuccess: () => {
+      toast.success("Gebruiker aangemaakt!", {
+        description: "De gebruiker is succesvol toegevoegd.",
+      });
+      form.reset();
+      utils.user.getAll.invalidate();
+      onSuccess?.();
+    },
+    onError: (error) => {
+      toast.error("Aanmaken mislukt!", {
+        description: error.message || "Probeer het later opnieuw.",
+      });
+    },
+  });
+
+  const updateUser = api.user.update.useMutation({
+    onSuccess: () => {
+      toast.success("Gebruiker bijgewerkt!", {
+        description: "De wijzigingen zijn opgeslagen.",
+      });
+      utils.user.getAll.invalidate();
+      onSuccess?.();
+    },
+    onError: (error) => {
+      toast.error("Bijwerken mislukt!", {
+        description: error.message || "Probeer het later opnieuw.",
+      });
+    },
+  });
 
   const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
@@ -55,31 +90,13 @@ export function UserManagementForm({
     },
   });
 
+  const isLoading = createUser.isPending || updateUser.isPending;
+
   async function onSubmit(data: UserFormValues) {
-    setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("User data:", data);
-
-      if (mode === "create") {
-        toast.success("User created!", {
-          description: `${data.name} has been added successfully.`,
-        });
-        form.reset();
-      } else {
-        toast.success("User updated!", {
-          description: `Changes to ${data.name} have been saved.`,
-        });
-      }
-    } catch {
-      toast.error(`Failed to ${mode} user!`, {
-        description: "Please try again later.",
-      });
-    } finally {
-      setIsLoading(false);
+    if (mode === "edit" && user?.id) {
+      updateUser.mutate({ id: user.id, ...data });
+    } else {
+      createUser.mutate(data);
     }
   }
 
@@ -190,9 +207,9 @@ export function UserManagementForm({
                   <>{mode === "create" ? "Create User" : "Save Changes"}</>
                 )}
               </Button>
-              {mode === "edit" && (
-                <Button type="button" variant="outline">
-                  Cancel
+              {mode === "edit" && onCancel && (
+                <Button type="button" variant="outline" onClick={onCancel}>
+                  Annuleren
                 </Button>
               )}
             </div>
