@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -30,39 +30,53 @@ import {
   settingsFormSchema,
   type SettingsFormValues,
 } from "@/lib/validations/forms";
+import { api } from "@/trpc/client";
 
 export function AdminSettingsForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: settings, isLoading: isLoadingSettings } =
+    api.settings.getAll.useQuery();
+  const utils = api.useUtils();
+
+  const updateSettings = api.settings.updateMany.useMutation({
+    onSuccess: () => {
+      toast.success("Instellingen opgeslagen!", {
+        description: "Je wijzigingen zijn succesvol opgeslagen.",
+      });
+      utils.settings.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error("Opslaan mislukt!", {
+        description: "Probeer het later opnieuw.",
+      });
+    },
+  });
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
     defaultValues: {
-      siteName: "My Awesome Site",
-      siteDescription: "A modern full-stack web application built with Next.js",
-      contactEmail: "admin@example.com",
-      maintenanceMode: undefined,
-      allowRegistration: undefined,
+      siteName: "",
+      siteDescription: "",
+      contactEmail: "",
+      maintenanceMode: false,
+      allowRegistration: true,
     },
   });
 
-  async function onSubmit(data: SettingsFormValues) {
-    setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Settings data:", data);
-      toast.success("Settings saved!", {
-        description: "Your changes have been saved successfully.",
+  // Load settings into form when data arrives
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        siteName: settings.siteName,
+        siteDescription: settings.siteDescription,
+        contactEmail: settings.contactEmail,
+        maintenanceMode: settings.maintenanceMode === "true",
+        allowRegistration: settings.allowRegistration === "true",
       });
-    } catch {
-      toast.error("Failed to save settings!", {
-        description: "Please try again later.",
-      });
-    } finally {
-      setIsLoading(false);
     }
+  }, [settings, form]);
+
+  async function onSubmit(data: SettingsFormValues) {
+    updateSettings.mutate(data);
   }
 
   return (
@@ -182,14 +196,17 @@ export function AdminSettingsForm() {
               />
             </div>
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
+            <Button
+              type="submit"
+              disabled={updateSettings.isPending || isLoadingSettings}
+            >
+              {updateSettings.isPending ? (
                 <>
                   <IconLoader2 className="mr-2 size-4 animate-spin" />
-                  Saving...
+                  Opslaan...
                 </>
               ) : (
-                "Save Changes"
+                "Opslaan"
               )}
             </Button>
           </form>

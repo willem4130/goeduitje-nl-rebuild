@@ -50,11 +50,17 @@ export const settingsFormSchema = z.object({
   contactEmail: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  maintenanceMode: z.boolean().optional(),
-  allowRegistration: z.boolean().optional(),
+  maintenanceMode: z.boolean(),
+  allowRegistration: z.boolean(),
 });
 
-export type SettingsFormValues = z.infer<typeof settingsFormSchema>;
+export type SettingsFormValues = {
+  siteName: string;
+  siteDescription: string;
+  contactEmail: string;
+  maintenanceMode: boolean;
+  allowRegistration: boolean;
+};
 
 // Newsletter Subscription Schema
 export const newsletterSchema = z.object({

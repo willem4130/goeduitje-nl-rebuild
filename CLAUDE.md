@@ -1,87 +1,66 @@
-# Goeduitje.nl - FRONTEND
+# Goeduitje.nl - Full-Stack Website
 
-Booking platform for recreational activities in the Netherlands. Next.js 14 full-stack app with workshop booking, Stripe payments, and admin management.
-
-## Repository Separation - CRITICAL
-
-**This repo (goeduitje-nl-rebuild)**: Frontend UI, pages, components, client-side code
-**Backend repo (goeduitje-backend)**: Workshop admin CMS, quote generation, backend APIs
-
-Before committing, ask: "Is this for the public website UI?" → Frontend repo. "Is this for workshop admin/backend?" → Backend repo.
+Booking platform for recreational activities in the Netherlands. Next.js 14 full-stack app with workshop booking, admin CMS, and dynamic content management.
 
 ## Tech Stack
 
 - **Framework**: Next.js 14 + React 18 + TypeScript 5
-- **Database**: PostgreSQL + Prisma ORM
+- **Database**: PostgreSQL (Neon) + Prisma ORM
 - **API**: tRPC + TanStack Query
-- **UI**: shadcn/ui (Radix primitives) + Tailwind CSS 4
+- **UI**: shadcn/ui (Radix) + Tailwind CSS 4
 - **Animations**: Framer Motion
 - **Forms**: React Hook Form + Zod
-- **Payments**: Stripe | **Email**: Resend | **Booking**: Cal.com
+- **Email**: Resend | **Rich Text**: TipTap (planned)
 
 ## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── api/               # API routes (tRPC, Stripe, emails)
-│   ├── admin/             # Admin dashboard
-│   ├── booking/           # Cal.com integration
-│   ├── checkout/          # Stripe checkout
-│   └── [pages]/           # Public pages (onze-uitjes, contact, etc.)
+│   ├── api/               # API routes (tRPC, emails)
+│   ├── admin/             # Admin dashboard (reviews, settings, content)
+│   └── [pages]/           # Public pages (onze-uitjes, contact, faq, etc.)
 ├── components/            # React components
-│   ├── ui/               # shadcn/ui primitives (Button, Card, etc.)
-│   └── [feature].tsx     # Feature components (carousel, configurator)
-├── server/api/routers/   # tRPC routers
-├── trpc/                 # tRPC client setup
-├── lib/                  # Utilities (prisma, stripe, validations)
+│   ├── ui/               # shadcn/ui primitives
+│   └── [feature].tsx     # Feature components
+├── server/api/routers/   # tRPC routers (workshop, reviews, feedback, etc.)
+├── lib/                  # Utilities (prisma, validations)
 └── hooks/                # Custom React hooks
 
-prisma/schema.prisma      # Database models
-public/images/            # Static assets
+prisma/
+├── schema.prisma         # Database models
+└── seed-*.ts            # Seed scripts (workshops, faq, team, etc.)
 ```
+
+## Database Models
+
+**Active**: Workshop, WorkshopVariant, PriceTier, WorkshopConfig, GoogleReview, Feedback, Recipe, User
+**Planned**: FAQ, TeamMember, Testimonial, PageContent, SiteSetting
 
 ## Code Quality - Zero Tolerance
 
-After editing ANY file:
-
 ```bash
-bun run typecheck && bun run lint && bun run format:check
+bun run typecheck && bun run lint
 ```
 
 Fix ALL errors before continuing. No exceptions.
 
-## Organization Rules
-
-- UI primitives → `/components/ui` (shadcn/ui only)
-- Feature components → `/components/[name].tsx`
-- Pages → `/app/[route]/page.tsx`
-- API routes → `/app/api/[endpoint]/route.ts`
-- Utilities → `/lib/[name].ts`
-- Single responsibility per file, max 300 lines
-
-## Component Standards
-
-- Use shadcn/ui components exclusively (never build custom primitives)
-- Animations with Framer Motion only
-- Carousels with Embla Carousel
-- Icons from Lucide React or Tabler Icons
-
 ## Deployment
 
-**Production**: Push to `main` → Vercel auto-deploys to https://www.goeduitje.nl
-**Preview**: Push to any other branch → Vercel creates preview URL
+**Preview**: https://goeduitje-nl-rebuild.vercel.app/
+Push to `main` → Vercel auto-deploys
 
-```bash
-# Before pushing to main
-bun run typecheck && bun run lint
-git push origin main
-```
+## Organization Rules
+
+- tRPC routers → `/server/api/routers/[name].ts`
+- Admin pages → `/app/admin/[section]/page.tsx`
+- Seed scripts → `/prisma/seed-[name].ts`
+- UI primitives → `/components/ui/` (shadcn only)
+- Max 300 lines per file
 
 ## Never Do
 
 - Create custom UI primitives (use shadcn/ui)
-- Write custom CSS animations (use Framer Motion)
-- Build carousel from scratch (use Embla)
-- Create custom form components (use React Hook Form)
-- Mix frontend/backend code in same commit
+- Write CSS animations (use Framer Motion)
+- Hardcode content that should be in database
+- Skip typecheck before committing

@@ -200,3 +200,78 @@ model WorkshopVariant {
 
   @@index([workshopId])
 }
+
+// Site settings - key/value pairs for admin configuration
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("text") // text, boolean, number, json
+  updatedAt DateTime @updatedAt
+}
+
+// FAQ entries
+model FAQ {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String   // Rich text (HTML)
+  category    String
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([isPublished])
+  @@index([sortOrder])
+}
+
+// Team members
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  origin      String?
+  bio         String   // Rich text (HTML)
+  quote       String?
+  image       String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([sortOrder])
+}
+
+// Custom testimonials (separate from Google Reviews)
+model Testimonial {
+  id          String   @id @default(cuid())
+  quote       String
+  author      String
+  role        String?
+  company     String?
+  rating      Int      @default(5)
+  image       String?
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isFeatured])
+  @@index([isPublished])
+}
+
+// Page content - CMS for editable text blocks
+model PageContent {
+  id        String   @id @default(cuid())
+  page      String   // "homepage", "ons-verhaal", etc.
+  section   String   // "hero", "cta", "intro"
+  key       String   // "title", "description", "buttonText"
+  value     String   // Content (plain text or HTML)
+  type      String   @default("text") // text, richtext, url
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, section, key])
+  @@index([page])
+}
