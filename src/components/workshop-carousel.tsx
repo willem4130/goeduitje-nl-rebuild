@@ -89,6 +89,18 @@ const DEFAULT_WORKSHOPS: Workshop[] = [
     groupSize: "12-40 personen",
     price: "Vanaf €25 p.p.",
   },
+  {
+    id: "lunch-diner",
+    title: "Lunch & Diner",
+    subtitle: "Culinair genieten met het team",
+    description:
+      "Buffet, lunch of diner met gerechten uit de Arabische keuken. Ook te combineren met een workshop",
+    image: "/images/workshops/lunch-diner.jpg",
+    slug: "lunch-diner",
+    duration: "in overleg",
+    groupSize: "8-100 personen",
+    price: "Vanaf €22,50 p.p.",
+  },
 ];
 
 interface WorkshopCarouselProps {

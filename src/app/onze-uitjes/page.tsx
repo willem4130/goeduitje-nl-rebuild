@@ -177,14 +177,14 @@ export default function OnzeUitjesPage() {
                       </div>
                       <div className="bg-muted relative aspect-square">
                         <Image
-                          src="/images/workshops/design-tshirt.jpg"
-                          alt="Design Your T-shirt"
+                          src="/images/workshops/lunch-diner.jpg"
+                          alt="Lunch & Diner"
                           fill
                           className="object-cover"
                           sizes="220px"
                           placeholder="blur"
                           blurDataURL={
-                            WORKSHOP_BLUR_PLACEHOLDERS["design-tshirt"]
+                            WORKSHOP_BLUR_PLACEHOLDERS["lunch-diner"]
                           }
                         />
                       </div>

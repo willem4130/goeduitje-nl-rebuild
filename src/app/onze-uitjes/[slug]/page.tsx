@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Clock,
   Users,
@@ -14,31 +15,59 @@ import {
   Calendar,
 } from "lucide-react";
 
+// Variant type for workshops with multiple options
+interface WorkshopVariant {
+  id: string;
+  name: string;
+  description: string;
+  duration: string;
+  priceTiers: { groupSize: string; price: string }[];
+  includes: string[];
+}
+
+// Workshop type with optional variants
+interface WorkshopData {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  longDescription: string;
+  video?: string;
+  image: string;
+  duration: string;
+  groupSize: string;
+  price: string;
+  priceFrom: number;
+  priceTiers: { groupSize: string; price: string }[];
+  location: string;
+  includes: string[];
+  categories: string[];
+  variants?: WorkshopVariant[];
+}
+
 // Workshop data - content from goeduitje.nl
-const WORKSHOPS = [
+const WORKSHOPS: WorkshopData[] = [
   {
     id: "kookworkshop",
     slug: "kookworkshop",
-    title: "Arabische Kookworkshop",
+    title: "Kookworkshops",
     subtitle: "Samen koken, samen genieten",
     description:
       "Bereid samen een heerlijke maaltijd onder begeleiding van gepassioneerde koks uit de Arabische keuken",
     longDescription: `
-      Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van de Arabische keuken.
+      Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van verschillende keukens.
       Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen.
 
-      In teams van 2-3 personen bereid je heerlijke Arabische gerechten. De samenwerking wordt op een speelse manier beoordeeld,
-      met een optionele prijsuitreiking als leuke afsluiter.
-
-      Na afloop geniet je samen van het door jullie bereide diner. Keuze uit vlees, vegetarisch en veganistisch.
-      Ook beschikbaar: Oogsten, Koken & Genieten waarbij je eerst ingrediënten oogst in de pluktuin.
+      Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, Dessert workshop, Vegetarische kookworkshop
+      of schrijf je in voor een van onze open kookworkshops.
     `,
     video: "/images/workshops/workshop 1.mp4",
     image: "/images/workshops/kookworkshop.jpg",
     duration: "vanaf 2,5 uur",
     groupSize: "8-30 personen",
-    price: "Vanaf €55 p.p.",
-    priceFrom: 55,
+    price: "Vanaf €30 p.p.",
+    priceFrom: 30,
     priceTiers: [
       { groupSize: "8-10 personen", price: "€70 excl btw (€85 incl btw) p.p." },
       {
@@ -57,6 +86,133 @@ const WORKSHOPS = [
       "Sociale impact - draag bij aan arbeidsparticipatie",
     ],
     categories: ["Koken", "Teambuilding", "Cultureel"],
+    variants: [
+      {
+        id: "arabisch",
+        name: "Arabische Kookworkshop",
+        description:
+          "Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van de Arabische keuken. Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen. In teams van 2-3 personen bereid je heerlijke Arabische gerechten. Keuze uit vlees, vegetarisch en veganistisch.",
+        duration: "vanaf 2,5 uur (standaard 3 uur, flexibel)",
+        priceTiers: [
+          {
+            groupSize: "8-10 personen",
+            price: "€70 excl btw (€85 incl btw) p.p.",
+          },
+          {
+            groupSize: "11-15 personen",
+            price: "€60 excl btw (€73 incl btw) p.p.",
+          },
+          {
+            groupSize: "16+ personen",
+            price: "€55 excl btw (€67 incl btw) p.p.",
+          },
+        ],
+        includes: [
+          "Begeleiding door gepassioneerde koks",
+          "Alle ingrediënten en materialen",
+          "Recepten om mee naar huis te nemen",
+          "Complete maaltijd",
+          "Keuze uit vlees, vegetarisch of veganistisch",
+        ],
+      },
+      {
+        id: "oogsten",
+        name: "Oogsten, Koken & Genieten",
+        description:
+          "Eerst ontspannen groenten oogsten en kruiden verzamelen in de pluktuin en voedselbos. Daarna onder begeleiding van de koks deze ingrediënten bereiden met Oosterse kruiden en specerijen.",
+        duration: "3-4 uur",
+        priceTiers: [
+          {
+            groupSize: "8-10 personen",
+            price: "€80 excl btw (€97 incl btw) p.p.",
+          },
+          {
+            groupSize: "11-15 personen",
+            price: "€70 excl btw (€85 incl btw) p.p.",
+          },
+          {
+            groupSize: "16+ personen",
+            price: "€65 excl btw (€79 incl btw) p.p.",
+          },
+        ],
+        includes: [
+          "Oogsten in de pluktuin en voedselbos",
+          "Begeleiding door koks",
+          "Alle ingrediënten en materialen",
+          "Oosterse kruiden en specerijen",
+          "Complete maaltijd",
+        ],
+      },
+      {
+        id: "dessert",
+        name: "Dessert Workshop",
+        description:
+          "Leer heerlijke Arabische desserts maken onder begeleiding van onze koks. Perfect als toevoeging aan een kookworkshop of als aparte activiteit.",
+        duration: "45 minuten",
+        priceTiers: [
+          {
+            groupSize: "8-10 personen",
+            price: "€40 excl btw (€48 incl btw) p.p.",
+          },
+          {
+            groupSize: "11-15 personen",
+            price: "€35 excl btw (€42 incl btw) p.p.",
+          },
+          {
+            groupSize: "16+ personen",
+            price: "€30 excl btw (€36 incl btw) p.p.",
+          },
+        ],
+        includes: [
+          "Begeleiding door koks",
+          "Alle ingrediënten",
+          "Recepten om mee naar huis te nemen",
+          "Proeven van de desserts",
+        ],
+      },
+      {
+        id: "vegetarisch",
+        name: "Vegetarische Kookworkshop",
+        description:
+          "Onder begeleiding van gepassioneerde koks leer je samen koken met seizoensgebonden, lokale ingrediënten. De samenwerking wordt op een speelse manier beoordeeld, met een optionele prijsuitreiking als leuke afsluiter. Keuze uit plantaardige menu's geïnspireerd door diverse wereldkeukens.",
+        duration: "vanaf 2,5 uur",
+        priceTiers: [
+          {
+            groupSize: "8-10 personen",
+            price: "€70 excl btw (€85 incl btw) p.p.",
+          },
+          {
+            groupSize: "11-15 personen",
+            price: "€60 excl btw (€73 incl btw) p.p.",
+          },
+          {
+            groupSize: "16+ personen",
+            price: "€55 excl btw (€67 incl btw) p.p.",
+          },
+        ],
+        includes: [
+          "Begeleiding door gepassioneerde koks",
+          "Seizoensgebonden, lokale ingrediënten",
+          "Plantaardige menu's",
+          "Complete maaltijd",
+          "Optionele prijsuitreiking",
+        ],
+      },
+      {
+        id: "open",
+        name: "Open Kookworkshops",
+        description:
+          "In kleine groepjes kook je twee heerlijke hoofdgerechten, die daarna gezellig samen worden opgegeten. Ideaal om kennis te maken met onze workshops of voor particulieren.",
+        duration: "3 uur",
+        priceTiers: [{ groupSize: "Per persoon", price: "€50 p.p." }],
+        includes: [
+          "Koken in kleine groepjes",
+          "Twee hoofdgerechten",
+          "Gezellig samen eten",
+          "Begeleiding door koks",
+        ],
+      },
+    ],
   },
   {
     id: "stadsspel",
@@ -208,6 +364,109 @@ const WORKSHOPS = [
     ],
     categories: ["Outdoor", "Sport", "Teambuilding"],
   },
+  {
+    id: "lunch-diner",
+    slug: "lunch-diner",
+    title: "Lunch & Diner Uitjes",
+    subtitle: "Culinaire beleving met impact",
+    description:
+      "Unieke lunches en diners waarbij statushouders en asielzoekers je kennis laten maken met verrukkelijke smaken",
+    longDescription: `
+      Unieke lunches en diners waarbij statushouders en asielzoekers je kennis laten maken met verrukkelijke smaken
+      en exotische gerechten. Zowel buffetten als uitgebreide diners op locatie zijn een culinaire reis.
+
+      Kies uit verschillende opties: van een simpel buffet tot een uitgebreid Arabisch diner of combineer
+      een kookworkshop met diner voor de complete ervaring.
+    `,
+    image: "/images/workshops/lunch-diner.jpg",
+    duration: "1-4 uur",
+    groupSize: "8-100 personen",
+    price: "Vanaf €22,50 p.p.",
+    priceFrom: 22.5,
+    priceTiers: [
+      { groupSize: "Buffet", price: "vanaf €22,50 excl btw p.p." },
+      { groupSize: "Lunch", price: "vanaf €35 excl btw p.p." },
+      { groupSize: "Arabisch diner", price: "vanaf €45-50 excl btw p.p." },
+    ],
+    location: "Op locatie naar keuze of bij u op locatie",
+    includes: [
+      "Bereiding door onze koks",
+      "Alle ingrediënten en materialen",
+      "Serveren en opruimen",
+      "Culturele toelichting bij gerechten",
+      "Keuze uit diverse menu's",
+      "Sociale impact - werk met statushouders",
+    ],
+    categories: ["Culinair", "Cultureel", "Teambuilding"],
+    variants: [
+      {
+        id: "buffet",
+        name: "Buffet",
+        description:
+          "Een heerlijk buffet met diverse Arabische en Perzische gerechten. Perfect voor grotere groepen of informele bijeenkomsten.",
+        duration: "1-2 uur",
+        priceTiers: [
+          { groupSize: "Per persoon", price: "vanaf €22,50 excl btw p.p." },
+        ],
+        includes: [
+          "Diverse warme en koude gerechten",
+          "Brood en dips",
+          "Vegetarische opties",
+          "Serveren en opruimen",
+        ],
+      },
+      {
+        id: "lunch",
+        name: "Lunch",
+        description:
+          "Een uitgebreide lunch met verse gerechten uit de Arabische keuken. Ideaal voor zakelijke bijeenkomsten of teamlunches.",
+        duration: "1,5-2 uur",
+        priceTiers: [
+          { groupSize: "Per persoon", price: "vanaf €35 excl btw p.p." },
+        ],
+        includes: [
+          "Meerdere gangen",
+          "Verse ingrediënten",
+          "Vegetarische opties",
+          "Koffie en thee",
+        ],
+      },
+      {
+        id: "diner",
+        name: "Arabisch Diner",
+        description:
+          "Een uitgebreid meergangen diner met de beste gerechten uit de Arabische en Perzische keuken. Een culinaire reis voor jullie team.",
+        duration: "2-3 uur",
+        priceTiers: [
+          { groupSize: "Per persoon", price: "vanaf €45-50 excl btw p.p." },
+        ],
+        includes: [
+          "Meerdere gangen",
+          "Authentieke recepten",
+          "Culturele toelichting",
+          "Vegetarische opties",
+          "Koffie, thee en dessert",
+        ],
+      },
+      {
+        id: "workshop-diner",
+        name: "Kookworkshop met Diner",
+        description:
+          "De complete ervaring: eerst samen koken onder begeleiding van onze koks, daarna genieten van jullie zelfbereide maaltijd.",
+        duration: "3-4 uur",
+        priceTiers: [
+          { groupSize: "Per persoon", price: "vanaf €55 excl btw p.p." },
+        ],
+        includes: [
+          "Kookworkshop",
+          "Alle ingrediënten",
+          "Begeleiding door koks",
+          "Complete maaltijd",
+          "Recepten voor thuis",
+        ],
+      },
+    ],
+  },
 ];
 
 type Props = {
@@ -357,67 +616,158 @@ export default async function WorkshopDetailPage({ params }: Props) {
       {/* Details Section */}
       <section className="py-12 lg:py-20">
         <div className="container mx-auto max-w-7xl px-6">
-          <div className="grid gap-12 lg:grid-cols-3">
-            {/* Description */}
-            <div className="lg:col-span-2">
-              <h2 className="mb-6 text-2xl font-bold">Over dit uitje</h2>
-              <div className="prose prose-gray dark:prose-invert max-w-none">
-                {workshop.longDescription.split("\n\n").map((paragraph, i) => (
-                  <p key={i} className="text-muted-foreground mb-4">
-                    {paragraph.trim()}
-                  </p>
-                ))}
-              </div>
-            </div>
+          {/* Variants Section - if workshop has variants */}
+          {workshop.variants && workshop.variants.length > 0 ? (
+            <div className="mb-12">
+              <h2 className="mb-6 text-2xl font-bold">Kies je variant</h2>
+              <Tabs defaultValue={workshop.variants[0]?.id} className="w-full">
+                <TabsList className="mb-6 flex h-auto flex-wrap gap-2 bg-transparent p-0">
+                  {workshop.variants.map((variant) => (
+                    <TabsTrigger
+                      key={variant.id}
+                      value={variant.id}
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2 text-sm font-medium transition-all"
+                    >
+                      {variant.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
 
-            {/* What's included */}
-            <div>
-              <h2 className="mb-6 text-2xl font-bold">Wat is inbegrepen?</h2>
-              <ul className="space-y-3">
-                {workshop.includes.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="text-primary mt-0.5 h-5 w-5 flex-shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+                {workshop.variants.map((variant) => (
+                  <TabsContent key={variant.id} value={variant.id}>
+                    <div className="grid gap-8 lg:grid-cols-3">
+                      {/* Variant Description */}
+                      <div className="lg:col-span-2">
+                        <h3 className="text-primary mb-4 text-xl font-bold">
+                          {variant.name}
+                        </h3>
+                        <p className="text-muted-foreground mb-6 text-base leading-relaxed">
+                          {variant.description}
+                        </p>
 
-              {/* Price card */}
-              <div className="bg-muted/50 mt-8 rounded-lg p-6">
-                <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
-                <p className="text-primary mb-4 text-3xl font-bold">
-                  €{workshop.priceFrom}{" "}
-                  <span className="text-muted-foreground text-base font-normal">
-                    per persoon
-                  </span>
-                </p>
+                        <div className="mb-6 flex items-center gap-3">
+                          <Clock className="text-primary h-5 w-5" />
+                          <div>
+                            <span className="text-muted-foreground text-sm">
+                              Duur:{" "}
+                            </span>
+                            <span className="font-semibold">
+                              {variant.duration}
+                            </span>
+                          </div>
+                        </div>
 
-                {/* Price tiers */}
-                {workshop.priceTiers && workshop.priceTiers.length > 0 && (
-                  <div className="mb-4 space-y-2">
-                    <p className="text-sm font-semibold">
-                      Prijzen per groepsgrootte:
-                    </p>
-                    {workshop.priceTiers.map((tier, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between text-sm"
-                      >
-                        <span className="text-muted-foreground">
-                          {tier.groupSize}
-                        </span>
-                        <span className="font-medium">{tier.price}</span>
+                        {/* Variant includes */}
+                        <h4 className="mb-3 font-semibold">
+                          Wat is inbegrepen?
+                        </h4>
+                        <ul className="space-y-2">
+                          {variant.includes.map((item, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <CheckCircle2 className="text-primary mt-0.5 h-4 w-4 flex-shrink-0" />
+                              <span className="text-sm">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    ))}
-                  </div>
-                )}
 
-                <Button asChild className="w-full">
-                  <Link href="/onze-uitjes#configurator">Nu boeken</Link>
-                </Button>
+                      {/* Variant Pricing */}
+                      <div>
+                        <div className="bg-muted/50 rounded-lg p-6">
+                          <h4 className="mb-4 font-semibold">Prijzen</h4>
+                          <div className="space-y-2">
+                            {variant.priceTiers.map((tier, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center justify-between text-sm"
+                              >
+                                <span className="text-muted-foreground">
+                                  {tier.groupSize}
+                                </span>
+                                <span className="font-medium">
+                                  {tier.price}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button asChild className="mt-6 w-full">
+                            <Link href="/onze-uitjes#configurator">
+                              Configureer dit uitje
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            </div>
+          ) : (
+            /* Standard layout for workshops without variants */
+            <div className="grid gap-12 lg:grid-cols-3">
+              {/* Description */}
+              <div className="lg:col-span-2">
+                <h2 className="mb-6 text-2xl font-bold">Over dit uitje</h2>
+                <div className="prose prose-gray dark:prose-invert max-w-none">
+                  {workshop.longDescription
+                    .split("\n\n")
+                    .map((paragraph, i) => (
+                      <p key={i} className="text-muted-foreground mb-4">
+                        {paragraph.trim()}
+                      </p>
+                    ))}
+                </div>
+              </div>
+
+              {/* What's included */}
+              <div>
+                <h2 className="mb-6 text-2xl font-bold">Wat is inbegrepen?</h2>
+                <ul className="space-y-3">
+                  {workshop.includes.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle2 className="text-primary mt-0.5 h-5 w-5 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Price card */}
+                <div className="bg-muted/50 mt-8 rounded-lg p-6">
+                  <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
+                  <p className="text-primary mb-4 text-3xl font-bold">
+                    €{workshop.priceFrom}{" "}
+                    <span className="text-muted-foreground text-base font-normal">
+                      per persoon
+                    </span>
+                  </p>
+
+                  {/* Price tiers */}
+                  {workshop.priceTiers && workshop.priceTiers.length > 0 && (
+                    <div className="mb-4 space-y-2">
+                      <p className="text-sm font-semibold">
+                        Prijzen per groepsgrootte:
+                      </p>
+                      {workshop.priceTiers.map((tier, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between text-sm"
+                        >
+                          <span className="text-muted-foreground">
+                            {tier.groupSize}
+                          </span>
+                          <span className="font-medium">{tier.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <Button asChild className="w-full">
+                    <Link href="/onze-uitjes#configurator">Nu boeken</Link>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 

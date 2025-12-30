@@ -160,17 +160,17 @@ export const WORKSHOPS: Workshop[] = [
     ],
   },
   {
-    id: "design-tshirt",
-    name: "Design Your T-shirt",
+    id: "lunch-diner",
+    name: "Lunch & Diner",
     minParticipants: 8,
-    maxParticipants: null,
-    basePrice: 35,
+    maxParticipants: 100,
+    basePrice: 22.5,
     priceTiers: [
       {
         minParticipants: 8,
         maxParticipants: null,
-        priceExclBtw: 35,
-        priceInclBtw: 42,
+        priceExclBtw: 22.5,
+        priceInclBtw: 27,
       },
     ],
   },
