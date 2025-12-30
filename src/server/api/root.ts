@@ -5,6 +5,9 @@ import { reviewsRouter } from "./routers/reviews";
 import { recipesRouter } from "./routers/recipes";
 import { feedbackRouter } from "./routers/feedback";
 import { settingsRouter } from "./routers/settings";
+import { faqRouter } from "./routers/faq";
+import { teamRouter } from "./routers/team";
+import { testimonialsRouter } from "./routers/testimonials";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
@@ -13,6 +16,9 @@ export const appRouter = createTRPCRouter({
   recipes: recipesRouter,
   feedback: feedbackRouter,
   settings: settingsRouter,
+  faq: faqRouter,
+  team: teamRouter,
+  testimonials: testimonialsRouter,
 });
 
 export type AppRouter = typeof appRouter;

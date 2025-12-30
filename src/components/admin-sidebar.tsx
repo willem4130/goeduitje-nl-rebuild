@@ -8,12 +8,15 @@ import {
   IconHelp,
   IconInbox,
   IconInnerShadowTop,
+  IconQuestionMark,
+  IconQuote,
   IconSearch,
   IconSettings,
   IconShoppingCart,
   IconStar,
   IconToolsKitchen2,
   IconUsers,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/nav-documents";
@@ -56,6 +59,21 @@ const data = {
       title: "Reviews",
       url: "/admin/reviews",
       icon: IconStar,
+    },
+    {
+      title: "FAQ",
+      url: "/admin/faq",
+      icon: IconQuestionMark,
+    },
+    {
+      title: "Team",
+      url: "/admin/team",
+      icon: IconUsersGroup,
+    },
+    {
+      title: "Testimonials",
+      url: "/admin/testimonials",
+      icon: IconQuote,
     },
     {
       title: "Gebruikers",

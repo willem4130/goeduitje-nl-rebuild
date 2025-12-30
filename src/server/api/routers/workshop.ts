@@ -40,24 +40,27 @@ export const workshopRouter = createTRPCRouter({
     }),
 
   // Workshop catalog endpoints
-  list: publicProcedure.query(async () => {
-    return await prisma.workshop.findMany({
-      where: { isPublished: true },
-      include: {
-        priceTiers: {
-          where: { variantId: null },
-          orderBy: { sortOrder: "asc" },
-        },
-        variants: {
-          orderBy: { sortOrder: "asc" },
-          include: {
-            priceTiers: { orderBy: { sortOrder: "asc" } },
+  list: publicProcedure
+    .input(z.object({ includeUnpublished: z.boolean().optional() }).optional())
+    .query(async ({ input }) => {
+      const includeUnpublished = input?.includeUnpublished ?? false;
+      return await prisma.workshop.findMany({
+        where: includeUnpublished ? {} : { isPublished: true },
+        include: {
+          priceTiers: {
+            where: { variantId: null },
+            orderBy: { sortOrder: "asc" },
+          },
+          variants: {
+            orderBy: { sortOrder: "asc" },
+            include: {
+              priceTiers: { orderBy: { sortOrder: "asc" } },
+            },
           },
         },
-      },
-      orderBy: { sortOrder: "asc" },
-    });
-  }),
+        orderBy: { sortOrder: "asc" },
+      });
+    }),
 
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
@@ -111,5 +114,23 @@ export const workshopRouter = createTRPCRouter({
       });
 
       return tier;
+    }),
+
+  // Admin: Toggle workshop publish status
+  togglePublish: publicProcedure
+    .input(z.object({ id: z.string(), isPublished: z.boolean() }))
+    .mutation(async ({ input }) => {
+      return await prisma.workshop.update({
+        where: { id: input.id },
+        data: { isPublished: input.isPublished },
+      });
+    }),
+
+  // Admin: Delete workshop (cascades to variants and price tiers)
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      await prisma.workshop.delete({ where: { id: input.id } });
+      return { success: true };
     }),
 });
