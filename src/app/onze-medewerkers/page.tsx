@@ -5,65 +5,8 @@ import Link from "next/link";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, Users, Quote, ArrowRight } from "lucide-react";
-
-// Team member data - placeholders until real content is provided
-const teamMembers = [
-  {
-    id: 1,
-    name: "Ahmad",
-    role: "Workshop Begeleider",
-    origin: "Syrië",
-    bio: "Ahmad deelt met passie de rijke culinaire tradities uit zijn thuisland. Zijn kookworkshops brengen teams samen rond heerlijke Arabische gerechten.",
-    image: "/images/team/placeholder-1.jpg",
-    quote: "Koken verbindt mensen, ongeacht waar je vandaan komt.",
-  },
-  {
-    id: 2,
-    name: "Fatima",
-    role: "Workshop Begeleidster",
-    origin: "Jemen",
-    bio: "Fatima brengt de kunst van Jemenitische gastvrijheid naar elke workshop. Haar warmte en enthousiasme maken elk uitje bijzonder.",
-    image: "/images/team/placeholder-2.jpg",
-    quote: "Samen eten is samen leven.",
-  },
-  {
-    id: 3,
-    name: "Mohammed",
-    role: "Activiteitenbegeleider",
-    origin: "Palestina",
-    bio: "Mohammed organiseert teambuilding activiteiten waarbij plezier en verbinding centraal staan. Zijn energie werkt aanstekelijk.",
-    image: "/images/team/placeholder-3.jpg",
-    quote: "Sport en spel brengen mensen dichter bij elkaar.",
-  },
-  {
-    id: 4,
-    name: "Layla",
-    role: "Workshop Begeleidster",
-    origin: "Syrië",
-    bio: "Layla combineert creativiteit met cultuur in haar workshops. Ze deelt graag de verhalen en tradities van haar achtergrond.",
-    image: "/images/team/placeholder-4.jpg",
-    quote: "Elke workshop is een kans om iets nieuws te leren.",
-  },
-  {
-    id: 5,
-    name: "Hassan",
-    role: "Kookworkshop Specialist",
-    origin: "Irak",
-    bio: "Hassan is een meester in het bereiden van traditionele Midden-Oosterse gerechten. Zijn passie voor eten is voelbaar in elke hap.",
-    image: "/images/team/placeholder-5.jpg",
-    quote: "De beste gesprekken ontstaan aan tafel.",
-  },
-  {
-    id: 6,
-    name: "Nour",
-    role: "Workshop Begeleidster",
-    origin: "Jemen",
-    bio: "Nour brengt haar rijke culturele achtergrond naar elke workshop. Ze zorgt ervoor dat deelnemers zich welkom en gewaardeerd voelen.",
-    image: "/images/team/placeholder-6.jpg",
-    quote: "Gastvrijheid is de sleutel tot verbinding.",
-  },
-];
+import { Heart, Users, Quote, ArrowRight, Loader2 } from "lucide-react";
+import { api } from "@/trpc/client";
 
 // Masonry grid pattern - varying heights for visual interest
 const gridPatterns = [
@@ -100,6 +43,31 @@ const gridPatterns = [
 ];
 
 export default function OnzeMedewerkersPage() {
+  const { data: teamMembers, isLoading } = api.team.getAll.useQuery(undefined, {
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col pt-20">
+        <div className="flex flex-1 items-center justify-center py-32">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!teamMembers || teamMembers.length === 0) {
+    return (
+      <div className="flex min-h-screen flex-col pt-20">
+        <div className="text-muted-foreground py-32 text-center">
+          Geen teamleden gevonden.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col pt-20">
       {/* Hero Section - Editorial Style matching other pages */}

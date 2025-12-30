@@ -2,6 +2,10 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { workshopConfigSchema } from "@/lib/validations/forms";
+import {
+  createWorkshopSchema,
+  updateWorkshopSchema,
+} from "@/lib/validations/workshop";
 
 export const workshopRouter = createTRPCRouter({
   // Booking configuration endpoints
@@ -132,5 +136,156 @@ export const workshopRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       await prisma.workshop.delete({ where: { id: input.id } });
       return { success: true };
+    }),
+
+  // Admin: Get workshop by ID for editing
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      return await prisma.workshop.findUnique({
+        where: { id: input.id },
+        include: {
+          priceTiers: {
+            where: { variantId: null },
+            orderBy: { sortOrder: "asc" },
+          },
+          variants: {
+            orderBy: { sortOrder: "asc" },
+            include: {
+              priceTiers: { orderBy: { sortOrder: "asc" } },
+            },
+          },
+        },
+      });
+    }),
+
+  // Admin: Create new workshop with nested price tiers and variants
+  createWorkshop: publicProcedure
+    .input(createWorkshopSchema)
+    .mutation(async ({ input }) => {
+      const {
+        priceTiers,
+        variants,
+        image,
+        video,
+        longDescription,
+        ...workshopData
+      } = input;
+
+      // Create workshop with nested data
+      const workshop = await prisma.workshop.create({
+        data: {
+          ...workshopData,
+          image: image || null,
+          video: video || null,
+          longDescription: longDescription || null,
+          priceTiers: {
+            create: priceTiers.map((tier, index) => ({
+              groupSize: tier.groupSize,
+              minParticipants: tier.minParticipants ?? null,
+              maxParticipants: tier.maxParticipants ?? null,
+              priceExclBtw: tier.priceExclBtw,
+              priceInclBtw: tier.priceInclBtw,
+              sortOrder: tier.sortOrder ?? index,
+            })),
+          },
+          variants: {
+            create: variants.map((variant, vIndex) => ({
+              name: variant.name,
+              description: variant.description,
+              duration: variant.duration,
+              includes: variant.includes,
+              sortOrder: variant.sortOrder ?? vIndex,
+              priceTiers: {
+                create: variant.priceTiers.map((tier, tIndex) => ({
+                  workshopId: "", // Will be set by Prisma via the relation
+                  groupSize: tier.groupSize,
+                  minParticipants: tier.minParticipants ?? null,
+                  maxParticipants: tier.maxParticipants ?? null,
+                  priceExclBtw: tier.priceExclBtw,
+                  priceInclBtw: tier.priceInclBtw,
+                  sortOrder: tier.sortOrder ?? tIndex,
+                })),
+              },
+            })),
+          },
+        },
+        include: {
+          priceTiers: true,
+          variants: { include: { priceTiers: true } },
+        },
+      });
+
+      return workshop;
+    }),
+
+  // Admin: Update workshop with nested price tiers and variants
+  updateWorkshop: publicProcedure
+    .input(updateWorkshopSchema)
+    .mutation(async ({ input }) => {
+      const {
+        id,
+        priceTiers,
+        variants,
+        image,
+        video,
+        longDescription,
+        ...workshopData
+      } = input;
+
+      // Delete existing price tiers and variants (cascade handles nested price tiers)
+      await prisma.priceTier.deleteMany({
+        where: { workshopId: id, variantId: null },
+      });
+      await prisma.workshopVariant.deleteMany({
+        where: { workshopId: id },
+      });
+
+      // Update workshop and recreate nested data
+      const workshop = await prisma.workshop.update({
+        where: { id },
+        data: {
+          ...workshopData,
+          image: image || null,
+          video: video || null,
+          longDescription: longDescription || null,
+          priceTiers: {
+            create: priceTiers.map((tier, index) => ({
+              groupSize: tier.groupSize,
+              minParticipants: tier.minParticipants ?? null,
+              maxParticipants: tier.maxParticipants ?? null,
+              priceExclBtw: tier.priceExclBtw,
+              priceInclBtw: tier.priceInclBtw,
+              sortOrder: tier.sortOrder ?? index,
+            })),
+          },
+          variants: {
+            create: variants.map((variant, vIndex) => ({
+              name: variant.name,
+              description: variant.description,
+              duration: variant.duration,
+              includes: variant.includes,
+              sortOrder: variant.sortOrder ?? vIndex,
+              priceTiers: {
+                create: variant.priceTiers.map((tier, tIndex) => ({
+                  workshopId: id,
+                  groupSize: tier.groupSize,
+                  minParticipants: tier.minParticipants ?? null,
+                  maxParticipants: tier.maxParticipants ?? null,
+                  priceExclBtw: tier.priceExclBtw,
+                  priceInclBtw: tier.priceInclBtw,
+                  sortOrder: tier.sortOrder ?? tIndex,
+                })),
+              },
+            })),
+          },
+        },
+        include: {
+          priceTiers: true,
+          variants: { include: { priceTiers: true } },
+        },
+      });
+
+      return workshop;
     }),
 });

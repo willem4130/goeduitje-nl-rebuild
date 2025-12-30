@@ -81,16 +81,19 @@ interface TestimonialsCarouselProps {
   title?: string;
   subtitle?: string;
   useGoogleReviews?: boolean;
+  /** Fetch testimonials from database instead of using static fallback */
+  useCustomTestimonials?: boolean;
   /** Show 2 testimonials side by side (default: true) */
   showPaired?: boolean;
 }
 
 export function TestimonialsCarousel({
-  testimonials = DEFAULT_TESTIMONIALS,
+  testimonials: propTestimonials,
   autoPlayInterval = 6000,
   title = "Jullie ervaringen",
   subtitle = "Wat onze klanten zeggen",
   useGoogleReviews = false,
+  useCustomTestimonials = false,
   showPaired = true,
 }: TestimonialsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -99,12 +102,42 @@ export function TestimonialsCarousel({
   // Fetch Google Reviews if enabled
   const {
     data: googleReviews,
-    isLoading,
-    error,
+    isLoading: isLoadingGoogle,
+    error: googleError,
   } = api.reviews.getFeatured.useQuery(
     { limit: 10 },
     { enabled: useGoogleReviews }
   );
+
+  // Fetch custom testimonials from database if enabled
+  const { data: dbTestimonials, isLoading: isLoadingCustom } =
+    api.testimonials.getFeatured.useQuery(undefined, {
+      enabled: useCustomTestimonials && !propTestimonials,
+    });
+
+  // Transform DB testimonials to component format
+  const customTestimonials: Testimonial[] = dbTestimonials
+    ? dbTestimonials.map((t) => ({
+        id: t.id,
+        quote: t.quote,
+        author: t.author,
+        role: t.role || "",
+        company: t.company || "",
+        image: t.image || undefined,
+        rating: t.rating,
+      }))
+    : [];
+
+  // Priority: props > database > static fallback
+  const testimonials =
+    propTestimonials ||
+    (useCustomTestimonials && customTestimonials.length > 0
+      ? customTestimonials
+      : null) ||
+    DEFAULT_TESTIMONIALS;
+
+  const isLoading =
+    isLoadingGoogle || (useCustomTestimonials && isLoadingCustom);
 
   // Determine which data to use
   const hasGoogleReviews =
@@ -178,7 +211,7 @@ export function TestimonialsCarousel({
   }
 
   // Fallback to default testimonials if Google Reviews fails or is empty
-  const showGoogleReviews = hasGoogleReviews && !error;
+  const showGoogleReviews = hasGoogleReviews && !googleError;
 
   return (
     <section className="bg-accent section-md relative">
