@@ -76,6 +76,11 @@ const data = {
       icon: IconQuote,
     },
     {
+      title: "Pagina Content",
+      url: "/admin/content",
+      icon: IconFileDescription,
+    },
+    {
       title: "Gebruikers",
       url: "/admin/users",
       icon: IconUsers,

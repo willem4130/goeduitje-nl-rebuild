@@ -8,6 +8,7 @@ import { settingsRouter } from "./routers/settings";
 import { faqRouter } from "./routers/faq";
 import { teamRouter } from "./routers/team";
 import { testimonialsRouter } from "./routers/testimonials";
+import { contentRouter } from "./routers/content";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   faq: faqRouter,
   team: teamRouter,
   testimonials: testimonialsRouter,
+  content: contentRouter,
 });
 
 export type AppRouter = typeof appRouter;

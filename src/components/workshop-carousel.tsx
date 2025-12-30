@@ -5,14 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { EASING, ANIMATION_DURATION } from "@/lib/animations";
 import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/client";
 
 /**
  * Workshop grid with clean 3x2 layout
  * Optimized to fit viewport - 3 columns on desktop, responsive on smaller screens
+ * Fetches workshops from database with fallback to static content
  */
 
 export interface Workshop {
@@ -28,80 +30,22 @@ export interface Workshop {
   price: string;
 }
 
-const DEFAULT_WORKSHOPS: Workshop[] = [
-  {
-    id: "kookworkshop",
-    title: "Kookworkshop",
-    subtitle: "Samen koken, samen genieten",
-    description:
-      "Bereid samen een heerlijke maaltijd onder begeleiding van gepassioneerde koks uit de Arabische keuken",
-    video: "/images/workshops/workshop 1.mp4",
-    slug: "kookworkshop",
-    duration: "vanaf 2,5 uur",
-    groupSize: "8-30 personen",
-    price: "Vanaf €55 p.p.",
-  },
-  {
-    id: "stadsspel",
-    title: "Stadsspel",
-    subtitle: "Ontdek de stad op een nieuwe manier",
-    description:
-      "Een interactieve speurtocht door de stad met culturele uitdagingen en verrassende ontmoetingen",
-    video: "/images/workshops/workshop 2.mp4",
-    slug: "stadsspel",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    price: "Vanaf €22,50 p.p.",
-  },
-  {
-    id: "the-game",
-    title: "The Game",
-    subtitle: "Team up and crack it!",
-    description:
-      "Zoek samen de code om de koffer te openen. Vereist afstemming, communicatie en samenwerking",
-    image: "/images/workshops/the-game.jpg",
-    slug: "the-game",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    price: "Vanaf €32,50 p.p.",
-  },
-  {
-    id: "koffie-thee",
-    title: "Koffie & Thee Workshop",
-    subtitle: "De kunst van Arabische koffie en thee",
-    description:
-      "Leer hoe Arabische koffie en thee gemaakt worden en experimenteer met kruiden en specerijen",
-    image: "/images/workshops/koffie-thee.jpg",
-    slug: "koffie-thee-workshop",
-    duration: "in overleg",
-    groupSize: "8-25 personen",
-    price: "Vanaf €32,50 p.p.",
-  },
-  {
-    id: "beachvolleybal",
-    title: "Beachvolleybal Workshop",
-    subtitle: "Sport, zon en strand",
-    description:
-      "Actieve teambuilding met gecertificeerde trainers. Clinic, toernooi of combinatie van beide",
-    image: "/images/workshops/beachvolleybal.jpg",
-    slug: "beachvolleybal-workshop",
-    duration: "2-4 uur",
-    groupSize: "12-40 personen",
-    price: "Vanaf €25 p.p.",
-  },
-  {
-    id: "lunch-diner",
-    title: "Lunch & Diner",
-    subtitle: "Culinair genieten met het team",
-    description:
-      "Buffet, lunch of diner met gerechten uit de Arabische keuken. Ook te combineren met een workshop",
-    image: "/images/workshops/lunch-diner.jpg",
-    slug: "lunch-diner",
-    duration: "in overleg",
-    groupSize: "8-100 personen",
-    price: "Vanaf €22,50 p.p.",
-  },
-];
+// Helper to get lowest price from price tiers
+function getLowestPrice(
+  priceTiers: Array<{ priceExclBtw: number }>,
+  variants: Array<{ priceTiers: Array<{ priceExclBtw: number }> }>
+): string {
+  let lowest = Infinity;
+  for (const tier of priceTiers) {
+    if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+  }
+  for (const variant of variants) {
+    for (const tier of variant.priceTiers) {
+      if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+    }
+  }
+  return lowest === Infinity ? "Op aanvraag" : `Vanaf €${lowest} p.p.`;
+}
 
 interface WorkshopCarouselProps {
   workshops?: Workshop[];
@@ -109,15 +53,42 @@ interface WorkshopCarouselProps {
   subtitle?: string;
   showViewAllButton?: boolean;
   compact?: boolean;
+  maxItems?: number;
 }
 
 export function WorkshopCarousel({
-  workshops = DEFAULT_WORKSHOPS,
+  workshops: propWorkshops,
   title = "Onze uitjes",
   subtitle = "Kies jouw ideale uitje",
   showViewAllButton = true,
   compact = false,
+  maxItems = 6,
 }: WorkshopCarouselProps) {
+  // Fetch workshops from database
+  const { data: dbWorkshops, isLoading } = api.workshop.list.useQuery(
+    undefined,
+    {
+      staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  // Transform DB workshops to component format
+  const workshops: Workshop[] = propWorkshops
+    ? propWorkshops
+    : (dbWorkshops || []).slice(0, maxItems).map((w) => ({
+        id: w.id,
+        title: w.title,
+        subtitle: w.subtitle,
+        description: w.description,
+        image: w.image || undefined,
+        video: w.video || undefined,
+        slug: w.slug,
+        duration: w.duration,
+        groupSize: w.groupSize,
+        price: getLowestPrice(w.priceTiers, w.variants),
+      }));
+
   return (
     <section
       className={`bg-background relative overflow-hidden ${compact ? "" : "section-md"}`}
@@ -135,21 +106,32 @@ export function WorkshopCarousel({
           </ScrollReveal>
         )}
 
-        {/* Workshop Grid - Full-width 5x1 Layout on desktop */}
-        <ScrollReveal animation="slideUp" delay={0.2}>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
-            {workshops.map((workshop, index) => (
-              <WorkshopCard
-                key={workshop.id}
-                workshop={workshop}
-                index={index}
-              />
-            ))}
+        {/* Loading State */}
+        {isLoading && !propWorkshops ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
           </div>
-        </ScrollReveal>
+        ) : workshops.length > 0 ? (
+          /* Workshop Grid - Full-width 5x1 Layout on desktop */
+          <ScrollReveal animation="slideUp" delay={0.2}>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+              {workshops.map((workshop, index) => (
+                <WorkshopCard
+                  key={workshop.id}
+                  workshop={workshop}
+                  index={index}
+                />
+              ))}
+            </div>
+          </ScrollReveal>
+        ) : (
+          <div className="text-muted-foreground py-16 text-center">
+            Geen workshops gevonden.
+          </div>
+        )}
 
         {/* View All CTA */}
-        {showViewAllButton && (
+        {showViewAllButton && workshops.length > 0 && (
           <ScrollReveal animation="slideUp" delay={0.4}>
             <div className="mt-12 text-center">
               <Button asChild size="lg" variant="outline">
