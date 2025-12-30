@@ -136,3 +136,67 @@ model Feedback {
   @@index([isRead])
   @@index([createdAt])
 }
+
+// Workshop model - main uitje definitions
+model Workshop {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  title           String
+  subtitle        String
+  description     String
+  longDescription String?
+  image           String?
+  video           String?
+  duration        String
+  groupSize       String
+  location        String
+  categories      String[]
+  includes        String[]
+  isPublished     Boolean          @default(true)
+  sortOrder       Int              @default(0)
+  priceTiers      PriceTier[]
+  variants        WorkshopVariant[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([sortOrder])
+}
+
+// Price tier for workshops
+model PriceTier {
+  id             String   @id @default(cuid())
+  workshopId     String
+  workshop       Workshop @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  variantId      String?
+  variant        WorkshopVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  groupSize      String   // "8-10 personen", "16+ personen", etc.
+  minParticipants Int?
+  maxParticipants Int?
+  priceExclBtw   Float
+  priceInclBtw   Float
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([workshopId])
+  @@index([variantId])
+}
+
+// Workshop variants (e.g., Arabisch, Dessert, Oogsten for Kookworkshop)
+model WorkshopVariant {
+  id          String      @id @default(cuid())
+  workshopId  String
+  workshop    Workshop    @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  duration    String
+  includes    String[]
+  sortOrder   Int         @default(0)
+  priceTiers  PriceTier[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([workshopId])
+}

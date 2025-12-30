@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { workshopConfigSchema } from "@/lib/validations/forms";
 
 export const workshopRouter = createTRPCRouter({
+  // Booking configuration endpoints
   create: publicProcedure
     .input(workshopConfigSchema)
     .mutation(async ({ input }) => {
-      // Process the data for database storage
       const workshopConfig = await prisma.workshopConfig.create({
         data: {
           type: input.type,
@@ -22,21 +22,94 @@ export const workshopRouter = createTRPCRouter({
           email: input.email,
         },
       });
-
       return workshopConfig;
     }),
 
-  getAll: publicProcedure.query(async () => {
+  getConfigs: publicProcedure.query(async () => {
     return await prisma.workshopConfig.findMany({
       orderBy: { createdAt: "desc" },
     });
   }),
 
-  getById: publicProcedure
+  getConfigById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await prisma.workshopConfig.findUnique({
         where: { id: input.id },
       });
+    }),
+
+  // Workshop catalog endpoints
+  list: publicProcedure.query(async () => {
+    return await prisma.workshop.findMany({
+      where: { isPublished: true },
+      include: {
+        priceTiers: {
+          where: { variantId: null },
+          orderBy: { sortOrder: "asc" },
+        },
+        variants: {
+          orderBy: { sortOrder: "asc" },
+          include: {
+            priceTiers: { orderBy: { sortOrder: "asc" } },
+          },
+        },
+      },
+      orderBy: { sortOrder: "asc" },
+    });
+  }),
+
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      return await prisma.workshop.findUnique({
+        where: { slug: input.slug },
+        include: {
+          priceTiers: {
+            where: { variantId: null },
+            orderBy: { sortOrder: "asc" },
+          },
+          variants: {
+            orderBy: { sortOrder: "asc" },
+            include: {
+              priceTiers: { orderBy: { sortOrder: "asc" } },
+            },
+          },
+        },
+      });
+    }),
+
+  // Get price for a specific workshop and participant count
+  getPrice: publicProcedure
+    .input(
+      z.object({
+        workshopId: z.string(),
+        variantId: z.string().optional(),
+        participantCount: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { workshopId, variantId, participantCount } = input;
+
+      // Find matching price tier
+      const tier = await prisma.priceTier.findFirst({
+        where: {
+          workshopId,
+          variantId: variantId ?? null,
+          OR: [
+            {
+              minParticipants: { lte: participantCount },
+              maxParticipants: { gte: participantCount },
+            },
+            {
+              minParticipants: { lte: participantCount },
+              maxParticipants: null,
+            },
+          ],
+        },
+        orderBy: { minParticipants: "desc" },
+      });
+
+      return tier;
     }),
 });

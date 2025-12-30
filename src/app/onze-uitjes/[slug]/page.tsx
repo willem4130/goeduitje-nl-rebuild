@@ -14,454 +14,62 @@ import {
   ArrowLeft,
   Calendar,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-// Variant type for workshops with multiple options
-interface WorkshopVariant {
-  id: string;
-  name: string;
-  description: string;
-  duration: string;
-  priceTiers: { groupSize: string; price: string }[];
-  includes: string[];
+// Helper to format price display
+function formatPrice(priceExcl: number, priceIncl: number): string {
+  return `€${priceExcl % 1 === 0 ? priceExcl : priceExcl.toFixed(2).replace(".", ",")} excl btw (€${priceIncl % 1 === 0 ? priceIncl : priceIncl.toFixed(2).replace(".", ",")} incl btw) p.p.`;
 }
 
-// Workshop type with optional variants
-interface WorkshopData {
-  id: string;
-  slug: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  longDescription: string;
-  video?: string;
-  image: string;
-  duration: string;
-  groupSize: string;
-  price: string;
-  priceFrom: number;
-  priceTiers: { groupSize: string; price: string }[];
-  location: string;
-  includes: string[];
-  categories: string[];
-  variants?: WorkshopVariant[];
+// Get lowest price from tiers
+function getLowestPrice(
+  priceTiers: { priceExclBtw: number }[],
+  variants?: { priceTiers: { priceExclBtw: number }[] }[]
+): number {
+  let lowest = Infinity;
+
+  // Check main price tiers
+  for (const tier of priceTiers) {
+    if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+  }
+
+  // Check variant price tiers
+  if (variants) {
+    for (const variant of variants) {
+      for (const tier of variant.priceTiers) {
+        if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+      }
+    }
+  }
+
+  return lowest === Infinity ? 0 : lowest;
 }
-
-// Workshop data - content from goeduitje.nl
-const WORKSHOPS: WorkshopData[] = [
-  {
-    id: "kookworkshop",
-    slug: "kookworkshop",
-    title: "Kookworkshops",
-    subtitle: "Samen koken, samen genieten",
-    description:
-      "Bereid samen een heerlijke maaltijd onder begeleiding van gepassioneerde koks uit de Arabische keuken",
-    longDescription: `
-      Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van verschillende keukens.
-      Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen.
-
-      Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, Dessert workshop, Vegetarische kookworkshop
-      of schrijf je in voor een van onze open kookworkshops.
-    `,
-    video: "/images/workshops/workshop 1.mp4",
-    image: "/images/workshops/kookworkshop.jpg",
-    duration: "vanaf 2,5 uur",
-    groupSize: "8-30 personen",
-    price: "Vanaf €30 p.p.",
-    priceFrom: 30,
-    priceTiers: [
-      { groupSize: "8-10 personen", price: "€70 excl btw (€85 incl btw) p.p." },
-      {
-        groupSize: "11-15 personen",
-        price: "€60 excl btw (€73 incl btw) p.p.",
-      },
-      { groupSize: "16+ personen", price: "€55 excl btw (€67 incl btw) p.p." },
-    ],
-    location: "Op locatie naar keuze of bij u op locatie",
-    includes: [
-      "Begeleiding door gepassioneerde koks",
-      "Alle ingrediënten en materialen",
-      "Recepten om mee naar huis te nemen",
-      "Complete maaltijd",
-      "Keuze uit vlees, vegetarisch of veganistisch",
-      "Sociale impact - draag bij aan arbeidsparticipatie",
-    ],
-    categories: ["Koken", "Teambuilding", "Cultureel"],
-    variants: [
-      {
-        id: "arabisch",
-        name: "Arabische Kookworkshop",
-        description:
-          "Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van de Arabische keuken. Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen. In teams van 2-3 personen bereid je heerlijke Arabische gerechten. Keuze uit vlees, vegetarisch en veganistisch.",
-        duration: "vanaf 2,5 uur (standaard 3 uur, flexibel)",
-        priceTiers: [
-          {
-            groupSize: "8-10 personen",
-            price: "€70 excl btw (€85 incl btw) p.p.",
-          },
-          {
-            groupSize: "11-15 personen",
-            price: "€60 excl btw (€73 incl btw) p.p.",
-          },
-          {
-            groupSize: "16+ personen",
-            price: "€55 excl btw (€67 incl btw) p.p.",
-          },
-        ],
-        includes: [
-          "Begeleiding door gepassioneerde koks",
-          "Alle ingrediënten en materialen",
-          "Recepten om mee naar huis te nemen",
-          "Complete maaltijd",
-          "Keuze uit vlees, vegetarisch of veganistisch",
-        ],
-      },
-      {
-        id: "oogsten",
-        name: "Oogsten, Koken & Genieten",
-        description:
-          "Eerst ontspannen groenten oogsten en kruiden verzamelen in de pluktuin en voedselbos. Daarna onder begeleiding van de koks deze ingrediënten bereiden met Oosterse kruiden en specerijen.",
-        duration: "3-4 uur",
-        priceTiers: [
-          {
-            groupSize: "8-10 personen",
-            price: "€80 excl btw (€97 incl btw) p.p.",
-          },
-          {
-            groupSize: "11-15 personen",
-            price: "€70 excl btw (€85 incl btw) p.p.",
-          },
-          {
-            groupSize: "16+ personen",
-            price: "€65 excl btw (€79 incl btw) p.p.",
-          },
-        ],
-        includes: [
-          "Oogsten in de pluktuin en voedselbos",
-          "Begeleiding door koks",
-          "Alle ingrediënten en materialen",
-          "Oosterse kruiden en specerijen",
-          "Complete maaltijd",
-        ],
-      },
-      {
-        id: "dessert",
-        name: "Dessert Workshop",
-        description:
-          "Leer heerlijke Arabische desserts maken onder begeleiding van onze koks. Perfect als toevoeging aan een kookworkshop of als aparte activiteit.",
-        duration: "45 minuten",
-        priceTiers: [
-          {
-            groupSize: "8-10 personen",
-            price: "€40 excl btw (€48 incl btw) p.p.",
-          },
-          {
-            groupSize: "11-15 personen",
-            price: "€35 excl btw (€42 incl btw) p.p.",
-          },
-          {
-            groupSize: "16+ personen",
-            price: "€30 excl btw (€36 incl btw) p.p.",
-          },
-        ],
-        includes: [
-          "Begeleiding door koks",
-          "Alle ingrediënten",
-          "Recepten om mee naar huis te nemen",
-          "Proeven van de desserts",
-        ],
-      },
-      {
-        id: "koken-op-maat",
-        name: "Koken op Maat",
-        description:
-          "Goeduitje.nl creëert graag een workshop op maat! De chef komt naar jou toe en kan zo persoonlijke begeleiding bieden afgestemd op jouw wensen. De ervaring wordt volledig aangepast aan jouw voorkeuren. Samen maken we van koken niet alleen een feestje voor de smaakpapillen, maar vooral voor het hart.",
-        duration: "in overleg",
-        priceTiers: [
-          {
-            groupSize: "8-10 personen",
-            price: "€70 excl btw (€85 incl btw) p.p.",
-          },
-          {
-            groupSize: "11-15 personen",
-            price: "€60 excl btw (€73 incl btw) p.p.",
-          },
-          {
-            groupSize: "16+ personen",
-            price: "€55 excl btw (€67 incl btw) p.p.",
-          },
-        ],
-        includes: [
-          "Chef komt naar jouw locatie",
-          "Volledig aangepast aan jouw wensen",
-          "Persoonlijke begeleiding",
-          "Alle ingrediënten en materialen",
-          "Keuze uit vlees, vegetarisch of veganistisch",
-        ],
-      },
-    ],
-  },
-  {
-    id: "stadsspel",
-    slug: "stadsspel",
-    title: "Stadsspel / Citygame",
-    subtitle: "Ontdek de stad op een nieuwe manier",
-    description:
-      "Een interactieve speurtocht door de stad met culturele uitdagingen en verrassende ontmoetingen",
-    longDescription: `
-      Ons culture stadsspel is uniek door de integratie van statushouders en asielzoekers in het spel.
-      Het spel kan zich afspelen in de stad, in de natuur of zelfs binnen.
-
-      Kies uit twee varianten:
-      - Teamspel: Competitief spel waar je strijdt tegen andere teams
-      - "Team up and crack it!" (Koffer): Als één team op zoek naar de code om de koffer te openen
-
-      Perfect voor teams die op zoek zijn naar een actieve, culturele en vooral leuke ervaring.
-    `,
-    video: "/images/workshops/workshop 2.mp4",
-    image: "/images/workshops/stadsspel.jpg",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    price: "Vanaf €22,50 p.p.",
-    priceFrom: 22.5,
-    priceTiers: [
-      { groupSize: "Teamspel", price: "vanaf €22,50 excl btw p.p." },
-      { groupSize: "Koffer teambuilding", price: "vanaf €32,50 excl btw p.p." },
-    ],
-    location: "Nijmegen, Arnhem en andere steden",
-    includes: [
-      "Professionele begeleiding",
-      "Spannende challenges en puzzels",
-      "Culturele ontmoetingen",
-      "Prijzen voor het winnende team",
-      "Optioneel: lunch of borrel achteraf",
-      "Sociale impact - ontmoet statushouders",
-    ],
-    categories: ["Outdoor", "Teambuilding", "Cultureel"],
-  },
-  {
-    id: "the-game",
-    slug: "the-game",
-    title: "The Game - Koffer Challenge",
-    subtitle: "Team up and crack it!",
-    description:
-      "Zoek samen de code om de koffer te openen. Vereist afstemming, communicatie en samenwerking",
-    longDescription: `
-      "Team up and crack it!" - Als één team ga je op zoek naar de code om de koffer te openen.
-      Dit vereist afstemming, communicatie en samenwerking tussen alle teamleden.
-
-      Uniek door de integratie van statushouders en asielzoekers in het spel. Zij begeleiden
-      de activiteit en maken het tot een bijzondere culturele ervaring.
-
-      Communicatie, leiderschap en probleemoplossend denken worden op de proef gesteld
-      terwijl jullie samen de puzzel oplossen.
-    `,
-    image: "/images/workshops/the-game.jpg",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    price: "Vanaf €32,50 p.p.",
-    priceFrom: 32.5,
-    priceTiers: [
-      { groupSize: "Koffer teambuilding", price: "vanaf €32,50 excl btw p.p." },
-    ],
-    location: "Diverse locaties in overleg",
-    includes: [
-      "Professionele begeleiding",
-      "Alle benodigde materialen",
-      "Culturele uitwisseling",
-      "Teamevaluatie achteraf",
-      "Drankjes tijdens het spel",
-      "Sociale impact - werk samen met statushouders",
-    ],
-    categories: ["Indoor", "Teambuilding", "Cultureel"],
-  },
-  {
-    id: "koffie-thee-workshop",
-    slug: "koffie-thee-workshop",
-    title: "Koffie & Thee Workshop",
-    subtitle: "De kunst van Arabische koffie en thee",
-    description:
-      "Leer hoe Arabische koffie en thee gemaakt worden en experimenteer met kruiden en specerijen",
-    longDescription: `
-      Onze medewerkers laten zien hoe Arabische koffie gemaakt wordt. Daarna maakt u in groepjes zelf koffie
-      en experimenteert u met verschillende kruiden en specerijen om de perfecte smaak te ontdekken.
-
-      U kunt de koffie van collega's of teamgenoten proeven en samen bepalen hoe de lekkerste Arabische koffie te maken.
-      Theeliefhebbers kunnen ook aan de slag met diverse kruiden en specerijen.
-
-      Tijdens de workshop serveren ze heerlijke Arabische lekkernijen. Optioneel te combineren met een maaltijd
-      uit de Arabische keuken.
-    `,
-    image: "/images/workshops/koffie-thee.jpg",
-    duration: "in overleg",
-    groupSize: "8-25 personen",
-    price: "Vanaf €32,50 p.p.",
-    priceFrom: 32.5,
-    priceTiers: [
-      { groupSize: "Workshop", price: "vanaf €32,50 excl btw p.p." },
-      { groupSize: "Met maaltijd", price: "prijs in overleg" },
-    ],
-    location:
-      "Bij u op locatie (binnen of buiten) of gezamenlijk gekozen locatie",
-    includes: [
-      "Begeleiding door onze medewerkers",
-      "Diverse koffie- en theesoorten",
-      "Kruiden en specerijen om mee te experimenteren",
-      "Arabische lekkernijen",
-      "Culturele uitwisseling",
-      "Optioneel: maaltijd uit de Arabische keuken",
-    ],
-    categories: ["Workshop", "Cultureel", "Culinair"],
-  },
-  {
-    id: "beachvolleybal-workshop",
-    slug: "beachvolleybal-workshop",
-    title: "Beachvolleybal Workshop",
-    subtitle: "Sport, zon en strand",
-    description:
-      "Actieve teambuilding met gecertificeerde trainers. Clinic, toernooi of combinatie van beide",
-    longDescription: `
-      Onder leiding van gecertificeerde beachvolleybaltrainers leer je de beginselen van het beachvolleybal
-      of breid je je volleybalskills uit. Serveren, passen, duiken en aanvallen komen allemaal aan bod.
-
-      Kies uit verschillende opties:
-      - Dynamische clinic door gecertificeerde trainer
-      - Spannend toernooi
-      - Combinatie van beide
-
-      Geschikt voor beginners én gevorderden. Met de zon op je gezicht en zand tussen je tenen
-      creëer je herinneringen die je team nog lang zal bijblijven.
-    `,
-    image: "/images/workshops/beachvolleybal.jpg",
-    duration: "2-4 uur",
-    groupSize: "12-40 personen",
-    price: "Vanaf €25 p.p.",
-    priceFrom: 25,
-    priceTiers: [
-      { groupSize: "Per persoon", price: "vanaf €25 excl btw p.p." },
-    ],
-    location: "Beachclubs in heel Nederland",
-    includes: [
-      "Gecertificeerde volleybalcoaches",
-      "Gebruik van velden en materiaal",
-      "Warming-up en techniektraining",
-      "Toernooi met prijzen",
-      "Geschikt voor beginners én gevorderden",
-      "Optioneel: drankjes en hapjes",
-    ],
-    categories: ["Outdoor", "Sport", "Teambuilding"],
-  },
-  {
-    id: "lunch-diner",
-    slug: "lunch-diner",
-    title: "Lunch & Diner Uitjes",
-    subtitle: "Culinaire beleving met impact",
-    description:
-      "Unieke lunches en diners waarbij statushouders en asielzoekers je kennis laten maken met verrukkelijke smaken",
-    longDescription: `
-      Unieke lunches en diners waarbij statushouders en asielzoekers je kennis laten maken met verrukkelijke smaken
-      en exotische gerechten. Zowel buffetten als uitgebreide diners op locatie zijn een culinaire reis.
-
-      Kies uit verschillende opties: van een simpel buffet tot een uitgebreid Arabisch diner of combineer
-      een kookworkshop met diner voor de complete ervaring.
-    `,
-    image: "/images/workshops/lunch-diner.jpg",
-    duration: "1-4 uur",
-    groupSize: "8-100 personen",
-    price: "Vanaf €22,50 p.p.",
-    priceFrom: 22.5,
-    priceTiers: [
-      { groupSize: "Buffet", price: "vanaf €22,50 excl btw p.p." },
-      { groupSize: "Lunch", price: "vanaf €35 excl btw p.p." },
-      { groupSize: "Arabisch diner", price: "vanaf €45-50 excl btw p.p." },
-    ],
-    location: "Op locatie naar keuze of bij u op locatie",
-    includes: [
-      "Bereiding door onze koks",
-      "Alle ingrediënten en materialen",
-      "Serveren en opruimen",
-      "Culturele toelichting bij gerechten",
-      "Keuze uit diverse menu's",
-      "Sociale impact - werk met statushouders",
-    ],
-    categories: ["Culinair", "Cultureel", "Teambuilding"],
-    variants: [
-      {
-        id: "buffet",
-        name: "Buffet",
-        description:
-          "Een heerlijk buffet met diverse Arabische en Perzische gerechten. Perfect voor grotere groepen of informele bijeenkomsten.",
-        duration: "1-2 uur",
-        priceTiers: [
-          { groupSize: "Per persoon", price: "vanaf €22,50 excl btw p.p." },
-        ],
-        includes: [
-          "Diverse warme en koude gerechten",
-          "Brood en dips",
-          "Vegetarische opties",
-          "Serveren en opruimen",
-        ],
-      },
-      {
-        id: "lunch",
-        name: "Lunch",
-        description:
-          "Een uitgebreide lunch met verse gerechten uit de Arabische keuken. Ideaal voor zakelijke bijeenkomsten of teamlunches.",
-        duration: "1,5-2 uur",
-        priceTiers: [
-          { groupSize: "Per persoon", price: "vanaf €35 excl btw p.p." },
-        ],
-        includes: [
-          "Meerdere gangen",
-          "Verse ingrediënten",
-          "Vegetarische opties",
-          "Koffie en thee",
-        ],
-      },
-      {
-        id: "diner",
-        name: "Arabisch Diner",
-        description:
-          "Een uitgebreid meergangen diner met de beste gerechten uit de Arabische en Perzische keuken. Een culinaire reis voor jullie team.",
-        duration: "2-3 uur",
-        priceTiers: [
-          { groupSize: "Per persoon", price: "vanaf €45-50 excl btw p.p." },
-        ],
-        includes: [
-          "Meerdere gangen",
-          "Authentieke recepten",
-          "Culturele toelichting",
-          "Vegetarische opties",
-          "Koffie, thee en dessert",
-        ],
-      },
-      {
-        id: "workshop-diner",
-        name: "Kookworkshop met Diner",
-        description:
-          "De complete ervaring: eerst samen koken onder begeleiding van onze koks, daarna genieten van jullie zelfbereide maaltijd.",
-        duration: "3-4 uur",
-        priceTiers: [
-          { groupSize: "Per persoon", price: "vanaf €55 excl btw p.p." },
-        ],
-        includes: [
-          "Kookworkshop",
-          "Alle ingrediënten",
-          "Begeleiding door koks",
-          "Complete maaltijd",
-          "Recepten voor thuis",
-        ],
-      },
-    ],
-  },
-];
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+async function getWorkshop(slug: string) {
+  return prisma.workshop.findUnique({
+    where: { slug, isPublished: true },
+    include: {
+      priceTiers: {
+        where: { variantId: null },
+        orderBy: { sortOrder: "asc" },
+      },
+      variants: {
+        orderBy: { sortOrder: "asc" },
+        include: {
+          priceTiers: { orderBy: { sortOrder: "asc" } },
+        },
+      },
+    },
+  });
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const workshop = WORKSHOPS.find((w) => w.slug === slug);
+  const workshop = await getWorkshop(slug);
 
   if (!workshop) {
     return {
@@ -475,15 +83,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export function generateStaticParams() {
-  return WORKSHOPS.map((workshop) => ({
+export async function generateStaticParams() {
+  const workshops = await prisma.workshop.findMany({
+    where: { isPublished: true },
+    select: { slug: true },
+  });
+
+  return workshops.map((workshop) => ({
     slug: workshop.slug,
   }));
 }
 
 export default async function WorkshopDetailPage({ params }: Props) {
   const { slug } = await params;
-  const workshop = WORKSHOPS.find((w) => w.slug === slug);
+  const workshop = await getWorkshop(slug);
 
   if (!workshop) {
     notFound();
@@ -515,7 +128,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   playsInline
                   className="absolute inset-0 h-full w-full object-cover"
                 />
-              ) : (
+              ) : workshop.image ? (
                 <Image
                   src={workshop.image}
                   alt={workshop.title}
@@ -523,7 +136,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   className="object-cover"
                   priority
                 />
-              )}
+              ) : null}
             </div>
 
             {/* Content */}
@@ -568,7 +181,11 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   <Euro className="text-primary h-5 w-5" />
                   <div>
                     <p className="text-muted-foreground text-sm">Prijs</p>
-                    <p className="font-semibold">{workshop.price}</p>
+                    <p className="font-semibold">
+                      Vanaf €
+                      {getLowestPrice(workshop.priceTiers, workshop.variants)}{" "}
+                      p.p.
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -671,7 +288,10 @@ export default async function WorkshopDetailPage({ params }: Props) {
                                   {tier.groupSize}
                                 </span>
                                 <span className="font-medium">
-                                  {tier.price}
+                                  {formatPrice(
+                                    tier.priceExclBtw,
+                                    tier.priceInclBtw
+                                  )}
                                 </span>
                               </div>
                             ))}
@@ -695,7 +315,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
               <div className="lg:col-span-2">
                 <h2 className="mb-6 text-2xl font-bold">Over dit uitje</h2>
                 <div className="prose prose-gray dark:prose-invert max-w-none">
-                  {workshop.longDescription
+                  {(workshop.longDescription ?? workshop.description)
                     .split("\n\n")
                     .map((paragraph, i) => (
                       <p key={i} className="text-muted-foreground mb-4">
@@ -721,7 +341,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                 <div className="bg-muted/50 mt-8 rounded-lg p-6">
                   <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
                   <p className="text-primary mb-4 text-3xl font-bold">
-                    €{workshop.priceFrom}{" "}
+                    €{getLowestPrice(workshop.priceTiers, workshop.variants)}{" "}
                     <span className="text-muted-foreground text-base font-normal">
                       per persoon
                     </span>
@@ -741,7 +361,9 @@ export default async function WorkshopDetailPage({ params }: Props) {
                           <span className="text-muted-foreground">
                             {tier.groupSize}
                           </span>
-                          <span className="font-medium">{tier.price}</span>
+                          <span className="font-medium">
+                            {formatPrice(tier.priceExclBtw, tier.priceInclBtw)}
+                          </span>
                         </div>
                       ))}
                     </div>
