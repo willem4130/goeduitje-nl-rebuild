@@ -7,7 +7,7 @@ import {
   useMotionValue,
   animate,
 } from "framer-motion";
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useEffect, useCallback, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,11 +17,19 @@ import {
   EASING,
 } from "@/lib/animations";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { api } from "@/trpc/client";
 
 /**
  * Hero section with video background and CTA overlays
  * Features animated headline and two primary action buttons
  */
+
+// Default values (used while loading or if fetch fails)
+const DEFAULTS = {
+  heroActivitiesCount: "41",
+  heroParticipantsCount: "516",
+  uspBadges: "Maak sociale impact,Op locatie naar keuze,Op maat",
+};
 
 interface HeroVideoProps {
   headline?: string;
@@ -40,6 +48,26 @@ export function HeroVideo({
     href: "#configurator",
   },
 }: HeroVideoProps) {
+  // Fetch site stats from database
+  const { data: siteStats } = api.content.getByPage.useQuery({
+    page: "site-stats",
+  });
+
+  // Get values from database with fallbacks
+  const activitiesCount = parseInt(
+    siteStats?.public?.heroActivitiesCount || DEFAULTS.heroActivitiesCount,
+    10
+  );
+  const participantsCount = parseInt(
+    siteStats?.public?.heroParticipantsCount || DEFAULTS.heroParticipantsCount,
+    10
+  );
+  const uspBadgesString = siteStats?.public?.uspBadges || DEFAULTS.uspBadges;
+  const uspBadges = useMemo(
+    () => uspBadgesString.split(",").map((s) => s.trim()),
+    [uspBadgesString]
+  );
+
   // Detect mobile devices
   const isMobile = useIsMobile();
 
@@ -191,13 +219,13 @@ export function HeroVideo({
               className="mx-auto mt-16 grid max-w-2xl grid-cols-2 gap-12 border-t border-white/20 pt-12"
             >
               <div className="text-center">
-                <AnimatedKPI target={41} />
+                <AnimatedKPI target={activitiesCount} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal uitjes
                 </div>
               </div>
               <div className="text-center">
-                <AnimatedKPI target={516} />
+                <AnimatedKPI target={participantsCount} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal deelnemers
                 </div>
@@ -209,9 +237,9 @@ export function HeroVideo({
               variants={fadeInUp}
               className="mt-12 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-4"
             >
-              <USPBadge text="Maak sociale impact" />
-              <USPBadge text="Op locatie naar keuze" />
-              <USPBadge text="Op maat" />
+              {uspBadges.map((badge, index) => (
+                <USPBadge key={index} text={badge} />
+              ))}
             </motion.div>
           </motion.div>
         </div>

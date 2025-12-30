@@ -10,13 +10,26 @@ interface StatItem {
   label: string;
 }
 
+// Default values (used while loading or if fetch fails)
+const DEFAULTS = {
+  teamsCount: "150+",
+  rebookRate: "95%",
+};
+
 function useStats(): StatItem[] {
   const { data: reviewStats } = api.reviews.getStats.useQuery();
+  const { data: siteStats } = api.content.getByPage.useQuery({
+    page: "site-stats",
+  });
+
+  // Get values from database with fallbacks
+  const teamsCount = siteStats?.public?.teamsCount || DEFAULTS.teamsCount;
+  const rebookRate = siteStats?.public?.rebookRate || DEFAULTS.rebookRate;
 
   return [
     {
       icon: Users,
-      value: "150+",
+      value: teamsCount,
       label: "Teams",
     },
     {
@@ -31,7 +44,7 @@ function useStats(): StatItem[] {
     },
     {
       icon: TrendingUp,
-      value: "95%",
+      value: rebookRate,
       label: "Rebook",
     },
   ];
