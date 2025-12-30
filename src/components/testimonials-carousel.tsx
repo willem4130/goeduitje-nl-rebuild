@@ -81,6 +81,8 @@ interface TestimonialsCarouselProps {
   title?: string;
   subtitle?: string;
   useGoogleReviews?: boolean;
+  /** Show 2 testimonials side by side (default: true) */
+  showPaired?: boolean;
 }
 
 export function TestimonialsCarousel({
@@ -89,6 +91,7 @@ export function TestimonialsCarousel({
   title = "Jullie ervaringen",
   subtitle = "Wat onze klanten zeggen",
   useGoogleReviews = false,
+  showPaired = true,
 }: TestimonialsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -106,37 +109,54 @@ export function TestimonialsCarousel({
   // Determine which data to use
   const hasGoogleReviews =
     useGoogleReviews && googleReviews && googleReviews.length > 0;
-  const displayCount = hasGoogleReviews
+  const itemCount = hasGoogleReviews
     ? googleReviews.length
     : testimonials.length;
 
+  // When showing paired, we navigate by pairs (2 at a time)
+  const pairCount = showPaired ? Math.ceil(itemCount / 2) : itemCount;
+
   const nextTestimonial = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % displayCount);
-  }, [displayCount]);
+    setCurrentIndex((prev) => (prev + 1) % pairCount);
+  }, [pairCount]);
 
   const previousTestimonial = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + displayCount) % displayCount);
-  }, [displayCount]);
+    setCurrentIndex((prev) => (prev - 1 + pairCount) % pairCount);
+  }, [pairCount]);
 
   const goToTestimonial = (index: number) => {
     setCurrentIndex(index);
   };
 
+  // Get the current pair of items to display
+  const getCurrentPair = () => {
+    if (hasGoogleReviews && googleReviews) {
+      const startIndex = showPaired ? currentIndex * 2 : currentIndex;
+      const first = googleReviews[startIndex];
+      const second = showPaired ? googleReviews[startIndex + 1] : undefined;
+      return { first, second, isGoogle: true };
+    }
+    const startIndex = showPaired ? currentIndex * 2 : currentIndex;
+    const first = testimonials[startIndex] ?? DEFAULT_TESTIMONIALS[0];
+    const second = showPaired ? testimonials[startIndex + 1] : undefined;
+    return { first, second, isGoogle: false };
+  };
+
   // Auto-play functionality
   useEffect(() => {
-    if (isPaused || displayCount <= 1) return;
+    if (isPaused || pairCount <= 1) return;
 
     const interval = setInterval(nextTestimonial, autoPlayInterval);
 
     return () => clearInterval(interval);
-  }, [isPaused, nextTestimonial, autoPlayInterval, displayCount]);
+  }, [isPaused, nextTestimonial, autoPlayInterval, pairCount]);
 
   // Reset index if it's out of bounds
   useEffect(() => {
-    if (currentIndex >= displayCount) {
+    if (currentIndex >= pairCount) {
       setCurrentIndex(0);
     }
-  }, [currentIndex, displayCount]);
+  }, [currentIndex, pairCount]);
 
   // Show loading state for Google Reviews
   if (useGoogleReviews && isLoading) {
@@ -190,7 +210,9 @@ export function TestimonialsCarousel({
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                  {showGoogleReviews ? (
+                  {showPaired ? (
+                    <PairedTestimonials pair={getCurrentPair()} />
+                  ) : showGoogleReviews ? (
                     <GoogleReviewCard review={googleReviews[currentIndex]!} />
                   ) : (
                     <TestimonialCard
@@ -204,7 +226,7 @@ export function TestimonialsCarousel({
             </div>
 
             {/* Navigation Arrows */}
-            {displayCount > 1 && (
+            {pairCount > 1 && (
               <>
                 <Button
                   variant="outline"
@@ -230,9 +252,9 @@ export function TestimonialsCarousel({
           </div>
 
           {/* Dots Indicator */}
-          {displayCount > 1 && (
+          {pairCount > 1 && (
             <div className="mt-8 flex items-center justify-center gap-2">
-              {Array.from({ length: displayCount }).map((_, index) => (
+              {Array.from({ length: pairCount }).map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToTestimonial(index)}
@@ -373,6 +395,128 @@ function GoogleReviewCard({ review }: { review: GoogleReviewData }) {
                   <span>Google Review · {review.relativeTime}</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Paired testimonials display - 2 smaller cards side by side
+ */
+interface PairedTestimonialsProps {
+  pair: {
+    first: GoogleReviewData | Testimonial | undefined;
+    second: GoogleReviewData | Testimonial | undefined;
+    isGoogle: boolean;
+  };
+}
+
+function PairedTestimonials({ pair }: PairedTestimonialsProps) {
+  const { first, second, isGoogle } = pair;
+
+  return (
+    <div className="mx-auto max-w-6xl">
+      <div className="grid gap-6 md:grid-cols-2">
+        {first &&
+          (isGoogle ? (
+            <CompactGoogleReviewCard review={first as GoogleReviewData} />
+          ) : (
+            <CompactTestimonialCard testimonial={first as Testimonial} />
+          ))}
+        {second &&
+          (isGoogle ? (
+            <CompactGoogleReviewCard review={second as GoogleReviewData} />
+          ) : (
+            <CompactTestimonialCard testimonial={second as Testimonial} />
+          ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Compact testimonial card for paired display
+ */
+function CompactTestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  return (
+    <div className="bg-background shadow-editorial relative overflow-hidden rounded-lg p-5 sm:p-6">
+      {/* Quote mark */}
+      <span className="text-primary/10 absolute -top-2 -left-1 font-serif text-[60px] leading-none">
+        &ldquo;
+      </span>
+
+      <div className="relative">
+        {testimonial.rating && (
+          <div className="mb-2">
+            <StarRating rating={testimonial.rating} size="sm" />
+          </div>
+        )}
+
+        <blockquote className="mb-4">
+          <p className="text-foreground line-clamp-4 text-sm leading-relaxed italic">
+            {testimonial.quote}
+          </p>
+        </blockquote>
+
+        {/* Attribution */}
+        <div className="border-border border-t pt-3">
+          <p className="text-foreground text-sm font-semibold tracking-tight">
+            {testimonial.author}
+          </p>
+          <p className="text-muted-foreground text-xs tracking-wide">
+            {testimonial.role} · {testimonial.company}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Compact Google Review card for paired display
+ */
+function CompactGoogleReviewCard({ review }: { review: GoogleReviewData }) {
+  return (
+    <div className="bg-background shadow-editorial relative overflow-hidden rounded-lg p-5 sm:p-6">
+      {/* Quote mark */}
+      <span className="text-primary/10 absolute -top-2 -left-1 font-serif text-[60px] leading-none">
+        &ldquo;
+      </span>
+
+      <div className="relative">
+        <div className="mb-2">
+          <StarRating rating={review.rating} size="sm" />
+        </div>
+
+        <blockquote className="mb-4">
+          <p className="text-foreground line-clamp-4 text-sm leading-relaxed italic">
+            {review.text || "Geweldige ervaring!"}
+          </p>
+        </blockquote>
+
+        {/* Attribution with avatar */}
+        <div className="border-border flex items-center gap-2 border-t pt-3">
+          <Avatar className="h-8 w-8">
+            {review.authorPhotoUrl && (
+              <AvatarImage
+                src={review.authorPhotoUrl}
+                alt={review.authorName}
+              />
+            )}
+            <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+              {getInitials(review.authorName)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="text-foreground truncate text-sm font-semibold tracking-tight">
+              {review.authorName}
+            </p>
+            <div className="text-muted-foreground flex items-center gap-1 text-xs tracking-wide">
+              <GoogleIcon className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{review.relativeTime}</span>
             </div>
           </div>
         </div>
