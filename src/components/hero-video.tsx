@@ -7,7 +7,7 @@ import {
   useMotionValue,
   animate,
 } from "framer-motion";
-import { useEffect, useCallback, useRef, useState, useMemo } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,37 +17,11 @@ import {
   EASING,
 } from "@/lib/animations";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { api } from "@/trpc/client";
 
 /**
  * Hero section with video background and CTA overlays
  * Features animated headline and two primary action buttons
  */
-
-// Default values (used while loading or if fetch fails)
-const DEFAULTS = {
-  heroActivitiesCount: "41",
-  heroParticipantsCount: "516",
-  uspBadges: "Maak sociale impact,Op locatie naar keuze,Op maat",
-};
-
-// Static fallback paths (used when DB has no media)
-const STATIC_HERO = {
-  videos: {
-    desktop: {
-      webm: "/videos/hero/hero-background.webm",
-      mp4: "/videos/hero/hero-background.mp4",
-    },
-    mobile: {
-      webm: "/videos/hero/hero-background-mobile.webm",
-      mp4: "/videos/hero/hero-background-mobile.mp4",
-    },
-  },
-  posters: {
-    desktop: "/images/hero/hero-poster.jpg",
-    mobile: "/images/hero/hero-poster-mobile.jpg",
-  },
-};
 
 interface HeroVideoProps {
   headline?: string;
@@ -66,29 +40,6 @@ export function HeroVideo({
     href: "#configurator",
   },
 }: HeroVideoProps) {
-  // Fetch site stats from database
-  const { data: siteStats } = api.content.getByPage.useQuery({
-    page: "site-stats",
-  });
-
-  // Fetch hero media from database (videos + posters)
-  const { data: heroMedia } = api.media.getHeroMedia.useQuery();
-
-  // Get values from database with fallbacks
-  const activitiesCount = parseInt(
-    siteStats?.public?.heroActivitiesCount || DEFAULTS.heroActivitiesCount,
-    10
-  );
-  const participantsCount = parseInt(
-    siteStats?.public?.heroParticipantsCount || DEFAULTS.heroParticipantsCount,
-    10
-  );
-  const uspBadgesString = siteStats?.public?.uspBadges || DEFAULTS.uspBadges;
-  const uspBadges = useMemo(
-    () => uspBadgesString.split(",").map((s) => s.trim()),
-    [uspBadgesString]
-  );
-
   // Detect mobile devices
   const isMobile = useIsMobile();
 
@@ -100,32 +51,10 @@ export function HeroVideo({
   const { scrollY } = useScroll();
   const videoY = useTransform(scrollY, [0, 500], [0, 150]);
 
-  // Determine poster image (mobile or desktop) - DB first, then static fallback
-  const posterImage = useMemo(() => {
-    if (isMobile) {
-      return heroMedia?.posters.mobile?.blobUrl ?? STATIC_HERO.posters.mobile;
-    }
-    return heroMedia?.posters.desktop?.blobUrl ?? STATIC_HERO.posters.desktop;
-  }, [isMobile, heroMedia]);
-
-  // Determine video URLs - DB first, then static fallback
-  const videoUrls = useMemo(() => {
-    const desktopVideo = heroMedia?.videos.desktop;
-    const mobileVideo = heroMedia?.videos.mobile;
-
-    return {
-      desktop: {
-        // Use DB video or static fallback based on mime type
-        primary: desktopVideo?.blobUrl ?? STATIC_HERO.videos.desktop.mp4,
-        // For static fallback, we provide both formats
-        webm: desktopVideo ? null : STATIC_HERO.videos.desktop.webm,
-      },
-      mobile: {
-        primary: mobileVideo?.blobUrl ?? STATIC_HERO.videos.mobile.mp4,
-        webm: mobileVideo ? null : STATIC_HERO.videos.mobile.webm,
-      },
-    };
-  }, [heroMedia]);
+  // Determine poster image (mobile or desktop)
+  const posterImage = isMobile
+    ? "/images/hero/hero-poster-mobile.jpg"
+    : "/images/hero/hero-poster.jpg";
 
   // Handle video end - return to first frame and stay there
   const handleVideoEnded = useCallback(() => {
@@ -168,29 +97,25 @@ export function HeroVideo({
           onEnded={handleVideoEnded}
         >
           {/* Mobile video sources (portrait 1080x1920) */}
-          {videoUrls.mobile.webm && (
-            <source
-              src={videoUrls.mobile.webm}
-              type="video/webm"
-              media="(max-width: 768px)"
-            />
-          )}
           <source
-            src={videoUrls.mobile.primary}
+            src="/videos/hero/hero-background-mobile.webm"
+            type="video/webm"
+            media="(max-width: 768px)"
+          />
+          <source
+            src="/videos/hero/hero-background-mobile.mp4"
             type="video/mp4"
             media="(max-width: 768px)"
           />
 
           {/* Desktop video sources (landscape 1920x1080) */}
-          {videoUrls.desktop.webm && (
-            <source
-              src={videoUrls.desktop.webm}
-              type="video/webm"
-              media="(min-width: 769px)"
-            />
-          )}
           <source
-            src={videoUrls.desktop.primary}
+            src="/videos/hero/hero-background.webm"
+            type="video/webm"
+            media="(min-width: 769px)"
+          />
+          <source
+            src="/videos/hero/hero-background.mp4"
             type="video/mp4"
             media="(min-width: 769px)"
           />
@@ -266,13 +191,13 @@ export function HeroVideo({
               className="mx-auto mt-16 grid max-w-2xl grid-cols-2 gap-12 border-t border-white/20 pt-12"
             >
               <div className="text-center">
-                <AnimatedKPI target={activitiesCount} />
+                <AnimatedKPI target={41} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal uitjes
                 </div>
               </div>
               <div className="text-center">
-                <AnimatedKPI target={participantsCount} />
+                <AnimatedKPI target={516} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal deelnemers
                 </div>
@@ -284,9 +209,9 @@ export function HeroVideo({
               variants={fadeInUp}
               className="mt-12 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-4"
             >
-              {uspBadges.map((badge, index) => (
-                <USPBadge key={index} text={badge} />
-              ))}
+              <USPBadge text="Maak sociale impact" />
+              <USPBadge text="Op locatie naar keuze" />
+              <USPBadge text="Op maat" />
             </motion.div>
           </motion.div>
         </div>

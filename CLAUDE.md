@@ -68,28 +68,30 @@ Fix ALL errors before continuing. No exceptions.
 - **Google Reviews**: Synced via cron at `/api/cron/refresh-google-reviews`
 - **Resend**: Transactional emails (contact, booking confirmations)
 
-## Media Gallery (Database-Driven Images)
+## Static Assets
 
-**Backend is system of record** - Images are managed in backend admin, fetched via tRPC.
+**Site assets use static files** - Logos, hero videos, and backgrounds are in `/public/`:
 
-```typescript
-// Content images
-api.media.getAll(); // All visible content images
-api.media.getFeatured(); // Homepage featured images
-
-// Site assets (hero, logos)
-api.media.getHeroMedia(); // Returns { videos: {desktop, mobile}, posters: {desktop, mobile} }
-api.media.getLogos(); // Returns { nav, footer }
+```
+public/
+├── images/
+│   ├── logo/logo-nav.png         # Navigation logo
+│   ├── logo/logo-footer.png      # Footer logo
+│   ├── hero/hero-poster.jpg      # Desktop hero poster
+│   └── hero/hero-poster-mobile.jpg
+└── videos/
+    ├── hero/hero-background.mp4   # Desktop hero video
+    └── hero/hero-background-mobile.mp4
 ```
 
-Components with graceful fallbacks: `hero-video.tsx`, `top-navigation.tsx`, `footer.tsx`
+**DO NOT** add tRPC calls to `TopNavigation`, `Footer`, or `HeroVideo` - these use static files only.
 
 ## Never Do
 
 - Create admin pages here (use goeduitje-backend)
 - Run Drizzle migrations (Prisma is source of truth)
 - Modify `/components/ui/` (shadcn managed)
-- Hardcode content/images that should be in database
+- Add tRPC calls to TopNavigation, Footer, or HeroVideo (use static files)
 - Skip typecheck before committing
 
 ## Deployment

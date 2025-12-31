@@ -7,11 +7,11 @@ import { Toaster } from "@/components/ui/sonner";
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <TRPCProvider>
+    <>
       <TopNavigation />
-      {children}
+      <TRPCProvider>{children}</TRPCProvider>
       <Footer />
       <Toaster />
-    </TRPCProvider>
+    </>
   );
 }

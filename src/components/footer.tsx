@@ -12,10 +12,6 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { CompactContactForm } from "@/components/compact-contact-form";
-import { api } from "@/trpc/client";
-
-// Static fallback logo
-const STATIC_FOOTER_LOGO = "/images/logo/logo-footer.png";
 
 const footerLinks = {
   workshops: {
@@ -74,10 +70,6 @@ const socialLinks = [
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Fetch logos from database
-  const { data: logos } = api.media.getLogos.useQuery();
-  const footerLogoUrl = logos?.footer?.blobUrl ?? STATIC_FOOTER_LOGO;
-
   return (
     <footer className="bg-muted/30 border-t">
       {/* Main Footer Content */}
@@ -87,14 +79,10 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
               <Image
-                src={footerLogoUrl}
-                alt={
-                  logos?.footer?.altText ??
-                  "Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
-                }
+                src="/images/logo/logo-footer.png"
+                alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
                 width={240}
                 height={80}
-                unoptimized={footerLogoUrl.startsWith("http")}
                 className="h-auto w-auto"
                 style={{ maxWidth: "240px" }}
               />
