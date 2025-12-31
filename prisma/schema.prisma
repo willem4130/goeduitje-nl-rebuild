@@ -8,14 +8,14 @@ datasource db {
 }
 
 model FAQ {
-  id          String   @id
+  id          String   @id @default(cuid())
   question    String
   answer      String
   category    String
   sortOrder   Int      @default(0)
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 
   @@index([category])
   @@index([isPublished])
@@ -23,7 +23,7 @@ model FAQ {
 }
 
 model Feedback {
-  id        String   @id
+  id        String   @id @default(cuid())
   name      String
   email     String
   phone     String?
@@ -32,14 +32,14 @@ model Feedback {
   rating    Int?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 
   @@index([createdAt])
   @@index([isRead])
 }
 
 model GoogleReview {
-  id             String   @id
+  id             String   @id @default(cuid())
   googleReviewId String   @unique
   authorName     String
   authorPhotoUrl String?
@@ -53,7 +53,7 @@ model GoogleReview {
   fetchedAt      DateTime @default(now())
   lastSeenAt     DateTime @default(now())
   createdAt      DateTime @default(now())
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
 
   @@index([isVisible])
   @@index([rating])
@@ -62,33 +62,33 @@ model GoogleReview {
 }
 
 model PageContent {
-  id        String   @id
+  id        String   @id @default(cuid())
   page      String
   section   String
   key       String
   value     String
   type      String   @default("text")
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 
   @@unique([page, section, key])
   @@index([page])
 }
 
 model Post {
-  id        String   @id
+  id        String   @id @default(cuid())
   title     String
   content   String?
   published Boolean  @default(false)
   authorId  String
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   User      User     @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
 }
 
 model PriceTier {
-  id              String           @id
+  id              String           @id @default(cuid())
   workshopId      String
   variantId       String?
   groupSize       String
@@ -98,7 +98,7 @@ model PriceTier {
   priceInclBtw    Float
   sortOrder       Int              @default(0)
   createdAt       DateTime         @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime         @updatedAt
   WorkshopVariant WorkshopVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
   Workshop        Workshop         @relation(fields: [workshopId], references: [id], onDelete: Cascade)
 
@@ -107,7 +107,7 @@ model PriceTier {
 }
 
 model Recipe {
-  id          String   @id
+  id          String   @id @default(cuid())
   title       String
   slug        String   @unique
   description String?
@@ -122,7 +122,7 @@ model Recipe {
   tips        String?
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 
   @@index([category])
   @@index([isPublished])
@@ -130,15 +130,15 @@ model Recipe {
 }
 
 model SiteSetting {
-  id        String   @id
+  id        String   @id @default(cuid())
   key       String   @unique
   value     String
   type      String   @default("text")
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model TeamMember {
-  id          String   @id
+  id          String   @id @default(cuid())
   name        String
   role        String
   origin      String?
@@ -148,14 +148,14 @@ model TeamMember {
   sortOrder   Int      @default(0)
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 
   @@index([isPublished])
   @@index([sortOrder])
 }
 
 model Testimonial {
-  id          String   @id
+  id          String   @id @default(cuid())
   quote       String
   author      String
   role        String?
@@ -165,18 +165,18 @@ model Testimonial {
   isFeatured  Boolean  @default(false)
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime
+  updatedAt   DateTime @updatedAt
 
   @@index([isFeatured])
   @@index([isPublished])
 }
 
 model User {
-  id        String   @id
+  id        String   @id @default(cuid())
   email     String   @unique
   name      String?
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
   bio       String?
   role      String   @default("user")
   Post      Post[]
@@ -185,7 +185,7 @@ model User {
 }
 
 model Workshop {
-  id              String            @id
+  id              String            @id @default(cuid())
   slug            String            @unique
   title           String
   subtitle        String
@@ -201,9 +201,9 @@ model Workshop {
   isPublished     Boolean           @default(true)
   sortOrder       Int               @default(0)
   createdAt       DateTime          @default(now())
-  updatedAt       DateTime
-  PriceTier       PriceTier[]
-  WorkshopVariant WorkshopVariant[]
+  updatedAt       DateTime          @updatedAt
+  priceTiers      PriceTier[]
+  variants        WorkshopVariant[]
 
   @@index([isPublished])
   @@index([slug])
@@ -211,7 +211,7 @@ model Workshop {
 }
 
 model WorkshopConfig {
-  id               String   @id
+  id               String   @id @default(cuid())
   type             String
   participantCount Int
   workshops        String[]
@@ -223,7 +223,7 @@ model WorkshopConfig {
   name             String
   email            String
   createdAt        DateTime @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
   phone            String?
 
   @@index([createdAt])
@@ -231,7 +231,7 @@ model WorkshopConfig {
 }
 
 model WorkshopVariant {
-  id          String      @id
+  id          String      @id @default(cuid())
   workshopId  String
   name        String
   description String
@@ -239,8 +239,8 @@ model WorkshopVariant {
   includes    String[]
   sortOrder   Int         @default(0)
   createdAt   DateTime    @default(now())
-  updatedAt   DateTime
-  PriceTier   PriceTier[]
+  updatedAt   DateTime    @updatedAt
+  priceTiers  PriceTier[]
   Workshop    Workshop    @relation(fields: [workshopId], references: [id], onDelete: Cascade)
 
   @@index([workshopId])
@@ -256,7 +256,7 @@ model google_reviews_cache {
   fetchErrorCount  Int      @default(0)
   lastErrorMessage String?
   createdAt        DateTime @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
 }
 
 // ============================================================

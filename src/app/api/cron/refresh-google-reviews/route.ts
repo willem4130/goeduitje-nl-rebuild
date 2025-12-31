@@ -110,7 +110,7 @@ async function refreshReviewsFromGoogle() {
   await processReviews(newest, "newest");
 
   // Update cache metadata
-  await prisma.googleReviewsCache.upsert({
+  await prisma.google_reviews_cache.upsert({
     where: { id: "singleton" },
     update: {
       placeId: process.env.GOOGLE_PLACE_ID!,

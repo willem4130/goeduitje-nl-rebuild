@@ -79,7 +79,7 @@ export const reviewsRouter = createTRPCRouter({
    */
   getStats: publicProcedure.query(async () => {
     const [cache, reviewStats] = await Promise.all([
-      prisma.googleReviewsCache.findFirst(),
+      prisma.google_reviews_cache.findFirst(),
       prisma.googleReview.aggregate({
         where: { isVisible: true },
         _avg: { rating: true },
@@ -127,7 +127,7 @@ export const reviewsRouter = createTRPCRouter({
       orderBy: [{ isVisible: "desc" }, { reviewTime: "desc" }],
     });
 
-    const cache = await prisma.googleReviewsCache.findFirst();
+    const cache = await prisma.google_reviews_cache.findFirst();
 
     return {
       reviews,
@@ -176,7 +176,7 @@ export const reviewsRouter = createTRPCRouter({
 
       // Check rate limit if not forcing
       if (!forceRefresh) {
-        const cache = await prisma.googleReviewsCache.findFirst();
+        const cache = await prisma.google_reviews_cache.findFirst();
         if (cache?.lastFetchedAt) {
           const timeSinceLastFetch = Date.now() - cache.lastFetchedAt.getTime();
           if (timeSinceLastFetch < MIN_REFRESH_INTERVAL_MS) {
@@ -201,7 +201,7 @@ export const reviewsRouter = createTRPCRouter({
    * Get cache status (for admin dashboard)
    */
   getCacheStatus: publicProcedure.query(async () => {
-    const cache = await prisma.googleReviewsCache.findFirst();
+    const cache = await prisma.google_reviews_cache.findFirst();
     const reviewCount = await prisma.googleReview.count();
     const visibleCount = await prisma.googleReview.count({
       where: { isVisible: true },
@@ -232,7 +232,7 @@ async function checkAndRefreshCache(): Promise<void> {
     return;
   }
 
-  const cache = await prisma.googleReviewsCache.findFirst();
+  const cache = await prisma.google_reviews_cache.findFirst();
   const now = new Date();
 
   const isStale =
@@ -312,7 +312,7 @@ async function refreshReviewsFromGoogle(): Promise<{
     await processReviews(newest, "newest");
 
     // Update cache metadata
-    await prisma.googleReviewsCache.upsert({
+    await prisma.google_reviews_cache.upsert({
       where: { id: "singleton" },
       update: {
         placeId: process.env.GOOGLE_PLACE_ID!,
@@ -348,7 +348,7 @@ async function refreshReviewsFromGoogle(): Promise<{
       error instanceof Error ? error.message : "Unknown error";
 
     // Update cache with error info
-    await prisma.googleReviewsCache.upsert({
+    await prisma.google_reviews_cache.upsert({
       where: { id: "singleton" },
       update: {
         fetchErrorCount: { increment: 1 },
