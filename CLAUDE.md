@@ -68,30 +68,41 @@ Fix ALL errors before continuing. No exceptions.
 - **Google Reviews**: Synced via cron at `/api/cron/refresh-google-reviews`
 - **Resend**: Transactional emails (contact, booking confirmations)
 
-## Static Assets
+## Site Assets (Backend-Managed)
 
-**Site assets use static files** - Logos, hero videos, and backgrounds are in `/public/`:
+**Backend is source of truth for site assets** - Logos, hero videos, and OG images are managed in the backend admin and fetched by the frontend.
 
-```
-public/
-├── images/
-│   ├── logo/logo-nav.png         # Navigation logo
-│   ├── logo/logo-footer.png      # Footer logo
-│   ├── hero/hero-poster.jpg      # Desktop hero poster
-│   └── hero/hero-poster-mobile.jpg
-└── videos/
-    ├── hero/hero-background.mp4   # Desktop hero video
-    └── hero/hero-background-mobile.mp4
-```
+### How It Works
 
-**DO NOT** add tRPC calls to `TopNavigation`, `Footer`, or `HeroVideo` - these use static files only.
+1. **Server Component** (`layout.tsx`) fetches from backend API at request time
+2. URLs passed as **props** to client components (TopNavigation, Footer)
+3. Fallback to `/public/` static files if API fails
+
+### Key Files
+
+| Purpose        | File                                                         |
+| -------------- | ------------------------------------------------------------ |
+| Fetch function | `src/lib/site-assets.ts`                                     |
+| Server fetch   | `src/app/layout.tsx` (async, calls `getSiteAssets()`)        |
+| Client layout  | `src/components/client-layout.tsx` (receives props)          |
+| Nav component  | `src/components/top-navigation.tsx` (accepts `logoUrl` prop) |
+| Footer         | `src/components/footer.tsx` (accepts `logoUrl` prop)         |
+
+### Fallbacks
+
+Static files in `/public/` are used as fallbacks:
+
+- `/images/logo/logo-nav.png`
+- `/images/logo/logo-footer.png`
+- `/images/hero/hero-poster.jpg`
+- `/videos/hero/hero-background.mp4`
 
 ## Never Do
 
 - Create admin pages here (use goeduitje-backend)
 - Run Drizzle migrations (Prisma is source of truth)
 - Modify `/components/ui/` (shadcn managed)
-- Add tRPC calls to TopNavigation, Footer, or HeroVideo (use static files)
+- Use `useQuery` hooks in TopNavigation, Footer, or HeroVideo
 - Skip typecheck before committing
 
 ## Deployment

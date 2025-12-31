@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import { ClientLayout } from "@/components/client-layout";
+import { getSiteAssets } from "@/lib/site-assets";
 
 // Force all pages to use dynamic rendering to avoid prerender issues
 export const dynamic = "force-dynamic";
@@ -106,17 +107,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch site assets from backend (Server Component)
+  const assets = await getSiteAssets();
+
   return (
     <html lang="nl">
       <body
         className={`${fontSans.variable} ${fontMono.variable} ${fontPoppins.variable} antialiased`}
       >
-        <ClientLayout>{children}</ClientLayout>
+        <ClientLayout
+          navLogoUrl={assets.logos.nav}
+          footerLogoUrl={assets.logos.footer}
+        >
+          {children}
+        </ClientLayout>
       </body>
     </html>
   );

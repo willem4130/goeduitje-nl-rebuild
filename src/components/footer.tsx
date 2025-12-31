@@ -67,7 +67,13 @@ const socialLinks = [
   },
 ];
 
-export function Footer() {
+interface FooterProps {
+  logoUrl?: string;
+}
+
+export function Footer({
+  logoUrl = "/images/logo/logo-footer.png",
+}: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -79,10 +85,11 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
               <Image
-                src="/images/logo/logo-footer.png"
+                src={logoUrl}
                 alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
                 width={240}
                 height={80}
+                unoptimized={logoUrl.startsWith("http")}
                 className="h-auto w-auto"
                 style={{ maxWidth: "240px" }}
               />

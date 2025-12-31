@@ -5,12 +5,22 @@ import { Footer } from "@/components/footer";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 
-export function ClientLayout({ children }: { children: React.ReactNode }) {
+interface ClientLayoutProps {
+  children: React.ReactNode;
+  navLogoUrl?: string;
+  footerLogoUrl?: string;
+}
+
+export function ClientLayout({
+  children,
+  navLogoUrl,
+  footerLogoUrl,
+}: ClientLayoutProps) {
   return (
     <>
-      <TopNavigation />
+      <TopNavigation logoUrl={navLogoUrl} />
       <TRPCProvider>{children}</TRPCProvider>
-      <Footer />
+      <Footer logoUrl={footerLogoUrl} />
       <Toaster />
     </>
   );

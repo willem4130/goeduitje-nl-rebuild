@@ -17,7 +17,13 @@ const navigationItems = [
   { name: "Jullie ervaringen", href: "/jullie-ervaringen" },
 ];
 
-export function TopNavigation() {
+interface TopNavigationProps {
+  logoUrl?: string;
+}
+
+export function TopNavigation({
+  logoUrl = "/images/logo/logo-nav.png",
+}: TopNavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -54,11 +60,12 @@ export function TopNavigation() {
             aria-label="Goeduitje.nl - Home"
           >
             <Image
-              src="/images/logo/logo-nav.png"
+              src={logoUrl}
               alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
               width={240}
               height={90}
               priority
+              unoptimized={logoUrl.startsWith("http")}
               className="h-auto w-auto transition-all duration-300"
               style={{ maxHeight: isScrolled ? "48px" : "72px" }}
             />
