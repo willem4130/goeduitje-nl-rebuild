@@ -31,6 +31,24 @@ const DEFAULTS = {
   uspBadges: "Maak sociale impact,Op locatie naar keuze,Op maat",
 };
 
+// Static fallback paths (used when DB has no media)
+const STATIC_HERO = {
+  videos: {
+    desktop: {
+      webm: "/videos/hero/hero-background.webm",
+      mp4: "/videos/hero/hero-background.mp4",
+    },
+    mobile: {
+      webm: "/videos/hero/hero-background-mobile.webm",
+      mp4: "/videos/hero/hero-background-mobile.mp4",
+    },
+  },
+  posters: {
+    desktop: "/images/hero/hero-poster.jpg",
+    mobile: "/images/hero/hero-poster-mobile.jpg",
+  },
+};
+
 interface HeroVideoProps {
   headline?: string;
   subheadline?: string;
@@ -52,6 +70,9 @@ export function HeroVideo({
   const { data: siteStats } = api.content.getByPage.useQuery({
     page: "site-stats",
   });
+
+  // Fetch hero media from database (videos + posters)
+  const { data: heroMedia } = api.media.getHeroMedia.useQuery();
 
   // Get values from database with fallbacks
   const activitiesCount = parseInt(
@@ -79,10 +100,32 @@ export function HeroVideo({
   const { scrollY } = useScroll();
   const videoY = useTransform(scrollY, [0, 500], [0, 150]);
 
-  // Determine poster image (mobile or desktop)
-  const posterImage = isMobile
-    ? "/images/hero/hero-poster-mobile.jpg"
-    : "/images/hero/hero-poster.jpg";
+  // Determine poster image (mobile or desktop) - DB first, then static fallback
+  const posterImage = useMemo(() => {
+    if (isMobile) {
+      return heroMedia?.posters.mobile?.blobUrl ?? STATIC_HERO.posters.mobile;
+    }
+    return heroMedia?.posters.desktop?.blobUrl ?? STATIC_HERO.posters.desktop;
+  }, [isMobile, heroMedia]);
+
+  // Determine video URLs - DB first, then static fallback
+  const videoUrls = useMemo(() => {
+    const desktopVideo = heroMedia?.videos.desktop;
+    const mobileVideo = heroMedia?.videos.mobile;
+
+    return {
+      desktop: {
+        // Use DB video or static fallback based on mime type
+        primary: desktopVideo?.blobUrl ?? STATIC_HERO.videos.desktop.mp4,
+        // For static fallback, we provide both formats
+        webm: desktopVideo ? null : STATIC_HERO.videos.desktop.webm,
+      },
+      mobile: {
+        primary: mobileVideo?.blobUrl ?? STATIC_HERO.videos.mobile.mp4,
+        webm: mobileVideo ? null : STATIC_HERO.videos.mobile.webm,
+      },
+    };
+  }, [heroMedia]);
 
   // Handle video end - return to first frame and stay there
   const handleVideoEnded = useCallback(() => {
@@ -125,25 +168,29 @@ export function HeroVideo({
           onEnded={handleVideoEnded}
         >
           {/* Mobile video sources (portrait 1080x1920) */}
+          {videoUrls.mobile.webm && (
+            <source
+              src={videoUrls.mobile.webm}
+              type="video/webm"
+              media="(max-width: 768px)"
+            />
+          )}
           <source
-            src="/videos/hero/hero-background-mobile.webm"
-            type="video/webm"
-            media="(max-width: 768px)"
-          />
-          <source
-            src="/videos/hero/hero-background-mobile.mp4"
+            src={videoUrls.mobile.primary}
             type="video/mp4"
             media="(max-width: 768px)"
           />
 
           {/* Desktop video sources (landscape 1920x1080) */}
+          {videoUrls.desktop.webm && (
+            <source
+              src={videoUrls.desktop.webm}
+              type="video/webm"
+              media="(min-width: 769px)"
+            />
+          )}
           <source
-            src="/videos/hero/hero-background.webm"
-            type="video/webm"
-            media="(min-width: 769px)"
-          />
-          <source
-            src="/videos/hero/hero-background.mp4"
+            src={videoUrls.desktop.primary}
             type="video/mp4"
             media="(min-width: 769px)"
           />

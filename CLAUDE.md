@@ -1,56 +1,43 @@
 # Goeduitje.nl - Public Website
 
-Public-facing website for Goeduitje recreational team activities. Users discover, customize, and book corporate team-building experiences.
+Public-facing website for Goeduitje team activities. Users discover, customize, and book corporate team-building experiences.
 
-**IMPORTANT**: This repo is for the PUBLIC WEBSITE only. All admin functionality is in the BACKEND repo.
-
-## Architecture
-
-| Repo                            | Purpose                  | URL                             |
-| ------------------------------- | ------------------------ | ------------------------------- |
-| **goeduitje-nl-rebuild** (this) | Public website, no admin | goeduitje-nl-rebuild.vercel.app |
-| **goeduitje-backend**           | ALL admin functionality  | goeduitje-backend.vercel.app    |
+**IMPORTANT**: This repo is PUBLIC WEBSITE only. All admin functionality is in goeduitje-backend.
 
 ## Project Structure
 
 ```
 src/
-├── app/                      # Next.js App Router (PUBLIC PAGES ONLY)
-│   ├── api/                  # API routes (tRPC, emails, webhooks)
-│   ├── onze-uitjes/          # Workshop/activity pages
-│   ├── checkout/             # Payment flow
-│   ├── faq/                  # FAQ page (reads from DB)
-│   ├── onze-medewerkers/     # Team page (reads from DB)
-│   ├── ons-verhaal/          # About page (reads from PageContent)
-│   └── [pages]/              # Other public pages
-├── components/               # React components
-│   ├── ui/                   # shadcn/ui primitives (DO NOT MODIFY)
-│   └── [feature].tsx         # Feature components
-├── server/api/routers/       # tRPC routers (public read operations)
-├── lib/                      # Utilities
-└── trpc/                     # tRPC client/server setup
+├── app/                          # Next.js App Router
+│   ├── api/                      # tRPC + webhooks (Stripe, cron)
+│   ├── onze-uitjes/[slug]/       # Workshop detail pages
+│   ├── ons-verhaal/              # About page (from PageContent)
+│   ├── jullie-ervaringen/        # Testimonials page
+│   ├── recepten/                 # Recipes page
+│   ├── faq/                      # FAQ page
+│   ├── checkout/                 # Stripe payment flow
+│   └── admin/                    # Legacy admin (use backend instead)
+├── components/
+│   ├── ui/                       # shadcn/ui (DO NOT MODIFY)
+│   └── *.tsx                     # Feature components (41 files)
+├── server/api/routers/           # tRPC routers (11 modules, incl. media)
+├── emails/                       # Resend email templates
+├── hooks/                        # Custom React hooks
+├── lib/                          # Utilities + Stripe/Prisma clients
+└── trpc/                         # tRPC client/server setup
 
 prisma/
-├── schema.prisma             # Database models (source of truth)
-└── seed-*.ts                 # Seed scripts
+├── schema.prisma                 # Database models (SOURCE OF TRUTH)
+└── seed-*.ts                     # Seed scripts
+
+public/
+├── images/                       # Static images (hero, workshops, logos)
+└── videos/                       # Hero background videos
 ```
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 + React 18 + TypeScript 5
-- **Database**: PostgreSQL (Neon) + Prisma ORM
-- **API**: tRPC + TanStack Query
-- **UI**: shadcn/ui (Radix) + Tailwind CSS 4
-- **Animations**: Framer Motion
-- **Forms**: React Hook Form + Zod
-- **Email**: Resend
-
-## Database
-
-**Shared with Backend**: Both repos connect to the SAME Neon PostgreSQL database.
-
-- Frontend: Uses Prisma ORM (manages migrations)
-- Backend: Uses Drizzle ORM (read/write, no migrations)
+Next.js 14 + React 18 + TypeScript | Prisma ORM + PostgreSQL (Neon) | tRPC + TanStack Query | shadcn/ui + Tailwind CSS 4 | Framer Motion | Stripe | Resend
 
 ## Code Quality - Zero Tolerance
 
@@ -60,34 +47,52 @@ bun run typecheck && bun run lint
 
 Fix ALL errors before continuing. No exceptions.
 
-## Deployment
-
-**Preview**: https://goeduitje-nl-rebuild.vercel.app/
-Push to `main` → Vercel auto-deploys
-
-## Admin Access
-
-**All admin functionality is in the backend repo:**
-
-- goeduitje-backend.vercel.app/content/faq - FAQ management
-- goeduitje-backend.vercel.app/content/team - Team members
-- goeduitje-backend.vercel.app/content/testimonials - Testimonials
-- goeduitje-backend.vercel.app/content/recipes - Recipes
-- goeduitje-backend.vercel.app/workshops - Workshop requests
-- And more...
-
 ## Organization Rules
 
 - tRPC routers → `/server/api/routers/[name].ts`
-- Seed scripts → `/prisma/seed-[name].ts`
-- UI primitives → `/components/ui/` (shadcn only)
-- Max 300 lines per file
+- Components → `/components/[feature].tsx` (max 300 lines)
+- Hooks → `/hooks/use-[name].ts`
+- Email templates → `/emails/[name].tsx`
+- UI primitives → `/components/ui/` (shadcn only, never modify)
+
+## Database
+
+**Shared with Backend**: Both repos connect to same Neon PostgreSQL.
+
+- Frontend Prisma: manages migrations (source of truth)
+- Backend Drizzle: read/write only (no migrations)
+
+## Key Integrations
+
+- **Stripe**: Checkout flow + webhooks at `/api/webhooks/stripe`
+- **Google Reviews**: Synced via cron at `/api/cron/refresh-google-reviews`
+- **Resend**: Transactional emails (contact, booking confirmations)
+
+## Media Gallery (Database-Driven Images)
+
+**Backend is system of record** - Images are managed in backend admin, fetched via tRPC.
+
+```typescript
+// Content images
+api.media.getAll(); // All visible content images
+api.media.getFeatured(); // Homepage featured images
+
+// Site assets (hero, logos)
+api.media.getHeroMedia(); // Returns { videos: {desktop, mobile}, posters: {desktop, mobile} }
+api.media.getLogos(); // Returns { nav, footer }
+```
+
+Components with graceful fallbacks: `hero-video.tsx`, `top-navigation.tsx`, `footer.tsx`
 
 ## Never Do
 
-- Create admin pages in this repo (use backend)
-- Create custom UI primitives (use shadcn/ui)
-- Write CSS animations (use Framer Motion)
-- Hardcode content that should be in database
-- Skip typecheck before committing
+- Create admin pages here (use goeduitje-backend)
 - Run Drizzle migrations (Prisma is source of truth)
+- Modify `/components/ui/` (shadcn managed)
+- Hardcode content/images that should be in database
+- Skip typecheck before committing
+
+## Deployment
+
+**Production**: https://goeduitje-nl-rebuild.vercel.app
+Push to `main` → Vercel auto-deploys

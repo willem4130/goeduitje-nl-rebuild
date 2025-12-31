@@ -8,6 +8,10 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 import { Instagram, Facebook, Linkedin, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/client";
+
+// Static fallback logo
+const STATIC_NAV_LOGO = "/images/logo/logo-nav.png";
 
 const navigationItems = [
   { name: "Onze uitjes", href: "/onze-uitjes" },
@@ -20,6 +24,10 @@ const navigationItems = [
 export function TopNavigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Fetch logos from database (nav + footer)
+  const { data: logos } = api.media.getLogos.useQuery();
+  const navLogoUrl = logos?.nav?.blobUrl ?? STATIC_NAV_LOGO;
 
   // Detect scroll position for glassmorphism effect
   useEffect(() => {
@@ -54,11 +62,15 @@ export function TopNavigation() {
             aria-label="Goeduitje.nl - Home"
           >
             <Image
-              src="/images/logo/logo-nav.png"
-              alt="Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
+              src={navLogoUrl}
+              alt={
+                logos?.nav?.altText ??
+                "Goeduitje.nl - uitjes met een verhaal, om te janken zo goed"
+              }
               width={240}
               height={90}
               priority
+              unoptimized={navLogoUrl.startsWith("http")}
               className="h-auto w-auto transition-all duration-300"
               style={{ maxHeight: isScrolled ? "48px" : "72px" }}
             />
