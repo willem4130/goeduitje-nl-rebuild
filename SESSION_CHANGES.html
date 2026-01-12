@@ -80,6 +80,13 @@
       border-radius: 3px;
       font-size: 0.9rem;
     }
+    a {
+      color: #8b4c5a;
+      text-decoration: underline;
+    }
+    a:hover {
+      color: #6d3a47;
+    }
     .note {
       background: #fff3cd;
       border: 1px solid #ffc107;
@@ -93,14 +100,50 @@
   <h1>Goeduitje.nl - Sessie Wijzigingen</h1>
   <p>Dit document houdt alle wijzigingen bij die tijdens ontwikkelsessies zijn gemaakt. Gebruik dit om met de klant door te nemen wat er is aangepast.</p>
 
-  <!-- SESSION: 12 januari 2025 -->
+  <!-- SESSION: 12 januari 2026 (middag) -->
   <div class="session">
-    <h2>Sessie: 12 januari 2025</h2>
+    <h2>Sessie: 12 januari 2026 (middag)</h2>
+    <p class="session-date"><span class="status deployed">Deployed</span> Alle wijzigingen live op goeduitje-nl-rebuild.vercel.app</p>
+
+    <div class="change">
+      <h4>6. Pop-up voor Kleine Groepen</h4>
+      <p>Wanneer iemand minder dan 8 personen invult in de configurator, verschijnt nu een pop-up met suggestie voor Open Kookworkshops.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → vul een getal &lt; 8 in</p>
+      <div class="files">
+        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Opvallende amber/oranje modal verschijnt bij &lt; 8 personen</li>
+        <li>Toont eerstvolgende 3 workshop data met tijden</li>
+        <li>Directe link naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">agenda Open Kookworkshops</a></li>
+        <li>Prijs €50 p.p. incl. BTW getoond</li>
+        <li>Kan weggeklikt worden met "Sluiten" of klik buiten modal</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>7. Voorloop-0 Verwijderd uit Invoerveld</h4>
+      <p>Bij het invoeren van "02" wordt dit nu automatisch "2" (geen leading zeros meer).</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → typ "02" in het aantal personen veld</p>
+      <div class="files">
+        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Input parsing verbeterd met parseInt()</li>
+        <li>Automatische stripping van leading zeros</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SESSION: 12 januari 2026 (ochtend) -->
+  <div class="session">
+    <h2>Sessie: 12 januari 2026 (ochtend)</h2>
     <p class="session-date"><span class="status deployed">Deployed</span> Alle wijzigingen live op goeduitje-nl-rebuild.vercel.app</p>
 
     <div class="change">
       <h4>1. Fake Reviews Verwijderd</h4>
       <p>Alle nep-testimonials zijn verwijderd. De website toont nu alleen echte Google Reviews.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Homepage</a> (scroll naar reviews sectie)</p>
       <div class="files">
         <strong>Bestanden:</strong><br>
         prisma/seed-testimonials.ts<br>
@@ -117,6 +160,7 @@
     <div class="change">
       <h4>2. Kookworkshop Prijzen Aangepast</h4>
       <p>De "vanaf prijs" en groepsgrootte voor kookworkshops zijn aangepast.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop" target="_blank">Kookworkshop detail pagina</a></p>
       <div class="files">
         <strong>Bestand:</strong> prisma/seed-workshops.ts
       </div>
@@ -129,6 +173,7 @@
     <div class="change">
       <h4>3. Uitjes Grid Compacter Gemaakt</h4>
       <p>Alle 6 uitjes passen nu in één viewport in een 3×2 matrix.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes" target="_blank">Onze Uitjes pagina</a></p>
       <div class="files">
         <strong>Bestand:</strong> src/components/workshop-carousel.tsx
       </div>
@@ -144,6 +189,7 @@
     <div class="change">
       <h4>4. Open Kookworkshops Tab met Agenda</h4>
       <p>Nieuwe opvallende tab voor particulieren met echte workshop data.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">Kookworkshop → Open Kookworkshops tab</a></p>
       <div class="files">
         <strong>Bestanden:</strong><br>
         src/lib/open-workshops.ts (NIEUW - centrale data)<br>
@@ -153,7 +199,7 @@
       <ul>
         <li><strong>Opvallend design:</strong> Amber/oranje gradient, sparkles icoon, "Particulieren" badge</li>
         <li><strong>Echte agenda:</strong> Toont aankomende workshop data</li>
-        <li><strong>Gesynchroniseerd:</strong> /booking pagina en kookworkshop detail gebruiken dezelfde data</li>
+        <li><strong>Gesynchroniseerd:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/booking" target="_blank">/booking pagina</a> en kookworkshop detail gebruiken dezelfde data</li>
         <li><strong>Direct inschrijven:</strong> Knop linkt naar /booking</li>
       </ul>
       <div class="note">
@@ -165,11 +211,12 @@
     <div class="change">
       <h4>5. Onze Uitjes Header Aangepast</h4>
       <p>Tekst en interactie verbeterd op de Onze Uitjes pagina.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes" target="_blank">Onze Uitjes pagina</a> (header sectie)</p>
       <div class="files">
         <strong>Bestand:</strong> src/app/onze-uitjes/page.tsx
       </div>
       <ul>
-        <li><strong>"Configureer"</strong> is nu een klikbare button (linkt naar #configurator)</li>
+        <li><strong>"Configureer"</strong> is nu een klikbare button (linkt naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">#configurator</a>)</li>
         <li><strong>"en"</strong> veranderd naar <strong>"of"</strong></li>
         <li>Nieuwe tekst: "[Configureer] je perfecte teamuitje of kies uit verschillende activiteiten"</li>
       </ul>
