@@ -305,6 +305,20 @@ model SessionChangeFeedback {
   @@index([changeId])
 }
 
+// Status history for backup/restore of client approvals
+model SessionChangeStatusHistory {
+  id        String   @id @default(cuid())
+  changeId  String
+  status    String   // The status that was set
+  changedBy String?  // Who made the change (client, developer, system)
+  note      String?  // Optional note about the change
+  createdAt DateTime @default(now())
+
+  @@map("session_change_status_history")
+  @@index([changeId])
+  @@index([createdAt])
+}
+
 // ============================================================
 // MEDIA GALLERY
 // Workshop photos uploaded via backend admin for website display
