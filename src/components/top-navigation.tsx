@@ -5,7 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-import { Instagram, Facebook, Linkedin, Calendar, Phone } from "lucide-react";
+import {
+  Instagram,
+  Facebook,
+  Linkedin,
+  Calendar,
+  Phone,
+  Mail,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -85,8 +92,17 @@ export function TopNavigation({
               </Link>
             ))}
 
-            {/* Phone + Social Icons */}
+            {/* Phone + Mail + Social Icons */}
             <div className="border-border flex items-center gap-4 border-l pl-6">
+              {/* Mail */}
+              <a
+                href="mailto:info@goeduitje.nl"
+                className="text-muted-foreground hover:text-primary flex items-center gap-1.5 text-sm font-medium transition-all duration-300"
+                aria-label="Mail ons"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+
               {/* Phone Number */}
               <a
                 href="tel:+31652675891"
