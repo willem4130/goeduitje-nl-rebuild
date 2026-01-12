@@ -360,6 +360,17 @@ export default async function KookworkshopLandingPage({ params }: Props) {
     ? "Vegetarische Kookworkshop"
     : "Kookworkshop";
 
+  // Use hash of slug to deterministically select hero image (different per city, but consistent)
+  const heroImages = [
+    "/images/workshops/kookworkshop.avif",
+    "/images/workshops/kookworkshop-2.avif",
+    "/images/workshops/kookworkshop-3.avif",
+  ];
+  const imageIndex =
+    slug.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+    heroImages.length;
+  const heroImage = heroImages[imageIndex];
+
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
@@ -433,7 +444,7 @@ export default async function KookworkshopLandingPage({ params }: Props) {
             {/* Image */}
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl lg:aspect-square">
               <Image
-                src="/images/workshops/kookworkshop.jpg"
+                src={heroImage}
                 alt={`Kookworkshop in ${landing.city}`}
                 fill
                 className="object-cover"
@@ -599,7 +610,7 @@ export default async function KookworkshopLandingPage({ params }: Props) {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/kookworkshop.jpg"
+                src={heroImage}
                 alt={`Kookworkshop ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"
