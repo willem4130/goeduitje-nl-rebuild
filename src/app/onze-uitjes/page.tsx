@@ -26,8 +26,10 @@ export default function OnzeUitjesPage() {
                 Onze Uitjes
               </h1>
               <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed sm:text-lg">
-                Configureer je perfecte teamuitje en kies uit verschillende
-                activiteiten
+                <Button asChild variant="default" size="sm" className="mr-1">
+                  <a href="#configurator">Configureer</a>
+                </Button>
+                je perfecte teamuitje of kies uit verschillende activiteiten
               </p>
             </div>
           </div>
