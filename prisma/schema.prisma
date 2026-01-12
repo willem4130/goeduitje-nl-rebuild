@@ -265,20 +265,20 @@ model google_reviews_cache {
 // Managed via backend admin at /wijzigingen
 // ============================================================
 model SessionChange {
-  id             String    @id @default(cuid())
-  title          String
-  description    String?
-  category       String?   // Contact, Navigation, Content, Design, Feature, Bug
-  filesChanged   String[]  // Array of file paths
-  changeDetails  String[]  // Bullet points describing the change
-  viewUrl        String?   // Link to see change live
-  screenshotUrl  String?   // Screenshot/image URL (Vercel Blob)
-  screenshotPath String?   // Blob path for deletion
-  status         String    @default("pending") // pending, approved, needs_changes, in_progress
-  addedBy        String?   @default("developer") // developer or client
-  deletedAt      DateTime? // Soft delete timestamp
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  category        String?   // Contact, Navigation, Content, Design, Feature, Bug
+  filesChanged    String[]  // Array of file paths
+  changeDetails   String[]  // Bullet points describing the change
+  viewUrl         String?   // Link to see change live
+  screenshotUrls  String[]  // Multiple screenshot/image URLs (Vercel Blob)
+  screenshotPaths String[]  // Blob paths for deletion
+  status          String    @default("pending") // pending, approved, needs_changes, in_progress
+  addedBy         String?   @default("developer") // developer or client
+  deletedAt       DateTime? // Soft delete timestamp
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   // Relations
   feedback      SessionChangeFeedback[]
@@ -291,12 +291,12 @@ model SessionChange {
 }
 
 model SessionChangeFeedback {
-  id             String   @id @default(cuid())
-  changeId       String
-  feedbackText   String?
-  screenshotUrl  String?  // Vercel Blob URL
-  screenshotPath String?  // Blob path for deletion
-  createdAt      DateTime @default(now())
+  id              String   @id @default(cuid())
+  changeId        String
+  feedbackText    String?
+  screenshotUrls  String[] // Multiple Vercel Blob URLs
+  screenshotPaths String[] // Blob paths for deletion
+  createdAt       DateTime @default(now())
 
   // Relations
   change         SessionChange @relation(fields: [changeId], references: [id], onDelete: Cascade)
