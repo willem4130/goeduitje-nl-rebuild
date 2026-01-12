@@ -100,77 +100,9 @@
   <h1>Goeduitje.nl - Sessie Wijzigingen</h1>
   <p>Dit document houdt alle wijzigingen bij die tijdens ontwikkelsessies zijn gemaakt. Gebruik dit om met de klant door te nemen wat er is aangepast.</p>
 
-  <!-- SESSION: 12 januari 2026 (middag) -->
+  <!-- SESSION: 12 januari 2026 -->
   <div class="session">
-    <h2>Sessie: 12 januari 2026 (middag)</h2>
-    <p class="session-date"><span class="status deployed">Deployed</span> Alle wijzigingen live op goeduitje-nl-rebuild.vercel.app</p>
-
-    <div class="change">
-      <h4>6. Pop-up voor Kleine Groepen</h4>
-      <p>Wanneer iemand minder dan 8 personen invult in de configurator, verschijnt nu een pop-up met suggestie voor Open Kookworkshops.</p>
-      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → vul een getal &lt; 8 in en wacht even</p>
-      <div class="files">
-        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
-      </div>
-      <ul>
-        <li>Opvallende amber/oranje modal verschijnt bij &lt; 8 personen</li>
-        <li><strong>Slimme timing:</strong> Popup wacht 800ms na stoppen met typen (voorkomt popup bij bijv. typen van "18")</li>
-        <li>Toont eerstvolgende 3 workshop data met tijden</li>
-        <li>Directe link naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">agenda Open Kookworkshops</a></li>
-        <li>Prijs €50 p.p. incl. BTW getoond</li>
-        <li>Kan weggeklikt worden met "Sluiten" of klik buiten modal</li>
-      </ul>
-    </div>
-
-    <div class="change">
-      <h4>7. Voorloop-0 Verwijderd uit Invoerveld</h4>
-      <p>Bij het invoeren van "02" wordt dit nu automatisch "2" (geen leading zeros meer).</p>
-      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → typ "02" in het aantal personen veld</p>
-      <div class="files">
-        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
-      </div>
-      <ul>
-        <li>Input parsing verbeterd met parseInt()</li>
-        <li>Automatische stripping van leading zeros</li>
-      </ul>
-    </div>
-
-    <div class="change">
-      <h4>8. Telefoonnummer Verplicht + Redirect naar Ervaringen</h4>
-      <p>Telefoonnummer is nu een verplicht veld in de configurator. Na verzenden wordt de gebruiker doorgestuurd naar "Jullie Ervaringen" met een voorpret-boodschap.</p>
-      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → Stap 2 toont nu "Telefoonnummer *"</p>
-      <div class="files">
-        <strong>Bestanden:</strong><br>
-        src/lib/validations/forms.ts<br>
-        src/components/workshop-configurator.tsx
-      </div>
-      <ul>
-        <li>Telefoonnummer veld is nu verplicht (was optioneel)</li>
-        <li>Na verzenden: toast "Verheug je vast op jullie uitje!"</li>
-        <li>Redirect naar <a href="https://goeduitje-nl-rebuild.vercel.app/jullie-ervaringen" target="_blank">/jullie-ervaringen</a> i.p.v. /booking</li>
-      </ul>
-    </div>
-
-    <div class="change">
-      <h4>9. Telefoonnummer Guus in Navigatie + Footer</h4>
-      <p>Contactnummer van Guus toegevoegd aan de navigatiebalk (rechtsboven) en bijgewerkt in de footer.</p>
-      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Homepage</a> → kijk rechtsboven in de navigatie en onderaan in de footer</p>
-      <div class="files">
-        <strong>Bestanden:</strong><br>
-        src/components/top-navigation.tsx<br>
-        src/components/footer.tsx
-      </div>
-      <ul>
-        <li><strong>Navigatie:</strong> Telefoonnummer 06 5267 5891 toegevoegd met icoon (zichtbaar op desktop)</li>
-        <li><strong>Footer:</strong> Nummer bijgewerkt van +31 6 1234 5678 naar +31 6 5267 5891</li>
-        <li>Beide nummers zijn klikbaar (tel: link)</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- SESSION: 12 januari 2026 (ochtend) -->
-  <div class="session">
-    <h2>Sessie: 12 januari 2026 (ochtend)</h2>
+    <h2>Sessie: 12 januari 2026</h2>
     <p class="session-date"><span class="status deployed">Deployed</span> Alle wijzigingen live op goeduitje-nl-rebuild.vercel.app</p>
 
     <div class="change">
@@ -252,6 +184,68 @@
         <li><strong>"Configureer"</strong> is nu een klikbare button (linkt naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">#configurator</a>)</li>
         <li><strong>"en"</strong> veranderd naar <strong>"of"</strong></li>
         <li>Nieuwe tekst: "[Configureer] je perfecte teamuitje of kies uit verschillende activiteiten"</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>6. Pop-up voor Kleine Groepen</h4>
+      <p>Wanneer iemand minder dan 8 personen invult in de configurator, verschijnt nu een pop-up met suggestie voor Open Kookworkshops.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → vul een getal &lt; 8 in en wacht even</p>
+      <div class="files">
+        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Opvallende amber/oranje modal verschijnt bij &lt; 8 personen</li>
+        <li><strong>Slimme timing:</strong> Popup wacht 800ms na stoppen met typen (voorkomt popup bij bijv. typen van "18")</li>
+        <li>Toont eerstvolgende 3 workshop data met tijden</li>
+        <li>Directe link naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">agenda Open Kookworkshops</a></li>
+        <li>Prijs €50 p.p. incl. BTW getoond</li>
+        <li>Kan weggeklikt worden met "Sluiten" of klik buiten modal</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>7. Voorloop-0 Verwijderd uit Invoerveld</h4>
+      <p>Bij het invoeren van "02" wordt dit nu automatisch "2" (geen leading zeros meer).</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → typ "02" in het aantal personen veld</p>
+      <div class="files">
+        <strong>Bestand:</strong> src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Input parsing verbeterd met parseInt()</li>
+        <li>Automatische stripping van leading zeros</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>8. Telefoonnummer Verplicht + Redirect naar Ervaringen</h4>
+      <p>Telefoonnummer is nu een verplicht veld in de configurator. Na verzenden wordt de gebruiker doorgestuurd naar "Jullie Ervaringen" met een voorpret-boodschap.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → Stap 2 toont nu "Telefoonnummer *"</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/lib/validations/forms.ts<br>
+        src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Telefoonnummer veld is nu verplicht (was optioneel)</li>
+        <li>Na verzenden: toast "Verheug je vast op jullie uitje!"</li>
+        <li>Redirect naar <a href="https://goeduitje-nl-rebuild.vercel.app/jullie-ervaringen" target="_blank">/jullie-ervaringen</a> i.p.v. /booking</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>9. Telefoonnummer Guus in Navigatie + Footer</h4>
+      <p>Contactnummer van Guus toegevoegd aan de navigatiebalk (rechtsboven) en bijgewerkt in de footer.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Homepage</a> → kijk rechtsboven in de navigatie en onderaan in de footer</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/components/top-navigation.tsx<br>
+        src/components/footer.tsx
+      </div>
+      <ul>
+        <li><strong>Navigatie:</strong> Telefoonnummer 06 5267 5891 toegevoegd met icoon (zichtbaar op desktop)</li>
+        <li><strong>Footer:</strong> Nummer bijgewerkt van +31 6 1234 5678 naar +31 6 5267 5891</li>
+        <li>Beide nummers zijn klikbaar (tel: link)</li>
       </ul>
     </div>
   </div>
