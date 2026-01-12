@@ -105,6 +105,33 @@ Static files in `/public/` are used as fallbacks:
 - Use `useQuery` hooks in TopNavigation, Footer, or HeroVideo
 - Skip typecheck before committing
 
+## Session Changes Log
+
+**IMPORTANT**: After each development session, update `SESSION_CHANGES.html` with all adjustments made.
+
+This HTML file serves as a client-facing changelog that can be shared to review all modifications. Each session should document:
+
+- What was changed
+- Which files were modified
+- Before/after details where relevant
+
+Open the file in a browser to view a nicely formatted list of all changes.
+
+## Open Kookworkshops Agenda
+
+Workshop dates for "Open Kookworkshops" are managed in a single file:
+
+```
+src/lib/open-workshops.ts
+```
+
+This data syncs automatically to:
+
+- `/onze-uitjes/kookworkshop` (Open Kookworkshops tab agenda)
+- `/booking` (booking calendar)
+
+Update dates here when new workshop dates are scheduled.
+
 ## Deployment
 
 **Production**: https://goeduitje-nl-rebuild.vercel.app
