@@ -108,12 +108,13 @@
     <div class="change">
       <h4>6. Pop-up voor Kleine Groepen</h4>
       <p>Wanneer iemand minder dan 8 personen invult in de configurator, verschijnt nu een pop-up met suggestie voor Open Kookworkshops.</p>
-      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → vul een getal &lt; 8 in</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → vul een getal &lt; 8 in en wacht even</p>
       <div class="files">
         <strong>Bestand:</strong> src/components/workshop-configurator.tsx
       </div>
       <ul>
         <li>Opvallende amber/oranje modal verschijnt bij &lt; 8 personen</li>
+        <li><strong>Slimme timing:</strong> Popup wacht 800ms na stoppen met typen (voorkomt popup bij bijv. typen van "18")</li>
         <li>Toont eerstvolgende 3 workshop data met tijden</li>
         <li>Directe link naar <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">agenda Open Kookworkshops</a></li>
         <li>Prijs €50 p.p. incl. BTW getoond</li>
