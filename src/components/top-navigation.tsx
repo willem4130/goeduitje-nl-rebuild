@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-import { Instagram, Facebook, Linkedin, Calendar } from "lucide-react";
+import { Instagram, Facebook, Linkedin, Calendar, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -85,42 +85,54 @@ export function TopNavigation({
               </Link>
             ))}
 
-            {/* Social Icons - Refined Spacing */}
-            <div className="border-border flex items-center gap-3 border-l pl-6">
-              <Link
-                href="https://instagram.com/goeduitje"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                aria-label="Instagram"
+            {/* Phone + Social Icons */}
+            <div className="border-border flex items-center gap-4 border-l pl-6">
+              {/* Phone Number */}
+              <a
+                href="tel:+31652675891"
+                className="text-muted-foreground hover:text-primary flex items-center gap-1.5 text-sm font-medium transition-all duration-300"
+                aria-label="Bel ons"
               >
-                <Instagram className="h-5 w-5" />
-              </Link>
-              <Link
-                href="https://facebook.com/goeduitje"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </Link>
-              <Link
-                href="https://linkedin.com/company/goeduitje"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/booking"
-                className="text-primary hover:text-primary/80 transition-all duration-300 hover:-translate-y-[2px]"
-                aria-label="Boek een workshop"
-              >
-                <Calendar className="h-5 w-5" />
-              </Link>
+                <Phone className="h-4 w-4" />
+                <span className="hidden lg:inline">06 5267 5891</span>
+              </a>
+
+              <div className="border-border flex items-center gap-3 border-l pl-4">
+                <Link
+                  href="https://instagram.com/goeduitje"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="https://facebook.com/goeduitje"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="https://linkedin.com/company/goeduitje"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-[2px]"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="/booking"
+                  className="text-primary hover:text-primary/80 transition-all duration-300 hover:-translate-y-[2px]"
+                  aria-label="Boek een workshop"
+                >
+                  <Calendar className="h-5 w-5" />
+                </Link>
+              </div>
             </div>
           </div>
 

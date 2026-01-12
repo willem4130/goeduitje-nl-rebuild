@@ -198,11 +198,11 @@ export function Footer({
               <span>info@goeduitje.nl</span>
             </a>
             <a
-              href="tel:+31612345678"
+              href="tel:+31652675891"
               className="hover:text-foreground flex items-center gap-2 transition-colors"
             >
               <Phone className="h-4 w-4" />
-              <span>+31 6 1234 5678</span>
+              <span>+31 6 5267 5891</span>
             </a>
             <span className="flex items-center gap-2">
               <MapPin className="h-4 w-4" />

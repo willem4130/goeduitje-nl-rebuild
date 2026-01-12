@@ -188,8 +188,8 @@ export function WorkshopConfigurator() {
         if (!timeTbd) fieldsToValidate.push("time");
         break;
       case 2:
-        // Validate contact fields
-        fieldsToValidate = ["name", "email"];
+        // Validate contact fields (phone is now required)
+        fieldsToValidate = ["name", "email", "phone"];
         break;
     }
 
@@ -240,11 +240,14 @@ export function WorkshopConfigurator() {
         }),
       });
 
-      toast.success("Configuratie verzonden!", {
-        description: "Controleer je e-mail voor bevestiging.",
+      toast.success("Aanvraag verzonden! 🎉", {
+        description:
+          "Verheug je vast op jullie uitje! We nemen snel contact op.",
+        duration: 5000,
       });
 
-      router.push(`/booking?config_id=${workshopConfig.id}`);
+      // Redirect to testimonials page with "voorpret" feeling
+      router.push("/jullie-ervaringen");
     } catch (error) {
       console.error("Workshop configuration error:", error);
       toast.error("Er is iets misgegaan!", {
@@ -801,7 +804,7 @@ export function WorkshopConfigurator() {
                           name="phone"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Telefoonnummer</FormLabel>
+                              <FormLabel>Telefoonnummer *</FormLabel>
                               <FormControl>
                                 <Input
                                   type="tel"

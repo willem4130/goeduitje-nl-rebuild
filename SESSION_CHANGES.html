@@ -134,6 +134,38 @@
         <li>Automatische stripping van leading zeros</li>
       </ul>
     </div>
+
+    <div class="change">
+      <h4>8. Telefoonnummer Verplicht + Redirect naar Ervaringen</h4>
+      <p>Telefoonnummer is nu een verplicht veld in de configurator. Na verzenden wordt de gebruiker doorgestuurd naar "Jullie Ervaringen" met een voorpret-boodschap.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Open configurator</a> → Stap 2 toont nu "Telefoonnummer *"</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/lib/validations/forms.ts<br>
+        src/components/workshop-configurator.tsx
+      </div>
+      <ul>
+        <li>Telefoonnummer veld is nu verplicht (was optioneel)</li>
+        <li>Na verzenden: toast "Verheug je vast op jullie uitje!"</li>
+        <li>Redirect naar <a href="https://goeduitje-nl-rebuild.vercel.app/jullie-ervaringen" target="_blank">/jullie-ervaringen</a> i.p.v. /booking</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>9. Telefoonnummer Guus in Navigatie + Footer</h4>
+      <p>Contactnummer van Guus toegevoegd aan de navigatiebalk (rechtsboven) en bijgewerkt in de footer.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Homepage</a> → kijk rechtsboven in de navigatie en onderaan in de footer</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/components/top-navigation.tsx<br>
+        src/components/footer.tsx
+      </div>
+      <ul>
+        <li><strong>Navigatie:</strong> Telefoonnummer 06 5267 5891 toegevoegd met icoon (zichtbaar op desktop)</li>
+        <li><strong>Footer:</strong> Nummer bijgewerkt van +31 6 1234 5678 naar +31 6 5267 5891</li>
+        <li>Beide nummers zijn klikbaar (tel: link)</li>
+      </ul>
+    </div>
   </div>
 
   <!-- SESSION: 12 januari 2026 (ochtend) -->

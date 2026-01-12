@@ -135,13 +135,9 @@ export const workshopConfigSchema = z
     email: z.string().email({
       message: "Voer een geldig e-mailadres in.",
     }),
-    phone: z
-      .string()
-      .min(10, {
-        message: "Telefoonnummer moet minimaal 10 cijfers zijn.",
-      })
-      .optional()
-      .or(z.literal("")),
+    phone: z.string().min(10, {
+      message: "Telefoonnummer moet minimaal 10 cijfers zijn.",
+    }),
   })
   .refine(
     (data) => {
