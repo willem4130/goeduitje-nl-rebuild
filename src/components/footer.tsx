@@ -11,7 +11,6 @@ import {
   MapPin,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { CompactContactForm } from "@/components/compact-contact-form";
 
 const footerLinks = {
   workshops: {
@@ -80,7 +79,7 @@ export function Footer({
     <footer className="bg-muted/30 border-t">
       {/* Main Footer Content */}
       <div className="container mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-5">
+        <div className="grid gap-12 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block">
@@ -179,11 +178,6 @@ export function Footer({
                 ))}
               </ul>
             </div>
-          </div>
-
-          {/* Contact Form Column */}
-          <div className="lg:col-span-1">
-            <CompactContactForm />
           </div>
         </div>
 

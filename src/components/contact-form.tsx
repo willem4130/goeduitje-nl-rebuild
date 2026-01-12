@@ -3,7 +3,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { IconLoader2, IconSend } from "@tabler/icons-react";
+import {
+  IconLoader2,
+  IconSend,
+  IconMail,
+  IconPhone,
+} from "@tabler/icons-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -87,7 +92,25 @@ export function ContactForm() {
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>Neem contact op</CardTitle>
+        <div className="flex items-start justify-between">
+          <CardTitle>Neem contact op</CardTitle>
+          <div className="flex items-center gap-3">
+            <a
+              href="mailto:info@goeduitje.nl"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              title="Mail ons"
+            >
+              <IconMail className="size-5" />
+            </a>
+            <a
+              href="tel:+31652675891"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              title="Bel ons"
+            >
+              <IconPhone className="size-5" />
+            </a>
+          </div>
+        </div>
         <CardDescription className="space-y-2">
           <span>
             Wil je een uitje boeken? Gebruik dan onze{" "}
@@ -104,6 +127,23 @@ export function ContactForm() {
             >
               agenda voor open workshops
             </Link>
+            .
+          </span>
+          <span className="block">
+            Wil je liever direct contact opnemen? Bel Guus op{" "}
+            <a
+              href="tel:+31652675891"
+              className="text-primary font-medium hover:underline"
+            >
+              06 5267 5891
+            </a>{" "}
+            of mail{" "}
+            <a
+              href="mailto:info@goeduitje.nl"
+              className="text-primary font-medium hover:underline"
+            >
+              info@goeduitje.nl
+            </a>
             .
           </span>
           <span className="block">
