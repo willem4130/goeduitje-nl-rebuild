@@ -274,34 +274,69 @@ export default async function WorkshopDetailPage({ params }: Props) {
                         </ul>
                       </div>
 
-                      {/* Variant Pricing */}
+                      {/* Sidebar - Pricing or Agenda */}
                       <div>
-                        <div className="bg-muted/50 rounded-lg p-6">
-                          <h4 className="mb-4 font-semibold">Prijzen</h4>
-                          <div className="space-y-2">
-                            {variant.priceTiers.map((tier, i) => (
-                              <div
-                                key={i}
-                                className="flex items-center justify-between text-sm"
-                              >
-                                <span className="text-muted-foreground">
-                                  {tier.groupSize}
-                                </span>
-                                <span className="font-medium">
-                                  {formatPrice(
-                                    tier.priceExclBtw,
-                                    tier.priceInclBtw
-                                  )}
-                                </span>
+                        {variant.name === "Open Kookworkshops" ? (
+                          /* Agenda for Open Kookworkshops */
+                          <div className="bg-muted/50 rounded-lg p-6">
+                            <h4 className="mb-4 flex items-center gap-2 font-semibold">
+                              <Calendar className="text-primary h-5 w-5" />
+                              Agenda
+                            </h4>
+                            <p className="text-muted-foreground mb-4 text-sm">
+                              Bekijk hieronder de geplande open workshops. Meld
+                              je aan voor een datum die jou past!
+                            </p>
+                            <div className="space-y-3">
+                              <div className="rounded-md border bg-white p-3">
+                                <p className="text-muted-foreground text-xs">
+                                  Binnenkort
+                                </p>
+                                <p className="font-medium">
+                                  Nieuwe data volgen
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                  Locatie: Nijmegen
+                                </p>
                               </div>
-                            ))}
+                            </div>
+                            <p className="text-muted-foreground mt-4 text-xs">
+                              Wil je op de hoogte blijven van nieuwe data? Neem
+                              contact met ons op.
+                            </p>
+                            <Button asChild className="mt-4 w-full">
+                              <Link href="/contact">Houd mij op de hoogte</Link>
+                            </Button>
                           </div>
-                          <Button asChild className="mt-6 w-full">
-                            <Link href="/onze-uitjes#configurator">
-                              Configureer dit uitje
-                            </Link>
-                          </Button>
-                        </div>
+                        ) : (
+                          /* Standard Pricing */
+                          <div className="bg-muted/50 rounded-lg p-6">
+                            <h4 className="mb-4 font-semibold">Prijzen</h4>
+                            <div className="space-y-2">
+                              {variant.priceTiers.map((tier, i) => (
+                                <div
+                                  key={i}
+                                  className="flex items-center justify-between text-sm"
+                                >
+                                  <span className="text-muted-foreground">
+                                    {tier.groupSize}
+                                  </span>
+                                  <span className="font-medium">
+                                    {formatPrice(
+                                      tier.priceExclBtw,
+                                      tier.priceInclBtw
+                                    )}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                            <Button asChild className="mt-6 w-full">
+                              <Link href="/onze-uitjes#configurator">
+                                Configureer dit uitje
+                              </Link>
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TabsContent>
