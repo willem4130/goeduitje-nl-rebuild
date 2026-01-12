@@ -89,8 +89,9 @@ export const tocDeelnemerData: TocData = {
 };
 
 // Connection definitions for medewerker - 5 columns
+// Based on original goeduitje.nl diagram
 const medewerkerConnections = [
-  // Activiteiten (col 0) to Outputs (col 1)
+  // Activiteiten (col 0) → Outputs (col 1) - 1:1 mapping
   { from: { col: 0, row: 0 }, to: { col: 1, row: 0 } },
   { from: { col: 0, row: 1 }, to: { col: 1, row: 1 } },
   { from: { col: 0, row: 2 }, to: { col: 1, row: 2 } },
@@ -99,20 +100,21 @@ const medewerkerConnections = [
   { from: { col: 0, row: 5 }, to: { col: 1, row: 5 } },
   { from: { col: 0, row: 6 }, to: { col: 1, row: 6 } },
   { from: { col: 0, row: 7 }, to: { col: 1, row: 7 } },
-  // Outputs (col 1) to Directe effecten Left (col 2)
-  { from: { col: 1, row: 0 }, to: { col: 2, row: 0 } },
-  { from: { col: 1, row: 1 }, to: { col: 2, row: 0 } },
-  { from: { col: 1, row: 2 }, to: { col: 2, row: 1 } },
-  { from: { col: 1, row: 3 }, to: { col: 2, row: 2 } },
-  { from: { col: 1, row: 4 }, to: { col: 2, row: 3 } },
-  { from: { col: 1, row: 5 }, to: { col: 2, row: 4 } },
-  // Outputs (col 1) to Directe effecten Right (col 3)
-  { from: { col: 1, row: 5 }, to: { col: 3, row: 0 } },
-  { from: { col: 1, row: 6 }, to: { col: 3, row: 1 } },
-  { from: { col: 1, row: 7 }, to: { col: 3, row: 2 } },
-  // Directe effecten Left (col 2) to Right (col 3)
-  { from: { col: 2, row: 4 }, to: { col: 3, row: 3 } },
-  // Directe effecten Right (col 3) to Indirecte effecten (col 4)
+  // Outputs (col 1) → Directe effecten Left (col 2)
+  { from: { col: 1, row: 0 }, to: { col: 2, row: 0 } }, // Workshop opzet → Algemene vaardigheden
+  { from: { col: 1, row: 1 }, to: { col: 2, row: 0 } }, // Boodschappenlijst → Algemene vaardigheden
+  { from: { col: 1, row: 2 }, to: { col: 2, row: 1 } }, // Structuur & ritme → Werkspecifieke
+  { from: { col: 1, row: 3 }, to: { col: 2, row: 2 } }, // Sociale interactie → Nederlandse taal
+  { from: { col: 1, row: 3 }, to: { col: 2, row: 3 } }, // Sociale interactie → Opbouwen netwerk
+  { from: { col: 1, row: 4 }, to: { col: 2, row: 4 } }, // Feedback → Nederlandse werkcultuur
+  // Outputs (col 1) → Directe effecten Right (col 3)
+  { from: { col: 1, row: 5 }, to: { col: 3, row: 0 } }, // Evaluatieverslag → Persoonlijke ontwikkeling
+  { from: { col: 1, row: 6 }, to: { col: 3, row: 1 } }, // Content calender → Arbeidsmarkt
+  { from: { col: 1, row: 7 }, to: { col: 3, row: 2 } }, // Inventarisatie → Zelfvertrouwen
+  // Directe effecten Left (col 2) → Right (col 3)
+  { from: { col: 2, row: 4 }, to: { col: 3, row: 3 } }, // Nederlandse werkcultuur → Positieve ervaring
+  { from: { col: 2, row: 4 }, to: { col: 3, row: 4 } }, // Nederlandse werkcultuur → Financiele situatie
+  // Directe effecten Right (col 3) → Indirecte effecten (col 4) - all converge
   { from: { col: 3, row: 0 }, to: { col: 4, row: 0 } },
   { from: { col: 3, row: 1 }, to: { col: 4, row: 0 } },
   { from: { col: 3, row: 2 }, to: { col: 4, row: 0 } },
@@ -121,28 +123,29 @@ const medewerkerConnections = [
 ];
 
 // Connection definitions for deelnemer - 5 columns
+// Based on original goeduitje.nl diagram
 const deelnemerConnections = [
-  // Activiteiten (col 0) to Outputs (col 1)
-  { from: { col: 0, row: 0 }, to: { col: 1, row: 0 } },
-  { from: { col: 0, row: 0 }, to: { col: 1, row: 1 } },
-  { from: { col: 0, row: 0 }, to: { col: 1, row: 2 } },
-  { from: { col: 0, row: 0 }, to: { col: 1, row: 3 } },
-  { from: { col: 0, row: 1 }, to: { col: 1, row: 4 } },
-  // Outputs (col 1) to Directe effecten Left (col 2)
-  { from: { col: 1, row: 0 }, to: { col: 2, row: 0 } },
-  { from: { col: 1, row: 1 }, to: { col: 2, row: 0 } },
-  { from: { col: 1, row: 1 }, to: { col: 2, row: 1 } },
-  { from: { col: 1, row: 3 }, to: { col: 2, row: 2 } },
-  // Outputs (col 1) to Directe effecten Right (col 3)
-  { from: { col: 1, row: 1 }, to: { col: 3, row: 0 } },
-  { from: { col: 1, row: 2 }, to: { col: 3, row: 1 } },
-  // Directe effecten Left (col 2) to Right (col 3)
-  { from: { col: 2, row: 1 }, to: { col: 3, row: 0 } },
-  // Directe effecten Right (col 3) to Indirecte effecten (col 4)
-  { from: { col: 3, row: 0 }, to: { col: 4, row: 0 } },
-  { from: { col: 3, row: 1 }, to: { col: 4, row: 0 } },
-  { from: { col: 2, row: 2 }, to: { col: 4, row: 1 } },
-  { from: { col: 3, row: 1 }, to: { col: 4, row: 1 } },
+  // Activiteiten (col 0) → Outputs (col 1)
+  { from: { col: 0, row: 0 }, to: { col: 1, row: 0 } }, // Deelnemen → Sociale interactie
+  { from: { col: 0, row: 0 }, to: { col: 1, row: 1 } }, // Deelnemen → Kennismaking
+  { from: { col: 0, row: 0 }, to: { col: 1, row: 2 } }, // Deelnemen → Leuke belevenis
+  { from: { col: 0, row: 0 }, to: { col: 1, row: 3 } }, // Deelnemen → Teambuilding
+  { from: { col: 0, row: 1 }, to: { col: 1, row: 4 } }, // Feedback delen → Feedback deelnemers
+  // Outputs (col 1) → Directe effecten Left (col 2)
+  { from: { col: 1, row: 0 }, to: { col: 2, row: 0 } }, // Sociale interactie → Verbreden culturele kennis
+  { from: { col: 1, row: 1 }, to: { col: 2, row: 0 } }, // Kennismaking → Verbreden culturele kennis
+  { from: { col: 1, row: 0 }, to: { col: 2, row: 1 } }, // Sociale interactie → Opdoen kennis
+  { from: { col: 1, row: 3 }, to: { col: 2, row: 2 } }, // Teambuilding → Bijdragen ondernemerschap
+  // Outputs (col 1) → Directe effecten Right (col 3)
+  { from: { col: 1, row: 1 }, to: { col: 3, row: 0 } }, // Kennismaking → Positiever beeld
+  { from: { col: 1, row: 2 }, to: { col: 3, row: 1 } }, // Leuke belevenis → Begrip leefsituatie
+  // Directe effecten Left (col 2) → Right (col 3)
+  { from: { col: 2, row: 1 }, to: { col: 3, row: 0 } }, // Opdoen kennis → Positiever beeld
+  // Directe effecten → Indirecte effecten (col 4)
+  { from: { col: 3, row: 0 }, to: { col: 4, row: 0 } }, // Positiever beeld → Openstaan
+  { from: { col: 3, row: 1 }, to: { col: 4, row: 0 } }, // Begrip → Openstaan
+  { from: { col: 2, row: 2 }, to: { col: 4, row: 1 } }, // Bijdragen ondernemerschap → Meer inclusieve
+  { from: { col: 3, row: 0 }, to: { col: 4, row: 1 } }, // Positiever beeld → Meer inclusieve
 ];
 
 const columnColors = {
