@@ -13,7 +13,8 @@ src/
 │   ├── onze-uitjes/[slug]/       # Workshop detail pages
 │   ├── ons-verhaal/              # About page (from PageContent)
 │   ├── jullie-ervaringen/        # Testimonials page
-│   ├── recepten/                 # Recipes page
+│   ├── recepten/                 # Recipes list page
+│   │   └── [slug]/               # Recipe detail pages
 │   ├── faq/                      # FAQ page
 │   ├── checkout/                 # Stripe payment flow
 │   └── admin/                    # Legacy admin (use backend instead)
@@ -131,6 +132,43 @@ This data syncs automatically to:
 - `/booking` (booking calendar)
 
 Update dates here when new workshop dates are scheduled.
+
+## Recipes
+
+Authentic Middle Eastern recipes from Goeduitje cooking workshops. Data managed via backend admin.
+
+### Structure
+
+| Route              | Purpose                           |
+| ------------------ | --------------------------------- |
+| `/recepten`        | Recipe list with category filters |
+| `/recepten/[slug]` | Individual recipe detail page     |
+
+### Categories (in order)
+
+1. Voorgerecht
+2. Hoofdgerecht
+3. Bijgerecht
+4. Dessert
+
+### Key Files
+
+| File                                | Purpose                                    |
+| ----------------------------------- | ------------------------------------------ |
+| `prisma/seed-recipes.ts`            | Seed 13 authentic recipes with Wix images  |
+| `src/app/recepten/page.tsx`         | Recipe list with search & category filters |
+| `src/app/recepten/[slug]/page.tsx`  | Recipe detail with ingredients & steps     |
+| `src/server/api/routers/recipes.ts` | tRPC router for recipe CRUD                |
+
+### Seeding Recipes
+
+```bash
+npx tsx prisma/seed-recipes.ts
+```
+
+### Image Hosting
+
+Recipe images are hosted on Wix (`static.wixstatic.com`) from the original goeduitje.nl site. The domain is configured in `next.config.mjs` under `images.remotePatterns`.
 
 ## Deployment
 
