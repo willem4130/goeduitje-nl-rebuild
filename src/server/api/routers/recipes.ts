@@ -100,7 +100,7 @@ export const recipesRouter = createTRPCRouter({
       .map((r) => r.category)
       .filter((c): c is string => c !== null);
 
-    // Define the correct order for course types
+    // Define the correct order for course types (matching goeduitje.nl)
     const categoryOrder = [
       "Voorgerecht",
       "Hoofdgerecht",
