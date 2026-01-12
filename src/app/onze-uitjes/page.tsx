@@ -5,7 +5,6 @@ import Image from "next/image";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { SocialProofStats } from "@/components/social-proof-stats";
-import { CompactTestimonials } from "@/components/compact-testimonials";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -130,9 +129,6 @@ export default function OnzeUitjesPage() {
                     </div>
                   </div>
                 </Card>
-
-                {/* Compact Testimonials */}
-                <CompactTestimonials />
 
                 {/* Uitje Collage */}
                 <Card className="shadow-editorial overflow-hidden border">

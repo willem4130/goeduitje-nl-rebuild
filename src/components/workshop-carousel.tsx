@@ -97,9 +97,11 @@ export function WorkshopCarousel({
         {/* Section Header */}
         {!compact && (
           <ScrollReveal animation="slideUp">
-            <div className="mb-6 text-center">
-              <h2 className="text-primary tracking-tight">{title}</h2>
-              <p className="text-muted-foreground mt-4 text-lg leading-relaxed tracking-wide sm:text-xl">
+            <div className="mb-4 text-center">
+              <h2 className="text-primary text-2xl tracking-tight lg:text-3xl">
+                {title}
+              </h2>
+              <p className="text-muted-foreground mt-2 text-base leading-relaxed tracking-wide">
                 {subtitle}
               </p>
             </div>
@@ -112,9 +114,9 @@ export function WorkshopCarousel({
             <Loader2 className="text-primary h-8 w-8 animate-spin" />
           </div>
         ) : workshops.length > 0 ? (
-          /* Workshop Grid - Full-width 5x1 Layout on desktop */
+          /* Workshop Grid - 3x2 Layout to fit viewport */
           <ScrollReveal animation="slideUp" delay={0.2}>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {workshops.map((workshop, index) => (
                 <WorkshopCard
                   key={workshop.id}
@@ -133,7 +135,7 @@ export function WorkshopCarousel({
         {/* View All CTA */}
         {showViewAllButton && workshops.length > 0 && (
           <ScrollReveal animation="slideUp" delay={0.4}>
-            <div className="mt-12 text-center">
+            <div className="mt-6 text-center">
               <Button asChild size="lg" variant="outline">
                 <Link href="/onze-uitjes" className="group">
                   Bekijk alle uitjes
@@ -171,8 +173,8 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
     >
       <Link href={`/onze-uitjes/${workshop.slug}`} className="block">
         <div className="bg-card border-border shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500 hover:scale-[1.02]">
-          {/* Media - Portrait aspect ratio for maximum prominence */}
-          <div className="bg-muted relative aspect-[4/5] overflow-hidden">
+          {/* Media - 3:2 aspect ratio for compact viewport fit */}
+          <div className="bg-muted relative aspect-[3/2] overflow-hidden">
             {workshop.video ? (
               <video
                 src={workshop.video}
@@ -200,27 +202,27 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />
 
             {/* Price badge */}
-            <div className="bg-primary shadow-editorial absolute top-3 right-3 rounded-full px-3 py-1">
-              <span className="text-primary-foreground text-xs font-bold tracking-wide">
+            <div className="bg-primary shadow-editorial absolute top-2 right-2 rounded-full px-2 py-0.5">
+              <span className="text-primary-foreground text-[10px] font-bold tracking-wide">
                 {workshop.price}
               </span>
             </div>
           </div>
 
-          {/* Content - Ultra compact layout */}
-          <div className="p-3">
-            <h3 className="text-foreground mb-1 line-clamp-1 text-lg font-bold tracking-tight">
+          {/* Content - Compact layout for 3x2 grid */}
+          <div className="p-2.5">
+            <h3 className="text-foreground mb-0.5 line-clamp-1 text-sm font-bold tracking-tight">
               {workshop.title}
             </h3>
-            <p className="text-primary mb-2 line-clamp-1 text-sm font-semibold tracking-tight">
+            <p className="text-primary mb-1.5 line-clamp-1 text-xs font-semibold">
               {workshop.subtitle}
             </p>
-            <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">
+            <p className="text-muted-foreground mb-2 line-clamp-2 text-[11px] leading-snug">
               {workshop.description}
             </p>
 
             {/* Meta info */}
-            <div className="border-border text-muted-foreground space-y-1 border-t pt-2 text-xs">
+            <div className="border-border text-muted-foreground space-y-0.5 border-t pt-1.5 text-[11px]">
               <div className="flex items-center justify-between">
                 <span className="font-semibold">Duur:</span>
                 <span>{workshop.duration}</span>
@@ -232,11 +234,11 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
             </div>
 
             {/* CTA */}
-            <div className="mt-3 flex items-center justify-between">
-              <span className="text-primary text-sm font-bold tracking-wide">
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-primary text-xs font-bold tracking-wide">
                 Meer info
               </span>
-              <ChevronRight className="text-primary h-4 w-4 transition-transform duration-300 group-hover:translate-x-2" />
+              <ChevronRight className="text-primary h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-2" />
             </div>
           </div>
         </div>

@@ -4,7 +4,6 @@ import { HeroVideo } from "@/components/hero-video";
 import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { TestimonialsCarousel } from "@/components/testimonials-carousel";
-import { CompactTestimonials } from "@/components/compact-testimonials";
 import { SocialProofStats } from "@/components/social-proof-stats";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -117,9 +116,6 @@ export default function Home() {
               <div className="w-full space-y-3 lg:w-[320px] xl:w-[360px]">
                 {/* Social Proof Stats */}
                 <SocialProofStats />
-
-                {/* Compact Testimonials */}
-                <CompactTestimonials />
               </div>
             </ScrollReveal>
           </div>

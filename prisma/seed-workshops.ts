@@ -21,11 +21,11 @@ async function main() {
       longDescription: `Onder begeleiding van gepassioneerde koks (asielzoekers en statushouders) leer je de geheimen van verschillende keukens.
 Je wordt begeleid door enthousiaste en ervaren koks die graag hun liefde voor koken en hun cultuur delen.
 
-Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, Dessert workshop, of Koken op Maat.`,
+Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, Vegetarische kookworkshop, of Koken op Maat.`,
       video: "/images/workshops/workshop 1.mp4",
       image: "/images/workshops/kookworkshop.jpg",
       duration: "vanaf 2,5 uur",
-      groupSize: "8-30 personen",
+      groupSize: "vanaf 8 personen",
       location: "Op locatie naar keuze of bij u op locatie",
       categories: ["Koken", "Teambuilding", "Cultureel"],
       includes: [
@@ -149,61 +149,7 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
     ],
   });
 
-  // Kookworkshop Variant 3: Dessert Workshop
-  const dessert = await prisma.workshopVariant.create({
-    data: {
-      workshopId: kookworkshop.id,
-      name: "Dessert Workshop",
-      description:
-        "Leer in een uur één van onze lekkere toetjes bereiden. Uitermate geschikt als opwarmertje of kennismakingsactiviteit tijdens een teamdag, maar ook als onderbreking tijdens een congres of strategiedag. En wil jij een leuke activiteit aanbieden tijdens je klant- of partnerdag? Dan organiseren wij diverse rondes met toetjesworkshops voor je.",
-      duration: "1 uur",
-      includes: [
-        "Begeleiding door koks",
-        "Alle ingrediënten",
-        "Recepten om mee naar huis te nemen",
-        "Proeven van de desserts",
-        "Locatie in overleg",
-      ],
-      sortOrder: 3,
-    },
-  });
-
-  await prisma.priceTier.createMany({
-    data: [
-      {
-        workshopId: kookworkshop.id,
-        variantId: dessert.id,
-        groupSize: "8-10 personen",
-        minParticipants: 8,
-        maxParticipants: 10,
-        priceExclBtw: 40,
-        priceInclBtw: 48,
-        sortOrder: 1,
-      },
-      {
-        workshopId: kookworkshop.id,
-        variantId: dessert.id,
-        groupSize: "11-15 personen",
-        minParticipants: 11,
-        maxParticipants: 15,
-        priceExclBtw: 35,
-        priceInclBtw: 42,
-        sortOrder: 2,
-      },
-      {
-        workshopId: kookworkshop.id,
-        variantId: dessert.id,
-        groupSize: "16+ personen",
-        minParticipants: 16,
-        maxParticipants: null,
-        priceExclBtw: 30,
-        priceInclBtw: 36,
-        sortOrder: 3,
-      },
-    ],
-  });
-
-  // Kookworkshop Variant 4: Koken op Maat
+  // Kookworkshop Variant 3: Koken op Maat
   const kokenOpMaat = await prisma.workshopVariant.create({
     data: {
       workshopId: kookworkshop.id,
@@ -219,7 +165,7 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
         "Keuze uit vlees, vegetarisch of veganistisch",
         "Locatie in overleg",
       ],
-      sortOrder: 4,
+      sortOrder: 3,
     },
   });
 
@@ -236,7 +182,7 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
     },
   });
 
-  // Kookworkshop Variant 5: Vegetarische Kookworkshop
+  // Kookworkshop Variant 4: Vegetarische Kookworkshop
   const vegetarisch = await prisma.workshopVariant.create({
     data: {
       workshopId: kookworkshop.id,
@@ -252,7 +198,7 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
         "Complete maaltijd",
         "Locatie in overleg",
       ],
-      sortOrder: 5,
+      sortOrder: 4,
     },
   });
 
@@ -289,39 +235,6 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, D
         sortOrder: 3,
       },
     ],
-  });
-
-  // Kookworkshop Variant 6: Open Kookworkshops
-  const openWorkshop = await prisma.workshopVariant.create({
-    data: {
-      workshopId: kookworkshop.id,
-      name: "Open Kookworkshops",
-      description:
-        "De open kookworkshops vinden plaats op verschillende locaties in Nijmegen. In kleine groepjes worden twee heerlijke hoofdgerechten gekookt, die daarna gezellig samen worden opgegeten. De workshop wordt afgesloten met een zelfgemaakt toetje. Perfect voor particulieren die willen kennismaken met onze workshops.",
-      duration: "2,5 tot 3 uur",
-      includes: [
-        "Begeleiding door koks",
-        "Alle ingrediënten",
-        "Twee hoofdgerechten",
-        "Zelfgemaakt toetje",
-        "Gezellig samen eten",
-        "Locatie: Nijmegen",
-      ],
-      sortOrder: 6,
-    },
-  });
-
-  await prisma.priceTier.create({
-    data: {
-      workshopId: kookworkshop.id,
-      variantId: openWorkshop.id,
-      groupSize: "Per persoon",
-      minParticipants: 1,
-      maxParticipants: null,
-      priceExclBtw: 41.32,
-      priceInclBtw: 50,
-      sortOrder: 1,
-    },
   });
 
   // 2. Stadsspel
