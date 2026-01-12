@@ -265,17 +265,20 @@ model google_reviews_cache {
 // Managed via backend admin at /wijzigingen
 // ============================================================
 model SessionChange {
-  id            String   @id @default(cuid())
-  title         String
-  description   String?
-  category      String?  // Contact, Navigation, Content, Design, Feature, Bug
-  filesChanged  String[] // Array of file paths
-  changeDetails String[] // Bullet points describing the change
-  viewUrl       String?  // Link to see change live
-  status        String   @default("pending") // pending, approved, needs_changes
-  addedBy       String?  @default("developer") // developer or client
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String    @id @default(cuid())
+  title          String
+  description    String?
+  category       String?   // Contact, Navigation, Content, Design, Feature, Bug
+  filesChanged   String[]  // Array of file paths
+  changeDetails  String[]  // Bullet points describing the change
+  viewUrl        String?   // Link to see change live
+  screenshotUrl  String?   // Screenshot/image URL (Vercel Blob)
+  screenshotPath String?   // Blob path for deletion
+  status         String    @default("pending") // pending, approved, needs_changes, in_progress
+  addedBy        String?   @default("developer") // developer or client
+  deletedAt      DateTime? // Soft delete timestamp
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   // Relations
   feedback      SessionChangeFeedback[]
@@ -284,6 +287,7 @@ model SessionChange {
   @@index([status])
   @@index([category])
   @@index([createdAt])
+  @@index([deletedAt])
 }
 
 model SessionChangeFeedback {
