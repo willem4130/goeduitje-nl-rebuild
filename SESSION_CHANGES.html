@@ -334,6 +334,52 @@
     </div>
   </div>
 
+<!-- SESSION: 12 januari 2026 (Avond) -->
+  <div class="session">
+    <h2>Sessie: 12 januari 2026 (Avond)</h2>
+    <p class="session-date"><span class="status pending">Work in Progress</span> Theory of Change component redesign</p>
+
+    <div class="change">
+      <h4>Theory of Change - Onze Impact Pagina</h4>
+      <p>De Theory of Change diagrammen op de Onze Impact pagina zijn herontworpen om de originele goeduitje.nl design te matchen.</p>
+      <p><strong>Bekijk:</strong> <a href="https://goeduitje-nl-rebuild.vercel.app/onze-impact" target="_blank">Onze Impact pagina</a></p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/components/theory-of-change.tsx<br>
+        src/app/onze-impact/page.tsx
+      </div>
+
+      <h4>Wat is gedaan:</h4>
+      <ul>
+        <li><strong>5-kolom layout:</strong> Activiteiten, Outputs, Directe Effecten (2 sub-kolommen), Indirecte Effecten</li>
+        <li><strong>Data structuur:</strong> directeEffecten gesplitst in directeEffectenLeft en directeEffectenRight</li>
+        <li><strong>Kleuren:</strong> Brown (#8B7355), Red (#8B2332), Gold (#C4A24C) matching origineel</li>
+        <li><strong>Verbindingslijnen:</strong> SVG paths tussen items</li>
+        <li><strong>Container:</strong> Breder (max-w-[1600px]) voor volledige breedte</li>
+        <li><strong>Geen scrollbars:</strong> overflow-x-auto verwijderd</li>
+      </ul>
+
+      <div class="note">
+        <strong>TODO - Nog te fixen:</strong>
+        <ul>
+          <li>Verbindingslijnen gaan door items heen i.p.v. er omheen</li>
+          <li>Verticale positionering van items moet worden aangepast</li>
+          <li>Sommige lijnen missen of zijn verkeerd verbonden</li>
+        </ul>
+        <p>Dit wordt in een volgende sessie afgemaakt. Referentie: originele design screenshots beschikbaar.</p>
+      </div>
+
+      <h4>Huidige Connection Mapping (Medewerker):</h4>
+      <pre style="background: #f4f4f4; padding: 1rem; font-size: 0.8rem; overflow-x: auto;">
+Col 0 → Col 1: 1:1 (Activiteiten → Outputs)
+Col 1 → Col 2: Outputs 0,1 → DE-L 0 | Out 2 → DE-L 1 | Out 3 → DE-L 2,3 | Out 4 → DE-L 4
+Col 1 → Col 3: Out 5 → DE-R 0 | Out 6 → DE-R 1 | Out 7 → DE-R 2
+Col 2 → Col 3: DE-L 4 → DE-R 3,4
+Col 3 → Col 4: All DE-R → Indirecte effecten (converge)
+      </pre>
+    </div>
+  </div>
+
   <!-- Voeg hier nieuwe sessies toe -->
 
 </body>
