@@ -142,14 +142,14 @@ export default function OnzeImpactPage() {
 
       {/* Theory of Change - Medewerker */}
       <section className="section-sm bg-muted/30">
-        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1600px] px-4 lg:px-8 xl:px-12">
           <TheoryOfChangeMedewerker />
         </div>
       </section>
 
       {/* Theory of Change - Klant/Deelnemer */}
-      <section className="section-sm">
-        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="section-sm bg-muted/30">
+        <div className="mx-auto w-full max-w-[1600px] px-4 lg:px-8 xl:px-12">
           <TheoryOfChangeDeelnemer />
         </div>
       </section>

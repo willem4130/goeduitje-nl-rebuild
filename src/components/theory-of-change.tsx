@@ -250,12 +250,16 @@ export function TheoryOfChange({
   }, [isInView, calculatePaths]);
 
   return (
-    <div className="mb-12">
-      <h3 className="text-primary mb-6 text-2xl font-bold tracking-tight">
+    <div className="mb-8">
+      <h3 className="text-primary mb-4 text-xl font-bold tracking-tight lg:text-2xl">
         {title}
       </h3>
 
-      <div ref={containerRef} className="relative overflow-x-auto">
+      {/* Mobile: Scrollable | Desktop: Full width no scroll */}
+      <div
+        ref={containerRef}
+        className="relative overflow-x-auto xl:overflow-x-visible"
+      >
         {/* SVG Layer for connections */}
         <svg
           ref={svgRef}
@@ -274,117 +278,117 @@ export function TheoryOfChange({
               d={path}
               fill="none"
               stroke="url(#lineGradient)"
-              strokeWidth="2"
+              strokeWidth="1.5"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={isInView ? { pathLength: 1, opacity: 1 } : {}}
               transition={{
                 pathLength: {
-                  delay: 0.5 + index * 0.05,
-                  duration: 0.8,
+                  delay: 0.5 + index * 0.03,
+                  duration: 0.6,
                   ease: "easeInOut",
                 },
-                opacity: { delay: 0.5 + index * 0.05, duration: 0.3 },
+                opacity: { delay: 0.5 + index * 0.03, duration: 0.2 },
               }}
             />
           ))}
         </svg>
 
-        {/* Grid Content */}
-        <div className="relative min-w-[1000px]">
-          <div className="grid grid-cols-4 gap-6">
+        {/* Grid Content - min-width for mobile scroll, auto-fit for desktop */}
+        <div className="relative min-w-[900px] xl:min-w-0">
+          <div className="grid grid-cols-4 gap-3 xl:gap-4">
             {/* Column Headers */}
             <div
-              className={`rounded-lg p-3 text-center ${columnColors.activiteiten.bg}`}
+              className={`rounded-md px-2 py-2 text-center ${columnColors.activiteiten.bg}`}
             >
               <span
-                className={`text-sm font-semibold ${columnColors.activiteiten.text}`}
+                className={`text-xs font-semibold xl:text-sm ${columnColors.activiteiten.text}`}
               >
                 Activiteiten
               </span>
             </div>
             <div
-              className={`rounded-lg p-3 text-center ${columnColors.outputs.bg}`}
+              className={`rounded-md px-2 py-2 text-center ${columnColors.outputs.bg}`}
             >
               <span
-                className={`text-sm font-semibold ${columnColors.outputs.text}`}
+                className={`text-xs font-semibold xl:text-sm ${columnColors.outputs.text}`}
               >
                 Outputs
               </span>
             </div>
             <div
-              className={`rounded-lg p-3 text-center ${columnColors.directeEffecten.bg}`}
+              className={`rounded-md px-2 py-2 text-center ${columnColors.directeEffecten.bg}`}
             >
               <span
-                className={`text-sm font-semibold ${columnColors.directeEffecten.text}`}
+                className={`text-xs font-semibold xl:text-sm ${columnColors.directeEffecten.text}`}
               >
                 Directe effecten
               </span>
             </div>
             <div
-              className={`rounded-lg p-3 text-center ${columnColors.indirecteEffecten.bg}`}
+              className={`rounded-md px-2 py-2 text-center ${columnColors.indirecteEffecten.bg}`}
             >
               <span
-                className={`text-sm font-semibold ${columnColors.indirecteEffecten.text}`}
+                className={`text-xs font-semibold xl:text-sm ${columnColors.indirecteEffecten.text}`}
               >
                 Indirecte effecten
               </span>
             </div>
 
             {/* Content Columns */}
-            <div data-column="0" className="space-y-2">
+            <div data-column="0" className="space-y-1.5">
               {data.activiteiten.map((item, idx) => (
                 <motion.div
                   key={idx}
                   data-item
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.1 + idx * 0.05, duration: 0.4 }}
-                  className={`rounded-lg border p-3 text-xs ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemBorder}`}
+                  transition={{ delay: 0.1 + idx * 0.03, duration: 0.3 }}
+                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="1" className="space-y-2">
+            <div data-column="1" className="space-y-1.5">
               {data.outputs.map((item, idx) => (
                 <motion.div
                   key={idx}
                   data-item
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.2 + idx * 0.05, duration: 0.4 }}
-                  className={`rounded-lg border p-3 text-xs ${columnColors.outputs.itemBg} ${columnColors.outputs.itemBorder}`}
+                  transition={{ delay: 0.15 + idx * 0.03, duration: 0.3 }}
+                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.outputs.itemBg} ${columnColors.outputs.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="2" className="space-y-2">
+            <div data-column="2" className="space-y-1.5">
               {data.directeEffecten.map((item, idx) => (
                 <motion.div
                   key={idx}
                   data-item
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
-                  className={`rounded-lg border p-3 text-xs ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemBorder}`}
+                  transition={{ delay: 0.2 + idx * 0.03, duration: 0.3 }}
+                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="3" className="space-y-2">
+            <div data-column="3" className="space-y-1.5">
               {data.indirecteEffecten.map((item, idx) => (
                 <motion.div
                   key={idx}
                   data-item
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.4 + idx * 0.05, duration: 0.4 }}
-                  className={`rounded-lg border p-3 text-xs ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemBorder}`}
+                  transition={{ delay: 0.25 + idx * 0.03, duration: 0.3 }}
+                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
