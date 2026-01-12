@@ -260,6 +260,48 @@ model google_reviews_cache {
 }
 
 // ============================================================
+// SESSION CHANGES
+// Development change tracking for client validation
+// Managed via backend admin at /wijzigingen
+// ============================================================
+model SessionChange {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  category      String?  // Contact, Navigation, Content, Design, Feature, Bug
+  filesChanged  String[] // Array of file paths
+  changeDetails String[] // Bullet points describing the change
+  viewUrl       String?  // Link to see change live
+  status        String   @default("pending") // pending, approved, needs_changes
+  addedBy       String?  @default("developer") // developer or client
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  feedback      SessionChangeFeedback[]
+
+  @@map("session_changes")
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model SessionChangeFeedback {
+  id             String   @id @default(cuid())
+  changeId       String
+  feedbackText   String?
+  screenshotUrl  String?  // Vercel Blob URL
+  screenshotPath String?  // Blob path for deletion
+  createdAt      DateTime @default(now())
+
+  // Relations
+  change         SessionChange @relation(fields: [changeId], references: [id], onDelete: Cascade)
+
+  @@map("session_change_feedback")
+  @@index([changeId])
+}
+
+// ============================================================
 // MEDIA GALLERY
 // Workshop photos uploaded via backend admin for website display
 // ============================================================
