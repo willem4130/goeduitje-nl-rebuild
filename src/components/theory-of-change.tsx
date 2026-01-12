@@ -190,7 +190,6 @@ export function TheoryOfChange({
   const contentRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-50px" });
   const [paths, setPaths] = useState<string[]>([]);
-  const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
   const [uniqueId] = useState(() => Math.random().toString(36).substr(2, 9));
 
   const calculatePaths = useCallback(() => {
@@ -233,10 +232,6 @@ export function TheoryOfChange({
     });
 
     setPaths(newPaths);
-    setSvgDimensions({
-      width: content.scrollWidth,
-      height: content.scrollHeight,
-    });
   }, [connections]);
 
   useEffect(() => {
@@ -272,172 +267,160 @@ export function TheoryOfChange({
         {title}
       </h3>
 
-      {/* Scrollable wrapper */}
-      <div className="overflow-x-auto">
-        <div ref={contentRef} className="relative min-w-[1100px] pb-4">
-          {/* SVG Layer for connections - positioned over content */}
-          <svg
-            className="pointer-events-none absolute top-0 left-0 z-20"
-            style={{
-              width: svgDimensions.width || "100%",
-              height: svgDimensions.height || "100%",
-            }}
-          >
-            <defs>
-              <linearGradient
-                id={`gradient-${uniqueId}`}
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
-              >
-                <stop offset="0%" stopColor="#5D4E7A" />
-                <stop offset="100%" stopColor="#7B6B9A" />
-              </linearGradient>
-            </defs>
-            {paths.map((pathD, index) => (
-              <motion.path
-                key={`${uniqueId}-${index}`}
-                d={pathD}
-                fill="none"
-                stroke={`url(#gradient-${uniqueId})`}
-                strokeWidth="2"
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={isInView ? { pathLength: 1, opacity: 1 } : {}}
-                transition={{
-                  pathLength: {
-                    delay: 0.2 + index * 0.015,
-                    duration: 0.4,
-                    ease: "easeOut",
-                  },
-                  opacity: { delay: 0.2 + index * 0.015, duration: 0.2 },
-                }}
-              />
-            ))}
-          </svg>
+      {/* Content wrapper - no scroll on desktop */}
+      <div ref={contentRef} className="relative">
+        {/* SVG Layer for connections */}
+        <svg
+          className="pointer-events-none absolute inset-0 z-20 overflow-visible"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient
+              id={`gradient-${uniqueId}`}
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop offset="0%" stopColor="#5D4E7A" />
+              <stop offset="100%" stopColor="#7B6B9A" />
+            </linearGradient>
+          </defs>
+          {paths.map((pathD, index) => (
+            <path
+              key={`${uniqueId}-${index}`}
+              d={pathD}
+              fill="none"
+              stroke="#5D4E7A"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.8"
+            />
+          ))}
+        </svg>
 
-          {/* Headers Row */}
-          <div className="relative z-10 mb-4 grid grid-cols-[1fr_1fr_2fr_1fr] gap-10">
-            <div
-              className={`rounded px-3 py-2 text-center ${columnColors.activiteiten.bg}`}
+        {/* Headers Row */}
+        <div className="relative z-10 mb-4 grid grid-cols-[1fr_1fr_2fr_1fr] gap-6">
+          <div
+            className={`rounded px-3 py-2 text-center ${columnColors.activiteiten.bg}`}
+          >
+            <span
+              className={`text-sm font-semibold ${columnColors.activiteiten.text}`}
             >
-              <span
-                className={`text-sm font-semibold ${columnColors.activiteiten.text}`}
-              >
-                Activiteiten
-              </span>
-            </div>
-            <div
-              className={`rounded px-3 py-2 text-center ${columnColors.outputs.bg}`}
+              Activiteiten
+            </span>
+          </div>
+          <div
+            className={`rounded px-3 py-2 text-center ${columnColors.outputs.bg}`}
+          >
+            <span
+              className={`text-sm font-semibold ${columnColors.outputs.text}`}
             >
-              <span
-                className={`text-sm font-semibold ${columnColors.outputs.text}`}
-              >
-                Outputs
-              </span>
-            </div>
-            <div
-              className={`rounded px-3 py-2 text-center ${columnColors.directeEffecten.bg}`}
+              Outputs
+            </span>
+          </div>
+          <div
+            className={`rounded px-3 py-2 text-center ${columnColors.directeEffecten.bg}`}
+          >
+            <span
+              className={`text-sm font-semibold ${columnColors.directeEffecten.text}`}
             >
-              <span
-                className={`text-sm font-semibold ${columnColors.directeEffecten.text}`}
-              >
-                Directe effecten
-              </span>
-            </div>
-            <div
-              className={`rounded px-3 py-2 text-center ${columnColors.indirecteEffecten.bg}`}
+              Directe effecten
+            </span>
+          </div>
+          <div
+            className={`rounded px-3 py-2 text-center ${columnColors.indirecteEffecten.bg}`}
+          >
+            <span
+              className={`text-sm font-semibold ${columnColors.indirecteEffecten.text}`}
             >
-              <span
-                className={`text-sm font-semibold ${columnColors.indirecteEffecten.text}`}
+              Indirecte effecten
+            </span>
+          </div>
+        </div>
+
+        {/* Content - 5 data columns */}
+        <div className="relative z-10 grid grid-cols-[1fr_1fr_1fr_1fr_1fr] gap-6">
+          {/* Column 0: Activiteiten */}
+          <div data-column="0" className="flex flex-col gap-2">
+            {data.activiteiten.map((item, idx) => (
+              <motion.div
+                key={idx}
+                data-item
+                initial={{ opacity: 0, x: -15 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.05 + idx * 0.02, duration: 0.3 }}
+                className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemText}`}
               >
-                Indirecte effecten
-              </span>
-            </div>
+                {item.text}
+              </motion.div>
+            ))}
           </div>
 
-          {/* Content - 5 data columns */}
-          <div className="relative z-10 grid grid-cols-[1fr_1fr_1fr_1fr_1fr] gap-10">
-            {/* Column 0: Activiteiten */}
-            <div data-column="0" className="flex flex-col gap-2">
-              {data.activiteiten.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  data-item
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.05 + idx * 0.02, duration: 0.3 }}
-                  className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemText}`}
-                >
-                  {item.text}
-                </motion.div>
-              ))}
-            </div>
+          {/* Column 1: Outputs */}
+          <div data-column="1" className="flex flex-col gap-2">
+            {data.outputs.map((item, idx) => (
+              <motion.div
+                key={idx}
+                data-item
+                initial={{ opacity: 0, x: -15 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.1 + idx * 0.02, duration: 0.3 }}
+                className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.outputs.itemBg} ${columnColors.outputs.itemText}`}
+              >
+                {item.text}
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Column 1: Outputs */}
-            <div data-column="1" className="flex flex-col gap-2">
-              {data.outputs.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  data-item
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.1 + idx * 0.02, duration: 0.3 }}
-                  className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.outputs.itemBg} ${columnColors.outputs.itemText}`}
-                >
-                  {item.text}
-                </motion.div>
-              ))}
-            </div>
+          {/* Column 2: Directe effecten Left */}
+          <div data-column="2" className="flex flex-col gap-2 pt-6">
+            {data.directeEffectenLeft.map((item, idx) => (
+              <motion.div
+                key={idx}
+                data-item
+                initial={{ opacity: 0, x: -15 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.15 + idx * 0.02, duration: 0.3 }}
+                className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemText}`}
+              >
+                {item.text}
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Column 2: Directe effecten Left */}
-            <div data-column="2" className="flex flex-col gap-2 pt-6">
-              {data.directeEffectenLeft.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  data-item
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.15 + idx * 0.02, duration: 0.3 }}
-                  className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemText}`}
-                >
-                  {item.text}
-                </motion.div>
-              ))}
-            </div>
+          {/* Column 3: Directe effecten Right */}
+          <div data-column="3" className="flex flex-col gap-2 pt-2">
+            {data.directeEffectenRight.map((item, idx) => (
+              <motion.div
+                key={idx}
+                data-item
+                initial={{ opacity: 0, x: -15 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.2 + idx * 0.02, duration: 0.3 }}
+                className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemText}`}
+              >
+                {item.text}
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Column 3: Directe effecten Right */}
-            <div data-column="3" className="flex flex-col gap-2 pt-2">
-              {data.directeEffectenRight.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  data-item
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.2 + idx * 0.02, duration: 0.3 }}
-                  className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemText}`}
-                >
-                  {item.text}
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Column 4: Indirecte effecten */}
-            <div data-column="4" className="flex flex-col gap-2 pt-10">
-              {data.indirecteEffecten.map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  data-item
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.25 + idx * 0.02, duration: 0.3 }}
-                  className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemText}`}
-                >
-                  {item.text}
-                </motion.div>
-              ))}
-            </div>
+          {/* Column 4: Indirecte effecten */}
+          <div data-column="4" className="flex flex-col gap-2 pt-10">
+            {data.indirecteEffecten.map((item, idx) => (
+              <motion.div
+                key={idx}
+                data-item
+                initial={{ opacity: 0, x: -15 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.25 + idx * 0.02, duration: 0.3 }}
+                className={`rounded px-2 py-2 text-center text-[10px] leading-snug xl:text-[11px] ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemText}`}
+              >
+                {item.text}
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
