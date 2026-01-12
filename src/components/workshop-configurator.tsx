@@ -145,15 +145,25 @@ export function WorkshopConfigurator() {
     if (timeTbd) form.setValue("time", "");
   }, [timeTbd, form]);
 
-  // Show popup when participant count is below minimum (8)
+  // Show popup when participant count is below minimum (8) - with debounce
   useEffect(() => {
+    // Don't show popup if count is 0 (empty field) or >= 8
     if (
-      participantCount > 0 &&
-      participantCount < 8 &&
-      upcomingWorkshops.length > 0
+      participantCount === 0 ||
+      participantCount >= 8 ||
+      upcomingWorkshops.length === 0
     ) {
-      setShowSmallGroupPopup(true);
+      return;
     }
+
+    // Debounce: wait 800ms after user stops typing before showing popup
+    const timeoutId = setTimeout(() => {
+      if (participantCount > 0 && participantCount < 8) {
+        setShowSmallGroupPopup(true);
+      }
+    }, 800);
+
+    return () => clearTimeout(timeoutId);
   }, [participantCount, upcomingWorkshops.length]);
 
   // Validate current step before proceeding
