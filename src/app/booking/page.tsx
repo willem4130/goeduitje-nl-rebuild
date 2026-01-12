@@ -24,98 +24,19 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { STRIPE_PRODUCTS } from "@/lib/stripe-products";
+import {
+  getUpcomingWorkshops,
+  OPEN_WORKSHOP_PRICE,
+} from "@/lib/open-workshops";
 
 /**
  * Open cooking workshop booking page
  * Compact calendar-style view with integrated booking form and Stripe payment
  */
 
-interface Workshop {
-  id: string;
-  date: string;
-  dateDisplay: string;
-  dayName: string;
-  dayNumber: string;
-  month: string;
-  time: string;
-  availableSeats: number;
-}
-
-// Exact dates from the Goeduitje booking form
-const OPEN_WORKSHOPS: Workshop[] = [
-  {
-    id: "nov-30",
-    date: "2024-11-30",
-    dateDisplay: "Zondag 30 november",
-    dayName: "ZO",
-    dayNumber: "30",
-    month: "NOV",
-    time: "10:00 - 12:30",
-    availableSeats: 12,
-  },
-  {
-    id: "jan-25",
-    date: "2025-01-25",
-    dateDisplay: "Zondag 25 januari",
-    dayName: "ZO",
-    dayNumber: "25",
-    month: "JAN",
-    time: "14:00 - 16:30",
-    availableSeats: 8,
-  },
-  {
-    id: "feb-22",
-    date: "2025-02-22",
-    dateDisplay: "Zondag 22 februari",
-    dayName: "ZO",
-    dayNumber: "22",
-    month: "FEB",
-    time: "10:00 - 12:30",
-    availableSeats: 12,
-  },
-  {
-    id: "mrt-08",
-    date: "2025-03-08",
-    dateDisplay: "Zondag 8 maart",
-    dayName: "ZO",
-    dayNumber: "08",
-    month: "MRT",
-    time: "14:00 - 16:30",
-    availableSeats: 10,
-  },
-  {
-    id: "mrt-29",
-    date: "2025-03-29",
-    dateDisplay: "Zondag 29 maart",
-    dayName: "ZO",
-    dayNumber: "29",
-    month: "MRT",
-    time: "14:00 - 16:30",
-    availableSeats: 12,
-  },
-  {
-    id: "apr-19",
-    date: "2025-04-19",
-    dateDisplay: "Zondag 19 april",
-    dayName: "ZO",
-    dayNumber: "19",
-    month: "APR",
-    time: "14:00 - 16:30",
-    availableSeats: 12,
-  },
-  {
-    id: "mei-31",
-    date: "2025-05-31",
-    dateDisplay: "Zondag 31 mei",
-    dayName: "ZO",
-    dayNumber: "31",
-    month: "MEI",
-    time: "14:00 - 16:30",
-    availableSeats: 12,
-  },
-];
-
-const PRICE_PER_PERSON = 50; // €50 per person
+// Get upcoming workshops from shared data source
+const OPEN_WORKSHOPS = getUpcomingWorkshops();
+const PRICE_PER_PERSON = OPEN_WORKSHOP_PRICE;
 
 export default function BookingPage() {
   const [selectedWorkshop, setSelectedWorkshop] = useState<string | null>(null);

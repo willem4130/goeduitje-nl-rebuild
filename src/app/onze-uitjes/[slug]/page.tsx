@@ -13,8 +13,10 @@ import {
   CheckCircle2,
   ArrowLeft,
   Calendar,
+  Sparkles,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getUpcomingWorkshops } from "@/lib/open-workshops";
 
 // Helper to format price display
 function formatPrice(priceExcl: number, priceIncl: number): string {
@@ -229,9 +231,21 @@ export default async function WorkshopDetailPage({ params }: Props) {
                     <TabsTrigger
                       key={variant.id}
                       value={variant.id}
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2 text-sm font-medium transition-all"
+                      className={
+                        variant.name === "Open Kookworkshops"
+                          ? "relative rounded-full border-2 border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-2 text-sm font-semibold text-amber-900 transition-all data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg"
+                          : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2 text-sm font-medium transition-all"
+                      }
                     >
+                      {variant.name === "Open Kookworkshops" && (
+                        <Sparkles className="mr-1.5 inline h-4 w-4" />
+                      )}
                       {variant.name}
+                      {variant.name === "Open Kookworkshops" && (
+                        <Badge className="ml-2 bg-amber-600 text-[10px] text-white hover:bg-amber-600">
+                          Particulieren
+                        </Badge>
+                      )}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -278,34 +292,55 @@ export default async function WorkshopDetailPage({ params }: Props) {
                       <div>
                         {variant.name === "Open Kookworkshops" ? (
                           /* Agenda for Open Kookworkshops */
-                          <div className="bg-muted/50 rounded-lg p-6">
-                            <h4 className="mb-4 flex items-center gap-2 font-semibold">
-                              <Calendar className="text-primary h-5 w-5" />
+                          <div className="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
+                            <h4 className="mb-4 flex items-center gap-2 font-semibold text-amber-900">
+                              <Calendar className="h-5 w-5 text-amber-600" />
                               Agenda
                             </h4>
                             <p className="text-muted-foreground mb-4 text-sm">
-                              Bekijk hieronder de geplande open workshops. Meld
-                              je aan voor een datum die jou past!
+                              Meld je aan voor een datum die jou past!
                             </p>
-                            <div className="space-y-3">
-                              <div className="rounded-md border bg-white p-3">
-                                <p className="text-muted-foreground text-xs">
-                                  Binnenkort
-                                </p>
-                                <p className="font-medium">
-                                  Nieuwe data volgen
-                                </p>
-                                <p className="text-muted-foreground text-sm">
-                                  Locatie: Nijmegen
-                                </p>
-                              </div>
+                            <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1">
+                              {getUpcomingWorkshops().length > 0 ? (
+                                getUpcomingWorkshops().map((ws) => (
+                                  <div
+                                    key={ws.id}
+                                    className="flex items-center gap-3 rounded-md border border-amber-200 bg-white p-3 transition-colors hover:border-amber-400"
+                                  >
+                                    <div className="flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded bg-amber-100 text-amber-900">
+                                      <span className="text-[10px] font-semibold uppercase">
+                                        {ws.month}
+                                      </span>
+                                      <span className="text-lg leading-none font-bold">
+                                        {ws.dayNumber}
+                                      </span>
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="truncate text-sm font-medium">
+                                        {ws.dateDisplay}
+                                      </p>
+                                      <p className="text-muted-foreground text-xs">
+                                        {ws.time} • {ws.location}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="rounded-md border bg-white p-3 text-center">
+                                  <p className="text-muted-foreground text-sm">
+                                    Nieuwe data volgen binnenkort
+                                  </p>
+                                </div>
+                              )}
                             </div>
-                            <p className="text-muted-foreground mt-4 text-xs">
-                              Wil je op de hoogte blijven van nieuwe data? Neem
-                              contact met ons op.
-                            </p>
-                            <Button asChild className="mt-4 w-full">
-                              <Link href="/contact">Houd mij op de hoogte</Link>
+                            <Button
+                              asChild
+                              className="mt-4 w-full bg-amber-600 hover:bg-amber-700"
+                            >
+                              <Link href="/booking">
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                Direct inschrijven
+                              </Link>
                             </Button>
                           </div>
                         ) : (
