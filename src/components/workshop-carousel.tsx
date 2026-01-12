@@ -91,17 +91,17 @@ export function WorkshopCarousel({
 
   return (
     <section
-      className={`bg-background relative overflow-hidden ${compact ? "" : "section-md"}`}
+      className={`bg-background relative overflow-hidden ${compact ? "" : "py-4 lg:py-6"}`}
     >
-      <div className="container mx-auto px-2 lg:px-4 xl:px-6">
+      <div className="container mx-auto px-3 lg:px-6">
         {/* Section Header */}
         {!compact && (
           <ScrollReveal animation="slideUp">
-            <div className="mb-4 text-center">
-              <h2 className="text-primary text-2xl tracking-tight lg:text-3xl">
+            <div className="mb-3 text-center">
+              <h2 className="text-primary text-xl tracking-tight lg:text-2xl">
                 {title}
               </h2>
-              <p className="text-muted-foreground mt-2 text-base leading-relaxed tracking-wide">
+              <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
                 {subtitle}
               </p>
             </div>
@@ -116,7 +116,7 @@ export function WorkshopCarousel({
         ) : workshops.length > 0 ? (
           /* Workshop Grid - 3x2 Layout to fit viewport */
           <ScrollReveal animation="slideUp" delay={0.2}>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-2.5">
               {workshops.map((workshop, index) => (
                 <WorkshopCard
                   key={workshop.id}
@@ -135,8 +135,8 @@ export function WorkshopCarousel({
         {/* View All CTA */}
         {showViewAllButton && workshops.length > 0 && (
           <ScrollReveal animation="slideUp" delay={0.4}>
-            <div className="mt-6 text-center">
-              <Button asChild size="lg" variant="outline">
+            <div className="mt-4 text-center">
+              <Button asChild variant="outline">
                 <Link href="/onze-uitjes" className="group">
                   Bekijk alle uitjes
                   <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -173,8 +173,8 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
     >
       <Link href={`/onze-uitjes/${workshop.slug}`} className="block">
         <div className="bg-card border-border shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500 hover:scale-[1.02]">
-          {/* Media - 3:2 aspect ratio for compact viewport fit */}
-          <div className="bg-muted relative aspect-[3/2] overflow-hidden">
+          {/* Media - 16:9 aspect ratio for compact viewport fit */}
+          <div className="bg-muted relative aspect-video overflow-hidden">
             {workshop.video ? (
               <video
                 src={workshop.video}
@@ -209,33 +209,25 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
             </div>
           </div>
 
-          {/* Content - Compact layout for 3x2 grid */}
-          <div className="p-2.5">
+          {/* Content - Ultra compact layout for 3x2 grid */}
+          <div className="p-2">
             <h3 className="text-foreground mb-0.5 line-clamp-1 text-sm font-bold tracking-tight">
               {workshop.title}
             </h3>
-            <p className="text-primary mb-1.5 line-clamp-1 text-xs font-semibold">
+            <p className="text-primary mb-1 line-clamp-1 text-xs font-medium">
               {workshop.subtitle}
             </p>
-            <p className="text-muted-foreground mb-2 line-clamp-2 text-[11px] leading-snug">
-              {workshop.description}
-            </p>
 
-            {/* Meta info */}
-            <div className="border-border text-muted-foreground space-y-0.5 border-t pt-1.5 text-[11px]">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Duur:</span>
-                <span>{workshop.duration}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Groepsgrootte:</span>
-                <span className="line-clamp-1">{workshop.groupSize}</span>
-              </div>
+            {/* Meta info - single line */}
+            <div className="text-muted-foreground flex items-center gap-3 text-[10px]">
+              <span>{workshop.duration}</span>
+              <span>•</span>
+              <span className="line-clamp-1">{workshop.groupSize}</span>
             </div>
 
             {/* CTA */}
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-primary text-xs font-bold tracking-wide">
+            <div className="mt-1.5 flex items-center justify-between">
+              <span className="text-primary text-xs font-semibold">
                 Meer info
               </span>
               <ChevronRight className="text-primary h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-2" />
