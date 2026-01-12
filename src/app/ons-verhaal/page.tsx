@@ -17,6 +17,7 @@ import {
   Heart,
   Sparkles,
   HandHeart,
+  Play,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -27,7 +28,7 @@ export default function OnsVerhaalPage() {
 
   return (
     <div className="flex min-h-screen flex-col pt-20">
-      {/* Hero Section - Magazine Style */}
+      {/* Hero Section - Magazine Style with Image */}
       <section className="relative overflow-hidden">
         <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
           <div className="from-primary/15 via-primary/5 absolute inset-0 bg-gradient-to-br to-transparent" />
@@ -40,20 +41,112 @@ export default function OnsVerhaalPage() {
           />
         </motion.div>
 
-        <div className="container mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24">
+        <div className="container mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+            {/* Text Content */}
+            <ScrollReveal animation="slideUp">
+              <div>
+                <span className="bg-primary/10 text-primary mb-6 inline-block rounded-full px-4 py-1.5 text-sm font-medium tracking-wide">
+                  Sociale Onderneming
+                </span>
+                <h1 className="text-primary mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                  Ons Verhaal
+                </h1>
+                <p className="text-muted-foreground max-w-xl text-xl leading-relaxed sm:text-2xl">
+                  Wij zijn een sociale onderneming waar statushouders* en
+                  asielzoekers uw bedrijfsuitjes organiseren en u een
+                  onvergetelijke dag bezorgen.
+                </p>
+              </div>
+            </ScrollReveal>
+
+            {/* Hero Image Collage */}
+            <ScrollReveal animation="slideLeft" delay={0.2}>
+              <div className="relative">
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.div
+                    className="relative aspect-[4/5] overflow-hidden rounded-2xl"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Image
+                      src="/images/workshops/koffie-thee.jpg"
+                      alt="Koffie & Thee workshop"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                    <div className="from-primary/40 absolute inset-0 bg-gradient-to-t to-transparent" />
+                  </motion.div>
+                  <motion.div
+                    className="relative mt-8 aspect-[4/5] overflow-hidden rounded-2xl"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Image
+                      src="/images/workshops/the-game.jpg"
+                      alt="The Game workshop"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                    <div className="from-primary/40 absolute inset-0 bg-gradient-to-t to-transparent" />
+                  </motion.div>
+                </div>
+                {/* Floating Badge */}
+                <motion.div
+                  className="bg-primary absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full px-6 py-3 text-white shadow-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <span className="flex items-center gap-2 text-sm font-semibold">
+                    <Heart className="h-4 w-4" />
+                    Met passie gemaakt
+                  </span>
+                </motion.div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Showcase Section */}
+      <section className="bg-muted/30 py-12 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mx-auto max-w-4xl text-center">
-              <span className="bg-primary/10 text-primary mb-6 inline-block rounded-full px-4 py-1.5 text-sm font-medium tracking-wide">
-                Sociale Onderneming
-              </span>
-              <h1 className="text-primary mb-8 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                Ons Verhaal
-              </h1>
-              <p className="text-muted-foreground mx-auto max-w-3xl text-xl leading-relaxed sm:text-2xl">
-                Wij zijn een sociale onderneming waar statushouders* en
-                asielzoekers uw bedrijfsuitjes organiseren en u een
-                onvergetelijke dag bezorgen.
+            <div className="mb-8 text-center">
+              <h2 className="text-primary mb-3 text-2xl font-bold tracking-tight sm:text-3xl">
+                Bekijk ons in actie
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Een impressie van onze workshops en activiteiten
               </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="scale" delay={0.1}>
+            <div className="relative mx-auto max-w-4xl overflow-hidden rounded-2xl shadow-2xl">
+              <video
+                src="/images/workshops/workshop 1.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="aspect-video w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                <div className="bg-primary/90 flex h-12 w-12 items-center justify-center rounded-full">
+                  <Play className="h-5 w-5 fill-white text-white" />
+                </div>
+                <div className="text-white">
+                  <p className="font-semibold">Kookworkshop</p>
+                  <p className="text-sm opacity-80">
+                    Samen koken, samen groeien
+                  </p>
+                </div>
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -83,6 +176,29 @@ export default function OnsVerhaalPage() {
                     Perzische keuken.
                   </p>
                 </div>
+              </ScrollReveal>
+
+              {/* Image Break */}
+              <ScrollReveal animation="slideUp" delay={0.05}>
+                <motion.div
+                  className="relative aspect-[16/9] overflow-hidden rounded-2xl"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src="/images/workshops/beachvolleybal.jpg"
+                    alt="Beachvolleybal activiteit"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="from-primary/50 absolute inset-0 bg-gradient-to-t to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="text-sm font-medium opacity-90">
+                      Actieve teambuilding
+                    </p>
+                  </div>
+                </motion.div>
               </ScrollReveal>
 
               {/* Ervaring opdoen */}
@@ -151,7 +267,7 @@ export default function OnsVerhaalPage() {
             </div>
 
             {/* Right Column */}
-            <div className="space-y-12">
+            <div className="space-y-8">
               {/* Onze Visie Card */}
               <ScrollReveal animation="slideUp">
                 <Card className="shadow-editorial hover:shadow-editorial-hover border-primary/10 overflow-hidden border-l-4 transition-all duration-300">
@@ -185,6 +301,29 @@ export default function OnsVerhaalPage() {
                     </div>
                   </CardContent>
                 </Card>
+              </ScrollReveal>
+
+              {/* Image in Right Column */}
+              <ScrollReveal animation="slideUp" delay={0.05}>
+                <motion.div
+                  className="relative aspect-[4/3] overflow-hidden rounded-2xl"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src="/images/workshops/design-tshirt.jpg"
+                    alt="Design workshop"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="from-primary/50 absolute inset-0 bg-gradient-to-t to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="text-sm font-medium opacity-90">
+                      Creatieve workshops
+                    </p>
+                  </div>
+                </motion.div>
               </ScrollReveal>
 
               {/* Onze Missie Card */}
