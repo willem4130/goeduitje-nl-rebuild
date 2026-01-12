@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goeduitje.nl - Sessie Wijzigingen</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fafafa;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #8b4c5a;
+      border-bottom: 3px solid #8b4c5a;
+      padding-bottom: 0.5rem;
+    }
+    h2 {
+      color: #444;
+      margin-top: 2rem;
+      padding: 0.5rem 1rem;
+      background: #8b4c5a;
+      color: white;
+      border-radius: 4px;
+    }
+    h3 {
+      color: #8b4c5a;
+      margin-top: 1.5rem;
+    }
+    .session {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .session-date {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    .change {
+      background: #f8f9fa;
+      border-left: 4px solid #8b4c5a;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .change h4 {
+      margin: 0 0 0.5rem 0;
+      color: #333;
+    }
+    .files {
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: #e9ecef;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin: 0.5rem 0;
+    }
+    ul { margin: 0.5rem 0; padding-left: 1.5rem; }
+    li { margin: 0.3rem 0; }
+    .status {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .status.deployed { background: #d4edda; color: #155724; }
+    .status.pending { background: #fff3cd; color: #856404; }
+    code {
+      background: #e9ecef;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.9rem;
+    }
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Goeduitje.nl - Sessie Wijzigingen</h1>
+  <p>Dit document houdt alle wijzigingen bij die tijdens ontwikkelsessies zijn gemaakt. Gebruik dit om met de klant door te nemen wat er is aangepast.</p>
+
+  <!-- SESSION: 12 januari 2025 -->
+  <div class="session">
+    <h2>Sessie: 12 januari 2025</h2>
+    <p class="session-date"><span class="status deployed">Deployed</span> Alle wijzigingen live op goeduitje-nl-rebuild.vercel.app</p>
+
+    <div class="change">
+      <h4>1. Fake Reviews Verwijderd</h4>
+      <p>Alle nep-testimonials zijn verwijderd. De website toont nu alleen echte Google Reviews.</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        prisma/seed-testimonials.ts<br>
+        src/app/page.tsx<br>
+        src/app/onze-uitjes/page.tsx
+      </div>
+      <ul>
+        <li>4 fake testimonials verwijderd (Sarah, Mohammed, Lisa, Jasper)</li>
+        <li>CompactTestimonials component verwijderd van homepage en onze-uitjes</li>
+        <li>Alleen echte Google Reviews worden nu getoond</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>2. Kookworkshop Prijzen Aangepast</h4>
+      <p>De "vanaf prijs" en groepsgrootte voor kookworkshops zijn aangepast.</p>
+      <div class="files">
+        <strong>Bestand:</strong> prisma/seed-workshops.ts
+      </div>
+      <ul>
+        <li><strong>Vanaf prijs:</strong> €30 → <strong>€55</strong> (Dessert workshop variant verwijderd als misleidend)</li>
+        <li><strong>Groepsgrootte:</strong> "8-30 personen" → <strong>"vanaf 8 personen"</strong> (geen maximum meer)</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>3. Uitjes Grid Compacter Gemaakt</h4>
+      <p>Alle 6 uitjes passen nu in één viewport in een 3×2 matrix.</p>
+      <div class="files">
+        <strong>Bestand:</strong> src/components/workshop-carousel.tsx
+      </div>
+      <ul>
+        <li>Grid layout: 3 kolommen (3×2 matrix)</li>
+        <li>Afbeeldingen: 16:9 aspect ratio (compacter)</li>
+        <li>Beschrijving verwijderd van cards</li>
+        <li>Meta info op één regel (duur • groepsgrootte)</li>
+        <li>Alle padding en font-sizes verkleind</li>
+      </ul>
+    </div>
+
+    <div class="change">
+      <h4>4. Open Kookworkshops Tab met Agenda</h4>
+      <p>Nieuwe opvallende tab voor particulieren met echte workshop data.</p>
+      <div class="files">
+        <strong>Bestanden:</strong><br>
+        src/lib/open-workshops.ts (NIEUW - centrale data)<br>
+        src/app/onze-uitjes/[slug]/page.tsx<br>
+        src/app/booking/page.tsx
+      </div>
+      <ul>
+        <li><strong>Opvallend design:</strong> Amber/oranje gradient, sparkles icoon, "Particulieren" badge</li>
+        <li><strong>Echte agenda:</strong> Toont aankomende workshop data</li>
+        <li><strong>Gesynchroniseerd:</strong> /booking pagina en kookworkshop detail gebruiken dezelfde data</li>
+        <li><strong>Direct inschrijven:</strong> Knop linkt naar /booking</li>
+      </ul>
+      <div class="note">
+        <strong>Data bijwerken:</strong> Om workshop data te wijzigen, bewerk: <code>src/lib/open-workshops.ts</code><br>
+        Wijzigingen worden automatisch doorgevoerd op beide pagina's.
+      </div>
+    </div>
+  </div>
+
+  <!-- Voeg hier nieuwe sessies toe -->
+
+</body>
+</html>
