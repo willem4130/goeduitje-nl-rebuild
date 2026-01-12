@@ -295,47 +295,47 @@ export function TheoryOfChange({
 
         {/* Grid Content - min-width for mobile scroll, auto-fit for desktop */}
         <div className="relative min-w-[900px] xl:min-w-0">
-          <div className="grid grid-cols-4 gap-3 xl:gap-4">
+          <div className="grid grid-cols-4 gap-6 xl:gap-8">
             {/* Column Headers */}
             <div
-              className={`rounded-md px-2 py-2 text-center ${columnColors.activiteiten.bg}`}
+              className={`rounded px-2 py-1.5 text-center ${columnColors.activiteiten.bg}`}
             >
               <span
-                className={`text-xs font-semibold xl:text-sm ${columnColors.activiteiten.text}`}
+                className={`text-[10px] font-semibold xl:text-xs ${columnColors.activiteiten.text}`}
               >
                 Activiteiten
               </span>
             </div>
             <div
-              className={`rounded-md px-2 py-2 text-center ${columnColors.outputs.bg}`}
+              className={`rounded px-2 py-1.5 text-center ${columnColors.outputs.bg}`}
             >
               <span
-                className={`text-xs font-semibold xl:text-sm ${columnColors.outputs.text}`}
+                className={`text-[10px] font-semibold xl:text-xs ${columnColors.outputs.text}`}
               >
                 Outputs
               </span>
             </div>
             <div
-              className={`rounded-md px-2 py-2 text-center ${columnColors.directeEffecten.bg}`}
+              className={`rounded px-2 py-1.5 text-center ${columnColors.directeEffecten.bg}`}
             >
               <span
-                className={`text-xs font-semibold xl:text-sm ${columnColors.directeEffecten.text}`}
+                className={`text-[10px] font-semibold xl:text-xs ${columnColors.directeEffecten.text}`}
               >
                 Directe effecten
               </span>
             </div>
             <div
-              className={`rounded-md px-2 py-2 text-center ${columnColors.indirecteEffecten.bg}`}
+              className={`rounded px-2 py-1.5 text-center ${columnColors.indirecteEffecten.bg}`}
             >
               <span
-                className={`text-xs font-semibold xl:text-sm ${columnColors.indirecteEffecten.text}`}
+                className={`text-[10px] font-semibold xl:text-xs ${columnColors.indirecteEffecten.text}`}
               >
                 Indirecte effecten
               </span>
             </div>
 
             {/* Content Columns */}
-            <div data-column="0" className="space-y-1.5">
+            <div data-column="0" className="space-y-1">
               {data.activiteiten.map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -343,14 +343,14 @@ export function TheoryOfChange({
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.1 + idx * 0.03, duration: 0.3 }}
-                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemBorder}`}
+                  className={`flex min-h-[26px] items-center rounded border px-1.5 py-0.5 text-[9px] leading-tight xl:text-[10px] ${columnColors.activiteiten.itemBg} ${columnColors.activiteiten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="1" className="space-y-1.5">
+            <div data-column="1" className="space-y-1">
               {data.outputs.map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -358,14 +358,14 @@ export function TheoryOfChange({
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.15 + idx * 0.03, duration: 0.3 }}
-                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.outputs.itemBg} ${columnColors.outputs.itemBorder}`}
+                  className={`flex min-h-[26px] items-center rounded border px-1.5 py-0.5 text-[9px] leading-tight xl:text-[10px] ${columnColors.outputs.itemBg} ${columnColors.outputs.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="2" className="space-y-1.5">
+            <div data-column="2" className="space-y-1">
               {data.directeEffecten.map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -373,14 +373,14 @@ export function TheoryOfChange({
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.2 + idx * 0.03, duration: 0.3 }}
-                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemBorder}`}
+                  className={`flex min-h-[26px] items-center rounded border px-1.5 py-0.5 text-[9px] leading-tight xl:text-[10px] ${columnColors.directeEffecten.itemBg} ${columnColors.directeEffecten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
               ))}
             </div>
 
-            <div data-column="3" className="space-y-1.5">
+            <div data-column="3" className="space-y-1">
               {data.indirecteEffecten.map((item, idx) => (
                 <motion.div
                   key={idx}
@@ -388,7 +388,7 @@ export function TheoryOfChange({
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.25 + idx * 0.03, duration: 0.3 }}
-                  className={`rounded-md border px-2 py-1.5 text-[11px] leading-tight xl:text-xs ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemBorder}`}
+                  className={`flex min-h-[26px] items-center rounded border px-1.5 py-0.5 text-[9px] leading-tight xl:text-[10px] ${columnColors.indirecteEffecten.itemBg} ${columnColors.indirecteEffecten.itemBorder}`}
                 >
                   {item.text}
                 </motion.div>
