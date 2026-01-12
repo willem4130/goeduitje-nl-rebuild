@@ -304,8 +304,32 @@
         <li><strong>Animaties:</strong> ScrollReveal, hover effecten, stagger children</li>
         <li><strong>Consistente styling:</strong> Zelfde kleuren, shadows en spacing als rest van site</li>
       </ul>
+    </div>
+
+    <div class="change">
+      <h4>12. Ons Verhaal - CMS Integratie</h4>
+      <p>De Ons Verhaal pagina is nu volledig beheerbaar via de backend CMS met een dedicated page editor.</p>
+      <div class="files">
+        <strong>Backend bestanden:</strong>
+        <ul>
+          <li>src/app/content/ons-verhaal/page.tsx (dedicated page editor)</li>
+          <li>src/app/api/content/ons-verhaal/route.ts (API endpoints)</li>
+          <li>src/lib/media-categories.ts (nieuwe ons-verhaal categorie)</li>
+          <li>src/components/Navigation.tsx (menu item toegevoegd)</li>
+        </ul>
+        <strong>Frontend bestand:</strong> src/app/ons-verhaal/page.tsx
+      </div>
+      <ul>
+        <li><strong>Backend CMS:</strong> Dedicated editor met accordion secties</li>
+        <li><strong>12 Content Secties:</strong> Hero, Video, Doen, Ervaring, Culturen, Visie, Missie, Impact, Quote, Teasers, CTA, Footnote</li>
+        <li><strong>Elk veld bewerkbaar:</strong> Titels, beschrijvingen, afbeelding URLs, video URL</li>
+        <li><strong>Completion badges:</strong> Visuele indicator hoeveel velden ingevuld zijn per sectie</li>
+        <li><strong>Floating save bar:</strong> Verschijnt bij niet-opgeslagen wijzigingen</li>
+        <li><strong>Frontend fallbacks:</strong> Hardcoded defaults als CMS leeg is</li>
+        <li><strong>Media categorie:</strong> Nieuwe 'ons-verhaal' categorie voor afbeeldingen/video's</li>
+      </ul>
       <div class="note">
-        <strong>Let op:</strong> Alle content is nu hardcoded (niet meer uit CMS). Dit zorgt voor snellere laadtijd en geen "Content niet beschikbaar" errors.
+        <strong>Backend URL:</strong> <a href="https://goeduitje-backend.vercel.app/content/ons-verhaal" target="_blank">goeduitje-backend.vercel.app/content/ons-verhaal</a>
       </div>
     </div>
   </div>
