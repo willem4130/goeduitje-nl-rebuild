@@ -30,9 +30,9 @@ export default function ReceptenPage() {
   }, [recipes]);
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex min-h-screen flex-col pt-20">
       {/* Hero Section */}
-      <section className="section-sm bg-muted/30">
+      <section className="bg-muted/30 py-12 lg:py-16">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="fade" amount={0.1}>
             <div className="text-center">
@@ -49,7 +49,7 @@ export default function ReceptenPage() {
       </section>
 
       {/* Filters Section */}
-      <section className="section-sm">
+      <section className="py-12 lg:py-16">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp" amount={0.2}>
             <div className="mb-12 space-y-6">
