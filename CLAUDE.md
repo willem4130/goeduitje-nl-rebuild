@@ -9,6 +9,7 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 ```
 src/
 ├── app/                          # Next.js App Router
+│   ├── (landing)/[slug]/         # Kookworkshop city landing pages (42 pages)
 │   ├── api/                      # tRPC + webhooks (Stripe, cron)
 │   ├── onze-uitjes/[slug]/       # Workshop detail pages
 │   ├── ons-verhaal/              # About page (from PageContent)
@@ -169,6 +170,54 @@ npx tsx prisma/seed-recipes.ts
 ### Image Hosting
 
 Recipe images are hosted on Wix (`static.wixstatic.com`) from the original goeduitje.nl site. The domain is configured in `next.config.mjs` under `images.remotePatterns`.
+
+## Kookworkshop City Landing Pages
+
+SEO-optimized landing pages for 42 cities and regions across the Netherlands. Each page replicates the exact content from the original goeduitje.nl Wix site.
+
+### Structure
+
+| Route Pattern                         | Example                    | Count     |
+| ------------------------------------- | -------------------------- | --------- |
+| `/kookworkshop-[city]`                | `/kookworkshop-nijmegen`   | 41 cities |
+| `/vegetarische-kookworkshop-nijmegen` | Special vegetarian variant | 1 page    |
+
+### Implementation
+
+**File**: `src/app/(landing)/[slug]/page.tsx`
+
+Dynamic route with `generateStaticParams()` that creates all 42 pages at build time. Each city page includes:
+
+- Exact meta descriptions from original site
+- City-specific content with proper region names
+- 3 USP bullets (statushouders, locatie, Arabische koks)
+- Workshop types (Arabische, Dessert, Oogsten koken & genieten)
+- Maatschappelijke impact section
+- 5 FAQ items
+- CTAs to `/onze-uitjes/kookworkshop` and `/contact`
+
+### Hero Images
+
+3 AVIF images from original site rotate deterministically based on city slug hash:
+
+- `kookworkshop.avif` (86KB)
+- `kookworkshop-2.avif` (145KB)
+- `kookworkshop-3.avif` (92KB)
+
+Each city gets a consistent image, but different cities show different photos for variety.
+
+### Cities Covered
+
+**Major cities**: Nijmegen, Arnhem, Eindhoven, Apeldoorn, Ede, Doetinchem, Oss, Zutphen, Wageningen, Veenendaal, Den Bosch
+
+**Plus 30 smaller cities**: Wijchen, Zevenaar, Cuijk, Huissen, Bemmel, Elst, Druten, Gendt, Malden, Beuningen, Ewijk, Andelst, Bennekom, Zetten, Didam, Best, Boxtel, Veghel, Uden, Grave, Gennep, Venray, Tiel, Geldermalsen, Zaltbommel, Achterhoek, Duiven, Groesbeek, Helmond, and "bij je thuis"
+
+### Key Features
+
+- **SEO metadata**: Exact titles and descriptions matching original pages
+- **Consistent content**: All text scraped from original Wix site
+- **Social proof**: Google review stars displayed
+- **Mobile-responsive**: Amber/orange gradient theme matching brand
 
 ## Deployment
 
