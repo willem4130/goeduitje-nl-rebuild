@@ -16,6 +16,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
+import { getCityImage } from "@/lib/city-data";
 
 // All cities for kookworkshop landing pages - complete list from goeduitje.nl
 const KOOKWORKSHOP_CITIES: CityData[] = [
@@ -360,16 +361,21 @@ export default async function KookworkshopLandingPage({ params }: Props) {
     ? "Vegetarische Kookworkshop"
     : "Kookworkshop";
 
-  // Use hash of slug to deterministically select hero image (different per city, but consistent)
-  const heroImages = [
+  // Extract city slug from landing page slug (e.g., "nijmegen" from "kookworkshop-nijmegen")
+  const citySlug = slug
+    .replace("kookworkshop-", "")
+    .replace("vegetarische-kookworkshop-", "");
+
+  // Use city-specific image if available, otherwise fall back to generic kookworkshop images
+  const genericHeroImages = [
     "/images/workshops/kookworkshop.avif",
     "/images/workshops/kookworkshop-2.avif",
     "/images/workshops/kookworkshop-3.avif",
   ];
   const imageIndex =
     slug.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
-    heroImages.length;
-  const heroImage = heroImages[imageIndex];
+    genericHeroImages.length;
+  const heroImage = getCityImage(citySlug) || genericHeroImages[imageIndex];
 
   return (
     <main className="min-h-screen">

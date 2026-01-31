@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getUpcomingWorkshops } from "@/lib/open-workshops";
+import { CityGallery } from "@/components/city-gallery";
 
 // Helper to format price display
 function formatPrice(priceExcl: number, priceIncl: number): string {
@@ -448,6 +449,14 @@ export default async function WorkshopDetailPage({ params }: Props) {
           )}
         </div>
       </section>
+
+      {/* Locaties Section - Only for kookworkshop */}
+      {workshop.slug === "kookworkshop" && (
+        <CityGallery
+          title="Locaties"
+          description="Onze kookworkshops kunnen op een locatie naar keuze worden ingepland. Bekijk hieronder de populairste steden waar we actief zijn."
+        />
+      )}
 
       {/* CTA Section */}
       <section className="bg-muted/30 py-12 lg:py-20">
