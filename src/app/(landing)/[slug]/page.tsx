@@ -616,7 +616,7 @@ export default async function KookworkshopLandingPage({ params }: Props) {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src={heroImage}
+                src="/images/workshops/kookworkshop-2.avif"
                 alt={`Kookworkshop ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"
