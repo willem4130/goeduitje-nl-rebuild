@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { FEATURED_CITIES, OTHER_CITIES } from "@/lib/city-data";
 
 interface CityGalleryProps {
@@ -45,37 +45,35 @@ export function CityGallery({
         </ScrollReveal>
 
         {/* Featured cities grid */}
-        <StaggerChildren
-          staggerDelay={0.05}
-          childAnimation="scale"
-          className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {FEATURED_CITIES.map((city) => (
-            <Link
-              key={city.slug}
-              href={`/kookworkshop-${city.slug}`}
-              className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-md transition-all hover:shadow-xl"
-            >
-              <Image
-                src={city.image}
-                alt={`Kookworkshop ${city.name}`}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity group-hover:opacity-90" />
+        <ScrollReveal animation="fade" delay={0.1}>
+          <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURED_CITIES.map((city) => (
+              <Link
+                key={city.slug}
+                href={`/kookworkshop-${city.slug}`}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-md transition-all hover:shadow-xl"
+              >
+                <Image
+                  src={city.image}
+                  alt={`Kookworkshop ${city.name}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity group-hover:opacity-90" />
 
-              {/* City name */}
-              <div className="absolute inset-x-0 bottom-0 p-4">
-                <h3 className="text-lg font-bold text-white transition-transform group-hover:translate-y-[-2px]">
-                  {city.name}
-                </h3>
-                <p className="text-sm text-white/80">Kookworkshop →</p>
-              </div>
-            </Link>
-          ))}
-        </StaggerChildren>
+                {/* City name */}
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <h3 className="text-lg font-bold text-white transition-transform group-hover:translate-y-[-2px]">
+                    {city.name}
+                  </h3>
+                  <p className="text-sm text-white/80">Kookworkshop →</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </ScrollReveal>
 
         {/* Other cities - text links */}
         <ScrollReveal animation="fade" delay={0.3}>
