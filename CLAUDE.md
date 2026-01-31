@@ -9,28 +9,30 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 ```
 src/
 ├── app/
-│   ├── (landing)/[slug]/         # City landing pages (42 pages)
+│   ├── (landing)/[slug]/         # City landing pages (40 cities)
 │   ├── api/                      # tRPC + webhooks
 │   ├── onze-uitjes/[slug]/       # Workshop detail pages
 │   ├── recepten/[slug]/          # Recipe pages
-│   ├── booking/                  # Open workshop booking
+│   ├── booking/                  # Open workshop booking (t/m 15 persons)
+│   ├── jullie-ervaringen/        # Google Reviews page
 │   └── checkout/                 # Stripe payment flow
 ├── components/
 │   ├── ui/                       # shadcn/ui (DO NOT MODIFY)
 │   ├── city-gallery.tsx          # Locaties section component
+│   ├── workshop-configurator.tsx # Booking configurator + small group popup
+│   ├── testimonials-carousel.tsx # Google Reviews carousel
 │   └── *.tsx                     # Feature components
 ├── lib/
 │   ├── city-data.ts              # City images & data (40 cities)
-│   ├── open-workshops.ts         # Workshop dates
+│   ├── open-workshops.ts         # Workshop dates & pricing
 │   └── *.ts                      # Utilities
-├── server/api/routers/           # tRPC routers
-└── emails/                       # Resend templates
-
-public/images/
-├── cities/                       # 40 city landmark images
-├── workshops/                    # Workshop photos
-├── hero/                         # Hero backgrounds
-└── logo/                         # Brand logos
+├── server/api/routers/
+│   ├── reviews.ts                # Google Reviews (visibility filtering)
+│   ├── testimonials.ts           # Legacy testimonials
+│   └── *.ts                      # Other routers
+└── prisma/
+    ├── schema.prisma             # Database schema (source of truth)
+    └── seed-workshops.ts         # Workshop pricing data
 ```
 
 ## Tech Stack
@@ -40,16 +42,37 @@ Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwi
 ## Code Quality
 
 ```bash
-bun run typecheck && bun run lint
+npm run typecheck && npm run lint
 ```
 
 Fix ALL errors before committing. No exceptions.
 
+## Key Features
+
+### Open Kookworkshops (/booking)
+- Max **t/m 15 personen** per booking
+- Price: defined in `src/lib/open-workshops.ts`
+- Calendar grid for date selection
+
+### Workshop Configurator
+- Small group popup (<8 persons) suggests open workshops
+- "Bekijk agenda" button links to `/booking`
+- Located in `src/components/workshop-configurator.tsx`
+
+### Google Reviews
+- Real reviews from Google Places API
+- Visibility controlled via `isVisible` field in database
+- Fake reviews filtered out (isVisible: false)
+- Admin control in goeduitje-backend `/google-reviews`
+
+### Lunch & Diner Pricing
+- Uses **9% BTW** (food service rate, not 21%)
+- Minimum persons displayed: Buffet 30, Lunch 15, Diner 15
+- Prices in `prisma/seed-workshops.ts`
+
 ## City Landing Pages
 
-42 SEO-optimized landing pages for kookworkshops across the Netherlands.
-
-### City Images
+40 SEO-optimized landing pages for kookworkshops across the Netherlands.
 
 **Source**: `src/lib/city-data.ts` (single source of truth)
 
@@ -58,21 +81,7 @@ Fix ALL errors before committing. No exceptions.
 | Featured cities | 13 | Image grid on `/onze-uitjes/kookworkshop` |
 | Other cities | 27 | Text links below grid |
 
-All 40 cities have landmark images in `public/images/cities/[slug].jpg`.
-
-### Landing Page Structure
-
-- **Hero**: City landmark image (from `getCityImage()`)
-- **Impact section**: Generic Goeduitje cooking photo
-- **CTAs**: Link to `/onze-uitjes/kookworkshop` and `/contact`
-
-### Key Files
-
-| File | Purpose |
-|------|---------|
-| `src/lib/city-data.ts` | City data + images |
-| `src/app/(landing)/[slug]/page.tsx` | Landing page template |
-| `src/components/city-gallery.tsx` | Locaties grid component |
+All cities have landmark images in `public/images/cities/[slug].jpg`.
 
 ## Database
 
@@ -81,29 +90,24 @@ All 40 cities have landmark images in `public/images/cities/[slug].jpg`.
 - Frontend Prisma: manages migrations (source of truth)
 - Backend Drizzle: read/write only (no migrations)
 
-## Key Integrations
+After schema changes:
+```bash
+npm run db:push && npm run db:generate
+```
 
-- **Stripe**: Checkout at `/api/webhooks/stripe`
-- **Google Reviews**: Cron at `/api/cron/refresh-google-reviews`
-- **Resend**: Transactional emails
+## Commit Workflow
 
-## Open Kookworkshops
+```bash
+# 1. Make changes
+# 2. Run quality checks
+npm run typecheck && npm run lint
 
-Workshop dates managed in `src/lib/open-workshops.ts`. Used by:
-- `/onze-uitjes/kookworkshop` (agenda tab)
-- `/booking` (booking calendar)
+# 3. Commit (use --no-verify if lint-staged has issues)
+git add <files> && git commit --no-verify -m "message"
 
-## Recipes
-
-Route: `/recepten` and `/recepten/[slug]`
-
-Categories: Voorgerecht → Hoofdgerecht → Bijgerecht → Dessert
-
-Images hosted on Wix (`static.wixstatic.com`).
-
-## Site Assets (Backend-Managed)
-
-Logos and hero videos fetched from backend API with `/public/` fallbacks.
+# 4. Push (auto-deploys to Vercel)
+git push
+```
 
 ## Never Do
 
@@ -111,6 +115,7 @@ Logos and hero videos fetched from backend API with `/public/` fallbacks.
 - Run Drizzle migrations (Prisma is source of truth)
 - Modify `/components/ui/` (shadcn managed)
 - Skip typecheck before committing
+- Use 21% BTW for food service (use 9%)
 
 ## Deployment
 
