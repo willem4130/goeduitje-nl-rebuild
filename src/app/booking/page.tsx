@@ -105,9 +105,9 @@ export default function BookingPage() {
     }
 
     const numPeople = parseInt(numberOfPeople);
-    if (numPeople < 1 || numPeople > 12) {
+    if (numPeople < 1 || numPeople > 15) {
       toast.error("Ongeldig aantal personen", {
-        description: "Kies tussen 1 en 12 personen.",
+        description: "Kies tussen 1 en 15 personen.",
       });
       return;
     }
@@ -235,7 +235,7 @@ export default function BookingPage() {
                   icon: IconUsers,
                   title: "Kleine Groepen",
                   description:
-                    "Max 12 deelnemers voor persoonlijke begeleiding",
+                    "t/m 15 deelnemers voor persoonlijke begeleiding",
                 },
                 {
                   icon: IconMapPin,
@@ -419,7 +419,7 @@ export default function BookingPage() {
                           id="numberOfPeople"
                           type="number"
                           min="1"
-                          max="12"
+                          max="15"
                           placeholder="Bijvoorbeeld: 2"
                           value={numberOfPeople}
                           onChange={(e) => setNumberOfPeople(e.target.value)}

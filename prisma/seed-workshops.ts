@@ -494,11 +494,11 @@ een kookworkshop met diner voor de complete ervaring.`,
     data: {
       workshopId: lunchDiner.id,
       variantId: buffet.id,
-      groupSize: "Per persoon",
-      minParticipants: 8,
+      groupSize: "Vanaf 30 personen",
+      minParticipants: 30,
       maxParticipants: null,
       priceExclBtw: 22.5,
-      priceInclBtw: 27,
+      priceInclBtw: 24.5, // 9% BTW (food service)
       sortOrder: 1,
     },
   });
@@ -525,11 +525,11 @@ een kookworkshop met diner voor de complete ervaring.`,
     data: {
       workshopId: lunchDiner.id,
       variantId: lunch.id,
-      groupSize: "Per persoon",
-      minParticipants: 8,
+      groupSize: "Vanaf 15 personen",
+      minParticipants: 15,
       maxParticipants: null,
       priceExclBtw: 35,
-      priceInclBtw: 42,
+      priceInclBtw: 38, // 9% BTW (food service)
       sortOrder: 1,
     },
   });
@@ -557,11 +557,11 @@ een kookworkshop met diner voor de complete ervaring.`,
     data: {
       workshopId: lunchDiner.id,
       variantId: diner.id,
-      groupSize: "Per persoon",
-      minParticipants: 8,
+      groupSize: "Vanaf 15 personen",
+      minParticipants: 15,
       maxParticipants: null,
       priceExclBtw: 47.5,
-      priceInclBtw: 57,
+      priceInclBtw: 52, // 9% BTW (food service)
       sortOrder: 1,
     },
   });

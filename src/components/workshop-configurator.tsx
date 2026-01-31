@@ -333,7 +333,7 @@ export function WorkshopConfigurator() {
                   Sluiten
                 </Button>
                 <Link
-                  href="/onze-uitjes/kookworkshop#open-kookworkshops"
+                  href="/booking"
                   className="flex-1"
                 >
                   <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600">
