@@ -8,54 +8,71 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 
 ```
 src/
-├── app/                          # Next.js App Router
-│   ├── (landing)/[slug]/         # Kookworkshop city landing pages (42 pages)
-│   ├── api/                      # tRPC + webhooks (Stripe, cron)
+├── app/
+│   ├── (landing)/[slug]/         # City landing pages (42 pages)
+│   ├── api/                      # tRPC + webhooks
 │   ├── onze-uitjes/[slug]/       # Workshop detail pages
-│   ├── ons-verhaal/              # About page (from PageContent)
-│   ├── jullie-ervaringen/        # Testimonials page
-│   ├── recepten/                 # Recipes list page
-│   │   └── [slug]/               # Recipe detail pages
-│   ├── faq/                      # FAQ page
-│   ├── checkout/                 # Stripe payment flow
-│   └── admin/                    # Legacy admin (use backend instead)
+│   ├── recepten/[slug]/          # Recipe pages
+│   ├── booking/                  # Open workshop booking
+│   └── checkout/                 # Stripe payment flow
 ├── components/
 │   ├── ui/                       # shadcn/ui (DO NOT MODIFY)
-│   └── *.tsx                     # Feature components (41 files)
-├── server/api/routers/           # tRPC routers (11 modules, incl. media)
-├── emails/                       # Resend email templates
-├── hooks/                        # Custom React hooks
-├── lib/                          # Utilities + Stripe/Prisma clients
-└── trpc/                         # tRPC client/server setup
+│   ├── city-gallery.tsx          # Locaties section component
+│   └── *.tsx                     # Feature components
+├── lib/
+│   ├── city-data.ts              # City images & data (40 cities)
+│   ├── open-workshops.ts         # Workshop dates
+│   └── *.ts                      # Utilities
+├── server/api/routers/           # tRPC routers
+└── emails/                       # Resend templates
 
-prisma/
-├── schema.prisma                 # Database models (SOURCE OF TRUTH)
-└── seed-*.ts                     # Seed scripts
-
-public/
-├── images/                       # Static images (hero, workshops, logos)
-└── videos/                       # Hero background videos
+public/images/
+├── cities/                       # 40 city landmark images
+├── workshops/                    # Workshop photos
+├── hero/                         # Hero backgrounds
+└── logo/                         # Brand logos
 ```
 
 ## Tech Stack
 
-Next.js 14 + React 18 + TypeScript | Prisma ORM + PostgreSQL (Neon) | tRPC + TanStack Query | shadcn/ui + Tailwind CSS 4 | Framer Motion | Stripe | Resend
+Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwind CSS 4 | Framer Motion | Stripe | Resend
 
-## Code Quality - Zero Tolerance
+## Code Quality
 
 ```bash
 bun run typecheck && bun run lint
 ```
 
-Fix ALL errors before continuing. No exceptions.
+Fix ALL errors before committing. No exceptions.
 
-## Organization Rules
+## City Landing Pages
 
-- tRPC routers → `/server/api/routers/[name].ts`
-- Components → `/components/[feature].tsx` (max 300 lines)
-- Hooks → `/hooks/use-[name].ts`
-- Email templates → `/emails/[name].tsx`
-- UI primitives → `/components/ui/` (shadcn only, never modify)
+42 SEO-optimized landing pages for kookworkshops across the Netherlands.
+
+### City Images
+
+**Source**: `src/lib/city-data.ts` (single source of truth)
+
+| Type | Count | Display |
+|------|-------|---------|
+| Featured cities | 13 | Image grid on `/onze-uitjes/kookworkshop` |
+| Other cities | 27 | Text links below grid |
+
+All 40 cities have landmark images in `public/images/cities/[slug].jpg`.
+
+### Landing Page Structure
+
+- **Hero**: City landmark image (from `getCityImage()`)
+- **Impact section**: Generic Goeduitje cooking photo
+- **CTAs**: Link to `/onze-uitjes/kookworkshop` and `/contact`
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/city-data.ts` | City data + images |
+| `src/app/(landing)/[slug]/page.tsx` | Landing page template |
+| `src/components/city-gallery.tsx` | Locaties grid component |
 
 ## Database
 
@@ -66,160 +83,37 @@ Fix ALL errors before continuing. No exceptions.
 
 ## Key Integrations
 
-- **Stripe**: Checkout flow + webhooks at `/api/webhooks/stripe`
-- **Google Reviews**: Synced via cron at `/api/cron/refresh-google-reviews`
-- **Resend**: Transactional emails (contact, booking confirmations)
+- **Stripe**: Checkout at `/api/webhooks/stripe`
+- **Google Reviews**: Cron at `/api/cron/refresh-google-reviews`
+- **Resend**: Transactional emails
+
+## Open Kookworkshops
+
+Workshop dates managed in `src/lib/open-workshops.ts`. Used by:
+- `/onze-uitjes/kookworkshop` (agenda tab)
+- `/booking` (booking calendar)
+
+## Recipes
+
+Route: `/recepten` and `/recepten/[slug]`
+
+Categories: Voorgerecht → Hoofdgerecht → Bijgerecht → Dessert
+
+Images hosted on Wix (`static.wixstatic.com`).
 
 ## Site Assets (Backend-Managed)
 
-**Backend is source of truth for site assets** - Logos, hero videos, and OG images are managed in the backend admin and fetched by the frontend.
-
-### How It Works
-
-1. **Server Component** (`layout.tsx`) fetches from backend API at request time
-2. URLs passed as **props** to client components (TopNavigation, Footer)
-3. Fallback to `/public/` static files if API fails
-
-### Key Files
-
-| Purpose        | File                                                         |
-| -------------- | ------------------------------------------------------------ |
-| Fetch function | `src/lib/site-assets.ts`                                     |
-| Server fetch   | `src/app/layout.tsx` (async, calls `getSiteAssets()`)        |
-| Client layout  | `src/components/client-layout.tsx` (receives props)          |
-| Nav component  | `src/components/top-navigation.tsx` (accepts `logoUrl` prop) |
-| Footer         | `src/components/footer.tsx` (accepts `logoUrl` prop)         |
-
-### Fallbacks
-
-Static files in `/public/` are used as fallbacks:
-
-- `/images/logo/logo-nav.png`
-- `/images/logo/logo-footer.png`
-- `/images/hero/hero-poster.jpg`
-- `/videos/hero/hero-background.mp4`
+Logos and hero videos fetched from backend API with `/public/` fallbacks.
 
 ## Never Do
 
 - Create admin pages here (use goeduitje-backend)
 - Run Drizzle migrations (Prisma is source of truth)
 - Modify `/components/ui/` (shadcn managed)
-- Use `useQuery` hooks in TopNavigation, Footer, or HeroVideo
 - Skip typecheck before committing
-
-## Session Changes Log
-
-**IMPORTANT**: After each development session, update `SESSION_CHANGES.html` with all adjustments made.
-
-This HTML file serves as a client-facing changelog that can be shared to review all modifications. Each session should document:
-
-- What was changed
-- Which files were modified
-- Before/after details where relevant
-
-Open the file in a browser to view a nicely formatted list of all changes.
-
-## Open Kookworkshops Agenda
-
-Workshop dates for "Open Kookworkshops" are managed in a single file:
-
-```
-src/lib/open-workshops.ts
-```
-
-This data syncs automatically to:
-
-- `/onze-uitjes/kookworkshop` (Open Kookworkshops tab agenda)
-- `/booking` (booking calendar)
-
-Update dates here when new workshop dates are scheduled.
-
-## Recipes
-
-Authentic Middle Eastern recipes from Goeduitje cooking workshops. Data managed via backend admin.
-
-### Structure
-
-| Route              | Purpose                           |
-| ------------------ | --------------------------------- |
-| `/recepten`        | Recipe list with category filters |
-| `/recepten/[slug]` | Individual recipe detail page     |
-
-### Categories (in order)
-
-1. Voorgerecht
-2. Hoofdgerecht
-3. Bijgerecht
-4. Dessert
-
-### Key Files
-
-| File                                | Purpose                                    |
-| ----------------------------------- | ------------------------------------------ |
-| `prisma/seed-recipes.ts`            | Seed 13 authentic recipes with Wix images  |
-| `src/app/recepten/page.tsx`         | Recipe list with search & category filters |
-| `src/app/recepten/[slug]/page.tsx`  | Recipe detail with ingredients & steps     |
-| `src/server/api/routers/recipes.ts` | tRPC router for recipe CRUD                |
-
-### Seeding Recipes
-
-```bash
-npx tsx prisma/seed-recipes.ts
-```
-
-### Image Hosting
-
-Recipe images are hosted on Wix (`static.wixstatic.com`) from the original goeduitje.nl site. The domain is configured in `next.config.mjs` under `images.remotePatterns`.
-
-## Kookworkshop City Landing Pages
-
-SEO-optimized landing pages for 42 cities and regions across the Netherlands. Each page replicates the exact content from the original goeduitje.nl Wix site.
-
-### Structure
-
-| Route Pattern                         | Example                    | Count     |
-| ------------------------------------- | -------------------------- | --------- |
-| `/kookworkshop-[city]`                | `/kookworkshop-nijmegen`   | 41 cities |
-| `/vegetarische-kookworkshop-nijmegen` | Special vegetarian variant | 1 page    |
-
-### Implementation
-
-**File**: `src/app/(landing)/[slug]/page.tsx`
-
-Dynamic route with `generateStaticParams()` that creates all 42 pages at build time. Each city page includes:
-
-- Exact meta descriptions from original site
-- City-specific content with proper region names
-- 3 USP bullets (statushouders, locatie, Arabische koks)
-- Workshop types (Arabische, Dessert, Oogsten koken & genieten)
-- Maatschappelijke impact section
-- 5 FAQ items
-- CTAs to `/onze-uitjes/kookworkshop` and `/contact`
-
-### Hero Images
-
-3 AVIF images from original site rotate deterministically based on city slug hash:
-
-- `kookworkshop.avif` (86KB)
-- `kookworkshop-2.avif` (145KB)
-- `kookworkshop-3.avif` (92KB)
-
-Each city gets a consistent image, but different cities show different photos for variety.
-
-### Cities Covered
-
-**Major cities**: Nijmegen, Arnhem, Eindhoven, Apeldoorn, Ede, Doetinchem, Oss, Zutphen, Wageningen, Veenendaal, Den Bosch
-
-**Plus 30 smaller cities**: Wijchen, Zevenaar, Cuijk, Huissen, Bemmel, Elst, Druten, Gendt, Malden, Beuningen, Ewijk, Andelst, Bennekom, Zetten, Didam, Best, Boxtel, Veghel, Uden, Grave, Gennep, Venray, Tiel, Geldermalsen, Zaltbommel, Achterhoek, Duiven, Groesbeek, Helmond, and "bij je thuis"
-
-### Key Features
-
-- **SEO metadata**: Exact titles and descriptions matching original pages
-- **Consistent content**: All text scraped from original Wix site
-- **Social proof**: Google review stars displayed
-- **Mobile-responsive**: Amber/orange gradient theme matching brand
 
 ## Deployment
 
 **Production**: https://goeduitje-nl-rebuild.vercel.app
+
 Push to `main` → Vercel auto-deploys
