@@ -914,13 +914,15 @@ export default async function LandingPage({ params }: Props) {
 
                 <div className="mt-6 flex items-center justify-center gap-4 border-t pt-6">
                   <a
-                    href="tel:+31612345678"
+                    href="tel:+31652675891"
+                    aria-label="Bel ons"
                     className="text-muted-foreground hover:text-amber-600"
                   >
                     <Phone className="h-5 w-5" />
                   </a>
                   <a
                     href="mailto:info@goeduitje.nl"
+                    aria-label="E-mail ons"
                     className="text-muted-foreground hover:text-amber-600"
                   >
                     <Mail className="h-5 w-5" />
@@ -1550,13 +1552,15 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
 
                 <div className="mt-6 flex items-center justify-center gap-4 border-t pt-6">
                   <a
-                    href="tel:+31612345678"
+                    href="tel:+31652675891"
+                    aria-label="Bel ons"
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <Phone className="h-5 w-5" />
                   </a>
                   <a
                     href="mailto:info@goeduitje.nl"
+                    aria-label="E-mail ons"
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <Mail className="h-5 w-5" />
