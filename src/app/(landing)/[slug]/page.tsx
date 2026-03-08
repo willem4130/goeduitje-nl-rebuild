@@ -15,6 +15,8 @@ import {
   Star,
   Phone,
   Mail,
+  Building2,
+  Compass,
 } from "lucide-react";
 import { getCityImage } from "@/lib/city-data";
 
@@ -268,7 +270,7 @@ const KOOKWORKSHOP_CITIES: CityData[] = [
   },
 ];
 
-// Also add vegetarische-kookworkshop-nijmegen
+// Also add vegetarische-kookworkshop-nijmegen + type-specific city pages
 const ALL_LANDING_PAGES: LandingPageData[] = [
   ...KOOKWORKSHOP_CITIES,
   {
@@ -278,7 +280,62 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     tagline: "Vegetarische kookervaring",
     isVegetarian: true,
   },
+  // Teambuilding city pages
+  {
+    slug: "teambuilding-nijmegen",
+    city: "Nijmegen",
+    region: "de regio Nijmegen",
+    tagline: "Teambuilding met impact",
+    type: "teambuilding",
+  },
+  {
+    slug: "teambuilding-arnhem",
+    city: "Arnhem",
+    region: "Arnhem",
+    tagline: "Teambuilding met impact",
+    type: "teambuilding",
+  },
+  // Bedrijfsuitje city pages
+  {
+    slug: "bedrijfsuitje-nijmegen",
+    city: "Nijmegen",
+    region: "de regio Nijmegen",
+    tagline: "Uniek bedrijfsuitje",
+    type: "bedrijfsuitje",
+  },
+  {
+    slug: "bedrijfsuitje-arnhem",
+    city: "Arnhem",
+    region: "Arnhem",
+    tagline: "Uniek bedrijfsuitje",
+    type: "bedrijfsuitje",
+  },
+  {
+    slug: "kookworkshop-voor-bedrijven-arnhem",
+    city: "Arnhem",
+    region: "Arnhem",
+    tagline: "Culinair bedrijfsuitje",
+    type: "bedrijfsuitje",
+    displayTitle: "Kookworkshop voor Bedrijven",
+  },
+  // Stadsspel city pages
+  {
+    slug: "stadsspel-nijmegen",
+    city: "Nijmegen",
+    region: "de regio Nijmegen",
+    tagline: "Ontdek de stad",
+    type: "stadsspel",
+  },
+  {
+    slug: "stadsspel-arnhem",
+    city: "Arnhem",
+    region: "Arnhem",
+    tagline: "Ontdek de stad",
+    type: "stadsspel",
+  },
 ];
+
+type LandingType = "kookworkshop" | "teambuilding" | "bedrijfsuitje" | "stadsspel";
 
 interface CityData {
   slug: string;
@@ -289,6 +346,8 @@ interface CityData {
 
 interface LandingPageData extends CityData {
   isVegetarian?: boolean;
+  type?: LandingType;
+  displayTitle?: string;
 }
 
 type Props = {
@@ -297,6 +356,107 @@ type Props = {
 
 function getLandingPage(slug: string): LandingPageData | undefined {
   return ALL_LANDING_PAGES.find((page) => page.slug === slug);
+}
+
+function extractCitySlug(slug: string): string {
+  // Order matters: most specific prefixes first
+  return slug
+    .replace("vegetarische-kookworkshop-", "")
+    .replace("kookworkshop-voor-bedrijven-", "")
+    .replace("kookworkshop-", "")
+    .replace("teambuilding-", "")
+    .replace("bedrijfsuitje-", "")
+    .replace("stadsspel-", "");
+}
+
+interface ThemeConfig {
+  gradient: string;
+  badge: string;
+  button: string;
+  accent: string;
+  iconBg: string;
+  ctaBg: string;
+  ctaButton: string;
+  ctaOutline: string;
+}
+
+const THEMES: Record<LandingType, ThemeConfig> = {
+  kookworkshop: {
+    gradient: "from-amber-50 via-orange-50 to-white",
+    badge: "bg-amber-100 text-amber-800 hover:bg-amber-100",
+    button: "bg-amber-600 hover:bg-amber-700",
+    accent: "text-amber-600",
+    iconBg: "bg-amber-100",
+    ctaBg: "bg-amber-600",
+    ctaButton: "bg-white text-amber-600 hover:bg-white/90",
+    ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
+  },
+  teambuilding: {
+    gradient: "from-blue-50 via-sky-50 to-white",
+    badge: "bg-blue-100 text-blue-800 hover:bg-blue-100",
+    button: "bg-blue-600 hover:bg-blue-700",
+    accent: "text-blue-600",
+    iconBg: "bg-blue-100",
+    ctaBg: "bg-blue-600",
+    ctaButton: "bg-white text-blue-600 hover:bg-white/90",
+    ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
+  },
+  bedrijfsuitje: {
+    gradient: "from-green-50 via-emerald-50 to-white",
+    badge: "bg-green-100 text-green-800 hover:bg-green-100",
+    button: "bg-green-600 hover:bg-green-700",
+    accent: "text-green-600",
+    iconBg: "bg-green-100",
+    ctaBg: "bg-green-600",
+    ctaButton: "bg-white text-green-600 hover:bg-white/90",
+    ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
+  },
+  stadsspel: {
+    gradient: "from-indigo-50 via-violet-50 to-white",
+    badge: "bg-indigo-100 text-indigo-800 hover:bg-indigo-100",
+    button: "bg-indigo-600 hover:bg-indigo-700",
+    accent: "text-indigo-600",
+    iconBg: "bg-indigo-100",
+    ctaBg: "bg-indigo-600",
+    ctaButton: "bg-white text-indigo-600 hover:bg-white/90",
+    ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
+  },
+};
+
+const TYPE_LABELS: Record<LandingType, string> = {
+  kookworkshop: "Kookworkshop",
+  teambuilding: "Teambuilding",
+  bedrijfsuitje: "Bedrijfsuitje",
+  stadsspel: "Stadsspel",
+};
+
+function getFallbackImages(type: LandingType): string[] {
+  switch (type) {
+    case "teambuilding":
+      return [
+        "/images/workshops/the-game.jpg",
+        "/images/workshops/kookworkshop.jpg",
+        "/images/workshops/beachvolleybal.jpg",
+      ];
+    case "bedrijfsuitje":
+      return [
+        "/images/workshops/kookworkshop.jpg",
+        "/images/workshops/koffie-thee.jpg",
+        "/images/workshops/the-game.jpg",
+      ];
+    case "stadsspel":
+      return [
+        "/images/workshops/the-game.jpg",
+        "/images/workshops/kookworkshop.jpg",
+        "/images/workshops/beachvolleybal.jpg",
+      ];
+    default:
+      return [
+        "/images/workshops/kookworkshop.avif",
+        "/images/workshops/kookworkshop-2.avif",
+        "/images/workshops/kookworkshop-3.avif",
+      ];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -309,31 +469,62 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const isVegetarian = landing.isVegetarian;
-  const workshopType = isVegetarian
-    ? "Vegetarische Kookworkshop"
-    : "Kookworkshop";
+  const type = landing.type || "kookworkshop";
+  const pageTitle =
+    landing.displayTitle
+      ? `${landing.displayTitle} ${landing.city}`
+      : landing.isVegetarian
+        ? `Vegetarische Kookworkshop ${landing.city}`
+        : `${TYPE_LABELS[type]} ${landing.city}`;
 
-  // Exact meta description from original pages
-  const metaDescription = `Bij onze sociale onderneming organiseren statushouders en asielzoekers unieke kookworkshops in ${landing.region}, waar u onder begeleiding van onze medewerkers aan de slag gaat.`;
+  const metaDescriptions: Record<LandingType, string> = {
+    kookworkshop: `Bij onze sociale onderneming organiseren statushouders en asielzoekers unieke kookworkshops in ${landing.region}, waar u onder begeleiding van onze medewerkers aan de slag gaat.`,
+    teambuilding: `Organiseer een onvergetelijke teambuilding in ${landing.region} met maatschappelijke impact. Kookworkshops, stadsspellen en interactieve challenges begeleid door statushouders.`,
+    bedrijfsuitje: `Organiseer een uniek bedrijfsuitje in ${landing.region} met sociale impact. Van kookworkshops tot stadsspellen – activiteiten begeleid door statushouders en nieuwkomers.`,
+    stadsspel: `Speel het unieke stadsspel in ${landing.city}! Een interactieve speurtocht door de stad met culturele uitdagingen, begeleid door statushouders en nieuwkomers.`,
+  };
 
-  return {
-    title: `${workshopType} ${landing.city} | ${landing.tagline} | Goed Uitje`,
-    description: metaDescription,
-    keywords: [
+  const typeKeywords: Record<LandingType, string[]> = {
+    kookworkshop: [
       `kookworkshop ${landing.city.toLowerCase()}`,
-      `teambuilding ${landing.city.toLowerCase()}`,
-      `bedrijfsuitje ${landing.city.toLowerCase()}`,
       `koken ${landing.city.toLowerCase()}`,
       "kookworkshop",
-      "teambuilding",
-      "bedrijfsuitje",
-      "sociale impact",
-      "statushouders",
       "arabische keuken",
     ],
+    teambuilding: [
+      `teambuilding ${landing.city.toLowerCase()}`,
+      `teamuitje ${landing.city.toLowerCase()}`,
+      "teambuilding",
+      "teambuilding activiteiten",
+    ],
+    bedrijfsuitje: [
+      `bedrijfsuitje ${landing.city.toLowerCase()}`,
+      `personeelsuitje ${landing.city.toLowerCase()}`,
+      "bedrijfsuitje",
+      "bedrijfsuitje organiseren",
+    ],
+    stadsspel: [
+      `stadsspel ${landing.city.toLowerCase()}`,
+      `citygame ${landing.city.toLowerCase()}`,
+      "stadsspel",
+      "speurtocht",
+    ],
+  };
+
+  const metaDescription = metaDescriptions[type];
+
+  return {
+    title: `${pageTitle} | ${landing.tagline} | Goed Uitje`,
+    description: metaDescription,
+    keywords: [
+      ...typeKeywords[type],
+      `teambuilding ${landing.city.toLowerCase()}`,
+      `bedrijfsuitje ${landing.city.toLowerCase()}`,
+      "sociale impact",
+      "statushouders",
+    ],
     openGraph: {
-      title: `${workshopType} ${landing.city} | ${landing.tagline} | Goed Uitje`,
+      title: `${pageTitle} | ${landing.tagline} | Goed Uitje`,
       description: metaDescription,
       type: "website",
       locale: "nl_NL",
@@ -348,7 +539,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function KookworkshopLandingPage({ params }: Props) {
+export default async function LandingPage({ params }: Props) {
   const { slug } = await params;
   const landing = getLandingPage(slug);
 
@@ -356,26 +547,29 @@ export default async function KookworkshopLandingPage({ params }: Props) {
     notFound();
   }
 
+  const type = landing.type || "kookworkshop";
+  const citySlug = extractCitySlug(slug);
+  const fallbackImages = getFallbackImages(type);
+  const imageIndex =
+    slug.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+    fallbackImages.length;
+  const heroImage = getCityImage(citySlug) || fallbackImages[imageIndex];
+
+  // Non-kookworkshop types use a separate template
+  if (type !== "kookworkshop") {
+    return (
+      <TypedLandingPage
+        landing={landing}
+        type={type}
+        heroImage={heroImage}
+      />
+    );
+  }
+
   const isVegetarian = landing.isVegetarian;
   const workshopType = isVegetarian
     ? "Vegetarische Kookworkshop"
     : "Kookworkshop";
-
-  // Extract city slug from landing page slug (e.g., "nijmegen" from "kookworkshop-nijmegen")
-  const citySlug = slug
-    .replace("kookworkshop-", "")
-    .replace("vegetarische-kookworkshop-", "");
-
-  // Use city-specific image if available, otherwise fall back to generic kookworkshop images
-  const genericHeroImages = [
-    "/images/workshops/kookworkshop.avif",
-    "/images/workshops/kookworkshop-2.avif",
-    "/images/workshops/kookworkshop-3.avif",
-  ];
-  const imageIndex =
-    slug.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
-    genericHeroImages.length;
-  const heroImage = getCityImage(citySlug) || genericHeroImages[imageIndex];
 
   return (
     <main className="min-h-screen">
@@ -839,6 +1033,588 @@ export default async function KookworkshopLandingPage({ params }: Props) {
               size="lg"
               variant="outline"
               className="border-white bg-transparent text-white hover:bg-white/10"
+            >
+              <Link href="/contact">Offerte aanvragen</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer info */}
+      <section className="border-t py-8">
+        <div className="container mx-auto max-w-7xl px-6 text-center">
+          <p className="text-muted-foreground text-sm">
+            Goeduitje B.V. | Groenestraat 48 | 6531 HS Nijmegen
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+// ============================================================
+// Non-kookworkshop landing page template
+// ============================================================
+
+interface TypedLandingPageProps {
+  landing: LandingPageData;
+  type: LandingType;
+  heroImage: string;
+}
+
+function getWorkshopCards(
+  type: LandingType,
+  city: string,
+): { title: string; description: string; icon: "ChefHat" | "MapPin" | "Star" | "Heart" | "Compass" }[] {
+  switch (type) {
+    case "teambuilding":
+      return [
+        {
+          title: "Kookworkshop",
+          icon: "ChefHat",
+          description:
+            "Samen koken onder begeleiding van Arabische koks. Bereid authentieke gerechten en geniet samen van het resultaat.",
+        },
+        {
+          title: "Stadsspel / Citygame",
+          icon: "Compass",
+          description: `Een interactieve speurtocht door ${city} vol culturele uitdagingen en verrassende ontmoetingen.`,
+        },
+        {
+          title: "The Game - Koffer Challenge",
+          icon: "Star",
+          description:
+            "Team up and crack it! Zoek samen de code om de koffer te openen. Perfecte test voor communicatie en samenwerking.",
+        },
+      ];
+    case "bedrijfsuitje":
+      return [
+        {
+          title: "Kookworkshop",
+          icon: "ChefHat",
+          description:
+            "Het populairste bedrijfsuitje: samen koken onder begeleiding van Arabische koks. Kies uit diverse workshops.",
+        },
+        {
+          title: "Stadsspel / Citygame",
+          icon: "Compass",
+          description: `Ontdek ${city} met je collega's via een interactieve speurtocht vol culturele uitdagingen.`,
+        },
+        {
+          title: "Koffie & Thee Workshop",
+          icon: "Heart",
+          description:
+            "Een ontspannen workshop waarin je de kunst van Arabische koffie en thee ontdekt onder begeleiding van onze medewerkers.",
+        },
+      ];
+    case "stadsspel":
+      return [
+        {
+          title: "Het Stadsspel",
+          icon: "Compass",
+          description: `De originele interactieve speurtocht door ${city}. Ontdek verborgen plekjes en los culturele uitdagingen op met je team.`,
+        },
+        {
+          title: "The Game - Koffer Challenge",
+          icon: "Star",
+          description:
+            "De indoor variant: zoek samen de code om de koffer te openen. Perfecte aanvulling op het stadsspel.",
+        },
+        {
+          title: "Combinatie Stadsspel + Koken",
+          icon: "ChefHat",
+          description:
+            "Start met het stadsspel en sluit af met een gezamenlijke kookworkshop. Het beste van twee werelden.",
+        },
+      ];
+    default:
+      return [];
+  }
+}
+
+function getCtaConfig(type: LandingType): {
+  link: string;
+  label: string;
+  icon: "Users" | "Building2" | "Compass";
+} {
+  switch (type) {
+    case "teambuilding":
+      return { link: "/teambuilding", label: "Bekijk teambuilding", icon: "Users" };
+    case "bedrijfsuitje":
+      return { link: "/bedrijfsuitjes", label: "Bekijk bedrijfsuitjes", icon: "Building2" };
+    case "stadsspel":
+      return { link: "/onze-uitjes/stadsspel", label: "Meer over het stadsspel", icon: "Compass" };
+    default:
+      return { link: "/onze-uitjes", label: "Bekijk uitjes", icon: "Users" };
+  }
+}
+
+const ICON_MAP = {
+  ChefHat,
+  MapPin,
+  Star,
+  Heart,
+  Compass,
+  Users,
+  Building2,
+} as const;
+
+function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
+  const theme = THEMES[type];
+  const label = landing.displayTitle || TYPE_LABELS[type];
+  const pageTitle = `${label} ${landing.city}`;
+  const workshopCards = getWorkshopCards(type, landing.city);
+  const cta = getCtaConfig(type);
+  const CtaIcon = ICON_MAP[cta.icon];
+
+  const heroDescriptions: Record<Exclude<LandingType, "kookworkshop">, string> = {
+    teambuilding: `Zoek je een teambuilding activiteit in ${landing.region} die verder gaat dan het gewone? Bij Goeduitje organiseren statushouders en nieuwkomers activiteiten die je team verbinden én bijdragen aan integratie. Kies uit kookworkshops, stadsspellen of de Koffer Challenge.`,
+    bedrijfsuitje: `Op zoek naar een origineel bedrijfsuitje in ${landing.region}? Bij Goeduitje organiseren statushouders en nieuwkomers activiteiten die je collega's verbinden en bijdragen aan een goede zaak. Van kookworkshops tot stadsspellen – er is voor elk team een passende activiteit.`,
+    stadsspel: `Ontdek ${landing.city} op een unieke manier met ons stadsspel. Een interactieve speurtocht vol culturele uitdagingen en verrassende ontmoetingen met statushouders en nieuwkomers die hun stad en cultuur met jou delen.`,
+  };
+
+  const usps: Record<Exclude<LandingType, "kookworkshop">, string[]> = {
+    teambuilding: [
+      "Diverse teambuilding activiteiten voor elk team",
+      `Op eigen of af te spreken locatie in ${landing.city}`,
+      "Begeleid door statushouders en nieuwkomers",
+    ],
+    bedrijfsuitje: [
+      "Activiteiten op maat voor elk bedrijf",
+      `Op eigen of af te spreken locatie in ${landing.city}`,
+      "Sociale impact door samenwerking met statushouders",
+    ],
+    stadsspel: [
+      `Interactieve speurtocht door ${landing.city}`,
+      "Culturele uitdagingen en verrassende ontmoetingen",
+      "Begeleiding door statushouders en nieuwkomers",
+    ],
+  };
+
+  const aboutTexts: Record<Exclude<LandingType, "kookworkshop">, { title: string; text: string }> = {
+    teambuilding: {
+      title: `Teambuilding activiteiten in ${landing.city}`,
+      text: `Bij Goeduitje bieden we verschillende teambuilding activiteiten aan die je team op een unieke manier samenbrengen. Of jullie nou samen willen koken, de stad willen verkennen of een uitdagende game willen spelen – elke activiteit wordt begeleid door statushouders en nieuwkomers die hun talent en cultuur met jullie delen. Zo is je teambuilding in ${landing.city} niet alleen leuk, maar draag je ook bij aan een goede zaak.`,
+    },
+    bedrijfsuitje: {
+      title: `Bedrijfsuitjes in ${landing.city}`,
+      text: `Goeduitje biedt diverse bedrijfsuitjes aan in ${landing.region} die verder gaan dan het standaard uitje. Of je nu kiest voor een kookworkshop, stadsspel of een creatieve workshop – elke activiteit wordt begeleid door statushouders en nieuwkomers. Zo combineer je een gezellig bedrijfsuitje met maatschappelijke impact en draag je bij aan integratie en kansen op de arbeidsmarkt.`,
+    },
+    stadsspel: {
+      title: `Het stadsspel in ${landing.city}`,
+      text: `Ons stadsspel in ${landing.city} is een interactieve speurtocht waarbij je team samen de stad ontdekt. Onder begeleiding van statushouders en nieuwkomers los je culturele opdrachten op, ontdek je verborgen plekjes en leer je de stad op een geheel nieuwe manier kennen. Het stadsspel is perfect als teambuilding, bedrijfsuitje of gewoon als leuke groepsactiviteit.`,
+    },
+  };
+
+  const faqItems: Record<Exclude<LandingType, "kookworkshop">, { q: string; a: string }[]> = {
+    teambuilding: [
+      {
+        q: `Welke teambuilding activiteiten bieden jullie aan in ${landing.city}?`,
+        a: `In ${landing.city} bieden we diverse teambuilding activiteiten aan: kookworkshops onder leiding van Arabische koks, een interactief stadsspel door de stad, en de Koffer Challenge (The Game). Elke activiteit wordt begeleid door statushouders en nieuwkomers.`,
+      },
+      {
+        q: "Hoe groot moet de groep minimaal zijn?",
+        a: "Voor de meeste teambuilding activiteiten hanteren we een minimum van 8 personen. Voor het stadsspel en The Game is een groep van 10-20 personen ideaal. Neem gerust contact op voor maatwerk bij kleinere of grotere groepen.",
+      },
+      {
+        q: "Kunnen we meerdere activiteiten combineren?",
+        a: "Ja, dat is zeker mogelijk! Een populaire combinatie is bijvoorbeeld het stadsspel gevolgd door een kookworkshop. We stellen graag een programma samen dat past bij jullie wensen en beschikbare tijd.",
+      },
+      {
+        q: `Waar vinden de activiteiten plaats in ${landing.city}?`,
+        a: `Onze activiteiten vinden plaats op een locatie in ${landing.city} of omgeving, of we komen bij jullie op locatie. Het stadsspel speelt zich af in het centrum van ${landing.city}.`,
+      },
+    ],
+    bedrijfsuitje: [
+      {
+        q: `Welke bedrijfsuitjes bieden jullie aan in ${landing.city}?`,
+        a: `In ${landing.city} bieden we diverse bedrijfsuitjes aan: kookworkshops, stadsspellen, de Koffer Challenge, koffie & thee workshops en meer. Elk uitje wordt begeleid door statushouders en nieuwkomers, wat zorgt voor een unieke ervaring met maatschappelijke impact.`,
+      },
+      {
+        q: "Zijn jullie bedrijfsuitjes geschikt voor grote groepen?",
+        a: "Ja, we hebben ervaring met groepen van 8 tot meer dan 100 personen. Bij grotere groepen splitsen we op in kleinere teams voor een optimale beleving. Neem contact op voor de mogelijkheden.",
+      },
+      {
+        q: "Kunnen we het bedrijfsuitje aanpassen aan onze wensen?",
+        a: "Absoluut! We stemmen elk bedrijfsuitje af op jullie wensen. Van de keuze van activiteiten tot de duur en locatie – we denken graag mee om het perfecte uitje samen te stellen.",
+      },
+      {
+        q: "Wat kost een bedrijfsuitje bij Goeduitje?",
+        a: "De prijzen variëren per activiteit. Een kookworkshop begint vanaf €55 p.p., een stadsspel vanaf €22,50 p.p. en een koffie & thee workshop vanaf €32,50 p.p. Neem contact op voor een offerte op maat.",
+      },
+    ],
+    stadsspel: [
+      {
+        q: `Hoe werkt het stadsspel in ${landing.city}?`,
+        a: `Het stadsspel is een interactieve speurtocht door ${landing.city}. In teams van 4-5 personen lopen jullie een route door de stad, waarbij je onderweg culturele opdrachten oplost en verborgen plekjes ontdekt. Statushouders en nieuwkomers begeleiden jullie en delen hun verhalen en cultuur.`,
+      },
+      {
+        q: "Hoe lang duurt het stadsspel?",
+        a: "Het stadsspel duurt 2-3 uur, afhankelijk van de gekozen route en het tempo van de groep. We kunnen het programma aanpassen aan jullie beschikbare tijd.",
+      },
+      {
+        q: "Is het stadsspel geschikt bij slecht weer?",
+        a: "Het stadsspel vindt grotendeels buiten plaats. Bij licht regenachtig weer kan het gewoon doorgaan. Bij echt slecht weer kunnen we uitwijken naar The Game (Koffer Challenge), een indoor alternatief dat net zo leuk en uitdagend is.",
+      },
+      {
+        q: "Kunnen we het stadsspel combineren met andere activiteiten?",
+        a: "Ja! Een populaire combinatie is het stadsspel gevolgd door een kookworkshop. Zo heb je een complete dag vol teambuilding en culinair genieten. Neem contact op voor de mogelijkheden.",
+      },
+    ],
+  };
+
+  const typeKey = type as Exclude<LandingType, "kookworkshop">;
+
+  return (
+    <main className="min-h-screen">
+      {/* Hero Section */}
+      <section className={`bg-gradient-to-br ${theme.gradient} py-16 lg:py-24`}>
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="flex flex-col justify-center">
+              <Badge className={`mb-4 w-fit ${theme.badge}`}>
+                <MapPin className="mr-1 h-3 w-3" />
+                {landing.region}
+              </Badge>
+
+              <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+                {pageTitle}
+              </h1>
+
+              <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
+                {heroDescriptions[typeKey]}
+              </p>
+
+              <div className="mb-8 space-y-3">
+                {usps[typeKey].map((usp) => (
+                  <div key={usp} className="flex items-center gap-2">
+                    <CheckCircle2 className={`h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                    <span className="text-gray-700">{usp}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button asChild size="lg" className={theme.button}>
+                  <Link href={cta.link}>
+                    <CtaIcon className="mr-2 h-5 w-5" />
+                    {cta.label}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link href="/contact">
+                    Offerte aanvragen
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl lg:aspect-square">
+              <Image
+                src={heroImage}
+                alt={`${label} in ${landing.city}`}
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute right-6 bottom-6 left-6">
+                <div className="flex items-center gap-2 text-white">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className="h-5 w-5 fill-amber-400 text-amber-400"
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium">4.9/5 op Google</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
+              {aboutTexts[typeKey].title}
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              {aboutTexts[typeKey].text}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Activities Section */}
+      <section className="bg-muted/30 py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+              {type === "stadsspel"
+                ? `Stadsspel opties in ${landing.city}`
+                : type === "teambuilding"
+                  ? `Populaire teambuilding activiteiten in ${landing.city}`
+                  : `Populaire bedrijfsuitjes in ${landing.city}`}
+            </h2>
+            <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
+              {type === "stadsspel"
+                ? "Kies de variant die het beste bij jullie groep past:"
+                : "We stemmen onze activiteiten graag af op jouw wensen. Hier een overzicht van onze populairste opties:"}
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {workshopCards.map((card) => {
+              const CardIcon = ICON_MAP[card.icon];
+              return (
+                <div
+                  key={card.title}
+                  className="rounded-xl border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                    <CardIcon className={`h-6 w-6 ${theme.accent}`} />
+                  </div>
+                  <h3 className="mb-2 text-xl font-bold">{card.title}</h3>
+                  <p className="text-muted-foreground">{card.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Impact Section */}
+      <section className="py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div>
+              <Badge className={`mb-4 ${theme.badge}`}>
+                <Heart className="mr-1 h-3 w-3" />
+                Maatschappelijke Impact
+              </Badge>
+              <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
+                Wat Goeduitje echt uniek maakt
+              </h2>
+              <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
+                Wat Goeduitje echt uniek maakt, is de combinatie van een leuke
+                activiteit en maatschappelijke impact. Onze{" "}
+                {type === "stadsspel"
+                  ? "stadsspellen"
+                  : type === "teambuilding"
+                    ? "teambuilding activiteiten"
+                    : "bedrijfsuitjes"}{" "}
+                in {landing.city} worden verzorgd door statushouders en
+                nieuwkomers die hun talent, passie en cultuur met jou delen. Zo
+                beleef je niet alleen een bijzondere ervaring, maar draag je ook
+                bij aan hun integratie en kansen op de arbeidsmarkt.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <span>
+                    Elke activiteit wordt begeleid door getalenteerde
+                    statushouders en nieuwkomers die hun cultuur en vaardigheden
+                    met jou delen.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <span>
+                    Alle materialen en begeleiding zijn inbegrepen. Jullie hoeven
+                    alleen maar te komen en te genieten.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <span>
+                    De activiteiten vinden plaats op een gezellige locatie in{" "}
+                    {landing.city} of in overleg op een plek die je zelf kiest.
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="relative aspect-square overflow-hidden rounded-2xl">
+              <Image
+                src="/images/workshops/kookworkshop-2.avif"
+                alt={`${label} ${landing.city} met sociale impact`}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Practical Info Section */}
+      <section className="bg-muted/30 py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div>
+              <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
+                Praktische informatie
+              </h2>
+
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                    <Clock className={`h-5 w-5 ${theme.accent}`} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      {type === "stadsspel"
+                        ? "Hoe lang duurt het stadsspel?"
+                        : `Hoe lang duurt een ${TYPE_LABELS[type].toLowerCase()}?`}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {type === "stadsspel"
+                        ? "Het stadsspel duurt gemiddeld 2-3 uur. Dit kan worden aangepast aan jullie wensen en beschikbare tijd."
+                        : type === "teambuilding"
+                          ? "De duur hangt af van de gekozen activiteit. Een kookworkshop duurt circa 3 uur, het stadsspel 2-3 uur, en The Game ook 2-3 uur. Combinaties zijn uiteraard ook mogelijk."
+                          : "De duur hangt af van de gekozen activiteit. Een kookworkshop duurt circa 3 uur, andere activiteiten 2-3 uur. We stemmen het programma af op jullie beschikbare tijd."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                    <Users className={`h-5 w-5 ${theme.accent}`} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      Voor hoeveel personen is dit geschikt?
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {type === "stadsspel"
+                        ? "Het stadsspel is geschikt voor groepen van 10-20 personen. Bij grotere groepen splitsen we op in meerdere teams. Neem contact op voor de mogelijkheden."
+                        : "Onze activiteiten zijn geschikt voor groepen vanaf 8 personen. Ook voor grotere groepen (50+) hebben we ruime ervaring. Neem contact op voor maatwerk."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                    <MapPin className={`h-5 w-5 ${theme.accent}`} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      {type === "stadsspel"
+                        ? `Waar vindt het stadsspel plaats in ${landing.city}?`
+                        : `Waar worden de activiteiten gehouden in ${landing.city}?`}
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {type === "stadsspel"
+                        ? `Het stadsspel speelt zich af in het centrum van ${landing.city}. We hebben een mooie route uitgestippeld langs de leukste plekjes van de stad.`
+                        : `Onze activiteiten worden georganiseerd bij jou op locatie of we huren een locatie naar keuze in ${landing.city} of omgeving.`}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center">
+              <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+                <h3 className="mb-2 text-xl font-bold">
+                  {type === "stadsspel"
+                    ? `Boek het stadsspel in ${landing.city}`
+                    : type === "teambuilding"
+                      ? `Plan je teambuilding in ${landing.city}`
+                      : `Boek je bedrijfsuitje in ${landing.city}`}
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  {type === "stadsspel"
+                    ? `Wil je met je team ${landing.city} op een unieke manier ontdekken? Neem contact op en we plannen het stadsspel voor jullie.`
+                    : type === "teambuilding"
+                      ? `Wil je een onvergetelijke teambuilding organiseren in ${landing.city}? Neem contact op en we stellen samen het perfecte programma samen.`
+                      : `Op zoek naar een origineel bedrijfsuitje in ${landing.city}? Neem contact op voor een vrijblijvende offerte.`}
+                </p>
+
+                <div className="space-y-3">
+                  <Button asChild className={`w-full ${theme.button}`}>
+                    <Link href="/onze-uitjes#configurator">
+                      Configureer je uitje
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <Link href="/contact">
+                      <Mail className="mr-2 h-4 w-4" />
+                      Contact opnemen
+                    </Link>
+                  </Button>
+                </div>
+
+                <div className="mt-6 flex items-center justify-center gap-4 border-t pt-6">
+                  <a
+                    href="tel:+31612345678"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Phone className="h-5 w-5" />
+                  </a>
+                  <a
+                    href="mailto:info@goeduitje.nl"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Mail className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 lg:py-20">
+        <div className="container mx-auto max-w-4xl px-6">
+          <h2 className="mb-10 text-center text-2xl font-bold tracking-tight sm:text-3xl">
+            {type === "stadsspel"
+              ? `Veelgestelde vragen over het stadsspel in ${landing.city}`
+              : type === "teambuilding"
+                ? `Veelgestelde vragen over teambuilding in ${landing.city}`
+                : `Veelgestelde vragen over bedrijfsuitjes in ${landing.city}`}
+          </h2>
+
+          <div className="space-y-6">
+            {faqItems[typeKey].map((item) => (
+              <div key={item.q} className="rounded-lg border bg-white p-6">
+                <h3 className="mb-2 font-semibold">{item.q}</h3>
+                <p className="text-muted-foreground">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className={`${theme.ctaBg} py-16 text-white lg:py-20`}>
+        <div className="container mx-auto max-w-7xl px-6 text-center">
+          <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+            Benieuwd wat we voor elkaar kunnen betekenen?
+          </h2>
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-white/90">
+            {type === "stadsspel"
+              ? `Neem contact op en ontdek ${landing.city} op een unieke manier met ons stadsspel! Een onvergetelijke ervaring voor je hele team.`
+              : type === "teambuilding"
+                ? `Neem contact op en plan je teambuilding in ${landing.city}! Samen zorgen we voor een onvergetelijke teamervaring met impact.`
+                : `Neem contact op en boek je bedrijfsuitje in ${landing.city}! Een unieke ervaring voor je hele team met maatschappelijke impact.`}
+          </p>
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button asChild size="lg" className={theme.ctaButton}>
+              <Link href={cta.link}>
+                <CtaIcon className="mr-2 h-5 w-5" />
+                {cta.label}
+              </Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className={theme.ctaOutline}
             >
               <Link href="/contact">Offerte aanvragen</Link>
             </Button>

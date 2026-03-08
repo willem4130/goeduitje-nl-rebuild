@@ -17,12 +17,10 @@ const footerLinks = {
     title: "Workshops",
     links: [
       { name: "Alle workshops", href: "/onze-uitjes" },
-      { name: "Kookworkshops", href: "/onze-uitjes?category=koken" },
-      { name: "Creatieve workshops", href: "/onze-uitjes?category=creatief" },
-      {
-        name: "Teambuildinguitjes",
-        href: "/onze-uitjes?category=teambuilding",
-      },
+      { name: "Kookworkshops", href: "/onze-uitjes/kookworkshop" },
+      { name: "Workshops", href: "/workshops" },
+      { name: "Teambuilding", href: "/teambuilding" },
+      { name: "Bedrijfsuitjes", href: "/bedrijfsuitjes" },
     ],
   },
   company: {

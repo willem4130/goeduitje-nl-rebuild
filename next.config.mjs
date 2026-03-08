@@ -55,6 +55,47 @@ const nextConfig = {
     unoptimized: false,
   },
 
+  // 301 redirects: old Wix URLs → new URLs (preserve SEO juice)
+  async redirects() {
+    return [
+      {
+        source: "/contactpagina",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/open-kookworkshops",
+        destination: "/booking",
+        permanent: true,
+      },
+      {
+        source: "/kookworkshop",
+        destination: "/onze-uitjes/kookworkshop",
+        permanent: true,
+      },
+      {
+        source: "/lunch-en-diner-uitjes",
+        destination: "/onze-uitjes/lunch-diner",
+        permanent: true,
+      },
+      {
+        source: "/beachvolleybal-workshops",
+        destination: "/onze-uitjes/beachvolleybal-workshop",
+        permanent: true,
+      },
+      {
+        source: "/koffie-en-thee-workshops",
+        destination: "/onze-uitjes/koffie-thee-workshop",
+        permanent: true,
+      },
+      {
+        source: "/stadsspellen",
+        destination: "/onze-uitjes/stadsspel",
+        permanent: true,
+      },
+    ];
+  },
+
   // Enable compression
   compress: true,
 

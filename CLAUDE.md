@@ -9,7 +9,10 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 ```
 src/
 ├── app/
-│   ├── (landing)/[slug]/         # City landing pages (40 cities)
+│   ├── (landing)/[slug]/         # City landing pages (41 pages: 40 kookworkshop + 1 vegetarisch)
+│   ├── teambuilding/             # Teambuilding category page (static)
+│   ├── bedrijfsuitjes/           # Bedrijfsuitjes category page (static)
+│   ├── workshops/                # Workshops category page (static)
 │   ├── api/                      # tRPC + webhooks
 │   ├── onze-uitjes/[slug]/       # Workshop detail pages
 │   ├── recepten/[slug]/          # Recipe pages
@@ -72,16 +75,37 @@ Fix ALL errors before committing. No exceptions.
 
 ## City Landing Pages
 
-40 SEO-optimized landing pages for kookworkshops across the Netherlands.
+48 SEO-optimized landing pages via `src/app/(landing)/[slug]/page.tsx`.
 
-**Source**: `src/lib/city-data.ts` (single source of truth)
+**City data source**: `src/lib/city-data.ts` (images & featured/other)
+**Landing page data**: `ALL_LANDING_PAGES` array in `(landing)/[slug]/page.tsx`
 
 | Type | Count | Display |
 |------|-------|---------|
+| Kookworkshop cities | 40 | `kookworkshop-[city]` slugs |
+| Vegetarisch | 1 | `vegetarische-kookworkshop-nijmegen` |
+| Teambuilding | 2 | `teambuilding-nijmegen`, `teambuilding-arnhem` |
+| Bedrijfsuitje | 3 | `bedrijfsuitje-nijmegen`, `bedrijfsuitje-arnhem`, `kookworkshop-voor-bedrijven-arnhem` |
+| Stadsspel | 2 | `stadsspel-nijmegen`, `stadsspel-arnhem` |
 | Featured cities | 13 | Image grid on `/onze-uitjes/kookworkshop` |
 | Other cities | 27 | Text links below grid |
 
+Non-kookworkshop pages use `TypedLandingPage` component with type-specific themes (blue/green/indigo), content, and FAQ.
 All cities have landmark images in `public/images/cities/[slug].jpg`.
+
+## Category Pages
+
+3 static SEO category pages linking to workshop detail pages:
+
+| Page | Target keywords | File |
+|------|----------------|------|
+| `/teambuilding` | teambuilding, teamuitje | `src/app/teambuilding/page.tsx` |
+| `/bedrijfsuitjes` | bedrijfsuitje, personeelsuitje | `src/app/bedrijfsuitjes/page.tsx` |
+| `/workshops` | workshops, workshop boeken | `src/app/workshops/page.tsx` |
+
+## SEO Redirects
+
+7x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs.
 
 ## Database
 
@@ -116,6 +140,7 @@ git push
 - Modify `/components/ui/` (shadcn managed)
 - Skip typecheck before committing
 - Use 21% BTW for food service (use 9%)
+- Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
 
 ## Deployment
 
