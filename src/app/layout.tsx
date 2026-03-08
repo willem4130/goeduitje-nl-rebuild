@@ -4,9 +4,6 @@ import "./globals.css";
 import { ClientLayout } from "@/components/client-layout";
 import { getSiteAssets } from "@/lib/site-assets";
 
-// Force all pages to use dynamic rendering to avoid prerender issues
-export const dynamic = "force-dynamic";
-
 const fontSans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
