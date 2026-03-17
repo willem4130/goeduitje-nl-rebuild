@@ -166,18 +166,17 @@ export function OnzeMedewerkersContent({
             </div>
           </ScrollReveal>
 
-          <StaggerChildren
-            staggerDelay={0.1}
-            className="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[200px] md:grid-cols-12 md:gap-4"
-          >
+          <div className="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[200px] md:grid-cols-12 md:gap-4">
             {teamMembers.map((member, index) => {
               const pattern = gridPatterns[index % gridPatterns.length];
 
               return (
                 <motion.div
                   key={member.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
                   className={`${pattern.colSpan} ${pattern.rowSpan}`}
                 >
                   <Card className="group shadow-editorial hover:shadow-editorial-hover h-full overflow-hidden border transition-all duration-500">
@@ -240,7 +239,7 @@ export function OnzeMedewerkersContent({
                 </motion.div>
               );
             })}
-          </StaggerChildren>
+          </div>
         </div>
       </section>
 
