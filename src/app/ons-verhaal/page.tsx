@@ -30,14 +30,14 @@ const DEFAULTS = {
     title: "Ons Verhaal",
     description:
       "Wij zijn een sociale onderneming waar statushouders* en asielzoekers uw bedrijfsuitjes organiseren en u een onvergetelijke dag bezorgen.",
-    image_left: "/images/workshops/koffie-thee.jpg",
-    image_right: "/images/workshops/the-game.jpg",
+    image_left: "/images/ons-verhaal/hero-left.jpg",
+    image_right: "/images/ons-verhaal/hero-right.jpg",
     floating_badge: "Met passie gemaakt",
   },
   video: {
     title: "Bekijk ons in actie",
     subtitle: "Een impressie van onze workshops en activiteiten",
-    video_url: "/images/workshops/workshop 1.mp4",
+    video_url: "/images/ons-verhaal/impressie-uitjes.mp4",
     label: "Kookworkshop",
     sublabel: "Samen koken, samen groeien",
   },
@@ -45,8 +45,8 @@ const DEFAULTS = {
     title: "Doen én bijzonder eten",
     description:
       "Onze bedrijfsuitjes bestaan uit een mix van actieve en minder actieve Uitjes met vaak een cultureel tintje al dan niet gecombineerd met heerlijk eten uit de Arabische of Perzische keuken.",
-    image: "/images/workshops/beachvolleybal.jpg",
-    image_label: "Actieve teambuilding",
+    image: "/images/ons-verhaal/doen.jpg",
+    image_label: "Doen én bijzonder eten",
   },
   ervaring: {
     title: "Ervaring opdoen",
@@ -71,8 +71,8 @@ const DEFAULTS = {
       "Door het potentieel van statushouders en asielzoekers te erkennen en te benutten, bouwen we bruggen tussen culturen en versterken we de sociale cohesie.",
     paragraph3:
       "We zien een toekomst voor ons waarin onze organisatie een toonaangevende rol speelt in het creëren van inclusieve werkplekken, waar talenten uit alle hoeken van de wereld samenkomen en bijdragen aan gezamenlijke groei en welvaart.",
-    image: "/images/workshops/design-tshirt.jpg",
-    image_label: "Creatieve workshops",
+    image: "/images/ons-verhaal/visie.jpg",
+    image_label: "Onze visie",
   },
   missie: {
     title: "Onze missie",

@@ -5,6 +5,7 @@ import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Target, Users, TrendingUp, Lightbulb } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   TheoryOfChangeMedewerker,
@@ -53,21 +54,25 @@ const galleryImages = [
     id: 1,
     alt: "Team aan het werk in de keuken",
     aspect: "portrait",
+    src: "/images/impact/team-keuken.jpg",
   },
   {
     id: 2,
     alt: "Workshop koken met deelnemers",
     aspect: "landscape",
+    src: "/images/impact/koken-deelnemers.jpg",
   },
   {
     id: 3,
     alt: "Gezellige sfeer tijdens uitje",
     aspect: "landscape",
+    src: "/images/impact/gezellige-sfeer.jpg",
   },
   {
     id: 4,
     alt: "Team samen aan het koken",
     aspect: "portrait",
+    src: "/images/impact/team-koken.jpg",
   },
 ];
 
@@ -325,33 +330,17 @@ export default function OnzeImpactPage() {
                     : "aspect-[4/3]"
                 }`}
               >
-                {/* Placeholder with gradient */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(135deg,
-                      hsl(${25 + idx * 20}, 40%, ${60 - idx * 5}%) 0%,
-                      hsl(${35 + idx * 15}, 35%, ${50 - idx * 3}%) 100%)`,
-                  }}
+                {/* Photo */}
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 25vw"
                 />
 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-
-                {/* Decorative pattern */}
-                <div
-                  className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                  }}
-                />
-
-                {/* Image placeholder icon */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm">
-                    <Users className="h-8 w-8 text-white/80" />
-                  </div>
-                </div>
 
                 {/* Caption */}
                 <div className="absolute right-0 bottom-0 left-0 p-4">
