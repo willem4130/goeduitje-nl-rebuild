@@ -43,10 +43,13 @@ const gridPatterns = [
 ];
 
 export default function OnzeMedewerkersPage() {
-  const { data: teamMembers, isLoading } = api.team.getAll.useQuery(undefined, {
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+  const { data: teamMembers, isLoading } = api.team.getAll.useQuery(
+    {},
+    {
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   if (isLoading) {
     return (
