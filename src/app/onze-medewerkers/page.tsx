@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -181,35 +182,39 @@ export default function OnzeMedewerkersPage() {
                 >
                   <Card className="group shadow-editorial hover:shadow-editorial-hover h-full overflow-hidden border transition-all duration-500">
                     <CardContent className="relative h-full p-0">
-                      {/* Image with placeholder */}
+                      {/* Image with placeholder fallback */}
                       <div className="bg-muted relative h-full w-full overflow-hidden">
                         {/* Gradient overlay */}
                         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90 md:opacity-70" />
 
-                        {/* Placeholder pattern - warm earth tones */}
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background: `linear-gradient(135deg,
-                              hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
-                              hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
-                          }}
-                        />
-
-                        {/* Decorative pattern overlay */}
-                        <div
-                          className="absolute inset-0 opacity-10"
-                          style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                          }}
-                        />
-
-                        {/* User icon placeholder */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
-                            <Users className="h-12 w-12 text-white/80" />
-                          </div>
-                        </div>
+                        {member.image &&
+                        !member.image.includes("placeholder") ? (
+                          /* Real photo */
+                          <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, 33vw"
+                          />
+                        ) : (
+                          /* Placeholder fallback when no real photo */
+                          <>
+                            <div
+                              className="absolute inset-0"
+                              style={{
+                                background: `linear-gradient(135deg,
+                                  hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
+                                  hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
+                              }}
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
+                                <Users className="h-12 w-12 text-white/80" />
+                              </div>
+                            </div>
+                          </>
+                        )}
 
                         {/* Content overlay */}
                         <div className="absolute right-0 bottom-0 left-0 z-20 p-6 text-white">
