@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { ScrollReveal, StaggerChildren } from "@/components/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -187,18 +186,15 @@ export default function OnzeMedewerkersPage() {
                         {/* Gradient overlay */}
                         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90 md:opacity-70" />
 
+                        {/* Background: real photo or gradient placeholder */}
                         {member.image &&
                         !member.image.includes("placeholder") ? (
-                          /* Real photo */
-                          <Image
+                          <img
                             src={member.image}
                             alt={member.name}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, 33vw"
+                            className="absolute inset-0 h-full w-full object-cover"
                           />
                         ) : (
-                          /* Placeholder fallback when no real photo */
                           <>
                             <div
                               className="absolute inset-0"
