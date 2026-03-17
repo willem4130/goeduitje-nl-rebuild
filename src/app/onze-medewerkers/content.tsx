@@ -7,40 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Quote, ArrowRight } from "lucide-react";
 
-// Masonry grid pattern - varying heights for visual interest
-const gridPatterns = [
-  {
-    colSpan: "md:col-span-4",
-    rowSpan: "md:row-span-2",
-    aspect: "aspect-[3/4]",
-  },
-  {
-    colSpan: "md:col-span-4",
-    rowSpan: "md:row-span-1",
-    aspect: "aspect-[4/3]",
-  },
-  {
-    colSpan: "md:col-span-4",
-    rowSpan: "md:row-span-1",
-    aspect: "aspect-[4/3]",
-  },
-  {
-    colSpan: "md:col-span-4",
-    rowSpan: "md:row-span-2",
-    aspect: "aspect-[3/4]",
-  },
-  {
-    colSpan: "md:col-span-8",
-    rowSpan: "md:row-span-1",
-    aspect: "aspect-[16/9]",
-  },
-  {
-    colSpan: "md:col-span-4",
-    rowSpan: "md:row-span-1",
-    aspect: "aspect-[4/3]",
-  },
-];
-
 interface TeamMember {
   id: string;
   name: string;
@@ -151,7 +117,7 @@ export function OnzeMedewerkersContent({
         </div>
       </section>
 
-      {/* Team Gallery - Masonry Grid */}
+      {/* Team Gallery - 3×2 Grid */}
       <section className="section-md bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
@@ -166,79 +132,73 @@ export function OnzeMedewerkersContent({
             </div>
           </ScrollReveal>
 
-          <div className="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[200px] md:grid-cols-12 md:gap-4">
-            {teamMembers.map((member, index) => {
-              const pattern = gridPatterns[index % gridPatterns.length];
+          {/* 3×2 on desktop, 2×3 on tablet, 2×3 on mobile */}
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={member.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Card className="group shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500">
+                  <CardContent className="relative p-0">
+                    {/* Photo container — portrait 3:4 ratio */}
+                    <div className="bg-muted relative aspect-[3/4] w-full overflow-hidden">
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
 
-              return (
-                <motion.div
-                  key={member.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
-                  className={`${pattern.colSpan} ${pattern.rowSpan}`}
-                >
-                  <Card className="group shadow-editorial hover:shadow-editorial-hover h-full overflow-hidden border transition-all duration-500">
-                    <CardContent className="relative h-full p-0">
-                      {/* Image with placeholder fallback */}
-                      <div className="bg-muted relative h-full w-full overflow-hidden">
-                        {/* Gradient overlay */}
-                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90 md:opacity-70" />
-
-                        {/* Background: real photo or gradient placeholder */}
-                        {member.image &&
-                        !member.image.includes("placeholder") ? (
-                          <img
-                            src={member.image}
-                            alt={member.name}
-                            className="absolute inset-0 h-full w-full object-cover"
+                      {/* Photo or placeholder */}
+                      {member.image &&
+                      !member.image.includes("placeholder") ? (
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <>
+                          <div
+                            className="absolute inset-0"
+                            style={{
+                              background: `linear-gradient(135deg,
+                                hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
+                                hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
+                            }}
                           />
-                        ) : (
-                          <>
-                            <div
-                              className="absolute inset-0"
-                              style={{
-                                background: `linear-gradient(135deg,
-                                  hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
-                                  hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
-                              }}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
-                                <Users className="h-12 w-12 text-white/80" />
-                              </div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
+                              <Users className="h-10 w-10 text-white/80 sm:h-12 sm:w-12" />
                             </div>
-                          </>
-                        )}
-
-                        {/* Content overlay */}
-                        <div className="absolute right-0 bottom-0 left-0 z-20 p-6 text-white">
-                          <div className="translate-y-2 transform transition-transform duration-300 group-hover:translate-y-0">
-                            <p className="mb-1 text-xs font-medium tracking-wider text-white/70 uppercase">
-                              {member.origin}
-                            </p>
-                            <h3 className="mb-1 text-sm font-bold tracking-tight sm:text-xl">
-                              {member.name}
-                            </h3>
-                            <p className="text-xs font-medium text-white/90 sm:text-sm">
-                              {member.role}
-                            </p>
-
-                            {/* Quote - shows on hover for larger cards */}
-                            {(index === 0 || index === 3 || index === 4) && (
-                              <p className="mt-3 max-h-0 overflow-hidden text-sm leading-relaxed text-white/80 italic opacity-0 transition-all duration-300 group-hover:max-h-20 group-hover:opacity-100">
-                                &ldquo;{member.quote}&rdquo;
-                              </p>
-                            )}
                           </div>
-                        </div>
+                        </>
+                      )}
+
+                      {/* Name & role overlay */}
+                      <div className="absolute right-0 bottom-0 left-0 z-20 p-4 text-white sm:p-5">
+                        <p className="mb-0.5 text-[10px] font-medium tracking-wider text-white/70 uppercase sm:text-xs">
+                          {member.origin}
+                        </p>
+                        <h3 className="text-base font-bold tracking-tight sm:text-lg">
+                          {member.name}
+                        </h3>
+                        <p className="text-xs font-medium text-white/90 sm:text-sm">
+                          {member.role}
+                        </p>
+
+                        {/* Quote on hover (desktop only) */}
+                        {member.quote && (
+                          <p className="mt-2 hidden max-h-0 overflow-hidden text-sm leading-relaxed text-white/80 italic opacity-0 transition-all duration-300 group-hover:max-h-20 group-hover:opacity-100 md:block">
+                            &ldquo;{member.quote}&rdquo;
+                          </p>
+                        )}
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
