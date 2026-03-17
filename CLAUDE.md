@@ -142,6 +142,22 @@ git push
 - Use 21% BTW for food service (use 9%)
 - Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
 
+## Active Debug Session
+
+**READ FIRST**: `docs/ACTIVE_DEBUG_SESSION.md` — contains critical in-progress debugging state.
+
+### Priority 1: /onze-medewerkers page broken
+Team photos page shows loading spinner forever. tRPC API works, images exist, code is correct, but client-side hydration fails silently. Full investigation state documented in the debug file above.
+
+### Priority 2: Fix remaining useQuery(undefined) bugs
+Two more pages send `null` input causing 400 errors:
+- `src/app/faq/page.tsx:14` — `useQuery(undefined)` → change to `useQuery({})`
+- `src/components/workshop-carousel.tsx:68` — `useQuery(undefined)` → change to `useQuery({})`
+
+### Image reference doc
+- `docs/IMAGE_UPLOAD_GUIDE.md` — client-facing guide for CMS-managed images
+- Excel with all image positions: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
+
 ## Deployment
 
 **Production**: https://goeduitje-nl-rebuild.vercel.app
