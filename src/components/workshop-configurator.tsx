@@ -1,5 +1,11 @@
 "use client";
 
+declare global {
+  interface Window {
+    dataLayer: Record<string, unknown>[];
+  }
+}
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -240,14 +246,47 @@ export function WorkshopConfigurator() {
         }),
       });
 
+      // Push GA4 ecommerce purchase event to dataLayer
+      const estimatedPrice = calculateEstimatedPrice(
+        data.workshops,
+        data.participantCount
+      );
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce data
+      window.dataLayer.push({
+        event: "purchase",
+        ecommerce: {
+          transaction_id: workshopConfig.id || crypto.randomUUID(),
+          value: estimatedPrice,
+          currency: "EUR",
+          items: data.workshops.map((workshopId) => {
+            const workshop = WORKSHOPS.find((w) => w.id === workshopId);
+            const tier = getWorkshopPrice(workshopId, data.participantCount);
+            return {
+              item_id: workshopId,
+              item_name: workshop?.name || workshopId,
+              item_category: "Workshop",
+              quantity: data.participantCount,
+              price: tier?.priceExclBtw || 0,
+            };
+          }),
+        },
+      });
+
       toast.success("Aanvraag verzonden! 🎉", {
         description:
           "Verheug je vast op jullie uitje! We nemen snel contact op.",
         duration: 5000,
       });
 
-      // Redirect to testimonials page with "voorpret" feeling
-      router.push("/jullie-ervaringen");
+      // Redirect to thank-you page with submission summary
+      const thankYouParams = new URLSearchParams();
+      if (data.name) thankYouParams.set("name", data.name);
+      if (data.participantCount)
+        thankYouParams.set("personen", String(data.participantCount));
+      if (data.workshops?.length)
+        thankYouParams.set("workshops", data.workshops.join(", "));
+      router.push(`/bedankt?${thankYouParams.toString()}`);
     } catch (error) {
       console.error("Workshop configuration error:", error);
       toast.error("Er is iets misgegaan!", {
@@ -332,10 +371,7 @@ export function WorkshopConfigurator() {
                 >
                   Sluiten
                 </Button>
-                <Link
-                  href="/booking"
-                  className="flex-1"
-                >
+                <Link href="/booking" className="flex-1">
                   <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600">
                     Bekijk agenda
                   </Button>
@@ -650,7 +686,7 @@ export function WorkshopConfigurator() {
                                     onCheckedChange={field.onChange}
                                   />
                                 </FormControl>
-                                <FormLabel className="text-xs font-normal">
+                                <FormLabel className="text-[11px] font-normal sm:text-xs">
                                   Nog te bepalen
                                 </FormLabel>
                               </FormItem>

@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
+import { ArrowDown } from "lucide-react";
 
 interface TocItem {
   text: string;
@@ -264,14 +265,77 @@ export function TheoryOfChange({
     }
   }, [data, isInView, calculatePaths]);
 
+  const mobileSections = [
+    {
+      title: "Activiteiten",
+      items: data.activiteiten,
+      colors: columnColors.activiteiten,
+    },
+    {
+      title: "Outputs",
+      items: data.outputs,
+      colors: columnColors.outputs,
+    },
+    {
+      title: "Directe effecten",
+      items: [...data.directeEffectenLeft, ...data.directeEffectenRight],
+      colors: columnColors.directeEffecten,
+    },
+    {
+      title: "Indirecte effecten",
+      items: data.indirecteEffecten,
+      colors: columnColors.indirecteEffecten,
+    },
+  ];
+
   return (
     <div ref={containerRef} className="mb-12">
       <h3 className="text-primary mb-6 text-xl font-bold tracking-tight lg:text-2xl">
         {title}
       </h3>
 
-      {/* Content wrapper - no scroll on desktop */}
-      <div ref={contentRef} className="relative">
+      {/* Mobile stacked layout */}
+      <div className="space-y-4 md:hidden">
+        {mobileSections.map((section, sectionIdx) => (
+          <div key={section.title}>
+            {sectionIdx > 0 && (
+              <div className="flex justify-center py-2">
+                <ArrowDown className="text-muted-foreground h-5 w-5" />
+              </div>
+            )}
+            <div>
+              <div
+                className={`rounded-t px-3 py-2 text-center ${section.colors.bg}`}
+              >
+                <span
+                  className={`text-sm font-semibold ${section.colors.text}`}
+                >
+                  {section.title}
+                </span>
+              </div>
+              <div className="space-y-1.5 pt-1.5">
+                {section.items.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{
+                      delay: 0.05 + sectionIdx * 0.1 + idx * 0.03,
+                      duration: 0.3,
+                    }}
+                    className={`rounded px-3 py-2 text-xs leading-snug ${section.colors.itemBg} ${section.colors.itemText}`}
+                  >
+                    {item.text}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop grid layout */}
+      <div ref={contentRef} className="relative hidden md:block">
         {/* SVG Layer for connections */}
         <svg
           className="pointer-events-none absolute inset-0 z-20 overflow-visible"

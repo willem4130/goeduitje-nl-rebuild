@@ -40,7 +40,7 @@ export default function OnsTeamPage() {
                 Terug naar Ons Verhaal
               </Link>
               <div className="max-w-4xl">
-                <h1 className="mb-8 text-[64px] leading-[1.1] tracking-tight sm:text-[72px]">
+                <h1 className="mb-8 text-3xl leading-[1.1] tracking-tight sm:text-5xl lg:text-[64px]">
                   Onze Medewerkers
                 </h1>
                 <p className="text-muted-foreground max-w-2xl text-xl leading-relaxed tracking-wide">

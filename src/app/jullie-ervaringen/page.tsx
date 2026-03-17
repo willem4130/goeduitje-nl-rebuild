@@ -125,14 +125,14 @@ export default function JullieErvaringenPage() {
           ) : (
             <StaggerChildren
               staggerDelay={0.1}
-              className="grid gap-8 md:grid-cols-4"
+              className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8"
             >
               <div className="text-center">
-                <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
-                  <Star className="text-primary h-8 w-8" />
+                <div className="bg-primary/10 mx-auto mb-2 w-fit rounded-full p-3 md:mb-4 md:p-4">
+                  <Star className="text-primary h-6 w-6 md:h-8 md:w-8" />
                 </div>
                 <div className="mb-2 flex items-center justify-center gap-2">
-                  <span className="text-[48px] leading-none font-light tracking-tight">
+                  <span className="text-[32px] leading-none font-light tracking-tight md:text-[48px]">
                     {stats?.averageRating?.toFixed(1) || "4.9"}
                   </span>
                   <StarRating rating={stats?.averageRating || 4.9} size="md" />
@@ -143,10 +143,10 @@ export default function JullieErvaringenPage() {
               </div>
 
               <div className="text-center">
-                <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
-                  <Users className="text-primary h-8 w-8" />
+                <div className="bg-primary/10 mx-auto mb-2 w-fit rounded-full p-3 md:mb-4 md:p-4">
+                  <Users className="text-primary h-6 w-6 md:h-8 md:w-8" />
                 </div>
-                <div className="mb-2 text-[48px] leading-none font-light tracking-tight">
+                <div className="mb-2 text-[32px] leading-none font-light tracking-tight md:text-[48px]">
                   {stats?.totalCount || stats?.storedCount || "100+"}
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">
@@ -155,10 +155,10 @@ export default function JullieErvaringenPage() {
               </div>
 
               <div className="text-center">
-                <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
-                  <Building2 className="text-primary h-8 w-8" />
+                <div className="bg-primary/10 mx-auto mb-2 w-fit rounded-full p-3 md:mb-4 md:p-4">
+                  <Building2 className="text-primary h-6 w-6 md:h-8 md:w-8" />
                 </div>
-                <div className="mb-2 text-[48px] leading-none font-light tracking-tight">
+                <div className="mb-2 text-[32px] leading-none font-light tracking-tight md:text-[48px]">
                   {siteStats?.public?.companiesCount || "80+"}
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">
@@ -167,10 +167,10 @@ export default function JullieErvaringenPage() {
               </div>
 
               <div className="text-center">
-                <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
-                  <Calendar className="text-primary h-8 w-8" />
+                <div className="bg-primary/10 mx-auto mb-2 w-fit rounded-full p-3 md:mb-4 md:p-4">
+                  <Calendar className="text-primary h-6 w-6 md:h-8 md:w-8" />
                 </div>
-                <div className="mb-2 text-[48px] leading-none font-light tracking-tight">
+                <div className="mb-2 text-[32px] leading-none font-light tracking-tight md:text-[48px]">
                   {siteStats?.public?.activitiesCount || "200+"}
                 </div>
                 <div className="text-muted-foreground text-sm tracking-wide">

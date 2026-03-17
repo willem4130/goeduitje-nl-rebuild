@@ -167,7 +167,7 @@ export default function OnzeMedewerkersPage() {
 
           <StaggerChildren
             staggerDelay={0.1}
-            className="grid auto-rows-[200px] gap-4 md:grid-cols-12"
+            className="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[200px] md:grid-cols-12 md:gap-4"
           >
             {teamMembers.map((member, index) => {
               const pattern = gridPatterns[index % gridPatterns.length];
@@ -184,7 +184,7 @@ export default function OnzeMedewerkersPage() {
                       {/* Image with placeholder */}
                       <div className="bg-muted relative h-full w-full overflow-hidden">
                         {/* Gradient overlay */}
-                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
+                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90 md:opacity-70" />
 
                         {/* Placeholder pattern - warm earth tones */}
                         <div
@@ -217,10 +217,10 @@ export default function OnzeMedewerkersPage() {
                             <p className="mb-1 text-xs font-medium tracking-wider text-white/70 uppercase">
                               {member.origin}
                             </p>
-                            <h3 className="mb-1 text-xl font-bold tracking-tight">
+                            <h3 className="mb-1 text-sm font-bold tracking-tight sm:text-xl">
                               {member.name}
                             </h3>
-                            <p className="text-sm font-medium text-white/90">
+                            <p className="text-xs font-medium text-white/90 sm:text-sm">
                               {member.role}
                             </p>
 

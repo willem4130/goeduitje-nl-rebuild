@@ -98,7 +98,7 @@ const TEAMBUILDING_WORKSHOPS = [
 
 export default function TeambuildingPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">
@@ -243,8 +243,8 @@ export default function TeambuildingPage() {
               <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
                 Onze teambuildingactiviteiten zijn niet zomaar uitjes. Ze
                 combineren plezier, samenwerking en maatschappelijke impact.
-                Door samen te werken met statushouders en nieuwkomers ontstaat er
-                een unieke dynamiek die je team versterkt.
+                Door samen te werken met statushouders en nieuwkomers ontstaat
+                er een unieke dynamiek die je team versterkt.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
@@ -294,9 +294,7 @@ export default function TeambuildingPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">
-                    4.9/5 op Google
-                  </span>
+                  <span className="text-sm font-medium">4.9/5 op Google</span>
                 </div>
               </div>
             </div>

@@ -76,7 +76,7 @@ export default async function RecipeDetailPage({ params }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
         {/* Back button */}
-        <div className="absolute top-4 left-4 z-10 sm:top-8 sm:left-8">
+        <div className="absolute top-24 left-4 z-10 sm:top-28 sm:left-8">
           <Link href="/recepten">
             <Button
               variant="secondary"

@@ -103,7 +103,7 @@ const OTHER_ACTIVITIES = [
 
 export default function WorkshopsPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">
@@ -118,9 +118,9 @@ export default function WorkshopsPage() {
             </h1>
 
             <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-              Onze workshops gaan verder dan alleen leren. Onder begeleiding
-              van statushouders en nieuwkomers ontdek je nieuwe vaardigheden,
-              smaken en culturen. Van koken tot koffie, van sport tot spel.
+              Onze workshops gaan verder dan alleen leren. Onder begeleiding van
+              statushouders en nieuwkomers ontdek je nieuwe vaardigheden, smaken
+              en culturen. Van koken tot koffie, van sport tot spel.
             </p>
 
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
@@ -315,9 +315,7 @@ export default function WorkshopsPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">
-                    4.9/5 op Google
-                  </span>
+                  <span className="text-sm font-medium">4.9/5 op Google</span>
                 </div>
               </div>
             </div>

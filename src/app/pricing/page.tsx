@@ -3,7 +3,7 @@ import { STRIPE_PRODUCTS } from "@/lib/stripe";
 
 export default function PricingPage() {
   return (
-    <div className="container py-20">
+    <div className="container pt-28 pb-20">
       <div className="mx-auto max-w-6xl space-y-12">
         {/* Header */}
         <div className="space-y-4 text-center">

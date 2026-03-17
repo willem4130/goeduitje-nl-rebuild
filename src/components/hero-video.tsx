@@ -84,7 +84,7 @@ export function HeroVideo({
   }, [hasEnded]);
 
   return (
-    <section className="relative flex h-screen min-h-[600px] w-full items-center overflow-hidden">
+    <section className="relative flex h-dvh min-h-[600px] w-full items-center overflow-hidden">
       {/* Parallax Video Background */}
       <motion.div style={{ y: videoY }} className="absolute inset-0 z-0">
         <video
@@ -188,7 +188,7 @@ export function HeroVideo({
             {/* Impact Stats - KPI Numbers */}
             <motion.div
               variants={fadeInUp}
-              className="mx-auto mt-16 grid max-w-2xl grid-cols-2 gap-12 border-t border-white/20 pt-12"
+              className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-6 border-t border-white/20 pt-8 sm:mt-16 sm:gap-12 sm:pt-12"
             >
               <div className="text-center">
                 <AnimatedKPI target={41} />
@@ -207,7 +207,7 @@ export function HeroVideo({
             {/* USP Pills - Social Impact Focus */}
             <motion.div
               variants={fadeInUp}
-              className="mt-12 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-4"
+              className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-12 sm:gap-4"
             >
               <USPBadge text="Maak sociale impact" />
               <USPBadge text="Op locatie naar keuze" />
@@ -228,7 +228,7 @@ export function HeroVideo({
           repeatType: "reverse",
           ease: EASING.gentle,
         }}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
+        className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 sm:bottom-8"
       >
         <div className="flex flex-col items-center gap-2">
           <span className="text-sm tracking-wide text-white/70">
@@ -257,8 +257,8 @@ export function HeroVideo({
  */
 function USPBadge({ text }: { text: string }) {
   return (
-    <div className="flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 backdrop-blur-md">
-      <span className="text-sm font-semibold tracking-wide text-white">
+    <div className="flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md sm:px-6 sm:py-3">
+      <span className="text-xs font-semibold tracking-wide text-white sm:text-sm">
         {text}
       </span>
     </div>
@@ -287,7 +287,7 @@ function AnimatedKPI({ target }: { target: number }) {
   );
 
   return (
-    <motion.div className="text-5xl font-bold tracking-tight text-white">
+    <motion.div className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
       {formatted}
     </motion.div>
   );

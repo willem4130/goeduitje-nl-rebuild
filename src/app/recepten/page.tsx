@@ -70,7 +70,7 @@ export default function ReceptenPage() {
                 <div className="inline-flex min-w-full gap-0 rounded-lg bg-[#B85C7C] p-0">
                   <button
                     onClick={() => setSelectedCategory(null)}
-                    className={`px-8 py-4 text-lg font-medium whitespace-nowrap transition-colors ${
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors sm:px-8 sm:py-4 sm:text-lg ${
                       selectedCategory === null
                         ? "bg-white text-[#B85C7C]"
                         : "text-white hover:bg-white/10"

@@ -44,6 +44,18 @@ export function TopNavigation({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <motion.nav
       className={cn(
@@ -196,6 +208,69 @@ export function TopNavigation({
                   </Link>
                 </motion.div>
               ))}
+            </div>
+
+            {/* CTA Button */}
+            <div className="border-t px-4 pt-4 pb-2">
+              <Link
+                href="/onze-uitjes#configurator"
+                className="bg-primary text-primary-foreground flex items-center justify-center gap-2 rounded-md px-4 py-3 text-sm font-semibold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Calendar className="h-4 w-4" />
+                Stel je uitje samen
+              </Link>
+            </div>
+
+            {/* Contact Info */}
+            <div className="border-t px-4 pt-4 pb-2">
+              <div className="flex items-center justify-around">
+                <a
+                  href="tel:+31652675891"
+                  className="text-muted-foreground flex items-center gap-2 text-sm"
+                >
+                  <Phone className="h-4 w-4" />
+                  06 5267 5891
+                </a>
+                <a
+                  href="mailto:info@goeduitje.nl"
+                  className="text-muted-foreground flex items-center gap-2 text-sm"
+                >
+                  <Mail className="h-4 w-4" />
+                  Mail ons
+                </a>
+              </div>
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex items-center justify-center gap-6 px-4 pt-2 pb-4">
+              <Link
+                href="https://instagram.com/goeduitje"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Instagram className="text-muted-foreground h-5 w-5" />
+              </Link>
+              <Link
+                href="https://facebook.com/goeduitje"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Facebook className="text-muted-foreground h-5 w-5" />
+              </Link>
+              <Link
+                href="https://linkedin.com/company/goeduitje"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Linkedin className="text-muted-foreground h-5 w-5" />
+              </Link>
             </div>
           </div>
         </motion.div>

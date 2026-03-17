@@ -65,7 +65,7 @@ export default function FeedbackPage() {
 
   if (submitted) {
     return (
-      <main className="flex min-h-screen flex-col">
+      <main className="flex min-h-screen flex-col pt-20">
         <section className="section-lg">
           <div className="container mx-auto max-w-2xl px-6 lg:px-8">
             <ScrollReveal animation="fade" amount={0.1}>
@@ -96,7 +96,7 @@ export default function FeedbackPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex min-h-screen flex-col pt-20">
       {/* Feedback Form */}
       <section className="section-lg">
         <div className="container mx-auto max-w-3xl px-6 lg:px-8">

@@ -217,6 +217,28 @@
       font-size: 16px; /* Reduced from 18px */
     }
   }
+
+  /* Tablet typography - intermediate sizes between mobile and desktop */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    h1 {
+      font-size: 44px;
+    }
+    h2 {
+      font-size: 34px;
+    }
+    h3 {
+      font-size: 28px;
+    }
+    h4 {
+      font-size: 24px;
+    }
+    h5 {
+      font-size: 20px;
+    }
+    h6 {
+      font-size: 17px;
+    }
+  }
 }
 
 /* High-end editorial utilities */
@@ -276,6 +298,30 @@
   .section-asymmetric-2 {
     padding-top: 3rem;
     padding-bottom: 5rem;
+  }
+
+  /* Mobile-specific section spacing reductions */
+  @media (max-width: 768px) {
+    .section-sm {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+    .section-md {
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+    .section-lg {
+      padding-top: 3.5rem;
+      padding-bottom: 3.5rem;
+    }
+    .section-asymmetric-1 {
+      padding-top: 3rem;
+      padding-bottom: 2rem;
+    }
+    .section-asymmetric-2 {
+      padding-top: 2rem;
+      padding-bottom: 3rem;
+    }
   }
 
   /* Content stacking - vertical rhythm */

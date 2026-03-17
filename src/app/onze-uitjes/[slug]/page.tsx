@@ -243,7 +243,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                       )}
                       {variant.name}
                       {variant.name === "Open Kookworkshops" && (
-                        <Badge className="ml-2 bg-amber-600 text-[10px] text-white hover:bg-amber-600">
+                        <Badge className="ml-2 hidden bg-amber-600 text-[10px] text-white hover:bg-amber-600 sm:inline-flex">
                           Particulieren
                         </Badge>
                       )}
@@ -352,7 +352,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                               {variant.priceTiers.map((tier, i) => (
                                 <div
                                   key={i}
-                                  className="flex items-center justify-between text-sm"
+                                  className="flex items-center justify-between text-xs sm:text-sm"
                                 >
                                   <span className="text-muted-foreground">
                                     {tier.groupSize}
@@ -427,7 +427,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                       {workshop.priceTiers.map((tier, i) => (
                         <div
                           key={i}
-                          className="flex items-center justify-between text-sm"
+                          className="flex items-center justify-between text-xs sm:text-sm"
                         >
                           <span className="text-muted-foreground">
                             {tier.groupSize}

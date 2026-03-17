@@ -266,6 +266,22 @@ export default function BookingPage() {
         </div>
       </section>
 
+      {/* Mobile-only: compact included items */}
+      <div className="container mx-auto max-w-7xl px-6 py-4 lg:hidden">
+        <div className="flex flex-wrap gap-2">
+          {["Begeleiding", "Ingrediënten", "Recepten", "Diner", "Drankjes"].map(
+            (item) => (
+              <span
+                key={item}
+                className="bg-primary/5 text-primary rounded-full px-3 py-1 text-xs font-medium"
+              >
+                ✓ {item}
+              </span>
+            )
+          )}
+        </div>
+      </div>
+
       {/* Main Content - Two Column Layout */}
       <section className="bg-muted/30 py-8">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">

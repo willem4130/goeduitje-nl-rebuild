@@ -104,7 +104,7 @@ const BEDRIJFSUITJE_WORKSHOPS = [
 
 export default function BedrijfsuitjesPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-emerald-50 via-teal-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">
@@ -119,8 +119,8 @@ export default function BedrijfsuitjesPage() {
             </h1>
 
             <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-              Op zoek naar een bedrijfsuitje dat echt indruk maakt? Bij Goeduitje
-              combineren we plezier met maatschappelijke impact. Onze
+              Op zoek naar een bedrijfsuitje dat echt indruk maakt? Bij
+              Goeduitje combineren we plezier met maatschappelijke impact. Onze
               activiteiten worden begeleid door statushouders en nieuwkomers,
               waardoor jullie bedrijfsuitje niet alleen leuk is, maar ook
               bijdraagt aan een inclusieve samenleving.
@@ -195,7 +195,9 @@ export default function BedrijfsuitjesPage() {
                 key={workshop.slug}
                 href={`/onze-uitjes/${workshop.slug}`}
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
-                  workshop.highlight ? "ring-2 ring-emerald-500 ring-offset-2" : ""
+                  workshop.highlight
+                    ? "ring-2 ring-emerald-500 ring-offset-2"
+                    : ""
                 }`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
@@ -258,9 +260,7 @@ export default function BedrijfsuitjesPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">
-                    4.9/5 op Google
-                  </span>
+                  <span className="text-sm font-medium">4.9/5 op Google</span>
                 </div>
               </div>
             </div>
@@ -270,8 +270,8 @@ export default function BedrijfsuitjesPage() {
               </h2>
               <p className="text-muted-foreground mb-6 text-lg leading-relaxed">
                 Een bedrijfsuitje bij Goeduitje is meer dan een dagje uit. Het
-                is een ervaring die je team verbindt, je MVO-doelen versterkt
-                en een positieve bijdrage levert aan de samenleving.
+                is een ervaring die je team verbindt, je MVO-doelen versterkt en
+                een positieve bijdrage levert aan de samenleving.
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
@@ -283,9 +283,7 @@ export default function BedrijfsuitjesPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
-                  <span>
-                    Past bij jullie MVO-beleid en duurzaamheidsdoelen
-                  </span>
+                  <span>Past bij jullie MVO-beleid en duurzaamheidsdoelen</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />

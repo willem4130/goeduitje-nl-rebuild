@@ -17,6 +17,7 @@ import {
   Mail,
   Building2,
   Compass,
+  Euro,
 } from "lucide-react";
 import { getCityImage } from "@/lib/city-data";
 
@@ -335,7 +336,11 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
   },
 ];
 
-type LandingType = "kookworkshop" | "teambuilding" | "bedrijfsuitje" | "stadsspel";
+type LandingType =
+  | "kookworkshop"
+  | "teambuilding"
+  | "bedrijfsuitje"
+  | "stadsspel";
 
 interface CityData {
   slug: string;
@@ -470,12 +475,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const type = landing.type || "kookworkshop";
-  const pageTitle =
-    landing.displayTitle
-      ? `${landing.displayTitle} ${landing.city}`
-      : landing.isVegetarian
-        ? `Vegetarische Kookworkshop ${landing.city}`
-        : `${TYPE_LABELS[type]} ${landing.city}`;
+  const pageTitle = landing.displayTitle
+    ? `${landing.displayTitle} ${landing.city}`
+    : landing.isVegetarian
+      ? `Vegetarische Kookworkshop ${landing.city}`
+      : `${TYPE_LABELS[type]} ${landing.city}`;
 
   const metaDescriptions: Record<LandingType, string> = {
     kookworkshop: `Bij onze sociale onderneming organiseren statushouders en asielzoekers unieke kookworkshops in ${landing.region}, waar u onder begeleiding van onze medewerkers aan de slag gaat.`,
@@ -558,11 +562,7 @@ export default async function LandingPage({ params }: Props) {
   // Non-kookworkshop types use a separate template
   if (type !== "kookworkshop") {
     return (
-      <TypedLandingPage
-        landing={landing}
-        type={type}
-        heroImage={heroImage}
-      />
+      <TypedLandingPage landing={landing} type={type} heroImage={heroImage} />
     );
   }
 
@@ -669,6 +669,48 @@ export default async function LandingPage({ params }: Props) {
         </div>
       </section>
 
+      {/* Quick Info Bar */}
+      <section className="border-b bg-white py-8">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div className="flex items-center gap-4 rounded-xl border bg-amber-50/50 p-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                <Euro className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Prijs</p>
+                <p className="text-lg font-bold text-gray-900">
+                  Vanaf €55 p.p.
+                </p>
+                <p className="text-xs text-gray-500">excl. btw</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 rounded-xl border bg-amber-50/50 p-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                <Clock className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Duur</p>
+                <p className="text-lg font-bold text-gray-900">Vanaf 2,5 uur</p>
+                <p className="text-xs text-gray-500">volledig naar wens</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 rounded-xl border bg-amber-50/50 p-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                <Users className="h-6 w-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Groepsgrootte</p>
+                <p className="text-lg font-bold text-gray-900">
+                  Vanaf 8 personen
+                </p>
+                <p className="text-xs text-gray-500">ook grotere groepen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About Our Workshops Section - Exact text from original */}
       <section className="py-16 lg:py-20">
         <div className="container mx-auto max-w-7xl px-6">
@@ -746,6 +788,126 @@ export default async function LandingPage({ params }: Props) {
                 leiding van onze koks met aanvulling van Oosterse kruiden en
                 ingrediënten om te toveren tot verrukkelijke gerechten.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
+            {/* Price Tiers */}
+            <div>
+              <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-100">
+                <Euro className="mr-1 h-3 w-3" />
+                Prijzen
+              </Badge>
+              <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                Tarieven kookworkshop
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Prijzen per persoon, afhankelijk van groepsgrootte. Alle
+                ingrediënten, materialen en begeleiding zijn inbegrepen.
+              </p>
+
+              <div className="overflow-x-auto rounded-xl border">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-amber-50">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                        Groepsgrootte
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">
+                        Excl. btw
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">
+                        Incl. btw
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    <tr className="bg-white">
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        8-10 personen
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
+                        €70
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-gray-600">
+                        €85
+                      </td>
+                    </tr>
+                    <tr className="bg-white">
+                      <td className="px-4 py-3 text-sm text-gray-700">
+                        11-15 personen
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
+                        €60
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-gray-600">
+                        €73
+                      </td>
+                    </tr>
+                    <tr className="bg-amber-50/50">
+                      <td className="px-4 py-3 text-sm font-medium text-gray-700">
+                        16+ personen
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm font-bold text-amber-700">
+                        €55
+                      </td>
+                      <td className="px-4 py-3 text-right text-sm text-gray-600">
+                        €67
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-muted-foreground mt-3 text-xs">
+                Prijzen zijn indicatief voor de Arabische kookworkshop. Andere
+                varianten (Oogsten &amp; Koken, Koken op Maat) kunnen afwijken.{" "}
+                <Link
+                  href="/onze-uitjes/kookworkshop"
+                  className="text-amber-600 underline hover:text-amber-700"
+                >
+                  Bekijk alle varianten
+                </Link>
+              </p>
+            </div>
+
+            {/* Wat is inbegrepen */}
+            <div>
+              <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-100">
+                <CheckCircle2 className="mr-1 h-3 w-3" />
+                Inbegrepen
+              </Badge>
+              <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                Wat is inbegrepen?
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Bij onze kookworkshops in {landing.city} is alles geregeld zodat
+                jij je nergens zorgen over hoeft te maken.
+              </p>
+
+              <div className="space-y-3">
+                {[
+                  "Begeleiding door gepassioneerde Arabische koks",
+                  "Alle ingrediënten en materialen",
+                  "Recepten om mee naar huis te nemen",
+                  "Complete maaltijd (samen eten na het koken)",
+                  "Keuze uit vlees, vegetarisch of veganistisch",
+                  "Sociale impact — draag bij aan arbeidsparticipatie",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-lg border bg-white p-3"
+                  >
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+                    <span className="text-gray-700">{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -1066,8 +1228,12 @@ interface TypedLandingPageProps {
 
 function getWorkshopCards(
   type: LandingType,
-  city: string,
-): { title: string; description: string; icon: "ChefHat" | "MapPin" | "Star" | "Heart" | "Compass" }[] {
+  city: string
+): {
+  title: string;
+  description: string;
+  icon: "ChefHat" | "MapPin" | "Star" | "Heart" | "Compass";
+}[] {
   switch (type) {
     case "teambuilding":
       return [
@@ -1141,11 +1307,23 @@ function getCtaConfig(type: LandingType): {
 } {
   switch (type) {
     case "teambuilding":
-      return { link: "/teambuilding", label: "Bekijk teambuilding", icon: "Users" };
+      return {
+        link: "/teambuilding",
+        label: "Bekijk teambuilding",
+        icon: "Users",
+      };
     case "bedrijfsuitje":
-      return { link: "/bedrijfsuitjes", label: "Bekijk bedrijfsuitjes", icon: "Building2" };
+      return {
+        link: "/bedrijfsuitjes",
+        label: "Bekijk bedrijfsuitjes",
+        icon: "Building2",
+      };
     case "stadsspel":
-      return { link: "/onze-uitjes/stadsspel", label: "Meer over het stadsspel", icon: "Compass" };
+      return {
+        link: "/onze-uitjes/stadsspel",
+        label: "Meer over het stadsspel",
+        icon: "Compass",
+      };
     default:
       return { link: "/onze-uitjes", label: "Bekijk uitjes", icon: "Users" };
   }
@@ -1169,7 +1347,10 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
   const cta = getCtaConfig(type);
   const CtaIcon = ICON_MAP[cta.icon];
 
-  const heroDescriptions: Record<Exclude<LandingType, "kookworkshop">, string> = {
+  const heroDescriptions: Record<
+    Exclude<LandingType, "kookworkshop">,
+    string
+  > = {
     teambuilding: `Zoek je een teambuilding activiteit in ${landing.region} die verder gaat dan het gewone? Bij Goeduitje organiseren statushouders en nieuwkomers activiteiten die je team verbinden én bijdragen aan integratie. Kies uit kookworkshops, stadsspellen of de Koffer Challenge.`,
     bedrijfsuitje: `Op zoek naar een origineel bedrijfsuitje in ${landing.region}? Bij Goeduitje organiseren statushouders en nieuwkomers activiteiten die je collega's verbinden en bijdragen aan een goede zaak. Van kookworkshops tot stadsspellen – er is voor elk team een passende activiteit.`,
     stadsspel: `Ontdek ${landing.city} op een unieke manier met ons stadsspel. Een interactieve speurtocht vol culturele uitdagingen en verrassende ontmoetingen met statushouders en nieuwkomers die hun stad en cultuur met jou delen.`,
@@ -1193,7 +1374,10 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     ],
   };
 
-  const aboutTexts: Record<Exclude<LandingType, "kookworkshop">, { title: string; text: string }> = {
+  const aboutTexts: Record<
+    Exclude<LandingType, "kookworkshop">,
+    { title: string; text: string }
+  > = {
     teambuilding: {
       title: `Teambuilding activiteiten in ${landing.city}`,
       text: `Bij Goeduitje bieden we verschillende teambuilding activiteiten aan die je team op een unieke manier samenbrengen. Of jullie nou samen willen koken, de stad willen verkennen of een uitdagende game willen spelen – elke activiteit wordt begeleid door statushouders en nieuwkomers die hun talent en cultuur met jullie delen. Zo is je teambuilding in ${landing.city} niet alleen leuk, maar draag je ook bij aan een goede zaak.`,
@@ -1208,7 +1392,10 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     },
   };
 
-  const faqItems: Record<Exclude<LandingType, "kookworkshop">, { q: string; a: string }[]> = {
+  const faqItems: Record<
+    Exclude<LandingType, "kookworkshop">,
+    { q: string; a: string }[]
+  > = {
     teambuilding: [
       {
         q: `Welke teambuilding activiteiten bieden jullie aan in ${landing.city}?`,
@@ -1265,19 +1452,157 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     ],
   };
 
+  const quickInfoConfig: Record<
+    Exclude<LandingType, "kookworkshop">,
+    { price: string; duration: string; groupSize: string; groupNote: string }
+  > = {
+    teambuilding: {
+      price: "Vanaf €22,50 p.p.",
+      duration: "2-3 uur",
+      groupSize: "Vanaf 8 personen",
+      groupNote: "ook grotere groepen",
+    },
+    bedrijfsuitje: {
+      price: "Vanaf €22,50 p.p.",
+      duration: "2-3 uur",
+      groupSize: "Vanaf 8 personen",
+      groupNote: "ook grotere groepen",
+    },
+    stadsspel: {
+      price: "Vanaf €22,50 p.p.",
+      duration: "2-3 uur",
+      groupSize: "10-50 personen",
+      groupNote: "grotere groepen op aanvraag",
+    },
+  };
+
+  const priceTiersConfig: Record<
+    Exclude<LandingType, "kookworkshop">,
+    {
+      title: string;
+      tiers: {
+        label: string;
+        exclBtw: string;
+        inclBtw: string;
+        highlight?: boolean;
+      }[];
+      note: string;
+    }
+  > = {
+    teambuilding: {
+      title: "Tarieven teambuilding activiteiten",
+      tiers: [
+        { label: "Stadsspel / Citygame", exclBtw: "€22,50", inclBtw: "€27,23" },
+        {
+          label: "The Game - Koffer Challenge",
+          exclBtw: "€22,50",
+          inclBtw: "€27,23",
+        },
+        {
+          label: "Koffie & Thee Workshop",
+          exclBtw: "€32,50",
+          inclBtw: "€35,43",
+        },
+        {
+          label: "Kookworkshop (16+ pers.)",
+          exclBtw: "€55",
+          inclBtw: "€59,95",
+          highlight: true,
+        },
+      ],
+      note: "Prijzen zijn indicatief per persoon. Combinaties en maatwerk zijn mogelijk.",
+    },
+    bedrijfsuitje: {
+      title: "Tarieven bedrijfsuitjes",
+      tiers: [
+        { label: "Stadsspel / Citygame", exclBtw: "€22,50", inclBtw: "€27,23" },
+        {
+          label: "The Game - Koffer Challenge",
+          exclBtw: "€22,50",
+          inclBtw: "€27,23",
+        },
+        {
+          label: "Koffie & Thee Workshop",
+          exclBtw: "€32,50",
+          inclBtw: "€35,43",
+        },
+        {
+          label: "Kookworkshop (16+ pers.)",
+          exclBtw: "€55",
+          inclBtw: "€59,95",
+          highlight: true,
+        },
+      ],
+      note: "Prijzen zijn indicatief per persoon. Combinaties en maatwerk zijn mogelijk.",
+    },
+    stadsspel: {
+      title: "Tarieven stadsspel",
+      tiers: [
+        { label: "10-15 personen", exclBtw: "€27,50", inclBtw: "€33,28" },
+        { label: "16-25 personen", exclBtw: "€25", inclBtw: "€30,25" },
+        {
+          label: "26+ personen",
+          exclBtw: "€22,50",
+          inclBtw: "€27,23",
+          highlight: true,
+        },
+      ],
+      note: "Prijzen zijn per persoon. Het stadsspel kan ook gecombineerd worden met een kookworkshop.",
+    },
+  };
+
+  const includedItemsConfig: Record<
+    Exclude<LandingType, "kookworkshop">,
+    string[]
+  > = {
+    teambuilding: [
+      "Professionele begeleiding door statushouders en nieuwkomers",
+      "Alle benodigde materialen en attributen",
+      "Organisatie en planning op maat",
+      "Flexibele locatiekeuze",
+      "Sociale impact — draag bij aan integratie",
+      "Geschikt voor groepen van 8 tot 100+ personen",
+    ],
+    bedrijfsuitje: [
+      "Professionele begeleiding door statushouders en nieuwkomers",
+      "Alle benodigde materialen en attributen",
+      "Organisatie en planning op maat",
+      "Flexibele locatiekeuze",
+      "Sociale impact — draag bij aan arbeidsparticipatie",
+      "Geschikt voor groepen van 8 tot 100+ personen",
+    ],
+    stadsspel: [
+      "Begeleiding door statushouders en nieuwkomers",
+      "Alle opdrachten en materialen",
+      "Uitgezette route door het centrum",
+      "Culturele uitdagingen en verrassende ontmoetingen",
+      "Sociale impact — draag bij aan integratie",
+      "Geschikt voor groepen van 10 tot 50 personen",
+    ],
+  };
+
   const typeKey = type as Exclude<LandingType, "kookworkshop">;
+  const quickInfo = quickInfoConfig[typeKey];
+  const priceTiers = priceTiersConfig[typeKey];
+  const includedItems = includedItemsConfig[typeKey];
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pt-20">
       {/* Hero Section */}
       <section className={`bg-gradient-to-br ${theme.gradient} py-16 lg:py-24`}>
         <div className="container mx-auto max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="flex flex-col justify-center">
-              <Badge className={`mb-4 w-fit ${theme.badge}`}>
-                <MapPin className="mr-1 h-3 w-3" />
-                {landing.region}
-              </Badge>
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <Badge className={`w-fit ${theme.badge}`}>
+                  <MapPin className="mr-1 h-3 w-3" />
+                  {landing.region}
+                </Badge>
+                <Badge className={`w-fit ${theme.badge}`}>
+                  <Euro className="mr-1 h-3 w-3" />
+                  {quickInfo.price}
+                </Badge>
+              </div>
 
               <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
                 {pageTitle}
@@ -1290,7 +1615,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
               <div className="mb-8 space-y-3">
                 {usps[typeKey].map((usp) => (
                   <div key={usp} className="flex items-center gap-2">
-                    <CheckCircle2 className={`h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                    <CheckCircle2
+                      className={`h-5 w-5 flex-shrink-0 ${theme.accent}`}
+                    />
                     <span className="text-gray-700">{usp}</span>
                   </div>
                 ))}
@@ -1339,6 +1666,64 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
         </div>
       </section>
 
+      {/* Quick Info Bar */}
+      <section className="border-b bg-white py-8">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+            >
+              <div
+                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+              >
+                <Euro className={`h-6 w-6 ${theme.accent}`} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Prijs</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {quickInfo.price}
+                </p>
+                <p className="text-xs text-gray-500">excl. btw</p>
+              </div>
+            </div>
+            <div
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+            >
+              <div
+                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+              >
+                <Clock className={`h-6 w-6 ${theme.accent}`} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Duur</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {quickInfo.duration}
+                </p>
+                <p className="text-xs text-gray-500">
+                  afhankelijk van activiteit
+                </p>
+              </div>
+            </div>
+            <div
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+            >
+              <div
+                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+              >
+                <Users className={`h-6 w-6 ${theme.accent}`} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Groepsgrootte</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {quickInfo.groupSize}
+                </p>
+                <p className="text-xs text-gray-500">{quickInfo.groupNote}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
       <section className="py-16 lg:py-20">
         <div className="container mx-auto max-w-7xl px-6">
@@ -1379,7 +1764,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                   key={card.title}
                   className="rounded-xl border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
                 >
-                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                  <div
+                    className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${theme.iconBg}`}
+                  >
                     <CardIcon className={`h-6 w-6 ${theme.accent}`} />
                   </div>
                   <h3 className="mb-2 text-xl font-bold">{card.title}</h3>
@@ -1387,6 +1774,126 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing & Wat is inbegrepen Section */}
+      <section className="py-16 lg:py-20">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
+            {/* Price Tiers */}
+            <div>
+              <Badge className={`mb-4 ${theme.badge}`}>
+                <Euro className="mr-1 h-3 w-3" />
+                Prijzen
+              </Badge>
+              <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                {priceTiers.title}
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Prijzen per persoon. Alle materialen en begeleiding zijn
+                inbegrepen.
+              </p>
+
+              <div className="overflow-hidden rounded-xl border">
+                <table className="w-full">
+                  <thead>
+                    <tr
+                      className={
+                        type === "teambuilding"
+                          ? "bg-blue-50"
+                          : type === "bedrijfsuitje"
+                            ? "bg-green-50"
+                            : "bg-indigo-50"
+                      }
+                    >
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">
+                        {type === "stadsspel" ? "Groepsgrootte" : "Activiteit"}
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">
+                        Excl. btw
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">
+                        Incl. btw
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y">
+                    {priceTiers.tiers.map((tier) => (
+                      <tr
+                        key={tier.label}
+                        className={
+                          tier.highlight
+                            ? type === "teambuilding"
+                              ? "bg-blue-50/50"
+                              : type === "bedrijfsuitje"
+                                ? "bg-green-50/50"
+                                : "bg-indigo-50/50"
+                            : "bg-white"
+                        }
+                      >
+                        <td
+                          className={`px-4 py-3 text-sm ${tier.highlight ? "font-medium" : ""} text-gray-700`}
+                        >
+                          {tier.label}
+                        </td>
+                        <td
+                          className={`px-4 py-3 text-right text-sm ${tier.highlight ? `font-bold ${theme.accent}` : "font-medium text-gray-900"}`}
+                        >
+                          {tier.exclBtw}
+                        </td>
+                        <td className="px-4 py-3 text-right text-sm text-gray-600">
+                          {tier.inclBtw}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="text-muted-foreground mt-3 text-xs">
+                {priceTiers.note}{" "}
+                <Link href="/contact" className={`${theme.accent} underline`}>
+                  Vraag een offerte op maat aan
+                </Link>
+              </p>
+            </div>
+
+            {/* Wat is inbegrepen */}
+            <div>
+              <Badge className={`mb-4 ${theme.badge}`}>
+                <CheckCircle2 className="mr-1 h-3 w-3" />
+                Inbegrepen
+              </Badge>
+              <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                Wat is inbegrepen?
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Bij onze{" "}
+                {type === "stadsspel"
+                  ? "stadsspellen"
+                  : type === "teambuilding"
+                    ? "teambuilding activiteiten"
+                    : "bedrijfsuitjes"}{" "}
+                in {landing.city} is alles geregeld zodat jij je nergens zorgen
+                over hoeft te maken.
+              </p>
+
+              <div className="space-y-3">
+                {includedItems.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-3 rounded-lg border bg-white p-3"
+                  >
+                    <CheckCircle2
+                      className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`}
+                    />
+                    <span className="text-gray-700">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1418,7 +1925,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <CheckCircle2
+                    className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`}
+                  />
                   <span>
                     Elke activiteit wordt begeleid door getalenteerde
                     statushouders en nieuwkomers die hun cultuur en vaardigheden
@@ -1426,14 +1935,18 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <CheckCircle2
+                    className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`}
+                  />
                   <span>
-                    Alle materialen en begeleiding zijn inbegrepen. Jullie hoeven
-                    alleen maar te komen en te genieten.
+                    Alle materialen en begeleiding zijn inbegrepen. Jullie
+                    hoeven alleen maar te komen en te genieten.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`} />
+                  <CheckCircle2
+                    className={`mt-0.5 h-5 w-5 flex-shrink-0 ${theme.accent}`}
+                  />
                   <span>
                     De activiteiten vinden plaats op een gezellige locatie in{" "}
                     {landing.city} of in overleg op een plek die je zelf kiest.
@@ -1464,7 +1977,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
 
               <div className="space-y-6">
                 <div className="flex gap-4">
-                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                  <div
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+                  >
                     <Clock className={`h-5 w-5 ${theme.accent}`} />
                   </div>
                   <div>
@@ -1484,7 +1999,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                  <div
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+                  >
                     <Users className={`h-5 w-5 ${theme.accent}`} />
                   </div>
                   <div>
@@ -1500,7 +2017,9 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}>
+                  <div
+                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
+                  >
                     <MapPin className={`h-5 w-5 ${theme.accent}`} />
                   </div>
                   <div>
