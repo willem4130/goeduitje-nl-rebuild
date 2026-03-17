@@ -457,9 +457,9 @@ function getFallbackImages(type: LandingType): string[] {
       ];
     default:
       return [
-        "/images/workshops/kookworkshop.avif",
-        "/images/workshops/kookworkshop-2.avif",
-        "/images/workshops/kookworkshop-3.avif",
+        "/images/workshops/kookworkshop-hero.jpg",
+        "/images/workshops/wat-uniek-maakt.jpg",
+        "/images/workshops/open-kookworkshop.jpg",
       ];
   }
 }
@@ -972,7 +972,7 @@ export default async function LandingPage({ params }: Props) {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/kookworkshop-2.avif"
+                src="/images/workshops/wat-uniek-maakt.jpg"
                 alt={`Kookworkshop ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"
@@ -1956,7 +1956,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/kookworkshop-2.avif"
+                src="/images/workshops/wat-uniek-maakt.jpg"
                 alt={`${label} ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"

@@ -244,7 +244,7 @@ export default function BedrijfsuitjesPage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/kookworkshop-3.avif"
+                src="/images/workshops/wat-uniek-maakt.jpg"
                 alt="Bedrijfsuitje bij Goeduitje"
                 fill
                 className="object-cover"

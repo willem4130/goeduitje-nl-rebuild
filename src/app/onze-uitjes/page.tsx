@@ -113,7 +113,7 @@ export default function OnzeUitjesPage() {
                 <Card className="shadow-editorial overflow-hidden border">
                   <div className="bg-muted relative aspect-[4/3]">
                     <video
-                      src="/images/workshops/workshop 1.mp4"
+                      src="/images/ons-verhaal/impressie-uitjes.mp4"
                       autoPlay
                       loop
                       muted

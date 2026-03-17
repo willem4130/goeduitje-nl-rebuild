@@ -299,7 +299,7 @@ export default function WorkshopsPage() {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/kookworkshop-2.avif"
+                src="/images/workshops/wat-uniek-maakt.jpg"
                 alt="Workshop bij Goeduitje met sociale impact"
                 fill
                 className="object-cover"

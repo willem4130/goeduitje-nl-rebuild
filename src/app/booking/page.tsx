@@ -646,7 +646,7 @@ export default function BookingPage() {
                 <Card className="shadow-editorial overflow-hidden">
                   <div className="bg-muted relative aspect-[4/3]">
                     <Image
-                      src="/images/workshops/kookworkshop.jpg"
+                      src="/images/workshops/open-kookworkshop.jpg"
                       alt="Open Kookworkshop"
                       fill
                       className="object-cover"

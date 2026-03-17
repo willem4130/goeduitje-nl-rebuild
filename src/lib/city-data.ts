@@ -73,10 +73,14 @@ export const OTHER_CITIES: City[] = [
   {
     slug: "bij-je-thuis",
     name: "Bij je thuis",
-    image: "/images/workshops/kookworkshop.avif",
+    image: "/images/workshops/kookworkshop-hero.jpg",
   },
   { slug: "boxtel", name: "Boxtel", image: "/images/cities/boxtel.jpg" },
-  { slug: "den-bosch", name: "Den Bosch", image: "/images/cities/den-bosch.jpg" },
+  {
+    slug: "den-bosch",
+    name: "Den Bosch",
+    image: "/images/cities/den-bosch.jpg",
+  },
   { slug: "didam", name: "Didam", image: "/images/cities/didam.jpg" },
   { slug: "druten", name: "Druten", image: "/images/cities/druten.jpg" },
   { slug: "duiven", name: "Duiven", image: "/images/cities/duiven.jpg" },
