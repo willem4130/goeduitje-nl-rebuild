@@ -66,7 +66,7 @@ export function WorkshopCarousel({
 }: WorkshopCarouselProps) {
   // Fetch workshops from database
   const { data: dbWorkshops, isLoading } = api.workshop.list.useQuery(
-    undefined,
+    {},
     {
       staleTime: 5 * 60 * 1000, // Cache for 5 minutes
       refetchOnWindowFocus: false,

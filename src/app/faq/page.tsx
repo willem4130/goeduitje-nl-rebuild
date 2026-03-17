@@ -11,7 +11,7 @@ import { api } from "@/trpc/client";
 import { Loader2 } from "lucide-react";
 
 export default function FAQPage() {
-  const { data: faqs, isLoading } = api.faq.getAll.useQuery(undefined, {
+  const { data: faqs, isLoading } = api.faq.getAll.useQuery({}, {
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });

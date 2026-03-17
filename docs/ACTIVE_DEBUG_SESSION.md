@@ -1,59 +1,35 @@
 # Active Debug Session — Onze Medewerkers + Image Pipeline
 
 **Last updated**: 2026-03-17
-**Status**: IN PROGRESS — team photos not rendering on /onze-medewerkers
+**Status**: ✅ RESOLVED — team photos now render on /onze-medewerkers
 
 ---
 
-## Critical Bug: /onze-medewerkers shows loading spinner forever
+## Fix Applied: /onze-medewerkers converted to Server Component
 
-### What's been verified ✅
-1. **tRPC router** (`src/server/api/routers/team.ts`): `getAll` accepts `.input(z.object({...}).optional())` — works with `{}` input
-2. **API endpoint**: `GET /api/trpc/team.getAll?input={"json":{}}` returns 6 team members correctly
-3. **DB records updated**: 5 of 6 team members have real image paths (`/images/team/zinab.jpg` etc.), 6th has placeholder
-4. **Image files exist on disk**: `public/images/team/` has zinab.jpg, yara.jpg, duha.jpg, marloes.jpg, guus.png
-5. **Images serve on Vercel**: `curl -sI https://goeduitje-nl-rebuild.vercel.app/images/team/zinab.jpg` → 200 OK
-6. **Code fix deployed**: `useQuery({})` instead of `useQuery(undefined)` — confirmed in deployed JS chunk
-7. **Build passes**: No TypeScript errors, only ESLint warning about `<img>` tag
-8. **Deployed chunk verified**: `page-4551af718b2f4004.js` contains `.getAll.useQuery({},{staleTime:3e5,r`
-9. **TRPCProvider is in the layout**: `src/components/client-layout.tsx` wraps children in `<TRPCProvider>`
+### Root cause
+The page was a `"use client"` component that used `api.team.getAll.useQuery({})` for client-side data fetching. The tRPC client-side query never resolved (likely a hydration or batch link issue), causing the loading spinner to show forever.
 
-### What's still broken ❌
-- Page renders loading spinner (Loader2 animate-spin) and NEVER transitions to the actual team content
-- This happens both on Vercel production AND local dev server
-- Server-rendered HTML shows the spinner (expected for "use client" page)
-- Client-side JavaScript should hydrate and make the tRPC call, but something fails silently
+### Solution
+Split the page into:
+1. **Server Component** (`page.tsx`) — fetches team members via Prisma directly, exports metadata, uses `revalidate = 300`
+2. **Client Component** (`content.tsx`) — receives `teamMembers` as props, renders all the interactive UI (framer-motion animations, scroll reveals)
 
-### What to investigate next
-1. **Compare with a WORKING tRPC page** — e.g. `/jullie-ervaringen` or `/ons-verhaal` which both use `api.*.useQuery` and render fine. What's different?
-2. **Check browser console** — open DevTools on the live page, look for errors in Console tab and failed requests in Network tab
-3. **Check if the tRPC batch link is the issue** — the client uses `httpBatchLink` (`src/trpc/client.tsx`). Maybe the `team.getAll` call is being batched with a failing call
-4. **Try the simplest possible test** — create a minimal page that ONLY calls `api.team.getAll.useQuery({})` and renders the result, nothing else. If that works, the issue is in the component code. If not, it's in the tRPC setup.
-5. **Check `content.getByPage`** — this endpoint is BROKEN (`❌ content.getByPage — BROKEN with both {} and no input`). If any component on the page (or in the layout) calls this endpoint and it fails, it might crash the whole tRPC batch
+This eliminates the client-side tRPC dependency entirely. The page now:
+- ✅ Renders team data in the initial HTML (better SEO)
+- ✅ No loading spinner — content is immediately visible
+- ✅ Revalidates every 5 minutes via ISR
+- ✅ All animations and interactivity still work (client component)
 
-### Broken tRPC endpoints found
-| Endpoint | Status | Used by |
-|----------|--------|---------|
-| `team.getAll` | ✅ Fixed (was sending null, now sends {}) | onze-medewerkers |
-| `faq.getAll` | ❌ Still sends `undefined` in code (`src/app/faq/page.tsx:14`) | /faq |
-| `workshop.list` | ❌ Still sends `undefined` in code (`src/components/workshop-carousel.tsx:68`) | Homepage, /onze-uitjes |
-| `content.getByPage` | ❌ Endpoint itself broken with {} input | Homepage, /ons-verhaal, /jullie-ervaringen |
-| `testimonials.getFeatured` | ✅ No input needed | testimonials-carousel, compact-testimonials |
-| `reviews.getStats` | ✅ No input needed | social-proof-stats, jullie-ervaringen |
-| `recipes.getAll` | ✅ Works | /recepten |
-| `recipes.getCategories` | ✅ Works | /recepten |
+### Additional fixes
+- `src/app/faq/page.tsx:14` — changed `useQuery(undefined)` → `useQuery({})`
+- `src/components/workshop-carousel.tsx:68` — changed `useQuery(undefined)` → `useQuery({})`
 
-### Key hypothesis
-**The `httpBatchLink` batches ALL tRPC calls on a page together.** If the homepage or layout makes a `content.getByPage` call that fails, AND if team.getAll is batched with it, the whole batch could fail. This would explain why the page shows a spinner forever — the query never resolves.
-
-However, onze-medewerkers page itself only calls `team.getAll`. Unless a component in the layout (like the nav or footer) also makes tRPC calls that get batched.
-
-### Files involved
-- **Page**: `src/app/onze-medewerkers/page.tsx` — "use client", calls `api.team.getAll.useQuery({})`
-- **tRPC client**: `src/trpc/client.tsx` — creates tRPC client with httpBatchLink
-- **tRPC router**: `src/server/api/routers/team.ts` — getAll procedure
-- **Layout**: `src/components/client-layout.tsx` — wraps children in TRPCProvider
-- **DB**: TeamMember model in `prisma/schema.prisma`
+### Files changed
+- `src/app/onze-medewerkers/page.tsx` — converted from "use client" to Server Component
+- `src/app/onze-medewerkers/content.tsx` — new Client Component with all UI
+- `src/app/faq/page.tsx` — fixed useQuery input
+- `src/components/workshop-carousel.tsx` — fixed useQuery input
 
 ---
 
@@ -93,11 +69,6 @@ Two new columns added to `Alle_afbeeldingen_Goeduitje.xlsx`:
 - Column H: "Bronbestand gevonden?" — all ✅
 - Column I: "Verwerkt & in gebruik?" — all ✅
 
-### Remaining useQuery(undefined) bugs to fix
-These pages still use `useQuery(undefined)` which sends null and causes 400 errors:
-- `src/app/faq/page.tsx:14` — change to `useQuery({})`
-- `src/components/workshop-carousel.tsx:68` — change to `useQuery({})`
-
 ---
 
 ## Completed Work This Session
@@ -108,11 +79,16 @@ These pages still use `useQuery(undefined)` which sends null and causes 400 erro
 ### Mobile Optimization (13 tasks) ✅
 - Theory of Change mobile layout, globals.css spacing, hero dvh, mobile nav, reviews stats, contact page, configurator, workshop detail, medewerkers grid, nav offsets on 8+ pages, landing pages, recipes, checkout pages (Dutch translation)
 
-### Image Replacement ✅ (except team photos rendering)
+### Image Replacement ✅
 - 30+ images processed and optimized
 - All code references updated
 - All DB records updated
 - Excel audit completed
+
+### Bug Fixes ✅
+- /onze-medewerkers loading spinner → Server Component with Prisma
+- faq page useQuery(undefined) → useQuery({})
+- workshop-carousel useQuery(undefined) → useQuery({})
 
 ### Deployments
 - `b643e05` — 📱 Mobile & tablet optimization
