@@ -52,7 +52,7 @@ export default function CheckoutCancelPage() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild className="flex-1">
-              <Link href="/booking">
+              <Link href="/open-kookworkshops">
                 <IconArrowLeft className="mr-2 size-4" />
                 Terug naar boeken
               </Link>

@@ -122,7 +122,7 @@ export function ContactForm() {
             </Link>
             . Bekijk de{" "}
             <Link
-              href="/booking"
+              href="/open-kookworkshops"
               className="text-primary font-medium underline underline-offset-4 hover:no-underline"
             >
               agenda voor open workshops

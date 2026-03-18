@@ -338,7 +338,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                               asChild
                               className="mt-4 w-full bg-amber-600 hover:bg-amber-700"
                             >
-                              <Link href="/booking">
+                              <Link href="/open-kookworkshops">
                                 <Sparkles className="mr-2 h-4 w-4" />
                                 Direct inschrijven
                               </Link>

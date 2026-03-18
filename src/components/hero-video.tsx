@@ -184,7 +184,7 @@ export function HeroVideo({
                   variant="outline"
                   className="shadow-editorial-lg hover:shadow-editorial-hover h-12 min-w-[220px] border-white/30 bg-white/10 px-6 text-base font-semibold tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:border-white/50 hover:bg-white/20 hover:text-white sm:h-14 sm:min-w-[240px] sm:px-8 sm:text-lg"
                 >
-                  <Link href="/booking">
+                  <Link href="/open-kookworkshops">
                     Schrijf je in voor een open kookworkshop
                   </Link>
                 </Button>

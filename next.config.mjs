@@ -64,8 +64,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: "/open-kookworkshops",
-        destination: "/booking",
+        source: "/booking",
+        destination: "/open-kookworkshops",
         permanent: true,
       },
       {

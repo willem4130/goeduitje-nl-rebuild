@@ -154,7 +154,7 @@ export function TopNavigation({
                   <Linkedin className="h-5 w-5" />
                 </Link>
                 <Link
-                  href="/booking"
+                  href="/open-kookworkshops"
                   className="text-primary hover:text-primary/80 transition-all duration-300 hover:-translate-y-[2px]"
                   aria-label="Boek een workshop"
                 >
