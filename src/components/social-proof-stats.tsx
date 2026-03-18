@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Star, Award, TrendingUp } from "lucide-react";
+import { Users, Star, UserCheck, MessageSquareText } from "lucide-react";
 import { api } from "@/trpc/client";
 
 interface StatItem {
@@ -13,7 +13,7 @@ interface StatItem {
 // Default values (used while loading or if fetch fails)
 const DEFAULTS = {
   teamsCount: "150+",
-  rebookRate: "95%",
+  socialParticipantsCount: "500+",
 };
 
 function useStats(): StatItem[] {
@@ -24,7 +24,9 @@ function useStats(): StatItem[] {
 
   // Get values from database with fallbacks
   const teamsCount = siteStats?.public?.teamsCount || DEFAULTS.teamsCount;
-  const rebookRate = siteStats?.public?.rebookRate || DEFAULTS.rebookRate;
+  const socialParticipantsCount =
+    siteStats?.public?.socialParticipantsCount ||
+    DEFAULTS.socialParticipantsCount;
 
   return [
     {
@@ -33,19 +35,19 @@ function useStats(): StatItem[] {
       label: "Teams",
     },
     {
+      icon: UserCheck,
+      value: socialParticipantsCount,
+      label: "Deelnemers",
+    },
+    {
       icon: Star,
       value: reviewStats?.averageRating?.toFixed(1) || "5.0",
       label: "Rating",
     },
     {
-      icon: Award,
-      value: "Top",
-      label: "Rated",
-    },
-    {
-      icon: TrendingUp,
-      value: rebookRate,
-      label: "Rebook",
+      icon: MessageSquareText,
+      value: reviewStats?.totalCount?.toString() || "0",
+      label: "Reviews",
     },
   ];
 }
