@@ -12,7 +12,6 @@ import {
   Target,
   TrendingUp,
   Users,
-  Award,
   ArrowRight,
   Heart,
   Sparkles,
@@ -458,17 +457,13 @@ export default function OnsVerhaalPage() {
                         />
                       </div>
                       <div className="bg-background flex h-16 items-center justify-center rounded-lg px-4 shadow-sm">
-                        <div className="flex items-center gap-2">
-                          <Award className="text-primary h-8 w-8" />
-                          <div className="text-xs leading-tight">
-                            <span className="text-primary block font-bold">
-                              CODE SOCIALE
-                            </span>
-                            <span className="text-muted-foreground">
-                              ONDERNEMINGEN
-                            </span>
-                          </div>
-                        </div>
+                        <Image
+                          src="/images/logo/code-sociale-ondernemingen.jpg"
+                          alt="Code Sociale Ondernemingen"
+                          width={120}
+                          height={126}
+                          className="h-12 w-auto object-contain"
+                        />
                       </div>
                     </div>
                   </CardContent>
