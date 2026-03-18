@@ -43,12 +43,12 @@ src/
 
 ## Total Pages: 91
 
-| Type | Count | Template |
-|------|-------|----------|
-| Static pages | 23 | Individual page.tsx files |
-| City landing pages | 49 | `(landing)/[slug]/page.tsx` |
-| Workshop detail pages | 6 | `onze-uitjes/[slug]/page.tsx` |
-| Recipe pages | 13 | `recepten/[slug]/page.tsx` |
+| Type                  | Count | Template                      |
+| --------------------- | ----- | ----------------------------- |
+| Static pages          | 23    | Individual page.tsx files     |
+| City landing pages    | 49    | `(landing)/[slug]/page.tsx`   |
+| Workshop detail pages | 6     | `onze-uitjes/[slug]/page.tsx` |
+| Recipe pages          | 13    | `recepten/[slug]/page.tsx`    |
 
 ## Tech Stack
 
@@ -65,11 +65,13 @@ Fix ALL errors before committing. No exceptions.
 ## Testing
 
 ### Test Stack
+
 - **Unit/Integration**: Vitest 4 + Testing Library + jsdom
 - **E2E**: Playwright (Chromium)
 - **Coverage**: @vitest/coverage-v8 (97.8% lines, 98.3% functions)
 
 ### Run Tests
+
 ```bash
 npm run test:run          # Unit + integration (322 tests)
 npm run test:coverage     # With coverage report
@@ -80,6 +82,7 @@ npm run lint              # ESLint
 ```
 
 ### Test Structure
+
 ```
 tests/
 ├── setup/vitest.setup.ts        # Global mocks (Prisma, Stripe, Resend, env)
@@ -102,42 +105,53 @@ tests/
 
 ### Forms → Database → Admin Pipeline
 
-| Frontend Form | DB Table | Backend Admin API | Status |
-|---------------|----------|-------------------|--------|
-| Workshop Configurator | `WorkshopConfig` | `/api/workshops/configs` | ✅ |
-| Contact Form | `Feedback` | `/api/content/feedback` | ✅ |
-| Compact Contact (footer) | `Feedback` | `/api/content/feedback` | ✅ |
-| Booking (Stripe) | `Booking` | `/api/bookings` | ✅ |
-| Booking (gift card) | `Booking` | `/api/bookings` | ✅ |
+| Frontend Form            | DB Table         | Backend Admin API        | Status |
+| ------------------------ | ---------------- | ------------------------ | ------ |
+| Workshop Configurator    | `WorkshopConfig` | `/api/workshops/configs` | ✅     |
+| Contact Form             | `Feedback`       | `/api/content/feedback`  | ✅     |
+| Compact Contact (footer) | `Feedback`       | `/api/content/feedback`  | ✅     |
+| Booking (Stripe)         | `Booking`        | `/api/bookings`          | ✅     |
+| Booking (gift card)      | `Booking`        | `/api/bookings`          | ✅     |
 
 ### /test Command
+
 Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typecheck, lint.
 
 ## Key Features
 
 ### Open Kookworkshops (/booking)
+
 - Max **t/m 15 personen** per booking
 - Price: defined in `src/lib/open-workshops.ts`
 - Calendar grid for date selection
 
 ### Workshop Configurator
+
 - Small group popup (<8 persons) suggests open workshops
 - "Bekijk agenda" button links to `/booking`
 - Located in `src/components/workshop-configurator.tsx`
 - On submit → redirects to `/bedankt` + pushes GA4 purchase event via dataLayer
 
 ### Google Reviews
-- Real reviews from Google Places API
+
+- Real reviews from Google Places API + bulk scraper
 - Visibility controlled via `isVisible` field in database
-- Fake reviews filtered out (isVisible: false)
 - Admin control in goeduitje-backend `/google-reviews`
+- **Google Places API** (legacy): max 5 reviews per sort order (10 total). Auto-refreshes every 24h via `checkAndRefreshCache()` in `src/server/api/routers/reviews.ts`
+- **Bulk scraper** (`scripts/scrape-google-reviews.ts`): Uses `google-maps-review-scraper` npm package to fetch ALL reviews via Google Maps internal `listugcposts` endpoint. No API keys needed. Run periodically to import new reviews:
+  ```bash
+  npx tsx scripts/scrape-google-reviews.ts
+  ```
+- The scraper deduplicates by author name + timestamp. Existing reviews are skipped, edited reviews are updated.
 
 ### Lunch & Diner Pricing
+
 - Uses **9% BTW** (food service rate, not 21%)
 - Minimum persons displayed: Buffet 30, Lunch 15, Diner 15
 - Prices in `prisma/seed-workshops.ts`
 
 ### GTM / GA4 Tracking
+
 - GTM container loaded in root layout via `NEXT_PUBLIC_GTM_ID` env var
 - Purchase event pushed on configurator submission
 - Conversion tracking on `/bedankt` thank-you page
@@ -149,15 +163,15 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 **City data source**: `src/lib/city-data.ts` (images & featured/other)
 **Landing page data**: `ALL_LANDING_PAGES` array in `(landing)/[slug]/page.tsx`
 
-| Type | Count | Display |
-|------|-------|---------|
-| Kookworkshop cities | 40 | `kookworkshop-[city]` slugs |
-| Vegetarisch | 1 | `vegetarische-kookworkshop-nijmegen` |
-| Teambuilding | 2 | `teambuilding-nijmegen`, `teambuilding-arnhem` |
-| Bedrijfsuitje | 3 | `bedrijfsuitje-nijmegen`, `bedrijfsuitje-arnhem`, `kookworkshop-voor-bedrijven-arnhem` |
-| Stadsspel | 2 | `stadsspel-nijmegen`, `stadsspel-arnhem` |
-| Featured cities | 13 | Image grid on `/onze-uitjes/kookworkshop` |
-| Other cities | 27 | Text links below grid |
+| Type                | Count | Display                                                                                |
+| ------------------- | ----- | -------------------------------------------------------------------------------------- |
+| Kookworkshop cities | 40    | `kookworkshop-[city]` slugs                                                            |
+| Vegetarisch         | 1     | `vegetarische-kookworkshop-nijmegen`                                                   |
+| Teambuilding        | 2     | `teambuilding-nijmegen`, `teambuilding-arnhem`                                         |
+| Bedrijfsuitje       | 3     | `bedrijfsuitje-nijmegen`, `bedrijfsuitje-arnhem`, `kookworkshop-voor-bedrijven-arnhem` |
+| Stadsspel           | 2     | `stadsspel-nijmegen`, `stadsspel-arnhem`                                               |
+| Featured cities     | 13    | Image grid on `/onze-uitjes/kookworkshop`                                              |
+| Other cities        | 27    | Text links below grid                                                                  |
 
 Non-kookworkshop pages use `TypedLandingPage` component with type-specific themes (blue/green/indigo), content, and FAQ.
 All cities have landmark images in `public/images/cities/[slug].jpg`.
@@ -166,15 +180,16 @@ All cities have landmark images in `public/images/cities/[slug].jpg`.
 
 3 static SEO category pages linking to workshop detail pages:
 
-| Page | Target keywords | File |
-|------|----------------|------|
-| `/teambuilding` | teambuilding, teamuitje | `src/app/teambuilding/page.tsx` |
+| Page              | Target keywords                | File                              |
+| ----------------- | ------------------------------ | --------------------------------- |
+| `/teambuilding`   | teambuilding, teamuitje        | `src/app/teambuilding/page.tsx`   |
 | `/bedrijfsuitjes` | bedrijfsuitje, personeelsuitje | `src/app/bedrijfsuitjes/page.tsx` |
-| `/workshops` | workshops, workshop boeken | `src/app/workshops/page.tsx` |
+| `/workshops`      | workshops, workshop boeken     | `src/app/workshops/page.tsx`      |
 
 ## Onze Medewerkers
 
 Team photos page uses **Server Component** pattern (not client-side tRPC):
+
 - `src/app/onze-medewerkers/page.tsx` — Server Component, fetches via Prisma, exports metadata, `revalidate = 300`
 - `src/app/onze-medewerkers/content.tsx` — Client Component with animations, receives data as props
 - Clean 3×2 grid (2-col mobile, 3-col desktop), portrait aspect ratio cards
@@ -183,6 +198,7 @@ Team photos page uses **Server Component** pattern (not client-side tRPC):
 ## Onze Impact / Theory of Change
 
 Theory of Change diagrams are **static images** (not dynamic SVG):
+
 - `public/images/impact/toc-medewerker.png` — downloaded from original Wix site
 - `public/images/impact/toc-deelnemer.png` — downloaded from original Wix site
 - Displayed via `<Image>` in `src/app/onze-impact/page.tsx` with `overflow-x-auto` for mobile scrolling
@@ -215,6 +231,7 @@ public/images/
 - Backend Drizzle: read/write only (no migrations)
 
 After schema changes:
+
 ```bash
 npm run db:push && npm run db:generate
 ```
@@ -261,10 +278,12 @@ Push to `main` → Vercel auto-deploys
 When replacing images or videos on CMS-managed pages (like /ons-verhaal), simply replacing the file on disk is NOT enough. The `PageContent` database table may have an old URL stored that overrides the default/local file path.
 
 **Always do BOTH when replacing media on CMS pages:**
+
 1. Replace the file on disk in `public/`
 2. Update the `PageContent` database record to point to the new path
 
 **To check:** Query the DB for the page/section/key:
+
 ```bash
 node -e "const{PrismaClient}=require('@prisma/client');const p=new PrismaClient();p.pageContent.findMany({where:{page:'PAGE',section:'SECTION'}}).then(r=>{console.log(JSON.stringify(r,null,2));return p.\$disconnect()})"
 ```
