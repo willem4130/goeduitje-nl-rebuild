@@ -87,8 +87,8 @@ export const OPEN_WORKSHOPS: OpenWorkshop[] = [
   },
 ];
 
-// Price per person for open workshops (€50 incl BTW)
-export const OPEN_WORKSHOP_PRICE = 50;
+// Price per person for open workshops (€60 incl BTW)
+export const OPEN_WORKSHOP_PRICE = 60;
 
 // Get upcoming workshops (filter out past dates)
 export function getUpcomingWorkshops(): OpenWorkshop[] {
