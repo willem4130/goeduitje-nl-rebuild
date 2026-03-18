@@ -260,7 +260,7 @@ export default function JullieErvaringenPage() {
                   <ScrollReveal animation="slideUp">
                     <div className="mb-12 text-center">
                       <h2 className="text-primary tracking-tight">
-                        Alle Reviews
+                        Meer reviews
                       </h2>
                       <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg leading-relaxed">
                         Bekijk alle ervaringen van onze deelnemers
