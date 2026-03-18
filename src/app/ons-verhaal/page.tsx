@@ -72,7 +72,7 @@ const DEFAULTS = {
     paragraph3:
       "We zien een toekomst voor ons waarin onze organisatie een toonaangevende rol speelt in het creëren van inclusieve werkplekken, waar talenten uit alle hoeken van de wereld samenkomen en bijdragen aan gezamenlijke groei en welvaart.",
     image: "/images/ons-verhaal/visie.jpg",
-    image_label: "Onze visie",
+    image_label: "Bouwstenen-games",
   },
   missie: {
     title: "Onze missie",
