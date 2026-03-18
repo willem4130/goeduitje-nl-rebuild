@@ -174,6 +174,21 @@ export const WORKSHOPS: Workshop[] = [
       },
     ],
   },
+  {
+    id: "bouw-of-bak-battle",
+    name: "Bouw of Bak Battle",
+    minParticipants: 10,
+    maxParticipants: 80,
+    basePrice: 25,
+    priceTiers: [
+      {
+        minParticipants: 10,
+        maxParticipants: null,
+        priceExclBtw: 25,
+        priceInclBtw: 30,
+      },
+    ],
+  },
 ];
 
 // Helper function to get price for a workshop based on participant count

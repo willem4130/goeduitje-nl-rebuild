@@ -28,6 +28,7 @@ const WORKSHOP_IMAGES: Record<string, string> = {
   "design-tshirt": "/images/workshops/design-tshirt.jpg",
   "koffie-thee": "/images/workshops/koffie-thee.jpg",
   "the-game": "/images/workshops/the-game.jpg",
+  "bouw-of-bak-battle": "/images/workshops/bouw-of-bak-battle.jpeg",
 };
 
 const itemVariants = {

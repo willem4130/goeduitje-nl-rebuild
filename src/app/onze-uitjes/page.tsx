@@ -188,7 +188,7 @@ export default function OnzeUitjesPage() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="mb-1 font-bold">Kies uit 6+ Uitjes</h3>
+                      <h3 className="mb-1 font-bold">Kies uit 7+ Uitjes</h3>
                       <p className="text-muted-foreground text-sm">
                         Van actief tot creatief - voor elk team wat wils
                       </p>

@@ -100,6 +100,16 @@ const BEDRIJFSUITJE_WORKSHOPS = [
     duration: "1-4 uur",
     highlight: false,
   },
+  {
+    title: "Bouw of Bak Battle",
+    slug: "bouw-of-bak-battle",
+    description:
+      "Bouw samen huisjes of maak snacks in een spannende teambuildingsbattle. Verbeter elke ronde jullie strijdplan en verover de eerste plek!",
+    image: "/images/workshops/bouw-of-bak-battle.jpeg",
+    price: "vanaf €25 p.p.",
+    duration: "2-6 uur",
+    highlight: false,
+  },
 ];
 
 export default function BedrijfsuitjesPage() {

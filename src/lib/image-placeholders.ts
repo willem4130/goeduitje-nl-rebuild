@@ -66,6 +66,7 @@ export const WORKSHOP_BLUR_PLACEHOLDERS = {
   "koffie-thee": generateGradientBlurDataURL("#E5D4C1", "#D4C2AF"),
   beachvolleybal: generateGradientBlurDataURL("#F9E5C9", "#F0D9B5"),
   "lunch-diner": generateGradientBlurDataURL("#F5E6D3", "#E8D4BB"),
+  "bouw-of-bak-battle": generateGradientBlurDataURL("#E8D8C8", "#D4C4B4"),
 } as const;
 
 /**
