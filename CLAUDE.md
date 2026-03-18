@@ -255,3 +255,18 @@ git push
 **Production**: https://goeduitje-nl-rebuild.vercel.app
 
 Push to `main` → Vercel auto-deploys
+
+## ⚠️ CMS Image/Video Override Pattern
+
+When replacing images or videos on CMS-managed pages (like /ons-verhaal), simply replacing the file on disk is NOT enough. The `PageContent` database table may have an old URL stored that overrides the default/local file path.
+
+**Always do BOTH when replacing media on CMS pages:**
+1. Replace the file on disk in `public/`
+2. Update the `PageContent` database record to point to the new path
+
+**To check:** Query the DB for the page/section/key:
+```bash
+node -e "const{PrismaClient}=require('@prisma/client');const p=new PrismaClient();p.pageContent.findMany({where:{page:'PAGE',section:'SECTION'}}).then(r=>{console.log(JSON.stringify(r,null,2));return p.\$disconnect()})"
+```
+
+**To fix:** Update the record's value to the correct path, and optionally delete the old file to prevent it from ever being served again.
