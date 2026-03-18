@@ -10,10 +10,12 @@ import { teamRouter } from "./routers/team";
 import { testimonialsRouter } from "./routers/testimonials";
 import { contentRouter } from "./routers/content";
 import { mediaRouter } from "./routers/media";
+import { bookingRouter } from "./routers/booking";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
   workshop: workshopRouter,
+  booking: bookingRouter,
   reviews: reviewsRouter,
   recipes: recipesRouter,
   feedback: feedbackRouter,

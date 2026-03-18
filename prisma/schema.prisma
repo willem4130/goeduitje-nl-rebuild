@@ -210,6 +210,31 @@ model Workshop {
   @@index([sortOrder])
 }
 
+model Booking {
+  id                 String   @id @default(cuid())
+  workshopId         String
+  workshopDate       String
+  firstName          String
+  lastName           String
+  email              String
+  numberOfPeople     Int
+  dietaryRequirement String   @default("geen")
+  allergies          String?
+  totalPrice         Float
+  paymentMethod      String   // "gift_card", "stripe", "gift_card_partial"
+  paymentStatus      String   @default("pending") // "pending", "paid", "failed"
+  giftCardId         String?
+  giftCardValue      Float?
+  remainingAmount    Float?
+  stripeSessionId    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+  @@index([paymentStatus])
+}
+
 model WorkshopConfig {
   id               String   @id @default(cuid())
   type             String

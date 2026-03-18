@@ -28,6 +28,7 @@ import {
   IconClock,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/client";
 import { STRIPE_PRODUCTS } from "@/lib/stripe-products";
 import {
   getUpcomingWorkshops,
@@ -45,6 +46,7 @@ const OPEN_WORKSHOPS = getUpcomingWorkshops();
 const PRICE_PER_PERSON = OPEN_WORKSHOP_PRICE;
 
 export default function BookingPage() {
+  const createBooking = api.booking.create.useMutation();
   const [selectedWorkshop, setSelectedWorkshop] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -117,25 +119,40 @@ export default function BookingPage() {
     try {
       const workshop = OPEN_WORKSHOPS.find((w) => w.id === selectedWorkshop);
 
-      // If gift card covers full amount, skip Stripe
+      // If gift card covers full amount, skip Stripe and save directly
       if (hasGiftCard && remainingAmount <= 0) {
-        toast.success("Boeking succesvol!", {
-          description:
-            "Je cadeaubon dekt de volledige kosten. Je ontvangt een bevestigingsmail.",
-        });
-        console.log("Full gift card payment:", {
+        await createBooking.mutateAsync({
           workshopId: selectedWorkshop,
-          workshopDate: workshop?.dateDisplay,
+          workshopDate: workshop?.dateDisplay || "",
           firstName,
           lastName,
           email,
           numberOfPeople: numPeople,
           dietaryRequirement,
-          allergies,
+          allergies: allergies || undefined,
+          totalPrice,
+          paymentMethod: "gift_card",
+          paymentStatus: "paid",
           giftCardId,
           giftCardValue: giftCardAmount,
-          totalPrice,
         });
+
+        toast.success("Boeking succesvol!", {
+          description:
+            "Je cadeaubon dekt de volledige kosten. Je ontvangt een bevestigingsmail.",
+        });
+
+        // Reset form
+        setSelectedWorkshop(null);
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setNumberOfPeople("");
+        setDietaryRequirement("geen");
+        setAllergies("");
+        setHasGiftCard(false);
+        setGiftCardId("");
+        setGiftCardValue("");
         setIsSubmitting(false);
         return;
       }

@@ -30,6 +30,9 @@ interface HeroVideoProps {
     text: string;
     href: string;
   };
+  heroActivitiesCount?: number;
+  heroParticipantsCount?: number;
+  uspBadges?: string[];
 }
 
 export function HeroVideo({
@@ -39,6 +42,9 @@ export function HeroVideo({
     text: "Stel je uitje samen",
     href: "#configurator",
   },
+  heroActivitiesCount = 41,
+  heroParticipantsCount = 516,
+  uspBadges = ["Maak sociale impact", "Op locatie naar keuze", "Op maat"],
 }: HeroVideoProps) {
   // Detect mobile devices
   const isMobile = useIsMobile();
@@ -191,13 +197,13 @@ export function HeroVideo({
               className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-6 border-t border-white/20 pt-8 sm:mt-16 sm:gap-12 sm:pt-12"
             >
               <div className="text-center">
-                <AnimatedKPI target={41} />
+                <AnimatedKPI target={heroActivitiesCount} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal uitjes
                 </div>
               </div>
               <div className="text-center">
-                <AnimatedKPI target={516} />
+                <AnimatedKPI target={heroParticipantsCount} />
                 <div className="mt-2 text-sm tracking-wide text-white/80">
                   Aantal deelnemers
                 </div>
@@ -209,9 +215,9 @@ export function HeroVideo({
               variants={fadeInUp}
               className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-12 sm:gap-4"
             >
-              <USPBadge text="Maak sociale impact" />
-              <USPBadge text="Op locatie naar keuze" />
-              <USPBadge text="Op maat" />
+              {uspBadges.map((badge) => (
+                <USPBadge key={badge} text={badge} />
+              ))}
             </motion.div>
           </motion.div>
         </div>

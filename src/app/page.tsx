@@ -49,6 +49,11 @@ export default function Home() {
     page: "homepage",
   });
 
+  // Fetch site stats (KPIs, USP badges)
+  const { data: siteStats } = api.content.getByPage.useQuery({
+    page: "site-stats",
+  });
+
   // Get content from database with fallbacks
   const hero = {
     title: pageContent?.hero?.title || DEFAULTS.hero.title,
@@ -82,6 +87,19 @@ export default function Home() {
           text: hero.cta_primary,
           href: "#configurator",
         }}
+        heroActivitiesCount={parseInt(
+          siteStats?.public?.heroActivitiesCount || "41",
+          10
+        )}
+        heroParticipantsCount={parseInt(
+          siteStats?.public?.heroParticipantsCount || "516",
+          10
+        )}
+        uspBadges={
+          siteStats?.public?.uspBadges
+            ? siteStats.public.uspBadges.split(",").map((b: string) => b.trim())
+            : undefined
+        }
       />
 
       {/* Uitjes Section - Scroll Animation */}
