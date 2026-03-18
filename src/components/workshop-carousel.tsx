@@ -62,7 +62,7 @@ export function WorkshopCarousel({
   subtitle = "Kies jouw ideale uitje",
   showViewAllButton = true,
   compact = false,
-  maxItems = 6,
+  maxItems = 12,
 }: WorkshopCarouselProps) {
   // Fetch workshops from database
   const { data: dbWorkshops, isLoading } = api.workshop.list.useQuery(
