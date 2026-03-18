@@ -116,7 +116,7 @@ export function WorkshopCarousel({
         ) : workshops.length > 0 ? (
           /* Workshop Grid - 3x2 Layout to fit viewport */
           <ScrollReveal animation="slideUp" delay={0.2}>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 lg:gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2 lg:grid-cols-3 lg:gap-2.5">
               {workshops.map((workshop, index) => (
                 <WorkshopCard
                   key={workshop.id}
@@ -190,7 +190,7 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
                 alt={workshop.title}
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 33vw"
                 placeholder="blur"
                 blurDataURL={
                   WORKSHOP_BLUR_PLACEHOLDERS[
@@ -202,16 +202,16 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />
 
             {/* Price badge */}
-            <div className="bg-primary shadow-editorial absolute top-2 right-2 rounded-full px-2 py-0.5">
-              <span className="text-primary-foreground text-[10px] font-bold tracking-wide">
+            <div className="bg-primary shadow-editorial absolute top-2 right-2 rounded-full px-1.5 py-0.5 sm:px-2">
+              <span className="text-primary-foreground text-[8px] font-bold tracking-wide sm:text-[10px]">
                 {workshop.price}
               </span>
             </div>
           </div>
 
           {/* Content - Ultra compact layout for 3x2 grid */}
-          <div className="p-2">
-            <h3 className="text-foreground mb-0.5 line-clamp-1 text-sm font-bold tracking-tight">
+          <div className="p-1.5 sm:p-2">
+            <h3 className="text-foreground mb-0.5 line-clamp-1 text-xs font-bold tracking-tight sm:text-sm">
               {workshop.title}
             </h3>
             <p className="text-primary mb-1 line-clamp-1 text-xs font-medium">
@@ -219,14 +219,14 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
             </p>
 
             {/* Meta info - single line */}
-            <div className="text-muted-foreground flex items-center gap-3 text-[10px]">
+            <div className="text-muted-foreground flex items-center gap-1.5 text-[9px] sm:gap-3 sm:text-[10px]">
               <span>{workshop.duration}</span>
               <span>•</span>
               <span className="line-clamp-1">{workshop.groupSize}</span>
             </div>
 
             {/* CTA */}
-            <div className="mt-1.5 flex items-center justify-between">
+            <div className="mt-1 flex items-center justify-between sm:mt-1.5">
               <span className="text-primary text-xs font-semibold">
                 Meer info
               </span>

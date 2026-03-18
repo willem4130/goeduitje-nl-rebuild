@@ -90,7 +90,7 @@ export function HeroVideo({
   }, [hasEnded]);
 
   return (
-    <section className="relative flex h-dvh min-h-[600px] w-full items-center overflow-hidden">
+    <section className="relative flex h-dvh min-h-[550px] w-full items-center overflow-hidden sm:min-h-[600px]">
       {/* Parallax Video Background */}
       <motion.div style={{ y: videoY }} className="absolute inset-0 z-0">
         <video
@@ -158,7 +158,7 @@ export function HeroVideo({
             {/* Subheadline */}
             <motion.p
               variants={staggerItem}
-              className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed tracking-wide text-white/90 sm:text-2xl"
+              className="mx-auto mt-3 max-w-2xl text-base leading-relaxed tracking-wide text-white/90 sm:mt-6 sm:text-2xl"
             >
               {subheadline}
             </motion.p>
@@ -166,13 +166,13 @@ export function HeroVideo({
             {/* CTA - Two Primary Buttons */}
             <motion.div
               variants={staggerItem}
-              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+              className="mt-6 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
             >
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
                 <Button
                   asChild
                   size="lg"
-                  className="bg-primary text-primary-foreground shadow-editorial-lg hover:bg-primary/90 hover:shadow-editorial-hover h-14 min-w-[240px] px-8 text-lg font-semibold tracking-wide transition-all duration-300"
+                  className="bg-primary text-primary-foreground shadow-editorial-lg hover:bg-primary/90 hover:shadow-editorial-hover h-12 min-w-[220px] px-6 text-base font-semibold tracking-wide transition-all duration-300 sm:h-14 sm:min-w-[240px] sm:px-8 sm:text-lg"
                 >
                   <Link href={primaryCta.href}>{primaryCta.text}</Link>
                 </Button>
@@ -182,7 +182,7 @@ export function HeroVideo({
                   asChild
                   size="lg"
                   variant="outline"
-                  className="shadow-editorial-lg hover:shadow-editorial-hover h-14 min-w-[240px] border-white/30 bg-white/10 px-8 text-lg font-semibold tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:border-white/50 hover:bg-white/20 hover:text-white"
+                  className="shadow-editorial-lg hover:shadow-editorial-hover h-12 min-w-[220px] border-white/30 bg-white/10 px-6 text-base font-semibold tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:border-white/50 hover:bg-white/20 hover:text-white sm:h-14 sm:min-w-[240px] sm:px-8 sm:text-lg"
                 >
                   <Link href="/booking">
                     Schrijf je in voor een open kookworkshop
@@ -194,17 +194,17 @@ export function HeroVideo({
             {/* Impact Stats - KPI Numbers */}
             <motion.div
               variants={fadeInUp}
-              className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-6 border-t border-white/20 pt-8 sm:mt-16 sm:gap-12 sm:pt-12"
+              className="mx-auto mt-5 grid max-w-2xl grid-cols-2 gap-4 border-t border-white/20 pt-5 sm:mt-16 sm:gap-12 sm:pt-12"
             >
               <div className="text-center">
                 <AnimatedKPI target={heroActivitiesCount} />
-                <div className="mt-2 text-sm tracking-wide text-white/80">
+                <div className="mt-1 text-xs tracking-wide text-white/80 sm:mt-2 sm:text-sm">
                   Aantal uitjes
                 </div>
               </div>
               <div className="text-center">
                 <AnimatedKPI target={heroParticipantsCount} />
-                <div className="mt-2 text-sm tracking-wide text-white/80">
+                <div className="mt-1 text-xs tracking-wide text-white/80 sm:mt-2 sm:text-sm">
                   Aantal deelnemers
                 </div>
               </div>
@@ -213,7 +213,7 @@ export function HeroVideo({
             {/* USP Pills - Social Impact Focus */}
             <motion.div
               variants={fadeInUp}
-              className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-12 sm:gap-4"
+              className="mt-3 flex flex-wrap justify-center gap-1.5 sm:mt-12 sm:gap-4"
             >
               {uspBadges.map((badge) => (
                 <USPBadge key={badge} text={badge} />
@@ -234,7 +234,7 @@ export function HeroVideo({
           repeatType: "reverse",
           ease: EASING.gentle,
         }}
-        className="absolute bottom-12 left-1/2 z-10 -translate-x-1/2 sm:bottom-8"
+        className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 sm:bottom-8"
       >
         <div className="flex flex-col items-center gap-2">
           <span className="text-sm tracking-wide text-white/70">
@@ -263,7 +263,7 @@ export function HeroVideo({
  */
 function USPBadge({ text }: { text: string }) {
   return (
-    <div className="flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md sm:px-6 sm:py-3">
+    <div className="flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-3 py-1.5 backdrop-blur-md sm:px-6 sm:py-3">
       <span className="text-xs font-semibold tracking-wide text-white sm:text-sm">
         {text}
       </span>

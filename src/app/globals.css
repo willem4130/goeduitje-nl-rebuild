@@ -218,6 +218,19 @@
     }
   }
 
+  /* Small phone typography - iPhone SE and similar */
+  @media (max-width: 400px) {
+    h1 {
+      font-size: 30px;
+    }
+    h2 {
+      font-size: 24px;
+    }
+    h3 {
+      font-size: 20px;
+    }
+  }
+
   /* Tablet typography - intermediate sizes between mobile and desktop */
   @media (min-width: 769px) and (max-width: 1024px) {
     h1 {
