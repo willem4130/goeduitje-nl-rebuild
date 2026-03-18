@@ -651,68 +651,79 @@ export function WorkshopConfigurator() {
                         )}
 
                         {/* Date and Time */}
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                          {/* Date input + TBD */}
-                          <div className="col-span-1 space-y-1 sm:contents">
-                            <FormField
-                              control={form.control}
-                              name="date"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm">
-                                    <IconCalendar className="mr-1 inline size-3.5" />
-                                    Datum
-                                  </FormLabel>
+                        <div className="space-y-2 sm:grid sm:grid-cols-4 sm:gap-2 sm:space-y-0">
+                          <FormField
+                            control={form.control}
+                            name="date"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm">
+                                  <IconCalendar className="mr-1 inline size-3.5" />
+                                  Datum
+                                </FormLabel>
+                                <div className="flex items-center gap-3">
                                   <FormControl>
                                     <Input
                                       type="date"
                                       disabled={dateTbd}
-                                      className="h-8"
+                                      className="h-8 flex-1"
                                       {...field}
                                       value={field.value || ""}
                                     />
                                   </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="dateTbd"
-                              render={({ field }) => (
-                                <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
-                                  <FormControl>
+                                  <label className="flex shrink-0 items-center gap-1.5 sm:hidden">
                                     <Checkbox
-                                      checked={field.value}
-                                      onCheckedChange={field.onChange}
+                                      checked={dateTbd}
+                                      onCheckedChange={(checked) =>
+                                        form.setValue("dateTbd", !!checked)
+                                      }
                                     />
-                                  </FormControl>
-                                  <FormLabel className="text-[11px] font-normal sm:text-xs">
-                                    Nog te bepalen
-                                  </FormLabel>
-                                </FormItem>
-                              )}
-                            />
-                          </div>
+                                    <span className="text-muted-foreground text-[11px]">
+                                      N.t.b.
+                                    </span>
+                                  </label>
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
 
-                          {/* Time input + TBD */}
-                          <div className="col-span-1 space-y-1 sm:contents">
-                            <FormField
-                              control={form.control}
-                              name="time"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-sm">
-                                    <IconClock className="mr-1 inline size-3.5" />
-                                    Tijd
-                                  </FormLabel>
+                          {/* Desktop-only dateTbd checkbox */}
+                          <FormField
+                            control={form.control}
+                            name="dateTbd"
+                            render={({ field }) => (
+                              <FormItem className="hidden sm:flex sm:items-end sm:space-y-0 sm:space-x-2 sm:pb-1">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <FormLabel className="text-xs font-normal">
+                                  Nog te bepalen
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="time"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm">
+                                  <IconClock className="mr-1 inline size-3.5" />
+                                  Tijd
+                                </FormLabel>
+                                <div className="flex items-center gap-3">
                                   <Select
                                     onValueChange={field.onChange}
                                     value={field.value || ""}
                                     disabled={timeTbd}
                                   >
                                     <FormControl>
-                                      <SelectTrigger className="h-8">
+                                      <SelectTrigger className="h-8 flex-1">
                                         <SelectValue placeholder="Tijd" />
                                       </SelectTrigger>
                                     </FormControl>
@@ -723,35 +734,51 @@ export function WorkshopConfigurator() {
                                         if (hour > 22) return null;
                                         const timeStr = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
                                         return (
-                                          <SelectItem key={timeStr} value={timeStr}>
+                                          <SelectItem
+                                            key={timeStr}
+                                            value={timeStr}
+                                          >
                                             {timeStr}
                                           </SelectItem>
                                         );
                                       })}
                                     </SelectContent>
                                   </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="timeTbd"
-                              render={({ field }) => (
-                                <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
-                                  <FormControl>
+                                  <label className="flex shrink-0 items-center gap-1.5 sm:hidden">
                                     <Checkbox
-                                      checked={field.value}
-                                      onCheckedChange={field.onChange}
+                                      checked={timeTbd}
+                                      onCheckedChange={(checked) =>
+                                        form.setValue("timeTbd", !!checked)
+                                      }
                                     />
-                                  </FormControl>
-                                  <FormLabel className="text-xs font-normal">
-                                    Nog te bepalen
-                                  </FormLabel>
-                                </FormItem>
-                              )}
-                            />
-                          </div>
+                                    <span className="text-muted-foreground text-[11px]">
+                                      N.t.b.
+                                    </span>
+                                  </label>
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Desktop-only timeTbd checkbox */}
+                          <FormField
+                            control={form.control}
+                            name="timeTbd"
+                            render={({ field }) => (
+                              <FormItem className="hidden sm:flex sm:items-end sm:space-y-0 sm:space-x-2 sm:pb-1">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                                <FormLabel className="text-xs font-normal">
+                                  Nog te bepalen
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                          />
                         </div>
 
                         {/* Duration */}
