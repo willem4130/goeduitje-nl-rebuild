@@ -170,24 +170,11 @@ export function OnzeMedewerkersContent({
                         </>
                       )}
 
-                      {/* Name & role overlay */}
+                      {/* Name overlay */}
                       <div className="absolute right-0 bottom-0 left-0 z-20 p-4 text-white sm:p-5">
-                        <p className="mb-0.5 text-[10px] font-medium tracking-wider text-white/70 uppercase sm:text-xs">
-                          {member.origin}
-                        </p>
                         <h3 className="text-base font-bold tracking-tight sm:text-lg">
                           {member.name}
                         </h3>
-                        <p className="text-xs font-medium text-white/90 sm:text-sm">
-                          {member.role}
-                        </p>
-
-                        {/* Quote on hover (desktop only) */}
-                        {member.quote && (
-                          <p className="mt-2 hidden max-h-0 overflow-hidden text-sm leading-relaxed text-white/80 italic opacity-0 transition-all duration-300 group-hover:max-h-20 group-hover:opacity-100 md:block">
-                            &ldquo;{member.quote}&rdquo;
-                          </p>
-                        )}
                       </div>
                     </div>
                   </CardContent>
