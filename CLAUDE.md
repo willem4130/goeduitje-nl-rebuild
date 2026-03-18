@@ -9,15 +9,18 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 ```
 src/
 ├── app/
-│   ├── (landing)/[slug]/         # City landing pages (41 pages: 40 kookworkshop + 1 vegetarisch)
+│   ├── (landing)/[slug]/         # City landing pages (49 pages)
 │   ├── teambuilding/             # Teambuilding category page (static)
 │   ├── bedrijfsuitjes/           # Bedrijfsuitjes category page (static)
 │   ├── workshops/                # Workshops category page (static)
 │   ├── api/                      # tRPC + webhooks
-│   ├── onze-uitjes/[slug]/       # Workshop detail pages
-│   ├── recepten/[slug]/          # Recipe pages
+│   ├── onze-uitjes/[slug]/       # Workshop detail pages (6)
+│   ├── onze-medewerkers/         # Team photos (Server Component + Client content)
+│   ├── onze-impact/              # Impact page with ToC diagrams (static images)
+│   ├── recepten/[slug]/          # Recipe pages (13)
 │   ├── booking/                  # Open workshop booking (t/m 15 persons)
 │   ├── jullie-ervaringen/        # Google Reviews page
+│   ├── bedankt/                  # Thank-you page after configurator submission
 │   └── checkout/                 # Stripe payment flow
 ├── components/
 │   ├── ui/                       # shadcn/ui (DO NOT MODIFY)
@@ -37,6 +40,15 @@ src/
     ├── schema.prisma             # Database schema (source of truth)
     └── seed-workshops.ts         # Workshop pricing data
 ```
+
+## Total Pages: 91
+
+| Type | Count | Template |
+|------|-------|----------|
+| Static pages | 23 | Individual page.tsx files |
+| City landing pages | 49 | `(landing)/[slug]/page.tsx` |
+| Workshop detail pages | 6 | `onze-uitjes/[slug]/page.tsx` |
+| Recipe pages | 13 | `recepten/[slug]/page.tsx` |
 
 ## Tech Stack
 
@@ -61,6 +73,7 @@ Fix ALL errors before committing. No exceptions.
 - Small group popup (<8 persons) suggests open workshops
 - "Bekijk agenda" button links to `/booking`
 - Located in `src/components/workshop-configurator.tsx`
+- On submit → redirects to `/bedankt` + pushes GA4 purchase event via dataLayer
 
 ### Google Reviews
 - Real reviews from Google Places API
@@ -73,9 +86,14 @@ Fix ALL errors before committing. No exceptions.
 - Minimum persons displayed: Buffet 30, Lunch 15, Diner 15
 - Prices in `prisma/seed-workshops.ts`
 
+### GTM / GA4 Tracking
+- GTM container loaded in root layout via `NEXT_PUBLIC_GTM_ID` env var
+- Purchase event pushed on configurator submission
+- Conversion tracking on `/bedankt` thank-you page
+
 ## City Landing Pages
 
-48 SEO-optimized landing pages via `src/app/(landing)/[slug]/page.tsx`.
+49 SEO-optimized landing pages via `src/app/(landing)/[slug]/page.tsx`.
 
 **City data source**: `src/lib/city-data.ts` (images & featured/other)
 **Landing page data**: `ALL_LANDING_PAGES` array in `(landing)/[slug]/page.tsx`
@@ -103,9 +121,40 @@ All cities have landmark images in `public/images/cities/[slug].jpg`.
 | `/bedrijfsuitjes` | bedrijfsuitje, personeelsuitje | `src/app/bedrijfsuitjes/page.tsx` |
 | `/workshops` | workshops, workshop boeken | `src/app/workshops/page.tsx` |
 
+## Onze Medewerkers
+
+Team photos page uses **Server Component** pattern (not client-side tRPC):
+- `src/app/onze-medewerkers/page.tsx` — Server Component, fetches via Prisma, exports metadata, `revalidate = 300`
+- `src/app/onze-medewerkers/content.tsx` — Client Component with animations, receives data as props
+- Clean 3×2 grid (2-col mobile, 3-col desktop), portrait aspect ratio cards
+- Team members: Zinab, Yara, Duha, Marloes, Guus (names match photo filenames)
+
+## Onze Impact / Theory of Change
+
+Theory of Change diagrams are **static images** (not dynamic SVG):
+- `public/images/impact/toc-medewerker.png` — downloaded from original Wix site
+- `public/images/impact/toc-deelnemer.png` — downloaded from original Wix site
+- Displayed via `<Image>` in `src/app/onze-impact/page.tsx` with `overflow-x-auto` for mobile scrolling
+
 ## SEO Redirects
 
 7x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs.
+
+## Images
+
+All client photos from `/All photo positions/Fotos nieuwe website maart 2026/` are processed and in use:
+
+```
+public/images/
+├── workshops/     — 6 workshop cards + hero images + videos
+├── ons-verhaal/   — hero-left, hero-right, doen, visie, impressie-uitjes.mp4
+├── impact/        — 4 impact photos + 2 ToC diagram images
+├── team/          — zinab, yara, duha, marloes, guus
+├── recipes/       — 7 recipe photos (rest use old Wix URLs)
+├── cities/        — 40 city landmark images
+├── hero/          — hero-poster.jpg, hero-poster-mobile.jpg
+└── logo/          — logo-nav.png, logo-footer.png
+```
 
 ## Database
 
@@ -141,22 +190,14 @@ git push
 - Skip typecheck before committing
 - Use 21% BTW for food service (use 9%)
 - Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
+- Use client-side tRPC `useQuery` for pages that can be Server Components — use Prisma directly in Server Components instead (see onze-medewerkers pattern)
 
-## Active Debug Session
+## Reference Docs
 
-**READ FIRST**: `docs/ACTIVE_DEBUG_SESSION.md` — contains critical in-progress debugging state.
-
-### Priority 1: /onze-medewerkers page broken
-Team photos page shows loading spinner forever. tRPC API works, images exist, code is correct, but client-side hydration fails silently. Full investigation state documented in the debug file above.
-
-### Priority 2: Fix remaining useQuery(undefined) bugs
-Two more pages send `null` input causing 400 errors:
-- `src/app/faq/page.tsx:14` — `useQuery(undefined)` → change to `useQuery({})`
-- `src/components/workshop-carousel.tsx:68` — `useQuery(undefined)` → change to `useQuery({})`
-
-### Image reference doc
+- `docs/ACTIVE_DEBUG_SESSION.md` — debug session history (all issues resolved)
 - `docs/IMAGE_UPLOAD_GUIDE.md` — client-facing guide for CMS-managed images
-- Excel with all image positions: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
+- Client image Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
+- Pages audit Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All current pages/Wix Webpaginas _2026.02.19.xlsx`
 
 ## Deployment
 
