@@ -651,7 +651,7 @@ export function WorkshopConfigurator() {
                         )}
 
                         {/* Date and Time - compact row */}
-                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2">
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-1 sm:grid-cols-4 sm:gap-2">
                           <FormField
                             control={form.control}
                             name="date"
@@ -679,7 +679,7 @@ export function WorkshopConfigurator() {
                             control={form.control}
                             name="dateTbd"
                             render={({ field }) => (
-                              <FormItem className="flex items-end space-y-0 space-x-2 pb-1">
+                              <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
                                 <FormControl>
                                   <Checkbox
                                     checked={field.value}
@@ -738,7 +738,7 @@ export function WorkshopConfigurator() {
                             control={form.control}
                             name="timeTbd"
                             render={({ field }) => (
-                              <FormItem className="flex items-end space-y-0 space-x-2 pb-1">
+                              <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
                                 <FormControl>
                                   <Checkbox
                                     checked={field.value}

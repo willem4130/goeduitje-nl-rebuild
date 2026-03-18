@@ -131,7 +131,7 @@ export const WORKSHOPS: Workshop[] = [
   },
   {
     id: "beachvolleybal",
-    name: "Beachvolleybal",
+    name: "Beach Volleybal",
     minParticipants: 12,
     maxParticipants: 40,
     basePrice: 25,
