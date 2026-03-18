@@ -138,7 +138,7 @@ export function HeroVideo({
       </motion.div>
 
       {/* Content Overlay - Centered Layout */}
-      <div className="relative z-10 h-full w-full">
+      <div className="relative z-10 h-full w-full pt-20">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-center px-6 lg:px-8">
           {/* Centered content */}
           <motion.div

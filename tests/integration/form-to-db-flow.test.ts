@@ -1,0 +1,305 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { appRouter } from "@/server/api/root";
+import { createCallerFactory } from "@/server/api/trpc";
+import { prisma } from "@/lib/prisma";
+
+const createCaller = createCallerFactory(appRouter);
+const caller = createCaller({ headers: new Headers() });
+
+describe("Workshop Configurator → tRPC → Database flow", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("workshop.create saves all fields including phone to WorkshopConfig", async () => {
+    const mockConfig = {
+      id: "cfg-1",
+      type: "particulier",
+      participantCount: 8,
+      workshops: ["Kookworkshop"],
+      location: "Nijmegen",
+      customCity: null,
+      date: "2026-05-01",
+      time: "14:00",
+      duration: 3,
+      name: "Jan Jansen",
+      email: "jan@example.com",
+      phone: "0612345678",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValueOnce(mockConfig);
+
+    const result = await caller.workshop.create({
+      type: "particulier",
+      participantCount: 8,
+      workshops: ["Kookworkshop"],
+      location: "Nijmegen",
+      date: "2026-05-01",
+      dateTbd: false,
+      time: "14:00",
+      timeTbd: false,
+      duration: 3,
+      name: "Jan Jansen",
+      email: "jan@example.com",
+      phone: "0612345678",
+    });
+
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        type: "particulier",
+        participantCount: 8,
+        workshops: ["Kookworkshop"],
+        location: "Nijmegen",
+        name: "Jan Jansen",
+        email: "jan@example.com",
+        phone: "0612345678",
+      }),
+    });
+    expect(result).toEqual(mockConfig);
+  });
+
+  it("stores TBD date/time when dateTbd/timeTbd are true", async () => {
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValueOnce({} as never);
+
+    await caller.workshop.create({
+      type: "particulier",
+      participantCount: 5,
+      workshops: ["Stadsspel"],
+      location: "Arnhem",
+      dateTbd: true,
+      timeTbd: true,
+      name: "Piet",
+      email: "piet@example.com",
+      phone: "0687654321",
+    });
+
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        date: "TBD",
+        time: "TBD",
+      }),
+    });
+  });
+
+  it("stores customCity when location is 'other'", async () => {
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValueOnce({} as never);
+
+    await caller.workshop.create({
+      type: "particulier",
+      participantCount: 10,
+      workshops: ["Kookworkshop"],
+      location: "other",
+      customCity: "Rotterdam",
+      date: "2026-06-15",
+      dateTbd: false,
+      time: "10:00",
+      timeTbd: false,
+      name: "Kees",
+      email: "kees@example.com",
+      phone: "0611223344",
+    });
+
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        location: "other",
+        customCity: "Rotterdam",
+      }),
+    });
+  });
+
+  it("stores null for empty optional fields", async () => {
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValueOnce({} as never);
+
+    await caller.workshop.create({
+      type: "particulier",
+      participantCount: 4,
+      workshops: ["Kookworkshop"],
+      location: "Nijmegen",
+      dateTbd: true,
+      timeTbd: true,
+      name: "Anna",
+      email: "anna@example.com",
+      phone: "0699887766",
+    });
+
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        customCity: null,
+        duration: null,
+      }),
+    });
+  });
+
+  it("zakelijk type requires companyName in validation", async () => {
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValueOnce({} as never);
+
+    // Should fail validation: zakelijk without companyName
+    await expect(
+      caller.workshop.create({
+        type: "zakelijk",
+        participantCount: 20,
+        workshops: ["Kookworkshop"],
+        location: "Nijmegen",
+        date: "2026-07-01",
+        dateTbd: false,
+        time: "09:00",
+        timeTbd: false,
+        name: "Bedrijf B.V.",
+        email: "info@bedrijf.nl",
+        phone: "0200000000",
+        // missing companyName
+      })
+    ).rejects.toThrow();
+  });
+});
+
+describe("Contact Form → tRPC → Database flow", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("feedback.submit saves to Feedback table with correct fields", async () => {
+    const mockFeedback = {
+      id: "fb-1",
+      name: "Maria",
+      email: "maria@example.com",
+      phone: "0612345678",
+      subject: "Vraag over workshops",
+      message: "Ik wil graag meer informatie over de kookworkshop.",
+      rating: 5,
+      isRead: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    vi.mocked(prisma.feedback.create).mockResolvedValueOnce(mockFeedback);
+
+    const result = await caller.feedback.submit({
+      name: "Maria",
+      email: "maria@example.com",
+      phone: "0612345678",
+      subject: "Vraag over workshops",
+      message: "Ik wil graag meer informatie over de kookworkshop.",
+      rating: 5,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toContain("Bedankt");
+    expect(prisma.feedback.create).toHaveBeenCalledWith({
+      data: {
+        name: "Maria",
+        email: "maria@example.com",
+        phone: "0612345678",
+        subject: "Vraag over workshops",
+        message: "Ik wil graag meer informatie over de kookworkshop.",
+        rating: 5,
+        isRead: false,
+      },
+    });
+  });
+
+  it("isRead defaults to false", async () => {
+    vi.mocked(prisma.feedback.create).mockResolvedValueOnce({} as never);
+
+    await caller.feedback.submit({
+      name: "Test User",
+      email: "test@example.com",
+      message: "Dit is een testbericht voor feedback.",
+    });
+
+    expect(prisma.feedback.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ isRead: false }),
+    });
+  });
+
+  it("handles database error by throwing TRPC INTERNAL_SERVER_ERROR", async () => {
+    vi.mocked(prisma.feedback.create).mockRejectedValueOnce(
+      new Error("DB connection lost")
+    );
+
+    await expect(
+      caller.feedback.submit({
+        name: "Error Test",
+        email: "error@example.com",
+        message: "This should trigger an error in the database layer.",
+      })
+    ).rejects.toThrow();
+  });
+});
+
+describe("Feedback admin operations", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("feedback.getAll with default params", async () => {
+    const mockItems = [
+      { id: "fb-1", name: "A", email: "a@x.com", message: "msg", isRead: false, createdAt: new Date(), updatedAt: new Date() },
+    ];
+    vi.mocked(prisma.feedback.findMany).mockResolvedValueOnce(mockItems as never);
+
+    const result = await caller.feedback.getAll();
+
+    expect(prisma.feedback.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      })
+    );
+    expect(result).toEqual(mockItems);
+  });
+
+  it("feedback.getAll with isRead filter", async () => {
+    vi.mocked(prisma.feedback.findMany).mockResolvedValueOnce([] as never);
+
+    await caller.feedback.getAll({ isRead: true, limit: 10 });
+
+    expect(prisma.feedback.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { isRead: true },
+        take: 10,
+      })
+    );
+  });
+
+  it("feedback.toggleRead updates the correct record", async () => {
+    const updated = { id: "fb-1", isRead: true };
+    vi.mocked(prisma.feedback.update).mockResolvedValueOnce(updated as never);
+
+    const result = await caller.feedback.toggleRead({ id: "fb-1", isRead: true });
+
+    expect(prisma.feedback.update).toHaveBeenCalledWith({
+      where: { id: "fb-1" },
+      data: { isRead: true },
+    });
+    expect(result).toEqual(updated);
+  });
+
+  it("feedback.delete removes the record", async () => {
+    vi.mocked(prisma.feedback.delete).mockResolvedValueOnce({} as never);
+
+    const result = await caller.feedback.delete({ id: "fb-99" });
+
+    expect(prisma.feedback.delete).toHaveBeenCalledWith({
+      where: { id: "fb-99" },
+    });
+    expect(result).toEqual({ success: true });
+  });
+
+  it("feedback.getStats returns correct aggregated stats", async () => {
+    vi.mocked(prisma.feedback.count)
+      .mockResolvedValueOnce(25 as never) // total
+      .mockResolvedValueOnce(7 as never); // unread
+    vi.mocked(prisma.feedback.aggregate).mockResolvedValueOnce({
+      _avg: { rating: 4.2 },
+    } as never);
+
+    const stats = await caller.feedback.getStats();
+
+    expect(stats).toEqual({
+      total: 25,
+      unread: 7,
+      averageRating: 4.2,
+    });
+  });
+});

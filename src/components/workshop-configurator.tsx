@@ -650,107 +650,108 @@ export function WorkshopConfigurator() {
                           />
                         )}
 
-                        {/* Date and Time - compact row */}
-                        <div className="grid grid-cols-2 gap-x-2 gap-y-1 sm:grid-cols-4 sm:gap-2">
-                          <FormField
-                            control={form.control}
-                            name="date"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm">
-                                  <IconCalendar className="mr-1 inline size-3.5" />
-                                  Datum
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="date"
-                                    disabled={dateTbd}
-                                    className="h-8"
-                                    {...field}
-                                    value={field.value || ""}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="dateTbd"
-                            render={({ field }) => (
-                              <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-[11px] font-normal sm:text-xs">
-                                  Nog te bepalen
-                                </FormLabel>
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="time"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-sm">
-                                  <IconClock className="mr-1 inline size-3.5" />
-                                  Tijd
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value || ""}
-                                  disabled={timeTbd}
-                                >
+                        {/* Date and Time */}
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                          {/* Date input + TBD */}
+                          <div className="col-span-1 space-y-1 sm:contents">
+                            <FormField
+                              control={form.control}
+                              name="date"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm">
+                                    <IconCalendar className="mr-1 inline size-3.5" />
+                                    Datum
+                                  </FormLabel>
                                   <FormControl>
-                                    <SelectTrigger className="h-8">
-                                      <SelectValue placeholder="Tijd" />
-                                    </SelectTrigger>
+                                    <Input
+                                      type="date"
+                                      disabled={dateTbd}
+                                      className="h-8"
+                                      {...field}
+                                      value={field.value || ""}
+                                    />
                                   </FormControl>
-                                  <SelectContent>
-                                    {Array.from({ length: 57 }, (_, i) => {
-                                      const hour = Math.floor(i / 4) + 8;
-                                      const minute = (i % 4) * 15;
-                                      if (hour > 22) return null;
-                                      const timeStr = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
-                                      return (
-                                        <SelectItem
-                                          key={timeStr}
-                                          value={timeStr}
-                                        >
-                                          {timeStr}
-                                        </SelectItem>
-                                      );
-                                    })}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="dateTbd"
+                              render={({ field }) => (
+                                <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-[11px] font-normal sm:text-xs">
+                                    Nog te bepalen
+                                  </FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
 
-                          <FormField
-                            control={form.control}
-                            name="timeTbd"
-                            render={({ field }) => (
-                              <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-xs font-normal">
-                                  Nog te bepalen
-                                </FormLabel>
-                              </FormItem>
-                            )}
-                          />
+                          {/* Time input + TBD */}
+                          <div className="col-span-1 space-y-1 sm:contents">
+                            <FormField
+                              control={form.control}
+                              name="time"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-sm">
+                                    <IconClock className="mr-1 inline size-3.5" />
+                                    Tijd
+                                  </FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value || ""}
+                                    disabled={timeTbd}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger className="h-8">
+                                        <SelectValue placeholder="Tijd" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {Array.from({ length: 57 }, (_, i) => {
+                                        const hour = Math.floor(i / 4) + 8;
+                                        const minute = (i % 4) * 15;
+                                        if (hour > 22) return null;
+                                        const timeStr = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+                                        return (
+                                          <SelectItem key={timeStr} value={timeStr}>
+                                            {timeStr}
+                                          </SelectItem>
+                                        );
+                                      })}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="timeTbd"
+                              render={({ field }) => (
+                                <FormItem className="flex items-center space-y-0 space-x-2 sm:items-end sm:pb-1">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-xs font-normal">
+                                    Nog te bepalen
+                                  </FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
 
                         {/* Duration */}

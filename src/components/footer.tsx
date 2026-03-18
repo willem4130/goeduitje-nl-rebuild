@@ -91,10 +91,6 @@ export function Footer({
                 style={{ maxWidth: "240px" }}
               />
             </Link>
-            <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
-              Workshops en teambuildinguitjes met een verhaal. Van Amsterdam tot
-              Limburg, van koken tot kunst. Om te janken zo goed!
-            </p>
 
             {/* Social Links */}
             <div className="mt-6 flex gap-4">

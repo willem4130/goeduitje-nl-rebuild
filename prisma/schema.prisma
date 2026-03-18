@@ -212,27 +212,43 @@ model Workshop {
 
 model Booking {
   id                 String   @id @default(cuid())
-  workshopId         String
-  workshopDate       String
+  stripeSessionId    String?  @unique
+  stripePaymentId    String?
+
+  // Customer info
   firstName          String
   lastName           String
   email              String
   numberOfPeople     Int
-  dietaryRequirement String   @default("geen")
+
+  // Workshop info
+  workshopId         String?    // ID from open-workshops.ts
+  workshopDate       String?    // Display date string
+
+  // Dietary
+  dietaryRequirement String?
   allergies          String?
-  totalPrice         Float
-  paymentMethod      String   // "gift_card", "stripe", "gift_card_partial"
-  paymentStatus      String   @default("pending") // "pending", "paid", "failed"
+
+  // Gift card
+  hasGiftCard        Boolean  @default(false)
   giftCardId         String?
   giftCardValue      Float?
-  remainingAmount    Float?
-  stripeSessionId    String?
+
+  // Payment
+  totalPrice         Float
+  remainingAmount    Float
+  amountPaid         Float?
+  currency           String   @default("eur")
+  paymentMethod      String?  // "gift_card", "stripe", "gift_card_partial"
+  paymentStatus      String   @default("pending") // pending, paid, failed, refunded
+
+  // Metadata
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  @@index([createdAt])
   @@index([email])
   @@index([paymentStatus])
+  @@index([createdAt])
 }
 
 model WorkshopConfig {

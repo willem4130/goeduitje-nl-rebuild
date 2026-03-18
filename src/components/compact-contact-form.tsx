@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -10,6 +9,7 @@ import { IconLoader2, IconSend } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/trpc/client";
 
 // Simplified schema for compact form
 const compactContactSchema = z.object({
@@ -27,8 +27,6 @@ const compactContactSchema = z.object({
 type CompactContactValues = z.infer<typeof compactContactSchema>;
 
 export function CompactContactForm() {
-  const [isLoading, setIsLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -43,42 +41,48 @@ export function CompactContactForm() {
     },
   });
 
-  async function onSubmit(data: CompactContactValues) {
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "contact-confirmation",
-          to: data.email,
-          data: {
-            name: data.naam,
-            subject: "Contact formulier (footer)",
-          },
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send confirmation email");
+  const submitFeedback = api.feedback.submit.useMutation({
+    onSuccess: async (_, variables) => {
+      // Send confirmation email (non-blocking)
+      try {
+        await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "contact-confirmation",
+            to: variables.email,
+            data: {
+              name: variables.name,
+              subject: "Contact formulier (footer)",
+            },
+          }),
+        });
+      } catch {
+        // Email failed but feedback was saved - still show success
       }
 
       toast.success("Bericht verzonden!", {
         description: "We nemen zo snel mogelijk contact met je op.",
       });
-
       reset();
-    } catch {
+    },
+    onError: () => {
       toast.error("Er ging iets mis!", {
         description: "Probeer het later opnieuw.",
       });
-    } finally {
-      setIsLoading(false);
-    }
+    },
+  });
+
+  async function onSubmit(data: CompactContactValues) {
+    submitFeedback.mutate({
+      name: data.naam,
+      email: data.email,
+      message: data.bericht,
+      subject: "Contact formulier (footer)",
+    });
   }
+
+  const isLoading = submitFeedback.isPending;
 
   return (
     <div className="space-y-4">

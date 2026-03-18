@@ -57,10 +57,61 @@ Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwi
 ## Code Quality
 
 ```bash
-npm run typecheck && npm run lint
+npm run typecheck && npm run lint && npm run test:run
 ```
 
 Fix ALL errors before committing. No exceptions.
+
+## Testing
+
+### Test Stack
+- **Unit/Integration**: Vitest 4 + Testing Library + jsdom
+- **E2E**: Playwright (Chromium)
+- **Coverage**: @vitest/coverage-v8 (97.8% lines, 98.3% functions)
+
+### Run Tests
+```bash
+npm run test:run          # Unit + integration (322 tests)
+npm run test:coverage     # With coverage report
+npm run test:e2e          # Playwright E2E (37 tests, needs dev server)
+npm run test:integration  # Form→DB→Admin round-trip (needs live deployments)
+npm run typecheck         # TypeScript check
+npm run lint              # ESLint
+```
+
+### Test Structure
+```
+tests/
+├── setup/vitest.setup.ts        # Global mocks (Prisma, Stripe, Resend, env)
+├── unit/
+│   ├── lib/                     # Utility + validation tests (5 files)
+│   └── api/                     # tRPC router + API route tests (15 files)
+├── integration/
+│   ├── prisma-schema-validation.test.ts  # All Prisma models verified
+│   ├── backend-schema-sync.test.ts       # Prisma↔Drizzle sync for shared tables
+│   ├── form-to-db-flow.test.ts           # Workshop + contact form → DB flow
+│   └── form-roundtrip.test.ts            # Live: form → DB → admin API
+└── e2e/
+    ├── homepage.spec.ts           # Hero, nav, footer, CTA
+    ├── navigation.spec.ts         # Page loads, routing
+    ├── contact.spec.ts            # Contact form validation + input
+    ├── booking.spec.ts            # Booking form, dates, gift card
+    ├── configurator.spec.ts       # Workshop configurator interaction
+    └── responsive.spec.ts         # Mobile viewport tests
+```
+
+### Forms → Database → Admin Pipeline
+
+| Frontend Form | DB Table | Backend Admin API | Status |
+|---------------|----------|-------------------|--------|
+| Workshop Configurator | `WorkshopConfig` | `/api/workshops/configs` | ✅ |
+| Contact Form | `Feedback` | `/api/content/feedback` | ✅ |
+| Compact Contact (footer) | `Feedback` | `/api/content/feedback` | ✅ |
+| Booking (Stripe) | `Booking` | `/api/bookings` | ✅ |
+| Booking (gift card) | `Booking` | `/api/bookings` | ✅ |
+
+### /test Command
+Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typecheck, lint.
 
 ## Key Features
 

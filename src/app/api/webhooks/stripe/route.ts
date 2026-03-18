@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
+import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -35,94 +36,115 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
+        const metadata = session.metadata || {};
 
         console.log("💰 Payment successful!");
         console.log("Session ID:", session.id);
         console.log("Customer email:", session.customer_email);
         console.log("Amount total:", session.amount_total);
-        console.log("Metadata:", session.metadata);
+        console.log("Metadata:", metadata);
 
-        // TODO: Update your database here
-        // Example: Update order status, grant access, send confirmation email
-        // await prisma.order.update({
-        //   where: { id: session.metadata.orderId },
-        //   data: { status: "paid", stripeSessionId: session.id }
-        // })
+        try {
+          await prisma.booking.create({
+            data: {
+              stripeSessionId: session.id,
+              stripePaymentId: (session.payment_intent as string) || null,
+              firstName: metadata.firstName || "",
+              lastName: metadata.lastName || "",
+              email: session.customer_email || metadata.email || "",
+              numberOfPeople: parseInt(metadata.numberOfPeople || "1"),
+              workshopId: metadata.workshopId || null,
+              workshopDate: metadata.workshopDate || null,
+              dietaryRequirement: metadata.dietaryRequirement || null,
+              allergies: metadata.allergies || null,
+              hasGiftCard: metadata.hasGiftCard === "true",
+              giftCardId: metadata.giftCardId || null,
+              giftCardValue: metadata.giftCardValue
+                ? parseFloat(metadata.giftCardValue)
+                : null,
+              totalPrice: parseFloat(metadata.totalPrice || "0"),
+              remainingAmount: parseFloat(metadata.remainingAmount || "0"),
+              amountPaid: session.amount_total
+                ? session.amount_total / 100
+                : null,
+              currency: session.currency || "eur",
+              paymentMethod: "stripe",
+              paymentStatus: "paid",
+            },
+          });
+          console.log("✅ Booking saved to database for session:", session.id);
+        } catch (dbError) {
+          console.error("❌ Failed to save booking to database:", dbError);
+        }
+
+        break;
+      }
+
+      case "checkout.session.expired": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const metadata = session.metadata || {};
+
+        console.log("⏰ Checkout session expired:", session.id);
+
+        try {
+          await prisma.booking.create({
+            data: {
+              stripeSessionId: session.id,
+              stripePaymentId: null,
+              firstName: metadata.firstName || "",
+              lastName: metadata.lastName || "",
+              email: session.customer_email || metadata.email || "",
+              numberOfPeople: parseInt(metadata.numberOfPeople || "1"),
+              workshopId: metadata.workshopId || null,
+              workshopDate: metadata.workshopDate || null,
+              dietaryRequirement: metadata.dietaryRequirement || null,
+              allergies: metadata.allergies || null,
+              hasGiftCard: metadata.hasGiftCard === "true",
+              giftCardId: metadata.giftCardId || null,
+              giftCardValue: metadata.giftCardValue
+                ? parseFloat(metadata.giftCardValue)
+                : null,
+              totalPrice: parseFloat(metadata.totalPrice || "0"),
+              remainingAmount: parseFloat(metadata.remainingAmount || "0"),
+              amountPaid: null,
+              currency: session.currency || "eur",
+              paymentMethod: "stripe",
+              paymentStatus: "failed",
+            },
+          });
+          console.log(
+            "✅ Failed booking saved to database for expired session:",
+            session.id
+          );
+        } catch (dbError) {
+          console.error(
+            "❌ Failed to save expired booking to database:",
+            dbError
+          );
+        }
 
         break;
       }
 
       case "payment_intent.succeeded": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-
-        console.log("💳 Payment intent succeeded!");
-        console.log("Payment Intent ID:", paymentIntent.id);
-        console.log("Amount:", paymentIntent.amount);
-
-        // TODO: Handle successful payment
+        console.log(
+          "💳 Payment intent succeeded:",
+          paymentIntent.id,
+          "Amount:",
+          paymentIntent.amount
+        );
         break;
       }
 
       case "payment_intent.payment_failed": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-
-        console.error("❌ Payment failed!");
-        console.error("Payment Intent ID:", paymentIntent.id);
-        console.error("Error:", paymentIntent.last_payment_error?.message);
-
-        // TODO: Handle failed payment (notify user, update database)
-        break;
-      }
-
-      case "customer.subscription.created": {
-        const subscription = event.data.object as Stripe.Subscription;
-
-        console.log("📦 Subscription created!");
-        console.log("Subscription ID:", subscription.id);
-        console.log("Customer ID:", subscription.customer);
-
-        // TODO: Grant subscription access
-        break;
-      }
-
-      case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
-
-        console.log("🔄 Subscription updated!");
-        console.log("Subscription ID:", subscription.id);
-        console.log("Status:", subscription.status);
-
-        // TODO: Update subscription status in database
-        break;
-      }
-
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object as Stripe.Subscription;
-
-        console.log("🗑️ Subscription cancelled!");
-        console.log("Subscription ID:", subscription.id);
-
-        // TODO: Revoke subscription access
-        break;
-      }
-
-      case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
-
-        console.log("📧 Invoice paid!");
-        console.log("Invoice ID:", invoice.id);
-
-        // TODO: Send invoice email
-        break;
-      }
-
-      case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
-
-        console.error("💸 Invoice payment failed!");
-        console.error("Invoice ID:", invoice.id);
-
-        // TODO: Notify customer of failed payment
+        console.error(
+          "❌ Payment failed:",
+          paymentIntent.id,
+          "Error:",
+          paymentIntent.last_payment_error?.message
+        );
         break;
       }
 

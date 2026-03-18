@@ -4,21 +4,25 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 const createBookingSchema = z.object({
-  workshopId: z.string(),
-  workshopDate: z.string(),
+  stripeSessionId: z.string().optional(),
+  stripePaymentId: z.string().optional(),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email(),
   numberOfPeople: z.number().min(1).max(15),
-  dietaryRequirement: z.string().default("geen"),
+  workshopId: z.string().optional(),
+  workshopDate: z.string().optional(),
+  dietaryRequirement: z.string().optional(),
   allergies: z.string().optional(),
-  totalPrice: z.number(),
-  paymentMethod: z.enum(["gift_card", "stripe", "gift_card_partial"]),
-  paymentStatus: z.string().default("paid"),
+  hasGiftCard: z.boolean().default(false),
   giftCardId: z.string().optional(),
   giftCardValue: z.number().optional(),
-  remainingAmount: z.number().optional(),
-  stripeSessionId: z.string().optional(),
+  totalPrice: z.number(),
+  remainingAmount: z.number(),
+  amountPaid: z.number().optional(),
+  currency: z.string().default("eur"),
+  paymentMethod: z.enum(["gift_card", "stripe", "gift_card_partial"]).optional(),
+  paymentStatus: z.string().default("pending"),
 });
 
 export const bookingRouter = createTRPCRouter({
@@ -31,21 +35,25 @@ export const bookingRouter = createTRPCRouter({
       try {
         const booking = await prisma.booking.create({
           data: {
-            workshopId: input.workshopId,
-            workshopDate: input.workshopDate,
+            stripeSessionId: input.stripeSessionId,
+            stripePaymentId: input.stripePaymentId,
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,
             numberOfPeople: input.numberOfPeople,
+            workshopId: input.workshopId,
+            workshopDate: input.workshopDate,
             dietaryRequirement: input.dietaryRequirement,
             allergies: input.allergies,
-            totalPrice: input.totalPrice,
-            paymentMethod: input.paymentMethod,
-            paymentStatus: input.paymentStatus,
+            hasGiftCard: input.hasGiftCard,
             giftCardId: input.giftCardId,
             giftCardValue: input.giftCardValue,
+            totalPrice: input.totalPrice,
             remainingAmount: input.remainingAmount,
-            stripeSessionId: input.stripeSessionId,
+            amountPaid: input.amountPaid,
+            currency: input.currency,
+            paymentMethod: input.paymentMethod,
+            paymentStatus: input.paymentStatus,
           },
         });
 
