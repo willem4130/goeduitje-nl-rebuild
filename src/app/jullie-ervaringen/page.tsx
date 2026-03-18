@@ -268,10 +268,7 @@ export default function JullieErvaringenPage() {
                     </div>
                   </ScrollReveal>
 
-                  <StaggerChildren
-                    staggerDelay={0.08}
-                    className="columns-1 gap-6 md:columns-2 lg:columns-3"
-                  >
+                  <div className="columns-1 gap-6 md:columns-2 lg:columns-3">
                     {gridReviews.map((review: ReviewFromAPI) => (
                       <div key={review.id} className="mb-6 break-inside-avoid">
                         <GoogleReviewCard
@@ -280,7 +277,7 @@ export default function JullieErvaringenPage() {
                         />
                       </div>
                     ))}
-                  </StaggerChildren>
+                  </div>
                 </div>
               )}
 
@@ -293,20 +290,30 @@ export default function JullieErvaringenPage() {
                 </div>
               )}
 
-              {/* Google Attribution */}
-              <div className="mt-16 flex items-center justify-center gap-3 border-t pt-8">
-                <GoogleIcon className="h-6 w-6" />
-                <span className="text-muted-foreground text-sm">
-                  Reviews afkomstig van Google Maps
-                </span>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Goeduitje"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary text-sm font-medium hover:underline"
-                >
-                  Bekijk op Google Maps
-                </a>
+              {/* Google Reviews CTA */}
+              <div className="mt-16 border-t pt-12">
+                <div className="mx-auto max-w-lg text-center">
+                  <div className="mb-4 flex items-center justify-center gap-2">
+                    <GoogleIcon className="h-6 w-6" />
+                    <span className="text-muted-foreground text-sm">
+                      Reviews afkomstig van Google Maps
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground mb-6 text-sm leading-relaxed">
+                    Wil je alle {stats?.totalCount || ""} reviews bekijken?
+                    Bekijk ons volledige profiel op Google Maps.
+                  </p>
+                  <Button variant="outline" size="lg" className="gap-2" asChild>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Goeduitje"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GoogleIcon className="h-5 w-5" />
+                      Bekijk alle reviews op Google
+                    </a>
+                  </Button>
+                </div>
               </div>
             </>
           )}
