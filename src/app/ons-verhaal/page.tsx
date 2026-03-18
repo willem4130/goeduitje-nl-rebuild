@@ -16,7 +16,6 @@ import {
   Heart,
   Sparkles,
   HandHeart,
-  Play,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -238,18 +237,6 @@ export default function OnsVerhaalPage() {
                 playsInline
                 className="aspect-video w-full object-cover"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                <div className="bg-primary/90 flex h-12 w-12 items-center justify-center rounded-full">
-                  <Play className="h-5 w-5 fill-white text-white" />
-                </div>
-                <div className="text-white">
-                  <p className="font-semibold">{get("video", "label")}</p>
-                  <p className="text-sm opacity-80">
-                    {get("video", "sublabel")}
-                  </p>
-                </div>
-              </div>
             </div>
           </ScrollReveal>
         </div>
