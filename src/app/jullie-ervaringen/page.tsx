@@ -54,7 +54,7 @@ export default function JullieErvaringenPage() {
     error: reviewsError,
     refetch,
   } = api.reviews.getAll.useQuery({
-    limit: 20,
+    limit: 100,
     sortBy: "reviewTime",
     sortOrder: "desc",
     visibleOnly: true,
@@ -324,7 +324,7 @@ export default function JullieErvaringenPage() {
                 Word Het Volgende Succesverhaal
               </h2>
               <p className="mx-auto mb-12 max-w-2xl text-lg leading-relaxed tracking-wide opacity-90 sm:text-xl">
-                Organiseer een uitje die jullie team samenbrengt en impact maakt
+                Organiseer een uitje dat jullie team samenbrengt en impact maakt
                 die telt.
               </p>
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>

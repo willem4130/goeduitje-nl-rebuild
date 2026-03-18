@@ -27,7 +27,7 @@ export const getReviewsQuerySchema = z
     sortBy: z.enum(["rating", "reviewTime"]).default("reviewTime"),
     sortOrder: z.enum(["asc", "desc"]).default("desc"),
     minRating: z.number().min(1).max(5).optional(),
-    limit: z.number().min(1).max(50).default(10),
+    limit: z.number().min(1).max(100).default(10),
     visibleOnly: z.boolean().default(true),
   })
   .optional();

@@ -75,7 +75,6 @@ function StandardCard({
           <p className="text-foreground font-semibold tracking-tight">
             {review.authorName}
           </p>
-          <p className="text-muted-foreground text-xs">{review.relativeTime}</p>
         </div>
       </div>
 
@@ -169,7 +168,7 @@ function FeaturedCard({
               </p>
               <div className="text-muted-foreground mt-1 flex items-center gap-2 text-sm">
                 <GoogleIcon className="h-4 w-4" />
-                <span>Google Review · {review.relativeTime}</span>
+                <span>Google Review</span>
               </div>
             </div>
           </div>
