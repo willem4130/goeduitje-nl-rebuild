@@ -55,10 +55,10 @@ export function OnzeMedewerkersContent({
           <div className="container mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal animation="slideUp">
               <div className="mx-auto max-w-4xl text-center">
-                <h1 className="text-primary mb-8 tracking-tight">
+                <h1 className="text-primary mb-4 tracking-tight sm:mb-8">
                   Onze Medewerkers
                 </h1>
-                <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide sm:text-xl">
+                <p className="text-muted-foreground mx-auto mb-4 max-w-2xl text-base leading-relaxed tracking-wide sm:mb-8 sm:text-lg md:text-xl">
                   Ontmoet het team dat jullie bedrijfsuitjes tot een
                   onvergetelijke ervaring maakt. Onze medewerkers zijn
                   statushouders en asielzoekers die met passie hun cultuur en
@@ -74,7 +74,7 @@ export function OnzeMedewerkersContent({
       <section className="section-sm">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
               {[
                 {
                   icon: Heart,
@@ -99,7 +99,7 @@ export function OnzeMedewerkersContent({
                   key={item.title}
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.3 }}
-                  className="border-primary/10 bg-primary/5 rounded-2xl border p-6 text-center"
+                  className="border-primary/10 bg-primary/5 rounded-2xl border p-4 text-center sm:p-6"
                 >
                   <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-3">
                     <item.icon className="text-primary h-6 w-6" />
@@ -118,14 +118,14 @@ export function OnzeMedewerkersContent({
       </section>
 
       {/* Team Gallery - 3×2 Grid */}
-      <section className="section-md bg-muted/30">
+      <section className="bg-muted/30 py-8 md:py-10 lg:py-12">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mb-12 text-center">
+            <div className="mb-6 text-center md:mb-8">
               <h2 className="text-primary mb-4 tracking-tight">
                 Maak Kennis Met Ons Team
               </h2>
-              <p className="text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed">
+              <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed sm:text-lg">
                 De mensen die jullie workshops begeleiden en hun cultuur met
                 jullie delen
               </p>
@@ -133,7 +133,7 @@ export function OnzeMedewerkersContent({
           </ScrollReveal>
 
           {/* 3×2 on desktop, 2×3 on tablet, 2×3 on mobile */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
             {teamMembers.map((member, index) => (
               <motion.div
                 key={member.id}
@@ -144,8 +144,8 @@ export function OnzeMedewerkersContent({
               >
                 <Card className="group shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500">
                   <CardContent className="relative p-0">
-                    {/* Photo container — portrait 3:4 ratio */}
-                    <div className="bg-muted relative aspect-[3/4] w-full overflow-hidden">
+                    {/* Photo container — portrait ratio, shorter on desktop */}
+                    <div className="bg-muted relative aspect-[3/4] w-full overflow-hidden md:aspect-[4/5]">
                       {/* Gradient overlay */}
                       <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
 
@@ -160,17 +160,12 @@ export function OnzeMedewerkersContent({
                       ) : (
                         <>
                           <div
-                            className="absolute inset-0"
-                            style={{
-                              background: `linear-gradient(135deg,
-                                hsl(${25 + index * 15}, 40%, ${65 - index * 3}%) 0%,
-                                hsl(${35 + index * 10}, 35%, ${55 - index * 2}%) 100%)`,
-                            }}
+                            className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/60 to-primary/40"
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="rounded-full bg-white/20 p-6 backdrop-blur-sm">
-                              <Users className="h-10 w-10 text-white/80 sm:h-12 sm:w-12" />
-                            </div>
+                            <span className="text-4xl font-bold text-white/60 sm:text-5xl">
+                              {member.name.charAt(0)}
+                            </span>
                           </div>
                         </>
                       )}
@@ -208,7 +203,7 @@ export function OnzeMedewerkersContent({
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
             <div className="mx-auto max-w-4xl text-center">
-              <span className="text-primary/30 mb-4 block font-serif text-6xl leading-none">
+              <span className="text-primary/30 mb-2 block font-serif text-4xl leading-none sm:mb-4 sm:text-6xl">
                 &ldquo;
               </span>
               <blockquote className="text-foreground mb-6 text-xl leading-relaxed font-light tracking-wide italic sm:text-2xl">
@@ -231,11 +226,11 @@ export function OnzeMedewerkersContent({
       <section className="section-sm bg-muted/30">
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
-            <div className="mb-8 text-center">
-              <h2 className="text-primary mb-4 tracking-tight">
+            <div className="mb-6 text-center sm:mb-8">
+              <h2 className="text-primary mb-3 tracking-tight sm:mb-4">
                 Wat Maakt Ons Team Bijzonder
               </h2>
-              <p className="text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed">
+              <p className="text-muted-foreground mx-auto max-w-2xl text-base leading-relaxed sm:text-lg">
                 Ontdek waarom een workshop met ons team zo&apos;n unieke
                 ervaring is
               </p>
@@ -244,7 +239,7 @@ export function OnzeMedewerkersContent({
 
           <StaggerChildren
             staggerDelay={0.15}
-            className="grid gap-6 md:grid-cols-2"
+            className="grid gap-4 sm:gap-6 md:grid-cols-2"
           >
             {/* Card 1 */}
             <motion.div
@@ -253,7 +248,7 @@ export function OnzeMedewerkersContent({
               className="h-full"
             >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="flex h-full flex-col p-8">
+                <CardContent className="flex h-full flex-col p-5 sm:p-8">
                   <h3 className="mb-4 text-xl font-semibold tracking-tight">
                     Authentieke Cultuur
                   </h3>
@@ -274,7 +269,7 @@ export function OnzeMedewerkersContent({
               className="h-full"
             >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="flex h-full flex-col p-8">
+                <CardContent className="flex h-full flex-col p-5 sm:p-8">
                   <h3 className="mb-4 text-xl font-semibold tracking-tight">
                     Persoonlijke Verhalen
                   </h3>
@@ -294,7 +289,7 @@ export function OnzeMedewerkersContent({
               className="h-full"
             >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="flex h-full flex-col p-8">
+                <CardContent className="flex h-full flex-col p-5 sm:p-8">
                   <h3 className="mb-4 text-xl font-semibold tracking-tight">
                     Werkervaring & Integratie
                   </h3>
@@ -314,7 +309,7 @@ export function OnzeMedewerkersContent({
               className="h-full"
             >
               <Card className="shadow-editorial hover:shadow-editorial-hover h-full border transition-all duration-300">
-                <CardContent className="flex h-full flex-col p-8">
+                <CardContent className="flex h-full flex-col p-5 sm:p-8">
                   <h3 className="mb-4 text-xl font-semibold tracking-tight">
                     Sociale Impact
                   </h3>
@@ -335,7 +330,7 @@ export function OnzeMedewerkersContent({
         <div className="container mx-auto max-w-7xl px-6 lg:px-8">
           <ScrollReveal animation="slideUp">
             <Card className="shadow-editorial hover:shadow-editorial-hover border transition-all duration-300">
-              <CardContent className="flex flex-col items-center gap-6 p-8 md:flex-row md:justify-between">
+              <CardContent className="flex flex-col items-center gap-4 p-5 sm:gap-6 sm:p-8 md:flex-row md:justify-between">
                 <div>
                   <h3 className="mb-2 text-xl font-semibold tracking-tight">
                     Meer Weten Over Onze Missie?
@@ -370,10 +365,10 @@ export function OnzeMedewerkersContent({
       <ScrollReveal animation="slideUp" amount={0.4}>
         <section className="section-md bg-primary text-primary-foreground">
           <div className="container mx-auto max-w-7xl px-6 text-center lg:px-8">
-            <h2 className="mb-6 tracking-tight text-white">
+            <h2 className="mb-4 tracking-tight text-white sm:mb-6">
               Wil je ons team ontmoeten?
             </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed tracking-wide text-white/90 sm:text-xl">
+            <p className="mx-auto mb-6 max-w-2xl text-base leading-relaxed tracking-wide text-white/90 sm:mb-8 sm:text-lg md:text-xl">
               Boek een workshop en maak persoonlijk kennis met onze medewerkers.
               Ervaar hun gastvrijheid, leer over hun cultuur en creëer samen
               onvergetelijke herinneringen.
