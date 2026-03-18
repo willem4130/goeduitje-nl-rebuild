@@ -7,10 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Target, Users, TrendingUp, Lightbulb } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  TheoryOfChangeMedewerker,
-  TheoryOfChangeDeelnemer,
-} from "@/components/theory-of-change";
 
 // Documents data
 const impactDocuments = [
@@ -148,14 +144,42 @@ export default function OnzeImpactPage() {
       {/* Theory of Change - Medewerker */}
       <section className="section-sm bg-muted/30">
         <div className="mx-auto w-full max-w-[1600px] px-4 lg:px-8 xl:px-12">
-          <TheoryOfChangeMedewerker />
+          <div className="mb-12">
+            <h3 className="text-primary mb-6 text-xl font-bold tracking-tight lg:text-2xl">
+              Theory of Change medewerker
+            </h3>
+            <div className="overflow-x-auto">
+              <Image
+                src="/images/impact/toc-medewerker.png"
+                alt="Theory of Change medewerker - diagram met activiteiten, outputs, directe effecten en indirecte effecten"
+                width={1976}
+                height={776}
+                className="w-full min-w-[700px]"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Theory of Change - Klant/Deelnemer */}
       <section className="section-sm bg-muted/30">
         <div className="mx-auto w-full max-w-[1600px] px-4 lg:px-8 xl:px-12">
-          <TheoryOfChangeDeelnemer />
+          <div className="mb-12">
+            <h3 className="text-primary mb-6 text-xl font-bold tracking-tight lg:text-2xl">
+              Theory of Change klant / deelnemer
+            </h3>
+            <div className="overflow-x-auto">
+              <Image
+                src="/images/impact/toc-deelnemer.png"
+                alt="Theory of Change klant/deelnemer - diagram met activiteiten, outputs, directe effecten en indirecte effecten"
+                width={1964}
+                height={776}
+                className="w-full min-w-[700px]"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -409,3 +433,4 @@ export default function OnzeImpactPage() {
     </div>
   );
 }
+
