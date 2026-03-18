@@ -13,7 +13,7 @@ interface StatItem {
 // Default values (used while loading or if fetch fails)
 const DEFAULTS = {
   teamsCount: "150+",
-  socialParticipantsCount: "500+",
+  participantsCount: "516",
 };
 
 function useStats(): StatItem[] {
@@ -24,9 +24,8 @@ function useStats(): StatItem[] {
 
   // Get values from database with fallbacks
   const teamsCount = siteStats?.public?.teamsCount || DEFAULTS.teamsCount;
-  const socialParticipantsCount =
-    siteStats?.public?.socialParticipantsCount ||
-    DEFAULTS.socialParticipantsCount;
+  const participantsCount =
+    siteStats?.public?.heroParticipantsCount || DEFAULTS.participantsCount;
 
   return [
     {
@@ -36,7 +35,7 @@ function useStats(): StatItem[] {
     },
     {
       icon: UserCheck,
-      value: socialParticipantsCount,
+      value: participantsCount + "+",
       label: "Deelnemers",
     },
     {
