@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 
 // Production URLs
-const FRONTEND_URL =
-  process.env.FRONTEND_URL || "https://goeduitje-nl-rebuild.vercel.app";
 const BACKEND_URL =
   process.env.BACKEND_URL || "https://goeduitje-backend.vercel.app";
 
