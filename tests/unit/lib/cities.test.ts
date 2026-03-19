@@ -27,8 +27,8 @@ describe("DUTCH_CITIES", () => {
 });
 
 describe("WORKSHOPS", () => {
-  it("has 6 workshops total", () => {
-    expect(WORKSHOPS).toHaveLength(6);
+  it("has 7 workshops total", () => {
+    expect(WORKSHOPS).toHaveLength(7);
   });
 
   it("all have unique IDs matching expected set", () => {
@@ -40,6 +40,7 @@ describe("WORKSHOPS", () => {
       "beachvolleybal",
       "koffie-thee",
       "lunch-diner",
+      "bouw-of-bak-battle",
     ];
     expect(ids).toEqual(expect.arrayContaining(expected));
     expect(new Set(ids).size).toBe(ids.length);

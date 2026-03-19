@@ -18,16 +18,22 @@ vi.mock("@/emails/workshop-confirmation", () => ({
 
 import { POST } from "@/app/api/send-email/route";
 
+const TEST_API_SECRET = "test-api-secret";
+
 const createRequest = (body: unknown) =>
   new NextRequest("http://localhost:3000/api/send-email", {
     method: "POST",
     body: JSON.stringify(body),
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-secret": TEST_API_SECRET,
+    },
   });
 
 describe("POST /api/send-email", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.API_SECRET = TEST_API_SECRET;
     vi.mocked(resend.emails.send).mockResolvedValue({
       data: { id: "test-id" },
       error: null,

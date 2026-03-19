@@ -3,10 +3,15 @@ import { POST } from "@/app/api/send-email/route";
 import { NextRequest } from "next/server";
 import { resend } from "@/lib/resend";
 
+const TEST_API_SECRET = "test-api-secret";
+
 function createRequest(body: Record<string, unknown>): NextRequest {
   return new NextRequest("http://localhost:3000/api/send-email", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-secret": TEST_API_SECRET,
+    },
     body: JSON.stringify(body),
   });
 }
@@ -14,6 +19,7 @@ function createRequest(body: Record<string, unknown>): NextRequest {
 describe("POST /api/send-email", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.API_SECRET = TEST_API_SECRET;
   });
 
   it("returns 400 when 'to' is missing", async () => {

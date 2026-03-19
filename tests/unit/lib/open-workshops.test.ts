@@ -49,8 +49,8 @@ describe("OPEN_WORKSHOPS data integrity", () => {
 });
 
 describe("OPEN_WORKSHOP_PRICE", () => {
-  it("equals 50", () => {
-    expect(OPEN_WORKSHOP_PRICE).toBe(50);
+  it("equals 60", () => {
+    expect(OPEN_WORKSHOP_PRICE).toBe(60);
   });
 });
 
@@ -97,12 +97,12 @@ describe("getUpcomingWorkshops", () => {
 });
 
 describe("getNextWorkshop", () => {
-  it("when date is 2025-01-01, returns the first workshop (jan-25-2026)", () => {
+  it("when date is 2025-01-01, returns the first workshop (mrt-29-2026)", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2025-01-01"));
     const next = getNextWorkshop();
     expect(next).not.toBeNull();
-    expect(next!.id).toBe("jan-25-2026");
+    expect(next!.id).toBe(OPEN_WORKSHOPS[0].id);
   });
 
   it("when date is 2027-01-01, returns null", () => {
