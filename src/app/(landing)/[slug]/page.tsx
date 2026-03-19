@@ -627,7 +627,7 @@ export default async function LandingPage({ params }: Props) {
                   size="lg"
                   className="bg-amber-600 hover:bg-amber-700"
                 >
-                  <Link href="/onze-uitjes/kookworkshop">
+                  <Link href="/kookworkshop">
                     <ChefHat className="mr-2 h-5 w-5" />
                     Bekijk onze kookworkshops
                   </Link>
@@ -868,7 +868,7 @@ export default async function LandingPage({ params }: Props) {
                 Prijzen zijn indicatief voor de Arabische kookworkshop. Andere
                 varianten (Oogsten &amp; Koken, Koken op Maat) kunnen afwijken.{" "}
                 <Link
-                  href="/onze-uitjes/kookworkshop"
+                  href="/kookworkshop"
                   className="text-amber-600 underline hover:text-amber-700"
                 >
                   Bekijk alle varianten
@@ -1187,7 +1187,7 @@ export default async function LandingPage({ params }: Props) {
               size="lg"
               className="bg-white text-amber-600 hover:bg-white/90"
             >
-              <Link href="/onze-uitjes/kookworkshop">
+              <Link href="/kookworkshop">
                 <ChefHat className="mr-2 h-5 w-5" />
                 Bekijk kookworkshops
               </Link>

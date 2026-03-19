@@ -186,7 +186,11 @@ export default function TeambuildingPage() {
             {TEAMBUILDING_WORKSHOPS.map((workshop) => (
               <Link
                 key={workshop.slug}
-                href={`/onze-uitjes/${workshop.slug}`}
+                href={
+                  workshop.slug === "kookworkshop"
+                    ? "/kookworkshop"
+                    : `/onze-uitjes/${workshop.slug}`
+                }
                 className="group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
@@ -298,6 +302,47 @@ export default function TeambuildingPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* City Landing Pages Section */}
+      <section className="bg-muted/30 py-12 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+              Teambuilding bij jou in de buurt
+            </h2>
+            <p className="text-muted-foreground mb-8 text-lg">
+              We organiseren teambuilding activiteiten door heel Nederland.
+              Bekijk de mogelijkheden in jouw regio.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/teambuilding-nijmegen"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+              >
+                <MapPin className="h-4 w-4 text-blue-600" />
+                Teambuilding Nijmegen
+              </Link>
+              <Link
+                href="/teambuilding-arnhem"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+              >
+                <MapPin className="h-4 w-4 text-blue-600" />
+                Teambuilding Arnhem
+              </Link>
+            </div>
+            <p className="text-muted-foreground mt-6 text-sm">
+              Niet in de buurt? Geen probleem — we komen door heel Nederland.{" "}
+              <Link
+                href="/contact"
+                className="text-blue-600 underline hover:text-blue-800"
+              >
+                Neem contact op
+              </Link>{" "}
+              voor de mogelijkheden.
+            </p>
           </div>
         </div>
       </section>

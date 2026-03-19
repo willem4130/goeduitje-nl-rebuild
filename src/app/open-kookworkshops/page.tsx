@@ -721,7 +721,7 @@ export default function BookingPage() {
                         <Link href="/contact">Contact opnemen</Link>
                       </Button>
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href="/onze-uitjes/kookworkshop">Meer info</Link>
+                        <Link href="/kookworkshop">Meer info</Link>
                       </Button>
                     </div>
                   </CardContent>

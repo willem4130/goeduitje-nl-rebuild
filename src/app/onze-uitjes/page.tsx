@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { WorkshopConfigurator } from "@/components/workshop-configurator";
 import { WorkshopCarousel } from "@/components/workshop-carousel";
 import { SocialProofStats } from "@/components/social-proof-stats";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { WORKSHOP_BLUR_PLACEHOLDERS } from "@/lib/image-placeholders";
+import { Users, Building2, Sparkles, ArrowRight } from "lucide-react";
 
 export default function OnzeUitjesPage() {
   return (
@@ -79,6 +81,59 @@ export default function OnzeUitjesPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Category Links Section */}
+      <section className="py-6">
+        <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+          <h2 className="text-primary mb-4 text-center text-xl font-bold tracking-tight sm:text-2xl">
+            Ontdek per categorie
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              {
+                title: "Teambuilding",
+                description:
+                  "Activiteiten die je team verbinden én impact maken.",
+                href: "/teambuilding",
+                icon: Users,
+                color: "text-blue-600",
+              },
+              {
+                title: "Bedrijfsuitjes",
+                description: "Een bedrijfsuitje met een verhaal.",
+                href: "/bedrijfsuitjes",
+                icon: Building2,
+                color: "text-emerald-600",
+              },
+              {
+                title: "Workshops",
+                description: "Hands-on workshops met statushouders.",
+                href: "/workshops",
+                icon: Sparkles,
+                color: "text-amber-600",
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group border-primary/10 hover:border-primary/30 flex items-center gap-3 rounded-xl border p-4 transition-all"
+                >
+                  <Icon className={`h-6 w-6 flex-shrink-0 ${item.color}`} />
+                  <div>
+                    <h3 className="font-bold tracking-tight">{item.title}</h3>
+                    <p className="text-muted-foreground text-sm">
+                      {item.description}
+                    </p>
+                  </div>
+                  <ArrowRight className="text-muted-foreground ml-auto h-4 w-4 flex-shrink-0 transition-transform group-hover:translate-x-1" />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

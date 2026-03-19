@@ -278,7 +278,7 @@ export default async function RecipeDetailPage({ params }: Props) {
               je team. Onze professionele chef begeleidt jullie stap voor stap!
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/onze-uitjes/kookworkshop">
+              <Link href="/kookworkshop">
                 <Button size="lg">Bekijk kookworkshops</Button>
               </Link>
               <Link href="/recepten">

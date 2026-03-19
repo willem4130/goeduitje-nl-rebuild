@@ -162,7 +162,11 @@ export default function WorkshopsPage() {
             {WORKSHOPS.map((workshop) => (
               <Link
                 key={workshop.slug}
-                href={`/onze-uitjes/${workshop.slug}`}
+                href={
+                  workshop.slug === "kookworkshop"
+                    ? "/kookworkshop"
+                    : `/onze-uitjes/${workshop.slug}`
+                }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
                   workshop.highlight
                     ? "ring-2 ring-amber-500 ring-offset-2"
@@ -318,6 +322,54 @@ export default function WorkshopsPage() {
                   <span className="text-sm font-medium">4.9/5 op Google</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Cross-links Section */}
+      <section className="bg-muted/30 py-12 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+              Meer ontdekken?
+            </h2>
+            <p className="text-muted-foreground mb-8 text-lg">
+              Bekijk ook onze teambuilding activiteiten en bedrijfsuitjes voor
+              een complete ervaring.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Link
+                href="/teambuilding"
+                className="group rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+              >
+                <h3 className="mb-2 font-bold group-hover:text-blue-600">
+                  Teambuilding activiteiten
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Versterk je team met unieke activiteiten begeleid door
+                  statushouders.
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+                  Bekijk teambuilding
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+              <Link
+                href="/bedrijfsuitjes"
+                className="group rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md"
+              >
+                <h3 className="mb-2 font-bold group-hover:text-emerald-600">
+                  Bedrijfsuitjes
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Organiseer een bedrijfsuitje dat indruk maakt én impact heeft.
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-emerald-600">
+                  Bekijk bedrijfsuitjes
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
             </div>
           </div>
         </div>

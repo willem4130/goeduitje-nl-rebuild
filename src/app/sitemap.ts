@@ -164,8 +164,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Workshop detail pages
+  // Note: kookworkshop lives at /kookworkshop (old Wix URL) instead of /onze-uitjes/kookworkshop
   const workshopPages: MetadataRoute.Sitemap = workshops.map((workshop) => ({
-    url: `${baseUrl}/onze-uitjes/${workshop.slug}`,
+    url:
+      workshop.slug === "kookworkshop"
+        ? `${baseUrl}/kookworkshop`
+        : `${baseUrl}/onze-uitjes/${workshop.slug}`,
     lastModified: workshop.updatedAt,
     changeFrequency: "weekly",
     priority: 0.9,

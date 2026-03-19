@@ -20,7 +20,7 @@ interface CityGalleryProps {
  * - Links to /kookworkshop-[city] landing pages
  * - "Andere populaire steden" section with text links
  *
- * Used on: /onze-uitjes/kookworkshop
+ * Used on: /kookworkshop
  */
 export function CityGallery({
   title = "Locaties",

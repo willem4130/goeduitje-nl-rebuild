@@ -3,7 +3,7 @@
  *
  * Single source of truth for:
  * - Hero images on landing pages (/kookworkshop-[city])
- * - City gallery grid on /onze-uitjes/kookworkshop
+ * - City gallery grid on /kookworkshop
  *
  * Images sourced from Wikipedia Commons and goeduitje.nl
  * Stored locally in public/images/cities/

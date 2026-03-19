@@ -203,7 +203,11 @@ export default function BedrijfsuitjesPage() {
             {BEDRIJFSUITJE_WORKSHOPS.map((workshop) => (
               <Link
                 key={workshop.slug}
-                href={`/onze-uitjes/${workshop.slug}`}
+                href={
+                  workshop.slug === "kookworkshop"
+                    ? "/kookworkshop"
+                    : `/onze-uitjes/${workshop.slug}`
+                }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
                   workshop.highlight
                     ? "ring-2 ring-emerald-500 ring-offset-2"
@@ -310,6 +314,47 @@ export default function BedrijfsuitjesPage() {
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* City Landing Pages Section */}
+      <section className="bg-muted/30 py-12 lg:py-16">
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+              Bedrijfsuitje bij jou in de buurt
+            </h2>
+            <p className="text-muted-foreground mb-8 text-lg">
+              We organiseren bedrijfsuitjes door heel Nederland. Bekijk de
+              mogelijkheden in jouw regio.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/bedrijfsuitje-nijmegen"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-emerald-300 hover:shadow-md"
+              >
+                <MapPin className="h-4 w-4 text-emerald-600" />
+                Bedrijfsuitje Nijmegen
+              </Link>
+              <Link
+                href="/bedrijfsuitje-arnhem"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-emerald-300 hover:shadow-md"
+              >
+                <MapPin className="h-4 w-4 text-emerald-600" />
+                Bedrijfsuitje Arnhem
+              </Link>
+            </div>
+            <p className="text-muted-foreground mt-6 text-sm">
+              Niet in de buurt? Geen probleem — we komen door heel Nederland.{" "}
+              <Link
+                href="/contact"
+                className="text-emerald-600 underline hover:text-emerald-800"
+              >
+                Neem contact op
+              </Link>{" "}
+              voor de mogelijkheden.
+            </p>
           </div>
         </div>
       </section>

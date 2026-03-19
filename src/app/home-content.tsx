@@ -10,7 +10,13 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Instagram } from "lucide-react";
+import {
+  Instagram,
+  Users,
+  Building2,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 
 // Default content (used if fetch returns nothing)
 const DEFAULTS = {
@@ -94,6 +100,77 @@ export function HomeContent({ pageContent, siteStats }: HomeContentProps) {
       {/* Uitjes Section - Scroll Animation */}
       <ScrollReveal animation="fade" amount={0.1}>
         <WorkshopCarousel />
+      </ScrollReveal>
+
+      {/* Category Links Section */}
+      <ScrollReveal animation="slideUp" amount={0.2}>
+        <section className="bg-background py-10 lg:py-14">
+          <div className="container mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mb-8 text-center">
+              <h2 className="text-primary text-2xl tracking-tight lg:text-3xl">
+                Ontdek onze uitjes
+              </h2>
+              <p className="text-muted-foreground mt-2 text-base leading-relaxed lg:text-lg">
+                Van teambuilding tot workshops — er is voor elk team een passend
+                uitje
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  title: "Teambuilding",
+                  description:
+                    "Versterk je team met activiteiten die verbinden én impact maken.",
+                  href: "/teambuilding",
+                  icon: Users,
+                  color: "text-blue-600",
+                  bg: "bg-blue-50 hover:bg-blue-100/70",
+                },
+                {
+                  title: "Bedrijfsuitjes",
+                  description:
+                    "Organiseer een bedrijfsuitje met een verhaal. Van culinair tot sportief.",
+                  href: "/bedrijfsuitjes",
+                  icon: Building2,
+                  color: "text-emerald-600",
+                  bg: "bg-emerald-50 hover:bg-emerald-100/70",
+                },
+                {
+                  title: "Workshops",
+                  description:
+                    "Hands-on workshops begeleid door statushouders en nieuwkomers.",
+                  href: "/workshops",
+                  icon: Sparkles,
+                  color: "text-amber-600",
+                  bg: "bg-amber-50 hover:bg-amber-100/70",
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`group rounded-xl border p-6 text-center shadow-sm transition-all duration-300 ${item.bg}`}
+                  >
+                    <Icon className={`mx-auto mb-3 h-8 w-8 ${item.color}`} />
+                    <h3 className="mb-2 text-lg font-bold tracking-tight">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-3 text-sm leading-relaxed">
+                      {item.description}
+                    </p>
+                    <span
+                      className={`inline-flex items-center gap-1 text-sm font-medium ${item.color}`}
+                    >
+                      Bekijk {item.title.toLowerCase()}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       </ScrollReveal>
 
       {/* Uitje Configurator Section - Two Column Layout */}

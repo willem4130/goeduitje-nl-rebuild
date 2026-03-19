@@ -14,13 +14,17 @@ import { motion } from "framer-motion";
 
 const footerLinks = {
   workshops: {
-    title: "Workshops",
+    title: "Uitjes & Workshops",
     links: [
-      { name: "Alle workshops", href: "/onze-uitjes" },
-      { name: "Kookworkshops", href: "/onze-uitjes/kookworkshop" },
+      { name: "Alle uitjes", href: "/onze-uitjes" },
+      { name: "Kookworkshops", href: "/kookworkshop" },
       { name: "Workshops", href: "/workshops" },
       { name: "Teambuilding", href: "/teambuilding" },
       { name: "Bedrijfsuitjes", href: "/bedrijfsuitjes" },
+      { name: "Teambuilding Nijmegen", href: "/teambuilding-nijmegen" },
+      { name: "Teambuilding Arnhem", href: "/teambuilding-arnhem" },
+      { name: "Bedrijfsuitje Nijmegen", href: "/bedrijfsuitje-nijmegen" },
+      { name: "Bedrijfsuitje Arnhem", href: "/bedrijfsuitje-arnhem" },
     ],
   },
   company: {

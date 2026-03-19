@@ -171,7 +171,14 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
       }}
       className={cn("group relative", className)}
     >
-      <Link href={`/onze-uitjes/${workshop.slug}`} className="block">
+      <Link
+        href={
+          workshop.slug === "kookworkshop"
+            ? "/kookworkshop"
+            : `/onze-uitjes/${workshop.slug}`
+        }
+        className="block"
+      >
         <div className="bg-card border-border shadow-editorial hover:shadow-editorial-hover overflow-hidden border transition-all duration-500 hover:scale-[1.02]">
           {/* Media - 16:9 aspect ratio for compact viewport fit */}
           <div className="bg-muted relative aspect-video overflow-hidden">
