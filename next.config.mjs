@@ -93,6 +93,48 @@ const nextConfig = {
         destination: "/onze-uitjes/stadsspel",
         permanent: true,
       },
+      // Case-sensitive redirects for old Wix URLs with capitals
+      {
+        source: "/teambuilding-Nijmegen",
+        destination: "/teambuilding-nijmegen",
+        permanent: true,
+      },
+      {
+        source: "/teambuilding-Arnhem",
+        destination: "/teambuilding-arnhem",
+        permanent: true,
+      },
+      {
+        source: "/bedrijfsuitje-Arnhem",
+        destination: "/bedrijfsuitje-arnhem",
+        permanent: true,
+      },
+    ];
+  },
+
+  // Security headers for all routes
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+        ],
+      },
     ];
   },
 
