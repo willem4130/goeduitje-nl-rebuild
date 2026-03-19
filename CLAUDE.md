@@ -13,8 +13,9 @@ src/
 │   ├── teambuilding/             # Teambuilding category page (static)
 │   ├── bedrijfsuitjes/           # Bedrijfsuitjes category page (static)
 │   ├── workshops/                # Workshops category page (static)
+│   ├── kookworkshop/              # Kookworkshop detail page (primary URL)
 │   ├── api/                      # tRPC + webhooks
-│   ├── onze-uitjes/[slug]/       # Workshop detail pages (6)
+│   ├── onze-uitjes/[slug]/       # Workshop detail pages (6, excl. kookworkshop)
 │   ├── onze-medewerkers/         # Team photos (Server Component + Client content)
 │   ├── onze-impact/              # Impact page with ToC diagrams (static images)
 │   ├── recepten/[slug]/          # Recipe pages (13)
@@ -44,14 +45,15 @@ src/
     └── seed-recipes.ts           # 13 authentic Middle Eastern recipes
 ```
 
-## Total Pages: 91
+## Total Pages: 98
 
 | Type                  | Count | Template                      |
 | --------------------- | ----- | ----------------------------- |
-| Static pages          | 23    | Individual page.tsx files     |
+| Static pages          | 22    | Individual page.tsx files     |
 | City landing pages    | 49    | `(landing)/[slug]/page.tsx`   |
-| Workshop detail pages | 6     | `onze-uitjes/[slug]/page.tsx` |
+| Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop` |
 | Recipe pages          | 13    | `recepten/[slug]/page.tsx`    |
+| Utility pages         | 7     | bedankt, checkout/*, error, loading, cookies, privacy, voorwaarden |
 
 ## Tech Stack
 
@@ -157,8 +159,10 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 
 ### GTM / GA4 Tracking
 
-- GTM container loaded in root layout via `NEXT_PUBLIC_GTM_ID` env var
-- Purchase event pushed on configurator submission
+- GTM container `GTM-PZCH2S3R` loaded via `next/script` in `src/app/layout.tsx`
+- Env var: `NEXT_PUBLIC_GTM_ID` (set on Vercel production)
+- GTM noscript fallback in `<body>` for crawlers
+- GA4 `purchase` event pushed via `window.dataLayer` on configurator submit → `/bedankt`
 - Conversion tracking on `/bedankt` thank-you page
 
 ## City Landing Pages
@@ -251,7 +255,10 @@ All SEO URLs (sitemap, robots, JSON-LD, OG tags) use `SITE_URL` from `src/lib/si
 
 ### SEO Redirects
 
-7x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs.
+10x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs:
+
+- 7 path changes (e.g. `/contactpagina` → `/contact`, `/kookworkshop` → `/onze-uitjes/kookworkshop`)
+- 3 case-sensitive redirects for old Wix URLs with capitals (e.g. `/teambuilding-Nijmegen` → `/teambuilding-nijmegen`)
 
 ## Images
 
@@ -332,12 +339,24 @@ npx tsx prisma/seed-recipes.ts
 - `docs/IMAGE_UPLOAD_GUIDE.md` — client-facing guide for CMS-managed images
 - Client image Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
 - Pages audit Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All current pages/Wix Webpaginas _2026.02.19.xlsx`
+- Pages audit report: `/Users/willemvandenberg/Dev/Goeduitjeweb/All current pages/AUDIT_REPORT.md`
 
 ## Deployment
 
 **Production**: https://goeduitje-nl-rebuild.vercel.app
 
-Push to `main` → Vercel auto-deploys
+Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
+
+### Vercel Environment Variables (Production)
+
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `NEXT_PUBLIC_APP_URL` | Public app URL |
+| `NEXT_PUBLIC_GTM_ID` | Google Tag Manager container ID (`GTM-PZCH2S3R`) |
+| `GOOGLE_PLACES_API_KEY` | Google Places API for reviews |
+| `GOOGLE_PLACE_ID` | Google Place ID for Goeduitje |
+| `SKIP_ENV_VALIDATION` | Skip t3-env validation on build |
 
 ## ⚠️ CMS Image/Video Override Pattern
 
