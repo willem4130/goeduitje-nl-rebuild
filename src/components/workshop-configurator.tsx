@@ -388,7 +388,7 @@ export function WorkshopConfigurator() {
             Uitje Configurator
           </CardTitle>
           <CardDescription className="text-xs">
-            Configureer je uitje en ontvang direct een bevestiging
+            configureer je uitje en vraag direct een offerte aan
           </CardDescription>
         </CardHeader>
 

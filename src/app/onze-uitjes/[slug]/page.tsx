@@ -83,6 +83,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${workshop.title} | Goeduitje.nl`,
     description: workshop.description,
+    openGraph: {
+      title: `${workshop.title} | Goeduitje.nl`,
+      description: workshop.description,
+      type: "website",
+      locale: "nl_NL",
+      siteName: "Goeduitje.nl",
+      images: workshop.image ? [{ url: workshop.image }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${workshop.title} | Goeduitje.nl`,
+      description: workshop.description,
+      images: workshop.image ? [workshop.image] : [],
+    },
   };
 }
 
@@ -105,8 +119,33 @@ export default async function WorkshopDetailPage({ params }: Props) {
     notFound();
   }
 
+  const workshopJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: workshop.title,
+    description: workshop.description,
+    provider: {
+      "@type": "Organization",
+      name: "Goeduitje",
+      url: "https://www.goeduitje.nl",
+    },
+    areaServed: "Netherlands",
+    ...(workshop.image && { image: workshop.image }),
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5",
+      reviewCount: "49",
+    },
+  };
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(workshopJsonLd),
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-muted/30 relative py-12 lg:py-20">
         <div className="container mx-auto max-w-7xl px-6">

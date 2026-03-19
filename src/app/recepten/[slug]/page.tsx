@@ -29,9 +29,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const description =
+    recipe.description || `Ontdek het recept voor ${recipe.title}`;
+
   return {
     title: `${recipe.title} | Recepten | Goeduitje.nl`,
-    description: recipe.description || `Ontdek het recept voor ${recipe.title}`,
+    description,
+    openGraph: {
+      title: `${recipe.title} | Recepten | Goeduitje.nl`,
+      description,
+      type: "website",
+      locale: "nl_NL",
+      siteName: "Goeduitje.nl",
+      images: recipe.imageUrl ? [{ url: recipe.imageUrl }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${recipe.title} | Recepten | Goeduitje.nl`,
+      description,
+      images: recipe.imageUrl ? [recipe.imageUrl] : [],
+    },
   };
 }
 

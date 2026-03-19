@@ -112,10 +112,46 @@ export default async function RootLayout({
   // Fetch site assets from backend (Server Component)
   const assets = await getSiteAssets();
 
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Goeduitje",
+    url: "https://www.goeduitje.nl",
+    logo: "https://www.goeduitje.nl/images/logo/logo-nav.png",
+    sameAs: [
+      "https://www.instagram.com/goeduitje/",
+      "https://www.facebook.com/goeduitje",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+31-6-5267-5891",
+      contactType: "customer service",
+    },
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Goeduitje.nl",
+    url: "https://www.goeduitje.nl",
+  };
+
   return (
     <html lang="nl">
-      {process.env.NEXT_PUBLIC_GTM_ID && (
-        <head>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd),
+          }}
+        />
+        {process.env.NEXT_PUBLIC_GTM_ID && (
           <script
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -125,8 +161,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');`,
             }}
           />
-        </head>
-      )}
+        )}
+      </head>
       <body
         className={`${fontSans.variable} ${fontMono.variable} ${fontPoppins.variable} antialiased`}
       >
