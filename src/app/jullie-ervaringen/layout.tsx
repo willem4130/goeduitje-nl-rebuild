@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site-config";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Jullie Ervaringen - Reviews & Beoordelingen",
@@ -14,23 +16,27 @@ export const metadata: Metadata = {
   },
 };
 
-const reviewsJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: "Goeduitje",
-  url: "https://www.goeduitje.nl",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5",
-    reviewCount: "49",
-  },
-};
-
-export default function JullieErvaringenLayout({
+export default async function JullieErvaringenLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const reviewCache = await prisma.google_reviews_cache.findUnique({
+    where: { id: "singleton" },
+  });
+
+  const reviewsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "Goeduitje",
+    url: SITE_URL,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: reviewCache?.averageRating?.toString() || "5",
+      reviewCount: reviewCache?.totalReviewCount?.toString() || "49",
+    },
+  };
+
   return (
     <>
       <script

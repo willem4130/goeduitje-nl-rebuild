@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err) {
-      console.error("Webhook signature verification failed:", err);
+    } catch {
+      console.error("Webhook signature verification failed");
       return NextResponse.json(
         { error: "Webhook signature verification failed" },
         { status: 400 }
@@ -39,10 +39,6 @@ export async function POST(req: NextRequest) {
         const metadata = session.metadata || {};
 
         console.log("💰 Payment successful!");
-        console.log("Session ID:", session.id);
-        console.log("Customer email:", session.customer_email);
-        console.log("Amount total:", session.amount_total);
-        console.log("Metadata:", metadata);
 
         try {
           await prisma.booking.create({
@@ -72,9 +68,9 @@ export async function POST(req: NextRequest) {
               paymentStatus: "paid",
             },
           });
-          console.log("✅ Booking saved to database for session:", session.id);
-        } catch (dbError) {
-          console.error("❌ Failed to save booking to database:", dbError);
+          console.log("✅ Booking saved to database");
+        } catch {
+          console.error("❌ Failed to save booking to database");
         }
 
         break;
@@ -84,7 +80,7 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
         const metadata = session.metadata || {};
 
-        console.log("⏰ Checkout session expired:", session.id);
+        console.log("⏰ Checkout session expired");
 
         try {
           await prisma.booking.create({
@@ -112,39 +108,21 @@ export async function POST(req: NextRequest) {
               paymentStatus: "failed",
             },
           });
-          console.log(
-            "✅ Failed booking saved to database for expired session:",
-            session.id
-          );
-        } catch (dbError) {
-          console.error(
-            "❌ Failed to save expired booking to database:",
-            dbError
-          );
+          console.log("✅ Expired booking saved to database");
+        } catch {
+          console.error("❌ Failed to save expired booking to database");
         }
 
         break;
       }
 
       case "payment_intent.succeeded": {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log(
-          "💳 Payment intent succeeded:",
-          paymentIntent.id,
-          "Amount:",
-          paymentIntent.amount
-        );
+        console.log("💳 Payment intent succeeded");
         break;
       }
 
       case "payment_intent.payment_failed": {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.error(
-          "❌ Payment failed:",
-          paymentIntent.id,
-          "Error:",
-          paymentIntent.last_payment_error?.message
-        );
+        console.error("❌ Payment intent failed");
         break;
       }
 
@@ -153,8 +131,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (err) {
-    console.error("Error processing webhook:", err);
+  } catch {
+    console.error("Error processing webhook");
     return NextResponse.json(
       { error: "Webhook handler failed" },
       { status: 500 }

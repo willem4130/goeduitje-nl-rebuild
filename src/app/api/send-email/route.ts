@@ -6,6 +6,19 @@ import { OrderConfirmationEmail } from "@/emails/order-confirmation";
 import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 
 export async function POST(req: NextRequest) {
+  // Shared-secret authorization check
+  const apiSecret = process.env.API_SECRET;
+  if (!apiSecret) {
+    return NextResponse.json(
+      { error: "Server misconfiguration" },
+      { status: 401 }
+    );
+  }
+  const providedSecret = req.headers.get("x-api-secret");
+  if (providedSecret !== apiSecret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { type, to, data } = body;

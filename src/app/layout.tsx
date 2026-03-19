@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ClientLayout } from "@/components/client-layout";
 import { getSiteAssets } from "@/lib/site-assets";
+import { SITE_URL } from "@/lib/site-config";
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -21,7 +23,10 @@ const fontPoppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.goeduitje.nl"),
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "./",
+  },
   title: {
     default: "Goeduitje.nl - Workshops & Teambuildinguitjes met een Verhaal",
     template: "%s | Goeduitje.nl",
@@ -49,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "nl_NL",
-    url: "https://www.goeduitje.nl",
+    url: SITE_URL,
     siteName: "Goeduitje.nl",
     title: "Goeduitje.nl - Workshops & Teambuildinguitjes met een Verhaal",
     description:
@@ -116,8 +121,8 @@ export default async function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Goeduitje",
-    url: "https://www.goeduitje.nl",
-    logo: "https://www.goeduitje.nl/images/logo/logo-nav.png",
+    url: SITE_URL,
+    logo: `${SITE_URL}/images/logo/logo-nav.png`,
     sameAs: [
       "https://www.instagram.com/goeduitje/",
       "https://www.facebook.com/goeduitje",
@@ -133,7 +138,7 @@ export default async function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Goeduitje.nl",
-    url: "https://www.goeduitje.nl",
+    url: SITE_URL,
   };
 
   return (
@@ -152,7 +157,9 @@ export default async function RootLayout({
           }}
         />
         {process.env.NEXT_PUBLIC_GTM_ID && (
-          <script
+          <Script
+            id="gtm-script"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

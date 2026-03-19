@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getUpcomingWorkshops } from "@/lib/open-workshops";
+import { SITE_URL } from "@/lib/site-config";
 import { CityGallery } from "@/components/city-gallery";
 
 // Helper to format price display
@@ -80,6 +81,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const imageUrl = workshop.image
+    ? workshop.image.startsWith("http")
+      ? workshop.image
+      : `${SITE_URL}${workshop.image}`
+    : null;
+
   return {
     title: `${workshop.title} | Goeduitje.nl`,
     description: workshop.description,
@@ -89,13 +96,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       locale: "nl_NL",
       siteName: "Goeduitje.nl",
-      images: workshop.image ? [{ url: workshop.image }] : [],
+      images: imageUrl ? [{ url: imageUrl }] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: `${workshop.title} | Goeduitje.nl`,
       description: workshop.description,
-      images: workshop.image ? [workshop.image] : [],
+      images: imageUrl ? [imageUrl] : [],
     },
   };
 }
@@ -113,7 +120,10 @@ export async function generateStaticParams() {
 
 export default async function WorkshopDetailPage({ params }: Props) {
   const { slug } = await params;
-  const workshop = await getWorkshop(slug);
+  const [workshop, reviewCache] = await Promise.all([
+    getWorkshop(slug),
+    prisma.google_reviews_cache.findUnique({ where: { id: "singleton" } }),
+  ]);
 
   if (!workshop) {
     notFound();
@@ -127,14 +137,14 @@ export default async function WorkshopDetailPage({ params }: Props) {
     provider: {
       "@type": "Organization",
       name: "Goeduitje",
-      url: "https://www.goeduitje.nl",
+      url: SITE_URL,
     },
     areaServed: "Netherlands",
     ...(workshop.image && { image: workshop.image }),
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: "5",
-      reviewCount: "49",
+      ratingValue: reviewCache?.averageRating?.toString() || "5",
+      reviewCount: reviewCache?.totalReviewCount?.toString() || "49",
     },
   };
 

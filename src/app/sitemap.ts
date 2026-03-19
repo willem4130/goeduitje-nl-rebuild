@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/site-config";
 
 // All landing page slugs (city pages + type-specific pages)
 const LANDING_PAGE_SLUGS = [
@@ -54,7 +55,7 @@ const LANDING_PAGE_SLUGS = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.goeduitje.nl";
+  const baseUrl = SITE_URL;
 
   // Fetch workshops from database
   const workshops = await prisma.workshop.findMany({
@@ -72,91 +73,91 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "weekly",
       priority: 1.0,
     },
     {
       url: `${baseUrl}/onze-uitjes`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "weekly",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/ons-verhaal`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-02-01"),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/jullie-ervaringen`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-02-01"),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/faq`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-02-01"),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/onze-impact`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-02-01"),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/recepten`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/bedrijfsuitjes`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/teambuilding`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/workshops`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/open-kookworkshops`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "weekly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-01-01"),
       changeFrequency: "yearly",
       priority: 0.3,
     },
     {
       url: `${baseUrl}/voorwaarden`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-01-01"),
       changeFrequency: "yearly",
       priority: 0.3,
     },
     {
       url: `${baseUrl}/cookies`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-01-01"),
       changeFrequency: "yearly",
       priority: 0.3,
     },
@@ -182,7 +183,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const landingPages: MetadataRoute.Sitemap = LANDING_PAGE_SLUGS.map(
     (slug) => ({
       url: `${baseUrl}/${slug}`,
-      lastModified: new Date(),
+      lastModified: new Date("2026-03-01"),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })

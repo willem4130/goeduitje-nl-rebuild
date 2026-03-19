@@ -29,16 +29,19 @@ src/
 │   ├── testimonials-carousel.tsx # Google Reviews carousel
 │   └── *.tsx                     # Feature components
 ├── lib/
+│   ├── site-config.ts            # SITE_URL (from NEXT_PUBLIC_SITE_URL env var)
 │   ├── city-data.ts              # City images & data (40 cities)
 │   ├── open-workshops.ts         # Workshop dates & pricing
 │   └── *.ts                      # Utilities
 ├── server/api/routers/
+│   ├── recipes.ts                # Recipe CRUD (getAll, getBySlug, create, update, delete, togglePublish)
 │   ├── reviews.ts                # Google Reviews (visibility filtering)
 │   ├── testimonials.ts           # Legacy testimonials
 │   └── *.ts                      # Other routers
 └── prisma/
     ├── schema.prisma             # Database schema (source of truth)
-    └── seed-workshops.ts         # Workshop pricing data
+    ├── seed-workshops.ts         # Workshop pricing data
+    └── seed-recipes.ts           # 13 authentic Middle Eastern recipes
 ```
 
 ## Total Pages: 91
@@ -88,10 +91,12 @@ tests/
 ├── setup/vitest.setup.ts        # Global mocks (Prisma, Stripe, Resend, env)
 ├── unit/
 │   ├── lib/                     # Utility + validation tests (5 files)
-│   └── api/                     # tRPC router + API route tests (15 files)
+│   └── api/                     # tRPC router + API route tests (16 files)
 ├── integration/
 │   ├── prisma-schema-validation.test.ts  # All Prisma models verified
 │   ├── backend-schema-sync.test.ts       # Prisma↔Drizzle sync for shared tables
+│   ├── checkout-route.test.ts            # Stripe checkout route tests
+│   ├── send-email-route.test.ts          # Email sending route tests
 │   ├── form-to-db-flow.test.ts           # Workshop + contact form → DB flow
 │   └── form-roundtrip.test.ts            # Live: form → DB → admin API
 └── e2e/
@@ -203,7 +208,48 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 - `public/images/impact/toc-deelnemer.png` — downloaded from original Wix site
 - Displayed via `<Image>` in `src/app/onze-impact/page.tsx` with `overflow-x-auto` for mobile scrolling
 
-## SEO Redirects
+## SEO
+
+### Technical SEO Files
+
+| File                 | Purpose                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `src/app/robots.ts`  | Crawl rules + sitemap reference                                         |
+| `src/app/sitemap.ts` | Dynamic sitemap: static pages + DB workshops/recipes + 48 landing pages |
+| `src/app/layout.tsx` | Organization + WebSite JSON-LD (global)                                 |
+
+### Per-Page Metadata
+
+Pages using `"use client"` can't export metadata directly. These use **layout.tsx** files for metadata:
+
+| Layout file                            | Provides metadata for                        |
+| -------------------------------------- | -------------------------------------------- |
+| `src/app/onze-uitjes/layout.tsx`       | `/onze-uitjes` (client page)                 |
+| `src/app/ons-verhaal/layout.tsx`       | `/ons-verhaal` (client page)                 |
+| `src/app/jullie-ervaringen/layout.tsx` | `/jullie-ervaringen` + LocalBusiness JSON-LD |
+| `src/app/faq/layout.tsx`               | `/faq` (client page)                         |
+| `src/app/onze-impact/layout.tsx`       | `/onze-impact` (client page)                 |
+| `src/app/recepten/layout.tsx`          | `/recepten` (client page)                    |
+
+Server component pages export metadata directly:
+
+- `src/app/contact/page.tsx` — metadata export
+- `src/app/onze-uitjes/[slug]/page.tsx` — dynamic OG/Twitter + Service JSON-LD
+- `src/app/recepten/[slug]/page.tsx` — dynamic OG/Twitter
+
+### OG Image URLs
+
+Workshop and recipe images stored in DB may be relative paths (`/images/workshops/...`). The `generateMetadata` functions prepend `SITE_URL` to relative paths for OG/Twitter tags. Already-absolute URLs (e.g. Wix CDN) are passed through unchanged.
+
+### Site URL Configuration
+
+All SEO URLs (sitemap, robots, JSON-LD, OG tags) use `SITE_URL` from `src/lib/site-config.ts`.
+
+- **Env var**: `NEXT_PUBLIC_SITE_URL` (defaults to `https://www.goeduitje.nl`)
+- **Domain migration**: Change one env var in Vercel — no code changes needed
+- **Config file**: `src/lib/site-config.ts`
+
+### SEO Redirects
 
 7x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs.
 
@@ -249,6 +295,25 @@ git add <files> && git commit --no-verify -m "message"
 # 4. Push (auto-deploys to Vercel)
 git push
 ```
+
+## Recipes
+
+13 authentic Middle Eastern recipes from Goeduitje's kookworkshops, stored in DB (`Recipe` model).
+
+**Seed file**: `prisma/seed-recipes.ts` (authentic recipes with Wix CDN images)
+**⚠️ NOT** `prisma/seed.ts` — that file contains generic Italian/Thai recipes, not authentic Goeduitje content.
+
+**tRPC router**: `src/server/api/routers/recipes.ts` — full CRUD (getAll, getBySlug, getById, create, update, delete, togglePublish)
+
+To reseed recipes:
+
+```bash
+npx tsx prisma/seed-recipes.ts
+```
+
+## CLAUDE.md Maintenance
+
+**Always update this file** when making structural changes: adding new pages, routes, layouts, database models, seed files, SEO files, or changing architecture patterns. This file is the primary context for AI agents working on this codebase.
 
 ## Never Do
 

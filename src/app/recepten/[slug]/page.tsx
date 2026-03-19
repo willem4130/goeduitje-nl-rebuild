@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Users, ArrowLeft, ChefHat, Lightbulb } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/site-config";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 type Props = {
@@ -32,6 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     recipe.description || `Ontdek het recept voor ${recipe.title}`;
 
+  const imageUrl = recipe.imageUrl
+    ? recipe.imageUrl.startsWith("http")
+      ? recipe.imageUrl
+      : `${SITE_URL}${recipe.imageUrl}`
+    : null;
+
   return {
     title: `${recipe.title} | Recepten | Goeduitje.nl`,
     description,
@@ -41,13 +48,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       locale: "nl_NL",
       siteName: "Goeduitje.nl",
-      images: recipe.imageUrl ? [{ url: recipe.imageUrl }] : [],
+      images: imageUrl ? [{ url: imageUrl }] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: `${recipe.title} | Recepten | Goeduitje.nl`,
       description,
-      images: recipe.imageUrl ? [recipe.imageUrl] : [],
+      images: imageUrl ? [imageUrl] : [],
     },
   };
 }

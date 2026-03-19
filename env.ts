@@ -19,6 +19,12 @@ export const env = createEnv({
     GOOGLE_PLACE_ID: z.string().optional(),
     // Vercel Cron secret for protected endpoints
     CRON_SECRET: z.string().optional(),
+    // Shared secret for internal API routes
+    API_SECRET: z.string().min(1).optional(),
+    // Resend email service
+    RESEND_API_KEY: z.string().min(1).optional(),
+    FROM_EMAIL: z.string().email().optional(),
+    SUPPORT_EMAIL: z.string().email().optional(),
   },
 
   /**
@@ -29,6 +35,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_STRIPE_PRICE_COOKING_WORKSHOP: z.string().optional(),
+    NEXT_PUBLIC_API_SECRET: z.string().min(1).optional(),
   },
 
   /**
@@ -50,6 +57,13 @@ export const env = createEnv({
     GOOGLE_PLACE_ID: process.env.GOOGLE_PLACE_ID,
     // Vercel Cron
     CRON_SECRET: process.env.CRON_SECRET,
+    // Internal API secret
+    API_SECRET: process.env.API_SECRET,
+    NEXT_PUBLIC_API_SECRET: process.env.NEXT_PUBLIC_API_SECRET,
+    // Resend email service
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    FROM_EMAIL: process.env.FROM_EMAIL,
+    SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
