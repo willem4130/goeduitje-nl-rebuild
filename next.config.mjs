@@ -93,22 +93,8 @@ const nextConfig = {
         destination: "/onze-uitjes/stadsspel",
         permanent: true,
       },
-      // Case-sensitive redirects for old Wix URLs with capitals
-      {
-        source: "/teambuilding-Nijmegen",
-        destination: "/teambuilding-nijmegen",
-        permanent: true,
-      },
-      {
-        source: "/teambuilding-Arnhem",
-        destination: "/teambuilding-arnhem",
-        permanent: true,
-      },
-      {
-        source: "/bedrijfsuitje-Arnhem",
-        destination: "/bedrijfsuitje-arnhem",
-        permanent: true,
-      },
+      // Note: Case-sensitive redirects (e.g. /teambuilding-Nijmegen → /teambuilding-nijmegen)
+      // are handled by middleware.ts which normalizes ALL uppercase URLs to lowercase.
     ];
   },
 
