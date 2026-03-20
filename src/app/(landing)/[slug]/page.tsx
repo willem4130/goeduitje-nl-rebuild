@@ -537,6 +537,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// Only allow known landing page slugs — unknown slugs return 404
+// This ensures redirects in next.config.mjs work for old Wix URLs
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return ALL_LANDING_PAGES.map((page) => ({
     slug: page.slug,

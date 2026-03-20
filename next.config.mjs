@@ -58,41 +58,30 @@ const nextConfig = {
   // 301 redirects: old Wix URLs → new URLs (preserve SEO juice)
   async redirects() {
     return [
-      {
-        source: "/contactpagina",
-        destination: "/contact",
-        permanent: true,
-      },
-      {
-        source: "/booking",
-        destination: "/open-kookworkshops",
-        permanent: true,
-      },
-      {
-        source: "/onze-uitjes/kookworkshop",
-        destination: "/kookworkshop",
-        permanent: true,
-      },
-      {
-        source: "/lunch-en-diner-uitjes",
-        destination: "/onze-uitjes/lunch-diner",
-        permanent: true,
-      },
-      {
-        source: "/beachvolleybal-workshops",
-        destination: "/onze-uitjes/beachvolleybal-workshop",
-        permanent: true,
-      },
-      {
-        source: "/koffie-en-thee-workshops",
-        destination: "/onze-uitjes/koffie-thee-workshop",
-        permanent: true,
-      },
-      {
-        source: "/stadsspellen",
-        destination: "/onze-uitjes/stadsspel",
-        permanent: true,
-      },
+      // --- Redirects from redirect schema (Wix → new site) ---
+      { source: "/almutanabbi", destination: "/", permanent: true },
+      { source: "/beachvolleybal-workshops", destination: "/onze-uitjes/beachvolleybal-workshop", permanent: true },
+      { source: "/citygame-3", destination: "/onze-uitjes/stadsspel", permanent: true },
+      { source: "/contactpagina", destination: "/contact", permanent: true },
+      { source: "/events-1/arabisch-dineren", destination: "/cookies", permanent: true },
+      { source: "/events-1/arabische-kook-workshop", destination: "/kookworkshop", permanent: true },
+      { source: "/events-1/beachvolleybal-clinic-beachvolleybal-toernooi", destination: "/onze-uitjes/beachvolleybal-workshop", permanent: true },
+      { source: "/events-1/koffie-en-thee-workshop", destination: "/onze-uitjes/koffie-thee-workshop", permanent: true },
+      { source: "/events-1/the-oriental-challenge-1", destination: "/onze-uitjes/the-game", permanent: true },
+      // NOTE: /feedback and /recepten exist as pages on the new site — no redirect needed
+      { source: "/home", destination: "/", permanent: true },
+      { source: "/koffie-en-thee-workshops", destination: "/onze-uitjes/koffie-thee-workshop", permanent: true },
+      // NOTE: /kookworkshop-voor-bedrijven-arnhem has its own landing page — no redirect needed
+      { source: "/lunch-en-diner-uitjes", destination: "/onze-uitjes", permanent: true },
+      { source: "/profile/info/events", destination: "/", permanent: true },
+      { source: "/profile/info/profile", destination: "/", permanent: true },
+      { source: "/profile/info87811/events", destination: "/", permanent: true },
+      { source: "/profile/info87811/profile", destination: "/", permanent: true },
+      { source: "/stadsspellen", destination: "/onze-uitjes/stadsspel", permanent: true },
+      // NOTE: /vegetarische-kookworkshop-nijmegen has its own landing page — no redirect needed
+      // --- Pre-existing redirects (not in schema) ---
+      { source: "/booking", destination: "/open-kookworkshops", permanent: true },
+      { source: "/onze-uitjes/kookworkshop", destination: "/kookworkshop", permanent: true },
       // Note: Case-sensitive redirects (e.g. /teambuilding-Nijmegen → /teambuilding-nijmegen)
       // are handled by middleware.ts which normalizes ALL uppercase URLs to lowercase.
     ];
