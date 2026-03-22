@@ -415,6 +415,11 @@ export default async function WorkshopDetailPage({ params }: Props) {
                                 </div>
                               ))}
                             </div>
+                            {workshop.slug === "kookworkshop" && (
+                              <p className="text-muted-foreground mt-3 text-xs italic">
+                                Prijzen zijn exclusief locatiekosten en drankjes
+                              </p>
+                            )}
                             <Button asChild className="mt-6 w-full">
                               <Link href="/onze-uitjes#configurator">
                                 Configureer dit uitje
