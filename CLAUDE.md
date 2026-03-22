@@ -32,9 +32,11 @@ src/
 ├── lib/
 │   ├── site-config.ts            # SITE_URL (from NEXT_PUBLIC_SITE_URL env var)
 │   ├── city-data.ts              # City images & data (40 cities)
-│   ├── open-workshops.ts         # Workshop dates & pricing
+│   ├── open-workshops.ts         # Types + fallback price (data is in DB)
 │   └── *.ts                      # Utilities
 ├── server/api/routers/
+│   ├── openSessions.ts           # Open workshop sessions (DB-driven, with capacity)
+│   ├── booking.ts                # Booking CRUD (with sessionId FK)
 │   ├── recipes.ts                # Recipe CRUD (getAll, getBySlug, create, update, delete, togglePublish)
 │   ├── reviews.ts                # Google Reviews (visibility filtering)
 │   ├── testimonials.ts           # Legacy testimonials
@@ -42,7 +44,8 @@ src/
 └── prisma/
     ├── schema.prisma             # Database schema (source of truth)
     ├── seed-workshops.ts         # Workshop pricing data
-    └── seed-recipes.ts           # 13 authentic Middle Eastern recipes
+    ├── seed-recipes.ts           # 13 authentic Middle Eastern recipes
+    └── seed-open-workshops.ts    # Migrate hardcoded dates to OpenWorkshopSession table
 ```
 
 ## Total Pages: 136
@@ -129,8 +132,14 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 ### Open Kookworkshops (/open-kookworkshops)
 
 - Max **t/m 15 personen** per booking
-- Price: defined in `src/lib/open-workshops.ts`
-- Calendar grid for date selection
+- **Database-driven**: Sessions stored in `OpenWorkshopSession` table, managed via admin backend at `/sessions`
+- **Dynamic capacity**: Available seats computed from actual paid bookings (`maxCapacity - SUM(numberOfPeople)`)
+- Price per person stored per session (default €60), fallback constant in `src/lib/open-workshops.ts`
+- tRPC router: `src/server/api/routers/openSessions.ts` — `getUpcoming` query with Dutch date formatting
+- Bookings linked via `sessionId` FK on `Booking` model
+- Calendar grid shows "Vol" badge when session is full
+- **3 consumers**: booking page, workshop configurator popup (first 3 dates), `/onze-uitjes/[slug]` sidebar
+- Seed script: `prisma/seed-open-workshops.ts` (idempotent, migrates old hardcoded data)
 
 ### Workshop Configurator
 
