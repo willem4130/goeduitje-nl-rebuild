@@ -47,13 +47,13 @@ src/
 
 ## Total Pages: 136
 
-| Type                  | Count | Template                      |
-| --------------------- | ----- | ----------------------------- |
-| Static pages          | 22    | Individual page.tsx files     |
-| City landing pages    | 87    | `(landing)/[slug]/page.tsx`   |
-| Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop` |
-| Recipe pages          | 13    | `recepten/[slug]/page.tsx`    |
-| Utility pages         | 7     | bedankt, checkout/*, error, loading, cookies, privacy, voorwaarden |
+| Type                  | Count | Template                                                            |
+| --------------------- | ----- | ------------------------------------------------------------------- |
+| Static pages          | 22    | Individual page.tsx files                                           |
+| City landing pages    | 87    | `(landing)/[slug]/page.tsx`                                         |
+| Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop`                     |
+| Recipe pages          | 13    | `recepten/[slug]/page.tsx`                                          |
+| Utility pages         | 7     | bedankt, checkout/\*, error, loading, cookies, privacy, voorwaarden |
 
 ## Tech Stack
 
@@ -357,11 +357,28 @@ npx tsx prisma/seed-recipes.ts
 
 **Always update this file** when making structural changes: adding new pages, routes, layouts, database models, seed files, SEO files, or changing architecture patterns. This file is the primary context for AI agents working on this codebase.
 
+## ⚠️ PRODUCTION-READY — Change Policy
+
+**This website is near-production. Only minor tweaks and fixes are allowed on the frontend.**
+
+- **NEVER change navigation items, page structure, or layout without explicit owner approval.** The top navigation (`src/components/top-navigation.tsx`) and footer (`src/components/footer.tsx`) are locked down.
+- **NEVER add, remove, or reorder pages in navigation** — this requires explicit sign-off from the project owner.
+- **Ask before any visual/UX change** that affects the live site experience (layout shifts, component removals, color changes, font changes, etc.)
+- Minor bug fixes, typo corrections, and backend-only changes are fine without approval.
+- When in doubt, **report what you'd change and wait for approval** instead of making the change.
+
+### Current Navigation (LOCKED — do not modify without approval)
+
+```
+Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
+```
+
 ## Never Do
 
 - Create admin pages here (use goeduitje-backend)
 - Run Drizzle migrations (Prisma is source of truth)
 - Modify `/components/ui/` (shadcn managed)
+- Modify top navigation items or footer structure without explicit owner approval
 - Skip typecheck before committing
 - Use 21% BTW for food service (use 9%)
 - Run `seed-workshops.ts` on production — it deletes ALL workshops first. Use targeted migration scripts instead (e.g. `prisma/migrate-stadsspel-tiers.ts`)
@@ -385,14 +402,14 @@ Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 
 ### Vercel Environment Variables (Production)
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `NEXT_PUBLIC_APP_URL` | Public app URL |
-| `NEXT_PUBLIC_GTM_ID` | Google Tag Manager container ID (`GTM-PZCH2S3R`) |
-| `GOOGLE_PLACES_API_KEY` | Google Places API for reviews |
-| `GOOGLE_PLACE_ID` | Google Place ID for Goeduitje |
-| `SKIP_ENV_VALIDATION` | Skip t3-env validation on build |
+| Variable                | Purpose                                          |
+| ----------------------- | ------------------------------------------------ |
+| `DATABASE_URL`          | Neon PostgreSQL connection string                |
+| `NEXT_PUBLIC_APP_URL`   | Public app URL                                   |
+| `NEXT_PUBLIC_GTM_ID`    | Google Tag Manager container ID (`GTM-PZCH2S3R`) |
+| `GOOGLE_PLACES_API_KEY` | Google Places API for reviews                    |
+| `GOOGLE_PLACE_ID`       | Google Place ID for Goeduitje                    |
+| `SKIP_ENV_VALIDATION`   | Skip t3-env validation on build                  |
 
 ## ⚠️ CMS Image/Video Override Pattern
 
