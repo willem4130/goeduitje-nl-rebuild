@@ -18,10 +18,9 @@ import { cn } from "@/lib/utils";
 
 const navigationItems = [
   { name: "Onze uitjes", href: "/onze-uitjes" },
-  { name: "Teambuilding", href: "/teambuilding" },
-  { name: "Bedrijfsuitjes", href: "/bedrijfsuitjes" },
-  { name: "Workshops", href: "/workshops" },
   { name: "Ons verhaal", href: "/ons-verhaal" },
+  { name: "Onze medewerkers", href: "/onze-medewerkers" },
+  { name: "Onze impact", href: "/onze-impact" },
   { name: "Jullie ervaringen", href: "/jullie-ervaringen" },
 ];
 
