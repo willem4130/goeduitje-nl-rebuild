@@ -16,7 +16,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { getUpcomingWorkshops } from "@/lib/open-workshops";
 import { SITE_URL } from "@/lib/site-config";
 import { CityGallery } from "@/components/city-gallery";
 
@@ -118,16 +117,41 @@ export async function generateStaticParams() {
   }));
 }
 
+// Dutch date formatting helpers for open workshop sessions
+const DUTCH_DAY_NAMES_FULL = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
+const DUTCH_MONTHS_SHORT = ["JAN", "FEB", "MRT", "APR", "MEI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"];
+const DUTCH_MONTHS_FULL = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
+
 export default async function WorkshopDetailPage({ params }: Props) {
   const { slug } = await params;
-  const [workshop, reviewCache] = await Promise.all([
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const [workshop, reviewCache, upcomingSessionsRaw] = await Promise.all([
     getWorkshop(slug),
     prisma.google_reviews_cache.findUnique({ where: { id: "singleton" } }),
+    prisma.openWorkshopSession.findMany({
+      where: { isActive: true, date: { gte: now } },
+      orderBy: { date: "asc" },
+    }),
   ]);
 
   if (!workshop) {
     notFound();
   }
+
+  const upcomingWorkshops = upcomingSessionsRaw.map((session) => {
+    const dayOfWeek = session.date.getDay();
+    const monthIndex = session.date.getMonth();
+    return {
+      id: session.id,
+      dateDisplay: `${DUTCH_DAY_NAMES_FULL[dayOfWeek]} ${session.date.getDate()} ${DUTCH_MONTHS_FULL[monthIndex]}`,
+      dayNumber: session.date.getDate().toString(),
+      month: DUTCH_MONTHS_SHORT[monthIndex],
+      time: `${session.startTime} - ${session.endTime}`,
+      location: session.location,
+    };
+  });
 
   const workshopJsonLd = {
     "@context": "https://schema.org",
@@ -351,8 +375,8 @@ export default async function WorkshopDetailPage({ params }: Props) {
                               Meld je aan voor een datum die jou past!
                             </p>
                             <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1">
-                              {getUpcomingWorkshops().length > 0 ? (
-                                getUpcomingWorkshops().map((ws) => (
+                              {upcomingWorkshops.length > 0 ? (
+                                upcomingWorkshops.map((ws) => (
                                   <div
                                     key={ws.id}
                                     className="flex items-center gap-3 rounded-md border border-amber-200 bg-white p-3 transition-colors hover:border-amber-400"

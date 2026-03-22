@@ -210,6 +210,28 @@ model Workshop {
   @@index([sortOrder])
 }
 
+// ============================================================
+// OPEN WORKSHOP SESSIONS
+// Individual open kookworkshop dates managed via admin backend
+// ============================================================
+model OpenWorkshopSession {
+  id             String    @id @default(cuid())
+  date           DateTime
+  startTime      String    // "14:00"
+  endTime        String    // "16:30"
+  location       String    @default("Nijmegen")
+  maxCapacity    Int       @default(12)
+  pricePerPerson Float     @default(60)
+  isActive       Boolean   @default(true)
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  bookings       Booking[]
+
+  @@index([date])
+  @@index([isActive])
+}
+
 model Booking {
   id                 String   @id @default(cuid())
   stripeSessionId    String?  @unique
@@ -222,8 +244,10 @@ model Booking {
   numberOfPeople     Int
 
   // Workshop info
-  workshopId         String?    // ID from open-workshops.ts
+  workshopId         String?    // Legacy: ID from old hardcoded open-workshops.ts
   workshopDate       String?    // Display date string
+  sessionId          String?    // FK to OpenWorkshopSession
+  session            OpenWorkshopSession? @relation(fields: [sessionId], references: [id])
 
   // Dietary
   dietaryRequirement String?
@@ -249,6 +273,7 @@ model Booking {
   @@index([email])
   @@index([paymentStatus])
   @@index([createdAt])
+  @@index([sessionId])
 }
 
 model WorkshopConfig {

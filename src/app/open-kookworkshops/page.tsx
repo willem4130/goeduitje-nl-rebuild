@@ -30,10 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
 import { STRIPE_PRODUCTS } from "@/lib/stripe-products";
-import {
-  getUpcomingWorkshops,
-  OPEN_WORKSHOP_PRICE,
-} from "@/lib/open-workshops";
+import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 /**
@@ -41,12 +38,12 @@ import { ScrollReveal } from "@/components/scroll-reveal";
  * Consistent with site-wide design patterns
  */
 
-// Get upcoming workshops from shared data source
-const OPEN_WORKSHOPS = getUpcomingWorkshops();
-const PRICE_PER_PERSON = OPEN_WORKSHOP_PRICE;
-
 export default function BookingPage() {
   const createBooking = api.booking.create.useMutation();
+  const { data: workshops = [], isLoading: isLoadingWorkshops } =
+    api.openSessions.getUpcoming.useQuery();
+  const PRICE_PER_PERSON =
+    workshops[0]?.pricePerPerson ?? OPEN_WORKSHOP_PRICE;
   const [selectedWorkshop, setSelectedWorkshop] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -117,11 +114,12 @@ export default function BookingPage() {
     setIsSubmitting(true);
 
     try {
-      const workshop = OPEN_WORKSHOPS.find((w) => w.id === selectedWorkshop);
+      const workshop = workshops.find((w) => w.id === selectedWorkshop);
 
       // If gift card covers full amount, skip Stripe and save directly
       if (hasGiftCard && remainingAmount <= 0) {
         await createBooking.mutateAsync({
+          sessionId: selectedWorkshop,
           workshopId: selectedWorkshop,
           workshopDate: workshop?.dateDisplay || "",
           firstName,
@@ -170,6 +168,7 @@ export default function BookingPage() {
           priceId: STRIPE_PRODUCTS.COOKING_WORKSHOP.priceId,
           quantity: numPeople,
           metadata: {
+            sessionId: selectedWorkshop,
             workshopId: selectedWorkshop,
             workshopDate: workshop?.dateDisplay,
             firstName,
@@ -320,76 +319,102 @@ export default function BookingPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {OPEN_WORKSHOPS.map((workshop) => {
-                        const isSelected = selectedWorkshop === workshop.id;
-                        const isLowSeats = workshop.availableSeats <= 3;
+                    {isLoadingWorkshops ? (
+                      <div className="flex items-center justify-center py-12">
+                        <p className="text-muted-foreground text-sm">
+                          Data laden...
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {workshops.map((workshop) => {
+                          const isSelected = selectedWorkshop === workshop.id;
+                          const isLowSeats =
+                            workshop.availableSeats > 0 &&
+                            workshop.availableSeats <= 3;
+                          const isFull = workshop.availableSeats === 0;
 
-                        return (
-                          <button
-                            key={workshop.id}
-                            onClick={() => setSelectedWorkshop(workshop.id)}
-                            className={cn(
-                              "group relative flex flex-col items-center gap-3 rounded-lg border-2 p-4 text-center transition-all duration-200 hover:shadow-md",
-                              isSelected
-                                ? "border-primary bg-primary/5 shadow-md"
-                                : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
-                            )}
-                          >
-                            {/* Selected Indicator */}
-                            {isSelected && (
-                              <div className="absolute top-2 right-2">
-                                <div className="bg-primary flex size-6 items-center justify-center rounded-full">
-                                  <IconCheck className="text-primary-foreground size-4" />
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Date Display */}
-                            <div className="flex flex-col">
-                              <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                                {workshop.month}
-                              </span>
-                              <span
-                                className={cn(
-                                  "text-3xl font-bold tracking-tight",
-                                  isSelected
-                                    ? "text-primary"
-                                    : "text-foreground"
-                                )}
-                              >
-                                {workshop.dayNumber}
-                              </span>
-                              <span className="text-muted-foreground text-sm font-medium">
-                                {workshop.dayName}
-                              </span>
-                            </div>
-
-                            {/* Time */}
-                            <div
+                          return (
+                            <button
+                              key={workshop.id}
+                              onClick={() =>
+                                !isFull && setSelectedWorkshop(workshop.id)
+                              }
+                              disabled={isFull}
                               className={cn(
-                                "text-sm font-medium",
-                                isSelected
-                                  ? "text-primary"
-                                  : "text-muted-foreground"
+                                "group relative flex flex-col items-center gap-3 rounded-lg border-2 p-4 text-center transition-all duration-200 hover:shadow-md",
+                                isFull
+                                  ? "cursor-not-allowed border-border bg-muted/50 opacity-60"
+                                  : isSelected
+                                    ? "border-primary bg-primary/5 shadow-md"
+                                    : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
                               )}
                             >
-                              {workshop.time}
-                            </div>
+                              {/* Selected Indicator */}
+                              {isSelected && !isFull && (
+                                <div className="absolute top-2 right-2">
+                                  <div className="bg-primary flex size-6 items-center justify-center rounded-full">
+                                    <IconCheck className="text-primary-foreground size-4" />
+                                  </div>
+                                </div>
+                              )}
 
-                            {/* Availability Badge */}
-                            {isLowSeats && (
-                              <Badge
-                                variant="secondary"
-                                className="absolute bottom-2 left-2 text-xs"
+                              {/* Full Badge */}
+                              {isFull && (
+                                <Badge
+                                  variant="destructive"
+                                  className="absolute top-2 right-2 text-xs"
+                                >
+                                  Vol
+                                </Badge>
+                              )}
+
+                              {/* Date Display */}
+                              <div className="flex flex-col">
+                                <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
+                                  {workshop.month}
+                                </span>
+                                <span
+                                  className={cn(
+                                    "text-3xl font-bold tracking-tight",
+                                    isSelected && !isFull
+                                      ? "text-primary"
+                                      : "text-foreground"
+                                  )}
+                                >
+                                  {workshop.dayNumber}
+                                </span>
+                                <span className="text-muted-foreground text-sm font-medium">
+                                  {workshop.dayName}
+                                </span>
+                              </div>
+
+                              {/* Time */}
+                              <div
+                                className={cn(
+                                  "text-sm font-medium",
+                                  isSelected && !isFull
+                                    ? "text-primary"
+                                    : "text-muted-foreground"
+                                )}
                               >
-                                Nog {workshop.availableSeats} plekken
-                              </Badge>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
+                                {workshop.time}
+                              </div>
+
+                              {/* Availability Badge */}
+                              {isLowSeats && (
+                                <Badge
+                                  variant="secondary"
+                                  className="absolute bottom-2 left-2 text-xs"
+                                >
+                                  Nog {workshop.availableSeats} plekken
+                                </Badge>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </ScrollReveal>

@@ -11,11 +11,13 @@ import { testimonialsRouter } from "./routers/testimonials";
 import { contentRouter } from "./routers/content";
 import { mediaRouter } from "./routers/media";
 import { bookingRouter } from "./routers/booking";
+import { openSessionsRouter } from "./routers/openSessions";
 
 export const appRouter = createTRPCRouter({
   user: userRouter,
   workshop: workshopRouter,
   booking: bookingRouter,
+  openSessions: openSessionsRouter,
   reviews: reviewsRouter,
   recipes: recipesRouter,
   feedback: feedbackRouter,

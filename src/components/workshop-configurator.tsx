@@ -62,10 +62,7 @@ import {
   calculateEstimatedPrice,
 } from "@/lib/constants/cities";
 import { api } from "@/trpc/client";
-import {
-  getUpcomingWorkshops,
-  OPEN_WORKSHOP_PRICE,
-} from "@/lib/open-workshops";
+import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
 
 const STEPS = [
   { number: 1, title: "Configureren", description: "Uitje details" },
@@ -94,7 +91,8 @@ export function WorkshopConfigurator() {
   const [showSmallGroupPopup, setShowSmallGroupPopup] = useState(false);
   const router = useRouter();
   const createWorkshop = api.workshop.create.useMutation();
-  const upcomingWorkshops = getUpcomingWorkshops();
+  const { data: upcomingWorkshops = [] } =
+    api.openSessions.getUpcoming.useQuery();
 
   const form = useForm({
     resolver: zodResolver(workshopConfigSchema),
@@ -359,8 +357,8 @@ export function WorkshopConfigurator() {
                   ))}
                 </div>
                 <p className="mt-2 text-xs text-amber-600">
-                  €{OPEN_WORKSHOP_PRICE} p.p. incl. BTW • Individuele
-                  inschrijving mogelijk
+                  €{upcomingWorkshops[0]?.pricePerPerson ?? OPEN_WORKSHOP_PRICE}{" "}
+                  p.p. incl. BTW • Individuele inschrijving mogelijk
                 </p>
               </div>
 
