@@ -137,7 +137,8 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Price per person stored per session (default €60), fallback constant in `src/lib/open-workshops.ts`
 - tRPC router: `src/server/api/routers/openSessions.ts` — `getUpcoming` query with Dutch date formatting
 - Bookings linked via `sessionId` FK on `Booking` model
-- Calendar grid shows "Vol" badge when session is full
+- **Date picker UI**: compact list grouped by month (e.g. "Maart 2026"), collapses after selection with "Wijzig" to reopen, auto-scrolls to form
+- "Vol" badge when session is full, "Nog X plekken" when low availability
 - **3 consumers**: booking page, workshop configurator popup (first 3 dates), `/onze-uitjes/[slug]` sidebar
 - Seed script: `prisma/seed-open-workshops.ts` (idempotent, migrates old hardcoded data)
 
