@@ -81,7 +81,7 @@ Fix ALL errors before committing. No exceptions.
 ### Run Tests
 
 ```bash
-npm run test:run          # Unit + integration (322 tests)
+npm run test:run          # Unit + integration (392 tests)
 npm run test:coverage     # With coverage report
 npm run test:e2e          # Playwright E2E (37 tests, needs dev server)
 npm run test:integration  # Form→DB→Admin round-trip (needs live deployments)
@@ -117,11 +117,11 @@ tests/
 
 | Frontend Form | URL | Component File | DB Table | Backend Admin API | Admin UI |
 | --- | --- | --- | --- | --- | --- |
-| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` | `/api/workshops/configs` | ⚠️ No dedicated page |
+| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` | `/api/workshops/configs` | ✅ `/workshops/configs` |
 | Contact Form | `/contact` | `src/components/contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
 | Compact Contact Form | Footer (all pages) | `src/components/compact-contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
 | Feedback Form | `/feedback` | `src/app/feedback/page.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
-| Open Kookworkshop Booking | `/open-kookworkshops` | `src/app/open-kookworkshops/page.tsx` | `Booking` | `/api/bookings` | ⚠️ No dedicated page |
+| Open Kookworkshop Booking | `/open-kookworkshops` | `src/app/open-kookworkshops/page.tsx` | `Booking` | `/api/bookings` | ✅ `/bookings` |
 
 ### /test Command
 
@@ -148,6 +148,25 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - "Bekijk agenda" button links to `/open-kookworkshops`
 - Located in `src/components/workshop-configurator.tsx`
 - On submit → redirects to `/bedankt` + pushes GA4 purchase event via dataLayer
+- Saves `companyName` and `btwNumber` for zakelijk bookings
+- Confirmation email includes type, company info, and phone number
+
+### Email System (DB-Driven)
+
+- **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`)
+- **DB templates**: `EmailTemplate` model stores editable templates with `{variable}` placeholders
+- **Fallback**: If no DB template exists (or `isActive: false`), hardcoded React email components in `src/emails/` are used
+- **Logging**: Every sent email is logged to `EmailLog` table (resolved subject, body, variables, status)
+- **Admin**: Templates editable at `/email-templates` in backend (TipTap rich text editor). Sent emails viewable at `/email-log`
+- **Seed**: `npx tsx prisma/seed-email-templates.ts` populates default templates
+
+| Email Type | Trigger | Template Key |
+| --- | --- | --- |
+| Workshop configurator confirmation | After configurator submit | `workshop-confirmation` |
+| Contact form confirmation | After contact/compact form submit | `contact-confirmation` |
+| Booking confirmation | After gift card or Stripe payment | `booking-confirmation` |
+
+**Email template files** (React fallbacks): `src/emails/workshop-confirmation.tsx`, `src/emails/contact-confirmation.tsx`, `src/emails/booking-confirmation.tsx`
 
 ### Google Reviews
 
