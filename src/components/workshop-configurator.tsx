@@ -567,14 +567,10 @@ export function WorkshopConfigurator() {
                                           <div className="min-w-0 flex-1">
                                             <FormLabel className="cursor-pointer text-sm leading-tight font-normal">
                                               {workshop.name}
-                                              {!available ? (
+                                              {!available && (
                                                 <span className="text-muted-foreground ml-1 text-[10px]">
                                                   (min.{" "}
                                                   {workshop.minParticipants})
-                                                </span>
-                                              ) : (
-                                                <span className="text-primary ml-1 text-[10px] font-medium">
-                                                  €{workshop.basePrice} p.p.
                                                 </span>
                                               )}
                                             </FormLabel>
