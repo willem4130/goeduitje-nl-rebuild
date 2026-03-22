@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
@@ -52,6 +52,20 @@ export default function BookingPage() {
   const [dietaryRequirement, setDietaryRequirement] = useState("geen");
   const [allergies, setAllergies] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dateCollapsed, setDateCollapsed] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectDate = useCallback(
+    (id: string) => {
+      setSelectedWorkshop(id);
+      setDateCollapsed(true);
+      // Smooth scroll to form after a brief delay for the collapse animation
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    },
+    []
+  );
 
   // Gift card state
   const [hasGiftCard, setHasGiftCard] = useState(false);
@@ -145,6 +159,7 @@ export default function BookingPage() {
 
         // Reset form
         setSelectedWorkshop(null);
+        setDateCollapsed(false);
         setFirstName("");
         setLastName("");
         setEmail("");
@@ -307,16 +322,18 @@ export default function BookingPage() {
           <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
             {/* Left Column - Form */}
             <div className="space-y-6">
-              {/* Calendar Grid */}
+              {/* Date Selection */}
               <ScrollReveal animation="slideUp" delay={0.1} amount={0.2}>
                 <Card className="shadow-editorial">
                   <CardHeader>
                     <CardTitle className="text-primary">
                       Kies een datum *
                     </CardTitle>
-                    <CardDescription>
-                      Selecteer een datum voor de kookworkshop
-                    </CardDescription>
+                    {!dateCollapsed && (
+                      <CardDescription>
+                        Selecteer een datum voor de kookworkshop
+                      </CardDescription>
+                    )}
                   </CardHeader>
                   <CardContent>
                     {isLoadingWorkshops ? (
@@ -325,21 +342,66 @@ export default function BookingPage() {
                           Data laden...
                         </p>
                       </div>
+                    ) : dateCollapsed && selectedWorkshop ? (
+                      /* Collapsed: show selected date summary */
+                      (() => {
+                        const selected = workshops.find(
+                          (w) => w.id === selectedWorkshop
+                        );
+                        if (!selected) return null;
+                        return (
+                          <button
+                            onClick={() => setDateCollapsed(false)}
+                            className="border-primary bg-primary/5 flex w-full items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all duration-200 hover:bg-primary/10"
+                          >
+                            <div className="bg-primary flex size-5 shrink-0 items-center justify-center rounded-full">
+                              <IconCheck className="text-primary-foreground size-3" />
+                            </div>
+                            <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-primary text-sm font-semibold">
+                                  {selected.dateDisplay}{" "}
+                                  {selected.date.split("-")[0]}
+                                </span>
+                                <span className="text-muted-foreground text-sm">
+                                  {selected.time}
+                                </span>
+                              </div>
+                              <span className="text-primary text-xs font-medium">
+                                Wijzig
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })()
                     ) : (
+                      /* Expanded: show full date list grouped by month */
                       <div className="space-y-6">
                         {(() => {
-                          // Group workshops by month+year
                           const MONTH_NAMES_FULL: Record<string, string> = {
-                            JAN: "Januari", FEB: "Februari", MRT: "Maart",
-                            APR: "April", MEI: "Mei", JUN: "Juni",
-                            JUL: "Juli", AUG: "Augustus", SEP: "September",
-                            OKT: "Oktober", NOV: "November", DEC: "December",
+                            JAN: "Januari",
+                            FEB: "Februari",
+                            MRT: "Maart",
+                            APR: "April",
+                            MEI: "Mei",
+                            JUN: "Juni",
+                            JUL: "Juli",
+                            AUG: "Augustus",
+                            SEP: "September",
+                            OKT: "Oktober",
+                            NOV: "November",
+                            DEC: "December",
                           };
-                          const grouped: { label: string; items: typeof workshops }[] = [];
+                          const grouped: {
+                            label: string;
+                            items: typeof workshops;
+                          }[] = [];
                           for (const w of workshops) {
                             const year = w.date.split("-")[0];
                             const label = `${MONTH_NAMES_FULL[w.month] ?? w.month} ${year}`;
-                            const existing = grouped.find((g) => g.label === label);
+                            const existing = grouped.find(
+                              (g) => g.label === label
+                            );
                             if (existing) {
                               existing.items.push(w);
                             } else {
@@ -353,17 +415,20 @@ export default function BookingPage() {
                               </h3>
                               <div className="space-y-2">
                                 {group.items.map((workshop) => {
-                                  const isSelected = selectedWorkshop === workshop.id;
+                                  const isSelected =
+                                    selectedWorkshop === workshop.id;
                                   const isLowSeats =
                                     workshop.availableSeats > 0 &&
                                     workshop.availableSeats <= 3;
-                                  const isFull = workshop.availableSeats === 0;
+                                  const isFull =
+                                    workshop.availableSeats === 0;
 
                                   return (
                                     <button
                                       key={workshop.id}
                                       onClick={() =>
-                                        !isFull && setSelectedWorkshop(workshop.id)
+                                        !isFull &&
+                                        handleSelectDate(workshop.id)
                                       }
                                       disabled={isFull}
                                       className={cn(
@@ -404,7 +469,8 @@ export default function BookingPage() {
                                                   : "text-foreground"
                                             )}
                                           >
-                                            {workshop.dateDisplay} {workshop.date.split("-")[0]}
+                                            {workshop.dateDisplay}{" "}
+                                            {workshop.date.split("-")[0]}
                                           </span>
                                           <span className="text-muted-foreground text-sm">
                                             {workshop.time}
@@ -414,13 +480,20 @@ export default function BookingPage() {
                                         {/* Status badges */}
                                         <div className="flex shrink-0 items-center gap-2">
                                           {isFull && (
-                                            <Badge variant="destructive" className="text-xs">
+                                            <Badge
+                                              variant="destructive"
+                                              className="text-xs"
+                                            >
                                               Vol
                                             </Badge>
                                           )}
                                           {isLowSeats && (
-                                            <Badge variant="secondary" className="text-xs">
-                                              Nog {workshop.availableSeats} plekken
+                                            <Badge
+                                              variant="secondary"
+                                              className="text-xs"
+                                            >
+                                              Nog {workshop.availableSeats}{" "}
+                                              plekken
                                             </Badge>
                                           )}
                                         </div>
@@ -439,6 +512,7 @@ export default function BookingPage() {
               </ScrollReveal>
 
               {/* Booking Form */}
+              <div ref={formRef} />
               <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
                 <Card className="shadow-editorial">
                   <CardHeader>
