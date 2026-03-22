@@ -29,6 +29,8 @@ describe("workshop.create", () => {
       id: "config-1",
       ...input,
       customCity: null,
+      companyName: null,
+      btwNumber: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -45,6 +47,86 @@ describe("workshop.create", () => {
         name: "Jan Jansen",
         email: "jan@example.com",
         phone: "0612345678",
+      }),
+    });
+  });
+
+  it("saves companyName and btwNumber when provided (zakelijk type)", async () => {
+    const input = {
+      type: "zakelijk" as const,
+      participantCount: 15,
+      workshops: ["kookworkshop"],
+      location: "Arnhem" as const,
+      date: "2025-07-20",
+      dateTbd: false,
+      time: "10:00",
+      timeTbd: false,
+      duration: 4,
+      name: "Piet Bakker",
+      email: "piet@bedrijf.nl",
+      phone: "0687654321",
+      companyName: "Bakker BV",
+      btwNumber: "NL123456789B01",
+    };
+
+    const mockResult = {
+      id: "config-2",
+      ...input,
+      customCity: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(mockResult as any);
+
+    const result = await caller.workshop.create(input);
+
+    expect(result).toEqual(mockResult);
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        type: "zakelijk",
+        companyName: "Bakker BV",
+        btwNumber: "NL123456789B01",
+        name: "Piet Bakker",
+        email: "piet@bedrijf.nl",
+      }),
+    });
+  });
+
+  it("saves companyName: null and btwNumber: null when not provided (particulier type)", async () => {
+    const input = {
+      type: "particulier" as const,
+      participantCount: 8,
+      workshops: ["stadsspel"],
+      location: "Nijmegen" as const,
+      date: "2025-08-10",
+      dateTbd: false,
+      time: "15:00",
+      timeTbd: false,
+      duration: 2,
+      name: "Marie de Vries",
+      email: "marie@example.com",
+      phone: "0698765432",
+    };
+
+    const mockResult = {
+      id: "config-3",
+      ...input,
+      customCity: null,
+      companyName: null,
+      btwNumber: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(mockResult as any);
+
+    await caller.workshop.create(input);
+
+    expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        companyName: null,
+        btwNumber: null,
       }),
     });
   });

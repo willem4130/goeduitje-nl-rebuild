@@ -73,7 +73,7 @@ describe("POST /api/send-email", () => {
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ["user@example.com"],
-        subject: "We received your message - Test onderwerp",
+        subject: "Bedankt voor je bericht - Test onderwerp",
       })
     );
   });
@@ -106,7 +106,62 @@ describe("POST /api/send-email", () => {
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ["user@example.com"],
-        subject: "Workshop Configuratie Bevestiging - #WS-001",
+        subject: "Uitje Configuratie Bevestiging - #WS-001",
+      })
+    );
+  });
+
+  it("sends booking-confirmation email successfully", async () => {
+    vi.mocked(resend.emails.send).mockResolvedValueOnce({
+      data: { id: "email-booking-1" },
+      error: null,
+    } as never);
+
+    const req = createRequest({
+      type: "booking-confirmation",
+      to: "sara@example.com",
+      data: {
+        firstName: "Sara",
+        lastName: "de Vries",
+        workshopDate: "15 april 2026",
+        numberOfPeople: 4,
+        totalPrice: 240,
+        paymentMethod: "stripe",
+        location: "Nijmegen",
+      },
+    });
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.success).toBe(true);
+    expect(resend.emails.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: ["sara@example.com"],
+        subject: "Boeking Bevestigd - Open Kookworkshop",
+      })
+    );
+  });
+
+  it("contact-confirmation uses Dutch subject", async () => {
+    vi.mocked(resend.emails.send).mockResolvedValueOnce({
+      data: { id: "email-contact-nl" },
+      error: null,
+    } as never);
+
+    const req = createRequest({
+      type: "contact-confirmation",
+      to: "user@example.com",
+      data: { name: "Piet", subject: "Kookworkshop vraag" },
+    });
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.success).toBe(true);
+    expect(resend.emails.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        subject: "Bedankt voor je bericht - Kookworkshop vraag",
       })
     );
   });

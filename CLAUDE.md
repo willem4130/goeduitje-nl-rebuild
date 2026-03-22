@@ -115,13 +115,13 @@ tests/
 
 ### Forms → Database → Admin Pipeline
 
-| Frontend Form            | DB Table         | Backend Admin API        | Status |
-| ------------------------ | ---------------- | ------------------------ | ------ |
-| Workshop Configurator    | `WorkshopConfig` | `/api/workshops/configs` | ✅     |
-| Contact Form             | `Feedback`       | `/api/content/feedback`  | ✅     |
-| Compact Contact (footer) | `Feedback`       | `/api/content/feedback`  | ✅     |
-| Booking (Stripe)         | `Booking`        | `/api/bookings`          | ✅     |
-| Booking (gift card)      | `Booking`        | `/api/bookings`          | ✅     |
+| Frontend Form | URL | Component File | DB Table | Backend Admin API | Admin UI |
+| --- | --- | --- | --- | --- | --- |
+| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` | `/api/workshops/configs` | ⚠️ No dedicated page |
+| Contact Form | `/contact` | `src/components/contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
+| Compact Contact Form | Footer (all pages) | `src/components/compact-contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
+| Feedback Form | `/feedback` | `src/app/feedback/page.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
+| Open Kookworkshop Booking | `/open-kookworkshops` | `src/app/open-kookworkshops/page.tsx` | `Booking` | `/api/bookings` | ⚠️ No dedicated page |
 
 ### /test Command
 

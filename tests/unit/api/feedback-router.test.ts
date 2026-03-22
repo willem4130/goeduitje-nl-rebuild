@@ -47,6 +47,92 @@ describe("feedback.submit", () => {
     });
   });
 
+  it("saves structured feedback fields when provided", async () => {
+    const input = {
+      name: "Fatima El-Amin",
+      email: "fatima@example.com",
+      message: "Geweldige kookworkshop, alles was perfect geregeld!",
+      rating: 5,
+      firstName: "Fatima",
+      lastName: "El-Amin",
+      eventDate: "2025-05-10",
+      eventLocation: "Nijmegen",
+      whatWasBest: "De sfeer en het eten",
+      whatToImprove: "Meer vegetarische opties",
+    };
+
+    const mockFeedback = {
+      id: "fb-3",
+      ...input,
+      phone: undefined,
+      subject: undefined,
+      isRead: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    vi.mocked(prisma.feedback.create).mockResolvedValue(mockFeedback as any);
+
+    const result = await caller.feedback.submit(input);
+
+    expect(result.success).toBe(true);
+    expect(result.feedback).toEqual(mockFeedback);
+    expect(prisma.feedback.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        firstName: "Fatima",
+        lastName: "El-Amin",
+        eventDate: "2025-05-10",
+        eventLocation: "Nijmegen",
+        whatWasBest: "De sfeer en het eten",
+        whatToImprove: "Meer vegetarische opties",
+      }),
+    });
+  });
+
+  it("saves undefined for structured fields when not provided (contact form case)", async () => {
+    const input = {
+      name: "Karel Smit",
+      email: "karel@example.com",
+      message: "Ik heb een vraag over de workshops in Arnhem.",
+    };
+
+    const mockFeedback = {
+      id: "fb-4",
+      ...input,
+      phone: undefined,
+      subject: undefined,
+      rating: undefined,
+      firstName: undefined,
+      lastName: undefined,
+      eventDate: undefined,
+      eventLocation: undefined,
+      whatWasBest: undefined,
+      whatToImprove: undefined,
+      isRead: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    vi.mocked(prisma.feedback.create).mockResolvedValue(mockFeedback as any);
+
+    const result = await caller.feedback.submit(input);
+
+    expect(result.success).toBe(true);
+    expect(prisma.feedback.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        name: "Karel Smit",
+        email: "karel@example.com",
+        message: "Ik heb een vraag over de workshops in Arnhem.",
+        firstName: undefined,
+        lastName: undefined,
+        eventDate: undefined,
+        eventLocation: undefined,
+        whatWasBest: undefined,
+        whatToImprove: undefined,
+      }),
+    });
+  });
+
   it("handles Prisma error gracefully (throws INTERNAL_SERVER_ERROR)", async () => {
     vi.mocked(prisma.feedback.create).mockRejectedValue(new Error("DB error"));
 

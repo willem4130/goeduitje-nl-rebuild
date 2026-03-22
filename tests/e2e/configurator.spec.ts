@@ -52,4 +52,56 @@ test.describe("Workshop Configurator", () => {
       timeout: 10000,
     });
   });
+
+  test("shows company fields when zakelijk is selected", async ({ page }) => {
+    await page.waitForTimeout(1000);
+    const label = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    await label.click({ force: true });
+    await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
+      timeout: 5000,
+    });
+    await expect(page.getByText("BTW-nummer").first()).toBeVisible({
+      timeout: 5000,
+    });
+  });
+
+  test("hides company fields when particulier is selected", async ({ page }) => {
+    await page.waitForTimeout(1000);
+    // First select zakelijk
+    const zakelijkLabel = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    await zakelijkLabel.click({ force: true });
+    await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
+      timeout: 5000,
+    });
+    // Switch back to particulier by unchecking zakelijk
+    await zakelijkLabel.click({ force: true });
+    await expect(page.getByText("Bedrijfsnaam")).toBeHidden({ timeout: 5000 });
+  });
+
+  test("company name field is required for zakelijk", async ({ page }) => {
+    await page.waitForTimeout(1000);
+    // Select zakelijk
+    const zakelijkLabel = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    await zakelijkLabel.click({ force: true });
+    await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Fill participant count to enable advancing
+    const participantInput = page.locator("input[type='number']").first();
+    await participantInput.fill("10");
+
+    // Select a workshop
+    const workshopCheckbox = page.getByText("Kookworkshop").first();
+    await workshopCheckbox.click();
+
+    // Try to advance without filling company name
+    const nextButton = page.getByRole("button", { name: /volgende/i });
+    await nextButton.click();
+
+    // Verify validation error appears for company name
+    await expect(
+      page.getByText("Bedrijfsnaam is verplicht voor zakelijke boekingen.")
+    ).toBeVisible({ timeout: 5000 });
+  });
 });

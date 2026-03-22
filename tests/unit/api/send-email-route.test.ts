@@ -15,6 +15,12 @@ vi.mock("@/emails/order-confirmation", () => ({
 vi.mock("@/emails/workshop-confirmation", () => ({
   WorkshopConfirmationEmail: vi.fn().mockReturnValue(null),
 }));
+vi.mock("@/emails/booking-confirmation", () => ({
+  BookingConfirmationEmail: vi.fn().mockReturnValue(null),
+}));
+vi.mock("@react-email/render", () => ({
+  render: vi.fn().mockResolvedValue("<html></html>"),
+}));
 
 import { POST } from "@/app/api/send-email/route";
 
@@ -80,7 +86,7 @@ describe("POST /api/send-email", () => {
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ["user@example.com"],
-        subject: "We received your message - Hello",
+        subject: "Bedankt voor je bericht - Hello",
       })
     );
   });
@@ -107,7 +113,7 @@ describe("POST /api/send-email", () => {
 
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
-        subject: "Workshop Configuratie Bevestiging - #WS-001",
+        subject: "Uitje Configuratie Bevestiging - #WS-001",
       })
     );
   });

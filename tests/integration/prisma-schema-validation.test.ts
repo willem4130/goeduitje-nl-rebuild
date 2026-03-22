@@ -115,6 +115,76 @@ describe("Prisma schema validation", () => {
     }
   });
 
+  describe("WorkshopConfig has company fields", () => {
+    const match = schema.match(/model\s+WorkshopConfig\s*\{([\s\S]*?)\n\}/);
+    const block = match?.[1] ?? "";
+
+    it("WorkshopConfig has companyName field", () => {
+      expect(block).toContain("companyName");
+    });
+
+    it("WorkshopConfig has btwNumber field", () => {
+      expect(block).toContain("btwNumber");
+    });
+  });
+
+  describe("Feedback has structured fields", () => {
+    const match = schema.match(/model\s+Feedback\s*\{([\s\S]*?)\n\}/);
+    const block = match?.[1] ?? "";
+
+    it("Feedback has firstName field", () => {
+      expect(block).toContain("firstName");
+    });
+
+    it("Feedback has eventDate field", () => {
+      expect(block).toContain("eventDate");
+    });
+
+    it("Feedback has whatWasBest field", () => {
+      expect(block).toContain("whatWasBest");
+    });
+  });
+
+  describe("has model EmailTemplate with required fields", () => {
+    const match = schema.match(/model\s+EmailTemplate\s*\{([\s\S]*?)\n\}/);
+    const block = match?.[1] ?? "";
+
+    const fields = ["id", "key", "name", "subject", "body", "variables", "isActive"];
+
+    for (const field of fields) {
+      it(`has field '${field}'`, () => {
+        expect(block).toContain(field);
+      });
+    }
+
+    it("has unique constraint on key", () => {
+      expect(block).toContain("@unique");
+    });
+
+    it("has index on key", () => {
+      expect(block).toContain("@@index([key])");
+    });
+  });
+
+  describe("has model EmailLog with required fields", () => {
+    const match = schema.match(/model\s+EmailLog\s*\{([\s\S]*?)\n\}/);
+    const block = match?.[1] ?? "";
+
+    const fields = ["id", "templateKey", "to", "subject", "body", "variables", "status"];
+
+    for (const field of fields) {
+      it(`has field '${field}'`, () => {
+        expect(block).toContain(field);
+      });
+    }
+
+    it("has indexes on templateKey, createdAt, to", () => {
+      expect(block).toContain("@@index([templateKey])");
+      expect(block).toContain("@@index([createdAt])");
+      expect(block).toContain("@@index([to])");
+    });
+  });
+
   describe("all models have createdAt and updatedAt", () => {
     const modelsWithBoth = [
       "WorkshopConfig",

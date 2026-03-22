@@ -40,6 +40,15 @@ export async function POST(req: NextRequest) {
 
         console.log("💰 Payment successful!");
 
+        // Idempotency check — skip if booking already exists
+        const existingBooking = await prisma.booking.findFirst({
+          where: { stripeSessionId: session.id },
+        });
+        if (existingBooking) {
+          console.log("⏭️ Booking already exists for this Stripe session, skipping");
+          break;
+        }
+
         try {
           await prisma.booking.create({
             data: {
@@ -70,6 +79,39 @@ export async function POST(req: NextRequest) {
             },
           });
           console.log("✅ Booking saved to database");
+
+          // Send booking confirmation email
+          try {
+            const baseUrl =
+              process.env.NEXT_PUBLIC_APP_URL ||
+              "https://goeduitje-nl-rebuild.vercel.app";
+            await fetch(`${baseUrl}/api/send-email`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "x-api-secret": process.env.API_SECRET ?? "",
+              },
+              body: JSON.stringify({
+                type: "booking-confirmation",
+                to: session.customer_email || metadata.email,
+                data: {
+                  firstName: metadata.firstName,
+                  lastName: metadata.lastName,
+                  workshopDate: metadata.workshopDate,
+                  numberOfPeople: parseInt(metadata.numberOfPeople || "1"),
+                  totalPrice: parseFloat(metadata.totalPrice || "0"),
+                  paymentMethod: "stripe",
+                  giftCardId: metadata.giftCardId || undefined,
+                  location: "Nijmegen",
+                  dietaryRequirement: metadata.dietaryRequirement || undefined,
+                  allergies: metadata.allergies || undefined,
+                },
+              }),
+            });
+            console.log("📧 Booking confirmation email sent");
+          } catch {
+            console.error("❌ Failed to send booking confirmation email");
+          }
         } catch {
           console.error("❌ Failed to save booking to database");
         }

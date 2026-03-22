@@ -34,36 +34,69 @@ export const bookingRouter = createTRPCRouter({
     .input(createBookingSchema)
     .mutation(async ({ input }) => {
       try {
-        const booking = await prisma.booking.create({
-          data: {
-            stripeSessionId: input.stripeSessionId,
-            stripePaymentId: input.stripePaymentId,
-            firstName: input.firstName,
-            lastName: input.lastName,
-            email: input.email,
-            numberOfPeople: input.numberOfPeople,
-            workshopId: input.workshopId,
-            workshopDate: input.workshopDate,
-            sessionId: input.sessionId,
-            dietaryRequirement: input.dietaryRequirement,
-            allergies: input.allergies,
-            hasGiftCard: input.hasGiftCard,
-            giftCardId: input.giftCardId,
-            giftCardValue: input.giftCardValue,
-            totalPrice: input.totalPrice,
-            remainingAmount: input.remainingAmount,
-            amountPaid: input.amountPaid,
-            currency: input.currency,
-            paymentMethod: input.paymentMethod,
-            paymentStatus: input.paymentStatus,
-          },
-        });
-
-        return {
-          success: true,
-          booking,
+        const bookingData = {
+          stripeSessionId: input.stripeSessionId,
+          stripePaymentId: input.stripePaymentId,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          email: input.email,
+          numberOfPeople: input.numberOfPeople,
+          workshopId: input.workshopId,
+          workshopDate: input.workshopDate,
+          sessionId: input.sessionId,
+          dietaryRequirement: input.dietaryRequirement,
+          allergies: input.allergies,
+          hasGiftCard: input.hasGiftCard,
+          giftCardId: input.giftCardId,
+          giftCardValue: input.giftCardValue,
+          totalPrice: input.totalPrice,
+          remainingAmount: input.remainingAmount,
+          amountPaid: input.amountPaid,
+          currency: input.currency,
+          paymentMethod: input.paymentMethod,
+          paymentStatus: input.paymentStatus,
         };
-      } catch {
+
+        // Use transaction with capacity check when booking a session
+        if (input.sessionId) {
+          const booking = await prisma.$transaction(async (tx) => {
+            const session = await tx.openWorkshopSession.findUnique({
+              where: { id: input.sessionId! },
+            });
+            if (!session) {
+              throw new TRPCError({
+                code: "NOT_FOUND",
+                message: "Sessie niet gevonden",
+              });
+            }
+
+            const bookedCount = await tx.booking.aggregate({
+              where: {
+                sessionId: input.sessionId,
+                paymentStatus: "paid",
+              },
+              _sum: { numberOfPeople: true },
+            });
+            const currentBooked = bookedCount._sum.numberOfPeople || 0;
+            const available = session.maxCapacity - currentBooked;
+
+            if (input.numberOfPeople > available) {
+              throw new TRPCError({
+                code: "PRECONDITION_FAILED",
+                message: `Er zijn nog maar ${available} plekken beschikbaar.`,
+              });
+            }
+
+            return await tx.booking.create({ data: bookingData });
+          });
+
+          return { success: true, booking };
+        }
+
+        const booking = await prisma.booking.create({ data: bookingData });
+        return { success: true, booking };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message:

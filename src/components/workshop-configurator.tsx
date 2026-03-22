@@ -241,6 +241,10 @@ export function WorkshopConfigurator() {
             date: data.dateTbd ? "Nog te bepalen" : data.date,
             time: data.timeTbd ? "Nog te bepalen" : data.time,
             duration: data.duration,
+            type: data.type,
+            companyName: data.companyName,
+            btwNumber: data.btwNumber,
+            phone: data.phone,
           },
         }),
       });

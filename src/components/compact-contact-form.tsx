@@ -57,6 +57,7 @@ export function CompactContactForm() {
             data: {
               name: variables.name,
               subject: "Contact formulier (footer)",
+              message: variables.message,
             },
           }),
         });

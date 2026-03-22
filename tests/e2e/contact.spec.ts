@@ -49,4 +49,21 @@ test.describe("Contact Page", () => {
       page.getByRole("link", { name: /uitjes configurator/i })
     ).toBeVisible({ timeout: 10000 });
   });
+
+  test("form submits successfully and shows toast", async ({ page }) => {
+    await page.goto("/contact");
+    await page.getByRole("textbox", { name: "Voornaam" }).fill("Test");
+    await page.getByRole("textbox", { name: "Achternaam" }).fill("Gebruiker");
+    await page.getByRole("textbox", { name: "E-mail" }).fill("test@test.nl");
+    await page
+      .getByRole("textbox", { name: "Bericht" })
+      .fill("Dit is een automatisch testbericht vanuit Playwright.");
+    // Submit the form
+    const submitBtn = page.getByRole("button", { name: /verstuur/i });
+    await submitBtn.click();
+    // Verify success toast appears
+    await expect(page.getByText("Bericht verzonden!")).toBeVisible({
+      timeout: 10000,
+    });
+  });
 });

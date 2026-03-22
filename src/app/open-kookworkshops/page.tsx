@@ -152,6 +152,35 @@ export default function BookingPage() {
           giftCardValue: giftCardAmount,
         });
 
+        // Send booking confirmation email
+        try {
+          await fetch("/api/send-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-secret": process.env.NEXT_PUBLIC_API_SECRET ?? "",
+            },
+            body: JSON.stringify({
+              type: "booking-confirmation",
+              to: email,
+              data: {
+                firstName,
+                lastName,
+                workshopDate: workshop?.dateDisplay || "",
+                numberOfPeople: numPeople,
+                totalPrice,
+                paymentMethod: "gift_card",
+                giftCardId,
+                location: workshop?.location || "Nijmegen",
+                dietaryRequirement,
+                allergies: allergies || undefined,
+              },
+            }),
+          });
+        } catch {
+          // Email failed but booking was saved
+        }
+
         toast.success("Boeking succesvol!", {
           description:
             "Je cadeaubon dekt de volledige kosten. Je ontvangt een bevestigingsmail.",

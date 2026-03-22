@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { z } from "zod";
 import {
   contactFormSchema,
   workshopConfigSchema,
@@ -144,6 +145,41 @@ describe("workshopConfigSchema", () => {
         .success
     ).toBe(false);
   });
+
+  it("accepts zakelijk type with companyName and btwNumber", () => {
+    const data = {
+      ...validZakelijk,
+      type: "zakelijk" as const,
+      companyName: "Test BV",
+      btwNumber: "NL123",
+    };
+    expect(workshopConfigSchema.safeParse(data).success).toBe(true);
+  });
+
+  it("requires companyName when type is zakelijk", () => {
+    const { companyName, ...rest } = validZakelijk;
+    const result = workshopConfigSchema.safeParse({
+      ...rest,
+      type: "zakelijk",
+      companyName: "",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("does not require companyName when type is particulier", () => {
+    const { companyName, btwNumber, ...rest } = validZakelijk;
+    const result = workshopConfigSchema.safeParse({
+      ...rest,
+      type: "particulier",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts optional btwNumber for zakelijk", () => {
+    const { btwNumber, ...rest } = validZakelijk;
+    const result = workshopConfigSchema.safeParse(rest);
+    expect(result.success).toBe(true);
+  });
 });
 
 describe("newsletterSchema", () => {
@@ -187,5 +223,48 @@ describe("userFormSchema", () => {
     expect(
       userFormSchema.safeParse({ ...valid, role: "superadmin" }).success
     ).toBe(false);
+  });
+});
+
+describe("feedbackSubmitSchema (mirrors feedback router input)", () => {
+  // Mirror the schema from src/server/api/routers/feedback.ts
+  const submitFeedbackSchema = z.object({
+    name: z.string().min(2, "Naam moet minimaal 2 karakters zijn"),
+    email: z.string().email("Ongeldig e-mailadres"),
+    phone: z.string().optional(),
+    subject: z.string().optional(),
+    message: z.string().min(10, "Bericht moet minimaal 10 karakters zijn"),
+    rating: z.number().min(1).max(5).optional(),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    eventDate: z.string().optional(),
+    eventLocation: z.string().optional(),
+    whatWasBest: z.string().optional(),
+    whatToImprove: z.string().optional(),
+  });
+
+  it("accepts structured fields", () => {
+    const result = submitFeedbackSchema.safeParse({
+      name: "Jan Jansen",
+      email: "jan@test.nl",
+      message: "Geweldige ervaring, echt top!",
+      rating: 5,
+      firstName: "Jan",
+      lastName: "Jansen",
+      eventDate: "2026-03-15",
+      eventLocation: "Nijmegen",
+      whatWasBest: "De kookworkshop was fantastisch",
+      whatToImprove: "Niets, alles was perfect",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("works without structured fields (backward compat)", () => {
+    const result = submitFeedbackSchema.safeParse({
+      name: "Jan Jansen",
+      email: "jan@test.nl",
+      message: "Dit is een test bericht voor feedback.",
+    });
+    expect(result.success).toBe(true);
   });
 });

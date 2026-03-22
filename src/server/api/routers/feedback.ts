@@ -10,6 +10,12 @@ const submitFeedbackSchema = z.object({
   subject: z.string().optional(),
   message: z.string().min(10, "Bericht moet minimaal 10 karakters zijn"),
   rating: z.number().min(1).max(5).optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  eventDate: z.string().optional(),
+  eventLocation: z.string().optional(),
+  whatWasBest: z.string().optional(),
+  whatToImprove: z.string().optional(),
 });
 
 export const feedbackRouter = createTRPCRouter({
@@ -29,6 +35,12 @@ export const feedbackRouter = createTRPCRouter({
             message: input.message,
             rating: input.rating,
             isRead: false,
+            firstName: input.firstName,
+            lastName: input.lastName,
+            eventDate: input.eventDate,
+            eventLocation: input.eventLocation,
+            whatWasBest: input.whatWasBest,
+            whatToImprove: input.whatToImprove,
           },
         });
 

@@ -19,6 +19,10 @@ interface WorkshopConfirmationEmailProps {
   date: string;
   time: string;
   duration?: number;
+  type?: string;
+  companyName?: string;
+  btwNumber?: string;
+  phone?: string;
 }
 
 export const WorkshopConfirmationEmail = ({
@@ -30,6 +34,10 @@ export const WorkshopConfirmationEmail = ({
   date,
   time,
   duration,
+  type,
+  companyName,
+  btwNumber,
+  phone,
 }: WorkshopConfirmationEmailProps) => (
   <Html>
     <Head />
@@ -79,6 +87,31 @@ export const WorkshopConfirmationEmail = ({
             <Text style={detailItem}>
               <strong>Tijdsduur:</strong> {duration}{" "}
               {duration === 1 ? "uur" : "uren"}
+            </Text>
+          )}
+
+          {type && (
+            <Text style={detailItem}>
+              <strong>Type:</strong>{" "}
+              {type === "zakelijk" ? "Zakelijk" : "Particulier"}
+            </Text>
+          )}
+
+          {companyName && (
+            <Text style={detailItem}>
+              <strong>Bedrijfsnaam:</strong> {companyName}
+            </Text>
+          )}
+
+          {btwNumber && (
+            <Text style={detailItem}>
+              <strong>BTW-nummer:</strong> {btwNumber}
+            </Text>
+          )}
+
+          {phone && (
+            <Text style={detailItem}>
+              <strong>Telefoon:</strong> {phone}
             </Text>
           )}
 

@@ -69,4 +69,26 @@ test.describe("Booking Page", () => {
       page.getByText("Alle ingrediënten en materialen")
     ).toBeVisible();
   });
+
+  test("gift card fields appear when checkbox is checked", async ({ page }) => {
+    await page.goto("/open-kookworkshops");
+    const giftCardToggle = page.getByText("Ik heb een cadeaubon");
+    await expect(giftCardToggle).toBeVisible({ timeout: 10000 });
+    await giftCardToggle.click();
+    await expect(page.locator("#giftCardId")).toBeVisible({ timeout: 3000 });
+    await expect(page.locator("#giftCardValue")).toBeVisible();
+  });
+
+  test("gift card fields hidden when checkbox unchecked", async ({ page }) => {
+    await page.goto("/open-kookworkshops");
+    const giftCardToggle = page.getByText("Ik heb een cadeaubon");
+    await expect(giftCardToggle).toBeVisible({ timeout: 10000 });
+    // Check the gift card checkbox
+    await giftCardToggle.click();
+    await expect(page.locator("#giftCardId")).toBeVisible({ timeout: 3000 });
+    // Uncheck the gift card checkbox
+    await giftCardToggle.click();
+    await expect(page.locator("#giftCardId")).toBeHidden({ timeout: 3000 });
+    await expect(page.locator("#giftCardValue")).toBeHidden();
+  });
 });

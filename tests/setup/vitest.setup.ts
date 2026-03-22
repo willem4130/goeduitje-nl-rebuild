@@ -106,6 +106,23 @@ vi.mock("@/lib/prisma", () => ({
       findUnique: vi.fn(),
       findFirst: vi.fn(),
     },
+    booking: {
+      create: vi.fn(),
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      aggregate: vi.fn(),
+    },
+    openWorkshopSession: {
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
+    },
+    emailTemplate: {
+      findUnique: vi.fn(),
+    },
+    emailLog: {
+      create: vi.fn(),
+    },
+    $transaction: vi.fn(),
   },
 }));
 
@@ -177,6 +194,12 @@ vi.mock("@/emails/order-confirmation", () => ({
 }));
 vi.mock("@/emails/workshop-confirmation", () => ({
   WorkshopConfirmationEmail: vi.fn().mockReturnValue(null),
+}));
+vi.mock("@/emails/booking-confirmation", () => ({
+  BookingConfirmationEmail: vi.fn().mockReturnValue(null),
+}));
+vi.mock("@react-email/render", () => ({
+  render: vi.fn().mockResolvedValue("<html></html>"),
 }));
 
 // Mock server-only (used by some imports)

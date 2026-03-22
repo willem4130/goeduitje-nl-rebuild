@@ -7,42 +7,51 @@ import {
   Preview,
   Section,
   Text,
+  Hr,
 } from "@react-email/components";
 
 interface ContactConfirmationEmailProps {
   name: string;
   subject: string;
+  message?: string;
 }
 
 export const ContactConfirmationEmail = ({
   name,
   subject,
+  message,
 }: ContactConfirmationEmailProps) => (
   <Html>
     <Head />
-    <Preview>We received your message - {subject}</Preview>
+    <Preview>Bedankt voor je bericht - {subject}</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={box}>
-          <Heading style={heading}>Thank You for Contacting Us!</Heading>
-          <Text style={paragraph}>Hi {name},</Text>
+          <Heading style={heading}>Bedankt voor je bericht!</Heading>
+          <Text style={paragraph}>Hallo {name},</Text>
           <Text style={paragraph}>
-            We&apos;ve received your message regarding &quot;{subject}&quot; and
-            wanted to let you know that we&apos;re on it.
+            We hebben je bericht ontvangen en zullen zo snel mogelijk contact
+            met je opnemen.
+          </Text>
+
+          {message && (
+            <>
+              <Hr style={hr} />
+              <Text style={subheading}>Jouw bericht:</Text>
+              <Text style={messageStyle}>{message}</Text>
+              <Hr style={hr} />
+            </>
+          )}
+
+          <Text style={paragraph}>
+            Ons team reageert doorgaans binnen 24 uur op werkdagen. Heb je in de
+            tussentijd nog vragen of aanvullende informatie? Antwoord dan gerust
+            op deze e-mail.
           </Text>
           <Text style={paragraph}>
-            Our team typically responds within 24 hours during business days.
-            We&apos;ll review your inquiry and get back to you as soon as
-            possible.
-          </Text>
-          <Text style={paragraph}>
-            In the meantime, if you have any urgent questions or additional
-            information to share, feel free to reply to this email.
-          </Text>
-          <Text style={paragraph}>
-            Best regards,
+            Met vriendelijke groet,
             <br />
-            The Team
+            Het Goeduitje.nl Team
           </Text>
         </Section>
       </Container>
@@ -76,8 +85,32 @@ const heading = {
   color: "#484848",
 };
 
+const subheading = {
+  fontSize: "20px",
+  lineHeight: "1.4",
+  fontWeight: "600",
+  color: "#484848",
+  marginTop: "24px",
+  marginBottom: "12px",
+};
+
 const paragraph = {
   fontSize: "16px",
   lineHeight: "1.6",
   color: "#484848",
+};
+
+const messageStyle = {
+  fontSize: "16px",
+  lineHeight: "1.6",
+  color: "#484848",
+  whiteSpace: "pre-wrap" as const,
+  backgroundColor: "#f9f9f9",
+  padding: "16px",
+  borderRadius: "4px",
+};
+
+const hr = {
+  borderColor: "#e6ebf1",
+  margin: "20px 0",
 };

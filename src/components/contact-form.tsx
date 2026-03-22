@@ -62,6 +62,7 @@ export function ContactForm() {
             data: {
               name: variables.name,
               subject: "Contact formulier",
+              message: variables.message,
             },
           }),
         });

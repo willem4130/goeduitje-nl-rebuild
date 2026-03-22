@@ -60,6 +60,12 @@ export default function FeedbackPage() {
       subject: `Feedback voor uitje op ${data.date} in ${data.location}`,
       message: `Datum: ${data.date}\nLocatie: ${data.location}\n\nWat vond je het beste: ${data.whatWasBest}\n\nWat kunnen we verbeteren: ${data.whatToImprove}`,
       rating: selectedRating ?? undefined,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      eventDate: data.date,
+      eventLocation: data.location,
+      whatWasBest: data.whatWasBest,
+      whatToImprove: data.whatToImprove,
     });
   };
 
