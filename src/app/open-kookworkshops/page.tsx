@@ -53,15 +53,15 @@ export default function BookingPage() {
   const [allergies, setAllergies] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateCollapsed, setDateCollapsed] = useState(false);
-  const formRef = useRef<HTMLDivElement>(null);
+  const dateCardRef = useRef<HTMLDivElement>(null);
 
   const handleSelectDate = useCallback(
     (id: string) => {
       setSelectedWorkshop(id);
       setDateCollapsed(true);
-      // Smooth scroll to form after a brief delay for the collapse animation
+      // Scroll so the collapsed date card + form are visible together
       setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        dateCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 150);
     },
     []
@@ -323,6 +323,7 @@ export default function BookingPage() {
             {/* Left Column - Form */}
             <div className="space-y-6">
               {/* Date Selection */}
+              <div ref={dateCardRef} className="scroll-mt-24" />
               <ScrollReveal animation="slideUp" delay={0.1} amount={0.2}>
                 <Card className="shadow-editorial">
                   <CardHeader>
@@ -512,7 +513,6 @@ export default function BookingPage() {
               </ScrollReveal>
 
               {/* Booking Form */}
-              <div ref={formRef} />
               <ScrollReveal animation="slideUp" delay={0.2} amount={0.2}>
                 <Card className="shadow-editorial">
                   <CardHeader>
