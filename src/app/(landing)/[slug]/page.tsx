@@ -20,6 +20,73 @@ import {
   Euro,
 } from "lucide-react";
 import { getCityImage } from "@/lib/city-data";
+import { prisma } from "@/lib/prisma";
+import type { Workshop, PriceTier, WorkshopVariant } from "@prisma/client";
+
+export const revalidate = 300; // Revalidate every 5 minutes
+
+type WorkshopWithPricing = Workshop & {
+  priceTiers: PriceTier[];
+  variants: (WorkshopVariant & { priceTiers: PriceTier[] })[];
+};
+
+async function getWorkshopsWithPricing(): Promise<WorkshopWithPricing[]> {
+  return prisma.workshop.findMany({
+    where: { isPublished: true },
+    include: {
+      priceTiers: {
+        where: { variantId: null },
+        orderBy: { sortOrder: "asc" },
+      },
+      variants: {
+        orderBy: { sortOrder: "asc" },
+        include: {
+          priceTiers: { orderBy: { sortOrder: "asc" } },
+        },
+      },
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
+function formatEuro(amount: number): string {
+  return amount % 1 === 0
+    ? `€${amount}`
+    : `€${amount.toFixed(2).replace(".", ",")}`;
+}
+
+function getLowestPriceFromWorkshop(workshop: WorkshopWithPricing): number {
+  let lowest = Infinity;
+  for (const tier of workshop.priceTiers) {
+    if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+  }
+  for (const variant of workshop.variants) {
+    for (const tier of variant.priceTiers) {
+      if (tier.priceExclBtw < lowest) lowest = tier.priceExclBtw;
+    }
+  }
+  return lowest === Infinity ? 0 : lowest;
+}
+
+function getLowestInclFromWorkshop(workshop: WorkshopWithPricing): number {
+  let lowestExcl = Infinity;
+  let correspondingIncl = 0;
+  for (const tier of workshop.priceTiers) {
+    if (tier.priceExclBtw < lowestExcl) {
+      lowestExcl = tier.priceExclBtw;
+      correspondingIncl = tier.priceInclBtw;
+    }
+  }
+  for (const variant of workshop.variants) {
+    for (const tier of variant.priceTiers) {
+      if (tier.priceExclBtw < lowestExcl) {
+        lowestExcl = tier.priceExclBtw;
+        correspondingIncl = tier.priceInclBtw;
+      }
+    }
+  }
+  return correspondingIncl;
+}
 
 // All cities for kookworkshop landing pages - complete list from goeduitje.nl
 const KOOKWORKSHOP_CITIES: CityData[] = [
@@ -338,28 +405,28 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-apeldoorn",
     city: "Apeldoorn",
     region: "Apeldoorn",
-    tagline: "Ontdek de stad",
+    tagline: "Unieke stadsspel ervaring",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-arnhem",
     city: "Arnhem",
     region: "Arnhem",
-    tagline: "Ontdek de stad",
+    tagline: "Dé interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-bemmel",
     city: "Bemmel",
     region: "Bemmel",
-    tagline: "Uniek stadsspel",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-bennekom",
     city: "Bennekom",
     region: "Bennekom",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Unieke speurtocht ervaring",
     type: "stadsspel",
   },
   {
@@ -373,21 +440,21 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-beuningen",
     city: "Beuningen",
     region: "Beuningen",
-    tagline: "Ontdek de stad",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-boxtel",
     city: "Boxtel",
     region: "Boxtel",
-    tagline: "Uniek stadsspel",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-cuijk",
     city: "Cuijk",
     region: "Cuijk",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Begeleid door statushouders",
     type: "stadsspel",
   },
   {
@@ -408,42 +475,42 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-doetinchem",
     city: "Doetinchem",
     region: "Doetinchem",
-    tagline: "Ontdek de stad",
+    tagline: "Unieke stadsspel ervaring",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-druten",
     city: "Druten",
     region: "Druten",
-    tagline: "Uniek stadsspel",
+    tagline: "Culturele ontdekkingstocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-duiven",
     city: "Duiven",
     region: "Duiven",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-ede",
     city: "Ede",
     region: "Ede",
-    tagline: "Ontdek de stad",
+    tagline: "Unieke stadsspel ervaring",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-eindhoven",
     city: "Eindhoven",
     region: "Eindhoven",
-    tagline: "Interactieve speurtocht",
+    tagline: "Ontdek de stad",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-elst",
     city: "Elst",
     region: "Elst",
-    tagline: "Uniek stadsspel",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
@@ -457,21 +524,21 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-geldermalsen",
     city: "Geldermalsen",
     region: "Geldermalsen",
-    tagline: "Ontdek de stad",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-gendt",
     city: "Gendt",
     region: "Gendt",
-    tagline: "Interactieve speurtocht",
+    tagline: "Culturele ontdekkingstocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-gennep",
     city: "Gennep",
     region: "Gennep",
-    tagline: "Uniek stadsspel",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
@@ -485,63 +552,63 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-groesbeek",
     city: "Groesbeek",
     region: "Groesbeek",
-    tagline: "Ontdek de stad",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-helmond",
     city: "Helmond",
     region: "Helmond",
-    tagline: "Interactieve speurtocht",
+    tagline: "Ontdek de stad",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-huissen",
     city: "Huissen",
     region: "Huissen",
-    tagline: "Uniek stadsspel",
+    tagline: "Het culturele teamuitje",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-malden",
     city: "Malden",
     region: "Malden",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-nijmegen",
     city: "Nijmegen",
     region: "de regio Nijmegen",
-    tagline: "Ontdek de stad",
+    tagline: "Unieke ervaring",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-oss",
     city: "Oss",
     region: "Oss",
-    tagline: "Interactieve speurtocht",
+    tagline: "Een unieke speurtocht ervaring",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-tiel",
     city: "Tiel",
     region: "Tiel",
-    tagline: "Uniek stadsspel",
+    tagline: "Culturele ontdekkingstocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-uden",
     city: "Uden",
     region: "Uden",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Interactieve speurtocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-veenendaal",
     city: "Veenendaal",
     region: "Veenendaal",
-    tagline: "Ontdek de stad",
+    tagline: "Uniek stadsspel",
     type: "stadsspel",
   },
   {
@@ -555,21 +622,21 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-venray",
     city: "Venray",
     region: "Venray",
-    tagline: "Uniek stadsspel",
+    tagline: "Culturele ontdekkingstocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-wageningen",
     city: "Wageningen",
     region: "Wageningen",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Ontdek de stad op een unieke manier",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-wijchen",
     city: "Wijchen",
     region: "Wijchen",
-    tagline: "Ontdek de stad",
+    tagline: "Voor een culturele speurtocht",
     type: "stadsspel",
   },
   {
@@ -583,21 +650,21 @@ const ALL_LANDING_PAGES: LandingPageData[] = [
     slug: "stadsspel-zetten",
     city: "Zetten",
     region: "Zetten",
-    tagline: "Uniek stadsspel",
+    tagline: "Culturele ontdekkingstocht",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-zevenaar",
     city: "Zevenaar",
     region: "Zevenaar",
-    tagline: "Culturele ontdekkingstocht",
+    tagline: "Speurtocht met statushouders",
     type: "stadsspel",
   },
   {
     slug: "stadsspel-zutphen",
     city: "Zutphen",
     region: "Zutphen",
-    tagline: "Ontdek de stad",
+    tagline: "Een unieke ontdekkingstocht",
     type: "stadsspel",
   },
 ];
@@ -751,7 +818,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     kookworkshop: `Bij onze sociale onderneming organiseren statushouders en asielzoekers unieke kookworkshops in ${landing.region}, waar u onder begeleiding van onze medewerkers aan de slag gaat.`,
     teambuilding: `Organiseer een onvergetelijke teambuilding in ${landing.region} met maatschappelijke impact. Kookworkshops, stadsspellen en interactieve challenges begeleid door statushouders.`,
     bedrijfsuitje: `Organiseer een uniek bedrijfsuitje in ${landing.region} met sociale impact. Van kookworkshops tot stadsspellen – activiteiten begeleid door statushouders en nieuwkomers.`,
-    stadsspel: `Speel het unieke stadsspel in ${landing.city}! Een interactieve speurtocht door de stad met culturele uitdagingen, begeleid door statushouders en nieuwkomers.`,
+    stadsspel: `Speel het unieke stadsspel in ${landing.city}! Een interactieve speurtocht in de stad met culturele uitdagingen, begeleid door statushouders en nieuwkomers.`,
   };
 
   const typeKeywords: Record<LandingType, string[]> = {
@@ -829,12 +896,31 @@ export default async function LandingPage({ params }: Props) {
     fallbackImages.length;
   const heroImage = getCityImage(citySlug) || fallbackImages[imageIndex];
 
+  const [workshops, reviewStats] = await Promise.all([
+    getWorkshopsWithPricing(),
+    prisma.googleReview.aggregate({
+      where: { isVisible: true },
+      _avg: { rating: true },
+    }),
+  ]);
+  const avgRating = reviewStats._avg.rating?.toFixed(1) || "4.9";
+
   // Non-kookworkshop types use a separate template
   if (type !== "kookworkshop") {
     return (
-      <TypedLandingPage landing={landing} type={type} heroImage={heroImage} />
+      <TypedLandingPage landing={landing} type={type} heroImage={heroImage} workshops={workshops} avgRating={avgRating} />
     );
   }
+
+  // Get kookworkshop pricing from DB
+  const kookworkshop = workshops.find((w) => w.slug === "kookworkshop");
+  const arabischeVariant = kookworkshop?.variants.find((v) =>
+    v.name.toLowerCase().includes("arabische")
+  );
+  const kookPriceTiers = arabischeVariant?.priceTiers ?? [];
+  const kookLowestPrice = kookworkshop
+    ? getLowestPriceFromWorkshop(kookworkshop)
+    : 55;
 
   const isVegetarian = landing.isVegetarian;
   const workshopType = isVegetarian
@@ -931,7 +1017,7 @@ export default async function LandingPage({ params }: Props) {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">4.9/5 op Google</span>
+                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
                 </div>
               </div>
             </div>
@@ -950,7 +1036,7 @@ export default async function LandingPage({ params }: Props) {
               <div>
                 <p className="text-sm text-gray-500">Prijs</p>
                 <p className="text-lg font-bold text-gray-900">
-                  Vanaf €55 p.p.
+                  Vanaf {formatEuro(kookLowestPrice)} p.p.
                 </p>
                 <p className="text-xs text-gray-500">excl. btw</p>
               </div>
@@ -1097,39 +1183,29 @@ export default async function LandingPage({ params }: Props) {
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    <tr className="bg-white">
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        8-10 personen
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
-                        €70
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-600">
-                        €85
-                      </td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        11-15 personen
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
-                        €60
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-600">
-                        €73
-                      </td>
-                    </tr>
-                    <tr className="bg-amber-50/50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-700">
-                        16+ personen
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm font-bold text-amber-700">
-                        €55
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm text-gray-600">
-                        €67
-                      </td>
-                    </tr>
+                    {kookPriceTiers.map((tier, index) => {
+                      const isLast = index === kookPriceTiers.length - 1;
+                      return (
+                        <tr
+                          key={tier.id}
+                          className={isLast ? "bg-amber-50/50" : "bg-white"}
+                        >
+                          <td
+                            className={`px-4 py-3 text-sm ${isLast ? "font-medium" : ""} text-gray-700`}
+                          >
+                            {tier.groupSize}
+                          </td>
+                          <td
+                            className={`px-4 py-3 text-right text-sm ${isLast ? "font-bold text-amber-700" : "font-medium text-gray-900"}`}
+                          >
+                            {formatEuro(tier.priceExclBtw)}
+                          </td>
+                          <td className="px-4 py-3 text-right text-sm text-gray-600">
+                            {formatEuro(tier.priceInclBtw)}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1494,6 +1570,8 @@ interface TypedLandingPageProps {
   landing: LandingPageData;
   type: LandingType;
   heroImage: string;
+  workshops: WorkshopWithPricing[];
+  avgRating: string;
 }
 
 function getWorkshopCards(
@@ -1516,7 +1594,7 @@ function getWorkshopCards(
         {
           title: "Stadsspel / Citygame",
           icon: "Compass",
-          description: `Een interactieve speurtocht door ${city} vol culturele uitdagingen en verrassende ontmoetingen.`,
+          description: `Een interactieve speurtocht in ${city} vol culturele uitdagingen en verrassende ontmoetingen.`,
         },
         {
           title: "The Game - Koffer Challenge",
@@ -1550,7 +1628,7 @@ function getWorkshopCards(
         {
           title: "Het Stadsspel",
           icon: "Compass",
-          description: `De originele interactieve speurtocht door ${city}. Ontdek verborgen plekjes en los culturele uitdagingen op met je team.`,
+          description: `De originele interactieve speurtocht in ${city}. Ontdek verborgen plekjes en los culturele uitdagingen op met je team.`,
         },
         {
           title: "The Game - Koffer Challenge",
@@ -1609,13 +1687,27 @@ const ICON_MAP = {
   Building2,
 } as const;
 
-function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
+function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: TypedLandingPageProps) {
   const theme = THEMES[type];
   const label = landing.displayTitle || TYPE_LABELS[type];
   const pageTitle = `${label} ${landing.city}`;
   const workshopCards = getWorkshopCards(type, landing.city);
   const cta = getCtaConfig(type);
   const CtaIcon = ICON_MAP[cta.icon];
+
+  // Get dynamic prices from workshops
+  const stadsspelWs = workshops.find((w) => w.slug === "stadsspel");
+  const theGameWs = workshops.find((w) => w.slug === "the-game");
+  const koffieWs = workshops.find((w) => w.slug === "koffie-thee-workshop");
+  const kookWs = workshops.find((w) => w.slug === "kookworkshop");
+
+  const stadsspelLowest = stadsspelWs ? getLowestPriceFromWorkshop(stadsspelWs) : 22.5;
+  const theGameLowest = theGameWs ? getLowestPriceFromWorkshop(theGameWs) : 32.5;
+  const koffieLowest = koffieWs ? getLowestPriceFromWorkshop(koffieWs) : 32.5;
+  const kookLowest = kookWs ? getLowestPriceFromWorkshop(kookWs) : 55;
+
+  // Overall lowest for teambuilding/bedrijfsuitje
+  const overallLowest = Math.min(stadsspelLowest, theGameLowest, koffieLowest, kookLowest);
 
   const heroDescriptions: Record<
     Exclude<LandingType, "kookworkshop">,
@@ -1638,7 +1730,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
       "Sociale impact door samenwerking met statushouders",
     ],
     stadsspel: [
-      `Interactieve speurtocht door ${landing.city}`,
+      `Interactieve speurtocht in ${landing.city}`,
       "Culturele uitdagingen en verrassende ontmoetingen",
       "Begeleiding door statushouders en nieuwkomers",
     ],
@@ -1699,17 +1791,17 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
       },
       {
         q: "Wat kost een bedrijfsuitje bij Goeduitje?",
-        a: "De prijzen variëren per activiteit. Een kookworkshop begint vanaf €55 p.p., een stadsspel vanaf €22,50 p.p. en een koffie & thee workshop vanaf €32,50 p.p. Neem contact op voor een offerte op maat.",
+        a: `De prijzen variëren per activiteit. Een kookworkshop begint vanaf ${formatEuro(kookLowest)} p.p., een stadsspel vanaf ${formatEuro(stadsspelLowest)} p.p. en een koffie & thee workshop vanaf ${formatEuro(koffieLowest)} p.p. Neem contact op voor een offerte op maat.`,
       },
     ],
     stadsspel: [
       {
         q: `Hoe werkt het stadsspel in ${landing.city}?`,
-        a: `Het stadsspel is een interactieve speurtocht door ${landing.city}. In teams van 4-5 personen lopen jullie een route door de stad, waarbij je onderweg culturele opdrachten oplost en verborgen plekjes ontdekt. Statushouders en nieuwkomers begeleiden jullie en delen hun verhalen en cultuur.`,
+        a: `Het stadsspel is een interactieve speurtocht door of in ${landing.city}. In teams van 4-5 personen of juist in één groep team (tot 20 personen) lopen jullie door de stad waarbij je allerlei opdrachten oplost. Statushouders en nieuwkomers begeleiden jullie en delen hun verhalen en cultuur.`,
       },
       {
         q: "Hoe lang duurt het stadsspel?",
-        a: "Het stadsspel duurt 2-3 uur, afhankelijk van de gekozen route en het tempo van de groep. We kunnen het programma aanpassen aan jullie beschikbare tijd.",
+        a: "Het stadsspel duurt 2-3 uur, afhankelijk van de opzet van het spel. We kunnen het programma aanpassen aan jullie beschikbare tijd.",
       },
       {
         q: "Is het stadsspel geschikt bij slecht weer?",
@@ -1717,7 +1809,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
       },
       {
         q: "Kunnen we het stadsspel combineren met andere activiteiten?",
-        a: "Ja! Een populaire combinatie is het stadsspel gevolgd door een kookworkshop. Zo heb je een complete dag vol teambuilding en culinair genieten. Neem contact op voor de mogelijkheden.",
+        a: "Ja! Een populaire combinatie is het stadsspel gevolgd door een kookworkshop of een Arabisch buffet. Zo heb je een complete dag vol teambuilding en culinair genieten. Neem contact op voor de mogelijkheden.",
       },
     ],
   };
@@ -1727,19 +1819,19 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     { price: string; duration: string; groupSize: string; groupNote: string }
   > = {
     teambuilding: {
-      price: "Vanaf €22,50 p.p.",
+      price: `Vanaf ${formatEuro(overallLowest)} p.p.`,
       duration: "2-3 uur",
       groupSize: "Vanaf 8 personen",
       groupNote: "ook grotere groepen",
     },
     bedrijfsuitje: {
-      price: "Vanaf €22,50 p.p.",
+      price: `Vanaf ${formatEuro(overallLowest)} p.p.`,
       duration: "2-3 uur",
       groupSize: "Vanaf 8 personen",
       groupNote: "ook grotere groepen",
     },
     stadsspel: {
-      price: "Vanaf €22,50 p.p.",
+      price: `Vanaf ${formatEuro(stadsspelLowest)} p.p.`,
       duration: "2-3 uur",
       groupSize: "10-50 personen",
       groupNote: "grotere groepen op aanvraag",
@@ -1762,21 +1854,21 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     teambuilding: {
       title: "Tarieven teambuilding activiteiten",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: "€22,50", inclBtw: "€27,23" },
+        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : 27.23) },
         {
           label: "The Game - Koffer Challenge",
-          exclBtw: "€22,50",
-          inclBtw: "€27,23",
+          exclBtw: formatEuro(theGameLowest),
+          inclBtw: formatEuro(theGameWs ? getLowestInclFromWorkshop(theGameWs) : 39),
         },
         {
           label: "Koffie & Thee Workshop",
-          exclBtw: "€32,50",
-          inclBtw: "€35,43",
+          exclBtw: formatEuro(koffieLowest),
+          inclBtw: formatEuro(koffieWs ? getLowestInclFromWorkshop(koffieWs) : 39),
         },
         {
           label: "Kookworkshop (16+ pers.)",
-          exclBtw: "€55",
-          inclBtw: "€59,95",
+          exclBtw: formatEuro(kookLowest),
+          inclBtw: formatEuro(kookWs ? getLowestInclFromWorkshop(kookWs) : 67),
           highlight: true,
         },
       ],
@@ -1785,21 +1877,21 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     bedrijfsuitje: {
       title: "Tarieven bedrijfsuitjes",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: "€22,50", inclBtw: "€27,23" },
+        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : 27.23) },
         {
           label: "The Game - Koffer Challenge",
-          exclBtw: "€22,50",
-          inclBtw: "€27,23",
+          exclBtw: formatEuro(theGameLowest),
+          inclBtw: formatEuro(theGameWs ? getLowestInclFromWorkshop(theGameWs) : 39),
         },
         {
           label: "Koffie & Thee Workshop",
-          exclBtw: "€32,50",
-          inclBtw: "€35,43",
+          exclBtw: formatEuro(koffieLowest),
+          inclBtw: formatEuro(koffieWs ? getLowestInclFromWorkshop(koffieWs) : 39),
         },
         {
           label: "Kookworkshop (16+ pers.)",
-          exclBtw: "€55",
-          inclBtw: "€59,95",
+          exclBtw: formatEuro(kookLowest),
+          inclBtw: formatEuro(kookWs ? getLowestInclFromWorkshop(kookWs) : 67),
           highlight: true,
         },
       ],
@@ -1807,16 +1899,18 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     },
     stadsspel: {
       title: "Tarieven stadsspel",
-      tiers: [
-        { label: "10-15 personen", exclBtw: "€27,50", inclBtw: "€33,28" },
-        { label: "16-25 personen", exclBtw: "€25", inclBtw: "€30,25" },
-        {
-          label: "26+ personen",
-          exclBtw: "€22,50",
-          inclBtw: "€27,23",
-          highlight: true,
-        },
-      ],
+      tiers: stadsspelWs && stadsspelWs.priceTiers.length > 0
+        ? stadsspelWs.priceTiers.map((tier, index) => ({
+            label: tier.groupSize,
+            exclBtw: formatEuro(tier.priceExclBtw),
+            inclBtw: formatEuro(tier.priceInclBtw),
+            highlight: index === stadsspelWs.priceTiers.length - 1,
+          }))
+        : [
+            { label: "10-15 personen", exclBtw: "€27,50", inclBtw: "€33,28" },
+            { label: "16-25 personen", exclBtw: "€25", inclBtw: "€30,25" },
+            { label: "26+ personen", exclBtw: "€22,50", inclBtw: "€27,23", highlight: true },
+          ],
       note: "Prijzen zijn per persoon. Het stadsspel kan ook gecombineerd worden met een kookworkshop.",
     },
   };
@@ -1928,7 +2022,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">4.9/5 op Google</span>
+                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
                 </div>
               </div>
             </div>
@@ -2260,7 +2354,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                     </h3>
                     <p className="text-muted-foreground">
                       {type === "stadsspel"
-                        ? "Het stadsspel duurt gemiddeld 2-3 uur. Dit kan worden aangepast aan jullie wensen en beschikbare tijd."
+                        ? "Het stadsspel duurt 2-3 uur, afhankelijk van de opzet van het spel. We kunnen het programma aanpassen aan jullie beschikbare tijd."
                         : type === "teambuilding"
                           ? "De duur hangt af van de gekozen activiteit. Een kookworkshop duurt circa 3 uur, het stadsspel 2-3 uur, en The Game ook 2-3 uur. Combinaties zijn uiteraard ook mogelijk."
                           : "De duur hangt af van de gekozen activiteit. Een kookworkshop duurt circa 3 uur, andere activiteiten 2-3 uur. We stemmen het programma af op jullie beschikbare tijd."}
@@ -2300,7 +2394,7 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
                     </h3>
                     <p className="text-muted-foreground">
                       {type === "stadsspel"
-                        ? `Het stadsspel speelt zich af in het centrum van ${landing.city}. We hebben een mooie route uitgestippeld langs de leukste plekjes van de stad.`
+                        ? `Het stadsspel kan op elke (toegankelijke) plek gespeeld worden in ${landing.city} of omgeving. We stemmen de locatie af op jullie wensen.`
                         : `Onze activiteiten worden georganiseerd bij jou op locatie of we huren een locatie naar keuze in ${landing.city} of omgeving.`}
                     </p>
                   </div>
@@ -2426,3 +2520,4 @@ function TypedLandingPage({ landing, type, heroImage }: TypedLandingPageProps) {
     </main>
   );
 }
+

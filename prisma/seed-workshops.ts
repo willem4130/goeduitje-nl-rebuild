@@ -292,16 +292,36 @@ Perfect voor teams die op zoek zijn naar een actieve, culturele en vooral leuke 
     },
   });
 
-  await prisma.priceTier.create({
-    data: {
-      workshopId: stadsspel.id,
-      groupSize: "Per persoon",
-      minParticipants: 10,
-      maxParticipants: null,
-      priceExclBtw: 22.5,
-      priceInclBtw: 27,
-      sortOrder: 1,
-    },
+  await prisma.priceTier.createMany({
+    data: [
+      {
+        workshopId: stadsspel.id,
+        groupSize: "10-15 personen",
+        minParticipants: 10,
+        maxParticipants: 15,
+        priceExclBtw: 27.5,
+        priceInclBtw: 33.28,
+        sortOrder: 1,
+      },
+      {
+        workshopId: stadsspel.id,
+        groupSize: "16-25 personen",
+        minParticipants: 16,
+        maxParticipants: 25,
+        priceExclBtw: 25,
+        priceInclBtw: 30.25,
+        sortOrder: 2,
+      },
+      {
+        workshopId: stadsspel.id,
+        groupSize: "26+ personen",
+        minParticipants: 26,
+        maxParticipants: null,
+        priceExclBtw: 22.5,
+        priceInclBtw: 27.23,
+        sortOrder: 3,
+      },
+    ],
   });
 
   // 3. The Game - Koffer Challenge

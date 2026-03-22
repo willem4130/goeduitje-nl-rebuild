@@ -9,7 +9,7 @@ Public-facing website for Goeduitje team activities. Users discover, customize, 
 ```
 src/
 ├── app/
-│   ├── (landing)/[slug]/         # City landing pages (49 pages)
+│   ├── (landing)/[slug]/         # City landing pages (87 pages)
 │   ├── teambuilding/             # Teambuilding category page (static)
 │   ├── bedrijfsuitjes/           # Bedrijfsuitjes category page (static)
 │   ├── workshops/                # Workshops category page (static)
@@ -19,7 +19,7 @@ src/
 │   ├── onze-medewerkers/         # Team photos (Server Component + Client content)
 │   ├── onze-impact/              # Impact page with ToC diagrams (static images)
 │   ├── recepten/[slug]/          # Recipe pages (13)
-│   ├── booking/                  # Open workshop booking (t/m 15 persons)
+│   ├── open-kookworkshops/        # Open workshop booking (t/m 15 persons)
 │   ├── jullie-ervaringen/        # Google Reviews page
 │   ├── bedankt/                  # Thank-you page after configurator submission
 │   └── checkout/                 # Stripe payment flow
@@ -45,12 +45,12 @@ src/
     └── seed-recipes.ts           # 13 authentic Middle Eastern recipes
 ```
 
-## Total Pages: 98
+## Total Pages: 136
 
 | Type                  | Count | Template                      |
 | --------------------- | ----- | ----------------------------- |
 | Static pages          | 22    | Individual page.tsx files     |
-| City landing pages    | 49    | `(landing)/[slug]/page.tsx`   |
+| City landing pages    | 87    | `(landing)/[slug]/page.tsx`   |
 | Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop` |
 | Recipe pages          | 13    | `recepten/[slug]/page.tsx`    |
 | Utility pages         | 7     | bedankt, checkout/*, error, loading, cookies, privacy, voorwaarden |
@@ -126,7 +126,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 
 ## Key Features
 
-### Open Kookworkshops (/booking)
+### Open Kookworkshops (/open-kookworkshops)
 
 - Max **t/m 15 personen** per booking
 - Price: defined in `src/lib/open-workshops.ts`
@@ -135,7 +135,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 ### Workshop Configurator
 
 - Small group popup (<8 persons) suggests open workshops
-- "Bekijk agenda" button links to `/booking`
+- "Bekijk agenda" button links to `/open-kookworkshops`
 - Located in `src/components/workshop-configurator.tsx`
 - On submit → redirects to `/bedankt` + pushes GA4 purchase event via dataLayer
 
@@ -165,9 +165,18 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - GA4 `purchase` event pushed via `window.dataLayer` on configurator submit → `/bedankt`
 - Conversion tracking on `/bedankt` thank-you page
 
+### Dynamic Pricing on Landing Pages
+
+All prices on the 87 city landing pages are **fetched from the DB** (not hardcoded). The `(landing)/[slug]/page.tsx` Server Component queries `Workshop` + `PriceTier` models via Prisma and renders prices dynamically.
+
+- **Revalidation**: `export const revalidate = 300` (5 minutes)
+- **Fallback**: If DB returns no data, hardcoded fallback values are used
+- **To change prices**: Update `PriceTier` records in DB — all landing pages reflect changes within 5 minutes
+- **Migration scripts**: Use targeted scripts (e.g. `prisma/migrate-stadsspel-tiers.ts`) for production price changes. **Never run `seed-workshops.ts` on production** — it deletes all workshops first.
+
 ## City Landing Pages
 
-49 SEO-optimized landing pages via `src/app/(landing)/[slug]/page.tsx`.
+87 SEO-optimized landing pages via `src/app/(landing)/[slug]/page.tsx`.
 
 **City data source**: `src/lib/city-data.ts` (images & featured/other)
 **Landing page data**: `ALL_LANDING_PAGES` array in `(landing)/[slug]/page.tsx`
@@ -178,12 +187,35 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 | Vegetarisch         | 1     | `vegetarische-kookworkshop-nijmegen`                                                   |
 | Teambuilding        | 2     | `teambuilding-nijmegen`, `teambuilding-arnhem`                                         |
 | Bedrijfsuitje       | 3     | `bedrijfsuitje-nijmegen`, `bedrijfsuitje-arnhem`, `kookworkshop-voor-bedrijven-arnhem` |
-| Stadsspel           | 2     | `stadsspel-nijmegen`, `stadsspel-arnhem`                                               |
+| Stadsspel           | 40    | `stadsspel-[city]` slugs (all kookworkshop cities)                                     |
 | Featured cities     | 13    | Image grid on `/onze-uitjes/kookworkshop`                                              |
 | Other cities        | 27    | Text links below grid                                                                  |
 
 Non-kookworkshop pages use `TypedLandingPage` component with type-specific themes (blue/green/indigo), content, and FAQ.
 All cities have landmark images in `public/images/cities/[slug].jpg`.
+
+### SEO Pattern (Programmatic SEO)
+
+All 87 city landing pages follow the same programmatic SEO pattern established by the kookworkshop pages:
+
+1. **Varied taglines per city** — Each city gets a tagline that ends up in the `<title>` tag (`Stadsspel Nijmegen | Unieke ervaring | Goed Uitje`). Key cities (Nijmegen, Arnhem, Wageningen, etc.) have unique hand-crafted taglines. Other cities use a default from a wider pool. The taglines are **structurally aligned** between kookworkshop and stadsspel for the same city (e.g. kookworkshop-arnhem: "Dé culinaire ervaring" → stadsspel-arnhem: "Dé interactieve speurtocht").
+2. **City-specific hero images** — All 40 cities have landmark images in `public/images/cities/[slug].jpg`, resolved via `getCityImage()` in `src/lib/city-data.ts`.
+3. **City-specific regions** — Special regions like "de Achterhoek", "de regio Nijmegen" are shared between kookworkshop and stadsspel entries for the same city.
+4. **All pages in sitemap** — All kookworkshop and stadsspel city pages are listed in `src/app/sitemap.ts`.
+5. **Dynamic pricing from DB** — Prices are fetched from Prisma, not hardcoded.
+
+**When adding a new city**: Add entries to BOTH `KOOKWORKSHOP_CITIES` and the stadsspel section of `ALL_LANDING_PAGES` in `(landing)/[slug]/page.tsx`, add the city image to `public/images/cities/`, add the city to `src/lib/city-data.ts`, and add both slugs to `src/app/sitemap.ts`.
+
+### Stadsspel Content (Client Feedback 2026-03-21)
+
+Key content decisions for stadsspel pages (from client feedback in `staddspel-pages/Feedback for text stadsspel-pagina's/`):
+
+- **"speurtocht in"** (not "door") — Hero, USPs, meta description, workshop cards all use "in" for stadsspel context
+- **FAQ "Hoe werkt het"** uses "door of in" — The FAQ answer specifically uses "door of in {city}" to reflect flexibility
+- **Flexible location** — "Het stadsspel kan op elke (toegankelijke) plek gespeeld worden" (not locked to city center)
+- **Duration** — "afhankelijk van de opzet van het spel" (not "route en tempo")
+- **Combineren** — Mentions both kookworkshop AND Arabisch buffet as combination options
+- **Pricing** — Synced with main stadsspel page via DB (10-20 pers: €32,50 / 20+: €22,50)
 
 ## Category Pages
 
@@ -219,7 +251,7 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 | File                 | Purpose                                                                 |
 | -------------------- | ----------------------------------------------------------------------- |
 | `src/app/robots.ts`  | Crawl rules + sitemap reference                                         |
-| `src/app/sitemap.ts` | Dynamic sitemap: static pages + DB workshops/recipes + 48 landing pages |
+| `src/app/sitemap.ts` | Dynamic sitemap: static pages + DB workshops/recipes + 87 landing pages |
 | `src/app/layout.tsx` | Organization + WebSite JSON-LD (global)                                 |
 
 ### Per-Page Metadata
@@ -255,10 +287,13 @@ All SEO URLs (sitemap, robots, JSON-LD, OG tags) use `SITE_URL` from `src/lib/si
 
 ### SEO Redirects
 
-10x 301 redirects in `next.config.mjs` for old Wix URLs → new URLs:
+75 old Wix URLs handled via redirect schema (`/Redirect schema/Goeduitje.nl - Redirect schema.xlsx`):
 
-- 7 path changes (e.g. `/contactpagina` → `/contact`, `/kookworkshop` → `/onze-uitjes/kookworkshop`)
-- 3 case-sensitive redirects for old Wix URLs with capitals (e.g. `/teambuilding-Nijmegen` → `/teambuilding-nijmegen`)
+- **17 explicit 301 redirects** in `next.config.mjs` (path changes like `/contactpagina` → `/contact`)
+- **52 same-path URLs** served directly by existing pages/landing pages (no redirect needed)
+- **4 intentionally skipped** (pages exist at old URL: `/feedback`, `/recepten`, `/kookworkshop-voor-bedrijven-arnhem`, `/vegetarische-kookworkshop-nijmegen`)
+- **2 empty destinations** in schema (`/stadsspel-arnhem`, `/stadsspel-nijmegen`) — landing pages exist at those URLs
+- Case-sensitive redirects (e.g. `/teambuilding-Nijmegen`) handled by middleware.ts URL normalization
 
 ## Images
 
@@ -329,6 +364,7 @@ npx tsx prisma/seed-recipes.ts
 - Modify `/components/ui/` (shadcn managed)
 - Skip typecheck before committing
 - Use 21% BTW for food service (use 9%)
+- Run `seed-workshops.ts` on production — it deletes ALL workshops first. Use targeted migration scripts instead (e.g. `prisma/migrate-stadsspel-tiers.ts`)
 - Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
 - Use client-side tRPC `useQuery` for pages that can be Server Components — use Prisma directly in Server Components instead (see onze-medewerkers pattern)
 - Use `StaggerChildren` with CSS `columns` layout — the `useInView` + `opacity: 0` initial state creates a deadlock where the container has no measurable height, so `IntersectionObserver` never fires. Use a plain `<div>` instead for column layouts with dynamic content.

@@ -12,6 +12,7 @@ import {
   Sparkles,
   ChefHat,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Workshops met Sociale Impact | Goeduitje.nl",
@@ -101,7 +102,15 @@ const OTHER_ACTIVITIES = [
   },
 ];
 
-export default function WorkshopsPage() {
+export const revalidate = 300; // Revalidate every 5 minutes
+
+export default async function WorkshopsPage() {
+  // Fetch average Google rating from DB (same source as social-proof-stats)
+  const reviewStats = await prisma.googleReview.aggregate({
+    where: { isVisible: true },
+    _avg: { rating: true },
+  });
+  const avgRating = reviewStats._avg.rating?.toFixed(1) || "4.9";
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
@@ -319,7 +328,7 @@ export default function WorkshopsPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">4.9/5 op Google</span>
+                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
                 </div>
               </div>
             </div>
