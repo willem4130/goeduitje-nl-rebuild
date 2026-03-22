@@ -326,93 +326,112 @@ export default function BookingPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {workshops.map((workshop) => {
-                          const isSelected = selectedWorkshop === workshop.id;
-                          const isLowSeats =
-                            workshop.availableSeats > 0 &&
-                            workshop.availableSeats <= 3;
-                          const isFull = workshop.availableSeats === 0;
+                      <div className="space-y-6">
+                        {(() => {
+                          // Group workshops by month+year
+                          const MONTH_NAMES_FULL: Record<string, string> = {
+                            JAN: "Januari", FEB: "Februari", MRT: "Maart",
+                            APR: "April", MEI: "Mei", JUN: "Juni",
+                            JUL: "Juli", AUG: "Augustus", SEP: "September",
+                            OKT: "Oktober", NOV: "November", DEC: "December",
+                          };
+                          const grouped: { label: string; items: typeof workshops }[] = [];
+                          for (const w of workshops) {
+                            const year = w.date.split("-")[0];
+                            const label = `${MONTH_NAMES_FULL[w.month] ?? w.month} ${year}`;
+                            const existing = grouped.find((g) => g.label === label);
+                            if (existing) {
+                              existing.items.push(w);
+                            } else {
+                              grouped.push({ label, items: [w] });
+                            }
+                          }
+                          return grouped.map((group) => (
+                            <div key={group.label}>
+                              <h3 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+                                {group.label}
+                              </h3>
+                              <div className="space-y-2">
+                                {group.items.map((workshop) => {
+                                  const isSelected = selectedWorkshop === workshop.id;
+                                  const isLowSeats =
+                                    workshop.availableSeats > 0 &&
+                                    workshop.availableSeats <= 3;
+                                  const isFull = workshop.availableSeats === 0;
 
-                          return (
-                            <button
-                              key={workshop.id}
-                              onClick={() =>
-                                !isFull && setSelectedWorkshop(workshop.id)
-                              }
-                              disabled={isFull}
-                              className={cn(
-                                "group relative flex flex-col items-center gap-3 rounded-lg border-2 p-4 text-center transition-all duration-200 hover:shadow-md",
-                                isFull
-                                  ? "cursor-not-allowed border-border bg-muted/50 opacity-60"
-                                  : isSelected
-                                    ? "border-primary bg-primary/5 shadow-md"
-                                    : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
-                              )}
-                            >
-                              {/* Selected Indicator */}
-                              {isSelected && !isFull && (
-                                <div className="absolute top-2 right-2">
-                                  <div className="bg-primary flex size-6 items-center justify-center rounded-full">
-                                    <IconCheck className="text-primary-foreground size-4" />
-                                  </div>
-                                </div>
-                              )}
+                                  return (
+                                    <button
+                                      key={workshop.id}
+                                      onClick={() =>
+                                        !isFull && setSelectedWorkshop(workshop.id)
+                                      }
+                                      disabled={isFull}
+                                      className={cn(
+                                        "flex w-full items-center gap-4 rounded-lg border-2 px-4 py-3 text-left transition-all duration-200",
+                                        isFull
+                                          ? "cursor-not-allowed border-border bg-muted/50 opacity-60"
+                                          : isSelected
+                                            ? "border-primary bg-primary/5 shadow-sm"
+                                            : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
+                                      )}
+                                    >
+                                      {/* Radio indicator */}
+                                      <div
+                                        className={cn(
+                                          "flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                                          isFull
+                                            ? "border-muted-foreground/30"
+                                            : isSelected
+                                              ? "border-primary bg-primary"
+                                              : "border-muted-foreground/40"
+                                        )}
+                                      >
+                                        {isSelected && !isFull && (
+                                          <IconCheck className="text-primary-foreground size-3" />
+                                        )}
+                                      </div>
 
-                              {/* Full Badge */}
-                              {isFull && (
-                                <Badge
-                                  variant="destructive"
-                                  className="absolute top-2 right-2 text-xs"
-                                >
-                                  Vol
-                                </Badge>
-                              )}
+                                      {/* Date + time */}
+                                      <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                                        <div className="flex items-baseline gap-2">
+                                          <span
+                                            className={cn(
+                                              "text-sm font-semibold",
+                                              isFull
+                                                ? "text-muted-foreground"
+                                                : isSelected
+                                                  ? "text-primary"
+                                                  : "text-foreground"
+                                            )}
+                                          >
+                                            {workshop.dateDisplay} {workshop.date.split("-")[0]}
+                                          </span>
+                                          <span className="text-muted-foreground text-sm">
+                                            {workshop.time}
+                                          </span>
+                                        </div>
 
-                              {/* Date Display */}
-                              <div className="flex flex-col">
-                                <span className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
-                                  {workshop.month}
-                                </span>
-                                <span
-                                  className={cn(
-                                    "text-3xl font-bold tracking-tight",
-                                    isSelected && !isFull
-                                      ? "text-primary"
-                                      : "text-foreground"
-                                  )}
-                                >
-                                  {workshop.dayNumber}
-                                </span>
-                                <span className="text-muted-foreground text-sm font-medium">
-                                  {workshop.dayName}
-                                </span>
+                                        {/* Status badges */}
+                                        <div className="flex shrink-0 items-center gap-2">
+                                          {isFull && (
+                                            <Badge variant="destructive" className="text-xs">
+                                              Vol
+                                            </Badge>
+                                          )}
+                                          {isLowSeats && (
+                                            <Badge variant="secondary" className="text-xs">
+                                              Nog {workshop.availableSeats} plekken
+                                            </Badge>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
                               </div>
-
-                              {/* Time */}
-                              <div
-                                className={cn(
-                                  "text-sm font-medium",
-                                  isSelected && !isFull
-                                    ? "text-primary"
-                                    : "text-muted-foreground"
-                                )}
-                              >
-                                {workshop.time}
-                              </div>
-
-                              {/* Availability Badge */}
-                              {isLowSeats && (
-                                <Badge
-                                  variant="secondary"
-                                  className="absolute bottom-2 left-2 text-xs"
-                                >
-                                  Nog {workshop.availableSeats} plekken
-                                </Badge>
-                              )}
-                            </button>
-                          );
-                        })}
+                            </div>
+                          ));
+                        })()}
                       </div>
                     )}
                   </CardContent>
