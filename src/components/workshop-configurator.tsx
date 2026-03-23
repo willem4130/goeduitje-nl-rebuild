@@ -261,6 +261,16 @@ export function WorkshopConfigurator() {
         selectedVariants: Object.keys(selectedVariants).some((k) => selectedVariants[k].length > 0) ? selectedVariants : undefined,
       });
 
+      // Build human-readable workshops list with variant info
+      const workshopsDisplay = data.workshops.map((id) => {
+        const name = workshops.find((w) => w.id === id)?.name || id;
+        const variants = selectedVariants[id] ?? [];
+        const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
+        if (realVariants.length > 0) return `${name} (${realVariants.join(", ")})`;
+        if (variants.includes("Nog niet gekozen")) return `${name} (variant nog niet gekozen)`;
+        return name;
+      });
+
       await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -274,6 +284,7 @@ export function WorkshopConfigurator() {
             name: data.name,
             workshopId: workshopConfig.id,
             workshops: data.workshops,
+            workshopsDisplay: workshopsDisplay.join(", "),
             participantCount: data.participantCount,
             location:
               data.location === "other" ? data.customCity : data.location,
@@ -332,8 +343,8 @@ export function WorkshopConfigurator() {
       if (data.name) thankYouParams.set("name", data.name);
       if (data.participantCount)
         thankYouParams.set("personen", String(data.participantCount));
-      if (data.workshops?.length)
-        thankYouParams.set("workshops", data.workshops.join(", "));
+      if (workshopsDisplay.length > 0)
+        thankYouParams.set("workshops", workshopsDisplay.join(", "));
       router.push(`/bedankt?${thankYouParams.toString()}`);
     } catch (error) {
       console.error("Workshop configuration error:", error);

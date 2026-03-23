@@ -41,7 +41,7 @@ export default async function BedanktPage({
           <p className="text-muted-foreground mb-2 text-base">
             {workshops && (
               <>
-                Workshop:{" "}
+                Uitjes:{" "}
                 <span className="text-foreground font-medium">{workshops}</span>
               </>
             )}

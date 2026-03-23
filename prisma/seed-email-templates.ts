@@ -11,6 +11,7 @@ const templates = [
       "{name}",
       "{workshopId}",
       "{workshops}",
+      "{workshopsDisplay}",
       "{participantCount}",
       "{location}",
       "{date}",
@@ -27,7 +28,7 @@ const templates = [
 <hr style="border-color:#e6ebf1;margin:20px 0;" />
 <h2 style="font-size:20px;font-weight:600;color:#484848;">Configuratie Details:</h2>
 <p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Aantal deelnemers:</strong> {participantCount} personen</p>
-<p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Geselecteerde uitjes:</strong> {workshops}</p>
+<p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Geselecteerde uitjes:</strong> {workshopsDisplay}</p>
 <p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Locatie:</strong> {location}</p>
 <p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Datum:</strong> {date}</p>
 <p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Aanvangsttijd:</strong> {time}</p>
