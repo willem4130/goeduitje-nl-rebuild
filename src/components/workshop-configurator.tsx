@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -56,11 +56,6 @@ import {
   workshopConfigSchema,
   type WorkshopConfigValues,
 } from "@/lib/validations/forms";
-import {
-  WORKSHOPS,
-  getWorkshopPrice,
-  calculateEstimatedPrice,
-} from "@/lib/constants/cities";
 import { api } from "@/trpc/client";
 import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
 
@@ -93,6 +88,8 @@ export function WorkshopConfigurator() {
   const createWorkshop = api.workshop.create.useMutation();
   const { data: upcomingWorkshops = [] } =
     api.openSessions.getUpcoming.useQuery();
+  const { data: dbWorkshops, isLoading: workshopsLoading } =
+    api.workshop.list.useQuery();
 
   const form = useForm({
     resolver: zodResolver(workshopConfigSchema),
@@ -122,11 +119,28 @@ export function WorkshopConfigurator() {
   const dateTbd = form.watch("dateTbd");
   const timeTbd = form.watch("timeTbd");
 
+  // Derive workshop list for the configurator from DB data
+  const workshops = useMemo(() => {
+    if (!dbWorkshops) return [];
+    return dbWorkshops.map((w) => ({
+      id: w.slug,
+      name: w.title,
+      minParticipants: w.minParticipants ?? 1,
+      maxParticipants: w.maxParticipants ?? null,
+      priceTiers: w.priceTiers.map((t) => ({
+        minParticipants: t.minParticipants ?? 0,
+        maxParticipants: t.maxParticipants ?? null,
+        priceExclBtw: t.priceExclBtw,
+        priceInclBtw: t.priceInclBtw,
+      })),
+    }));
+  }, [dbWorkshops]);
+
   // Filter out workshops that don't meet participant requirements
   useEffect(() => {
-    if (participantCount && selectedWorkshops.length > 0) {
+    if (participantCount && selectedWorkshops.length > 0 && workshops.length > 0) {
       const validWorkshops = selectedWorkshops.filter((workshopId) => {
-        const workshop = WORKSHOPS.find((w) => w.id === workshopId);
+        const workshop = workshops.find((w) => w.id === workshopId);
         return workshop && participantCount >= workshop.minParticipants;
       });
 
@@ -138,7 +152,7 @@ export function WorkshopConfigurator() {
         });
       }
     }
-  }, [participantCount, selectedWorkshops, form]);
+  }, [participantCount, selectedWorkshops, form, workshops]);
 
   // Clear date/time when TBD is checked
   useEffect(() => {
@@ -250,7 +264,8 @@ export function WorkshopConfigurator() {
       });
 
       // Push GA4 ecommerce purchase event to dataLayer
-      const estimatedPrice = calculateEstimatedPrice(
+      const estimatedPrice = calculateEstimatedPriceFromList(
+        workshops,
         data.workshops,
         data.participantCount
       );
@@ -263,8 +278,12 @@ export function WorkshopConfigurator() {
           value: estimatedPrice,
           currency: "EUR",
           items: data.workshops.map((workshopId) => {
-            const workshop = WORKSHOPS.find((w) => w.id === workshopId);
-            const tier = getWorkshopPrice(workshopId, data.participantCount);
+            const workshop = workshops.find((w) => w.id === workshopId);
+            const tier = getWorkshopPriceFromList(
+              workshops,
+              workshopId,
+              data.participantCount
+            );
             return {
               item_id: workshopId,
               item_name: workshop?.name || workshopId,
@@ -301,10 +320,43 @@ export function WorkshopConfigurator() {
   }
 
   const isWorkshopAvailable = (workshopId: string) => {
-    const workshop = WORKSHOPS.find((w) => w.id === workshopId);
+    const workshop = workshops.find((w) => w.id === workshopId);
     if (!workshop) return false;
     return participantCount >= workshop.minParticipants;
   };
+
+  function getWorkshopPriceFromList(
+    workshopList: typeof workshops,
+    workshopId: string,
+    participantCount: number
+  ) {
+    const workshop = workshopList.find((w) => w.id === workshopId);
+    if (!workshop) return null;
+    const tier = workshop.priceTiers.find(
+      (t) =>
+        participantCount >= t.minParticipants &&
+        (t.maxParticipants === null || participantCount <= t.maxParticipants)
+    );
+    return tier || workshop.priceTiers[workshop.priceTiers.length - 1] || null;
+  }
+
+  function calculateEstimatedPriceFromList(
+    workshopList: typeof workshops,
+    workshopIds: string[],
+    participantCount: number,
+    includeVat = false
+  ): number {
+    let total = 0;
+    for (const id of workshopIds) {
+      const tier = getWorkshopPriceFromList(workshopList, id, participantCount);
+      if (tier) {
+        total +=
+          (includeVat ? tier.priceInclBtw : tier.priceExclBtw) *
+          participantCount;
+      }
+    }
+    return total;
+  }
 
   return (
     <>
@@ -529,7 +581,11 @@ export function WorkshopConfigurator() {
                                   : "Selecteer één of meerdere uitjes"}
                               </FormDescription>
                               <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                                {WORKSHOPS.map((workshop) => {
+                                {workshopsLoading ? (
+                                  <div className="col-span-full flex items-center justify-center py-4">
+                                    <IconLoader2 className="size-5 animate-spin text-muted-foreground" />
+                                  </div>
+                                ) : workshops.map((workshop) => {
                                   const available = isWorkshopAvailable(
                                     workshop.id
                                   );
@@ -900,7 +956,7 @@ export function WorkshopConfigurator() {
                                 ? selectedWorkshops
                                     .map(
                                       (id) =>
-                                        WORKSHOPS.find((w) => w.id === id)?.name
+                                        workshops.find((w) => w.id === id)?.name
                                     )
                                     .join(", ")
                                 : "Geen"}
@@ -922,10 +978,11 @@ export function WorkshopConfigurator() {
                                 </h4>
                                 <div className="space-y-1 text-sm">
                                   {selectedWorkshops.map((workshopId) => {
-                                    const workshop = WORKSHOPS.find(
+                                    const workshop = workshops.find(
                                       (w) => w.id === workshopId
                                     );
-                                    const tier = getWorkshopPrice(
+                                    const tier = getWorkshopPriceFromList(
+                                      workshops,
                                       workshopId,
                                       participantCount
                                     );
@@ -950,7 +1007,8 @@ export function WorkshopConfigurator() {
                                     </span>
                                     <span className="text-primary">
                                       €
-                                      {calculateEstimatedPrice(
+                                      {calculateEstimatedPriceFromList(
+                                        workshops,
                                         selectedWorkshops,
                                         participantCount
                                       ).toFixed(2)}{" "}

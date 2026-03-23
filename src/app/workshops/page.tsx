@@ -39,72 +39,33 @@ export const metadata: Metadata = {
   },
 };
 
-const WORKSHOPS = [
-  {
-    title: "Kookworkshop",
-    slug: "kookworkshop",
-    description:
-      "Onze populairste workshop: leer authentieke Arabische gerechten bereiden onder begeleiding van gepassioneerde koks. Kies uit Arabische, vegetarische of oogst-kookworkshop.",
-    image: "/images/workshops/kookworkshop.jpg",
-    price: "vanaf \u20ac55 p.p.",
-    duration: "vanaf 2,5 uur",
-    groupSize: "vanaf 8 personen",
-    highlight: true,
-  },
-  {
-    title: "Koffie & Thee Workshop",
-    slug: "koffie-thee-workshop",
-    description:
-      "Ontdek de kunst van Arabische koffie en thee. Experimenteer met kruiden en specerijen en geniet van Arabische lekkernijen.",
-    image: "/images/workshops/koffie-thee.jpg",
-    price: "vanaf \u20ac32,50 p.p.",
-    duration: "in overleg",
-    groupSize: "8-25 personen",
-    highlight: false,
-  },
-  {
-    title: "Beachvolleybal Workshop",
-    slug: "beachvolleybal-workshop",
-    description:
-      "Sportieve workshop onder leiding van gecertificeerde beachvolleybaltrainers. Van clinic tot toernooi, voor ieder niveau.",
-    image: "/images/workshops/beachvolleybal.jpg",
-    price: "vanaf \u20ac25 p.p.",
-    duration: "2-4 uur",
-    groupSize: "12-40 personen",
-    highlight: false,
-  },
-];
-
-const OTHER_ACTIVITIES = [
-  {
-    title: "Stadsspel / Citygame",
-    slug: "stadsspel",
-    description:
-      "Interactieve speurtocht door de stad met culturele uitdagingen.",
-    image: "/images/workshops/stadsspel.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-  },
-  {
-    title: "The Game - Koffer Challenge",
-    slug: "the-game",
-    description:
-      "Team up and crack it! Zoek samen de code om de koffer te openen.",
-    image: "/images/workshops/the-game.jpg",
-    price: "vanaf \u20ac32,50 p.p.",
-  },
-  {
-    title: "Lunch & Diner Uitjes",
-    slug: "lunch-diner",
-    description:
-      "Geniet van een unieke Arabische lunch of diner bereid door onze koks.",
-    image: "/images/workshops/lunch-diner.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-  },
-];
+function formatLowestPrice(
+  priceTiers: { priceExclBtw: number }[]
+): string {
+  if (priceTiers.length === 0) return "Op aanvraag";
+  const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
+  return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
+}
 
 export const revalidate = 300; // Revalidate every 5 minutes
 
 export default async function WorkshopsPage() {
+  // Fetch all published workshops from DB
+  const allWorkshops = await prisma.workshop.findMany({
+    where: { isPublished: true },
+    include: {
+      priceTiers: {
+        where: { variantId: null },
+        orderBy: { sortOrder: "asc" },
+      },
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+
+  // Split into featured (first 3) and other activities
+  const featuredWorkshops = allWorkshops.slice(0, 3);
+  const otherActivities = allWorkshops.slice(3);
+
   // Fetch average Google rating from DB (same source as social-proof-stats)
   const reviewStats = await prisma.googleReview.aggregate({
     where: { isVisible: true },
@@ -168,7 +129,7 @@ export default async function WorkshopsPage() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">
-            {WORKSHOPS.map((workshop) => (
+            {featuredWorkshops.map((workshop, index) => (
               <Link
                 key={workshop.slug}
                 href={
@@ -177,27 +138,29 @@ export default async function WorkshopsPage() {
                     : `/onze-uitjes/${workshop.slug}`
                 }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
-                  workshop.highlight
+                  index === 0
                     ? "ring-2 ring-amber-500 ring-offset-2"
                     : ""
                 }`}
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={workshop.image}
-                    alt={workshop.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  {workshop.highlight && (
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-amber-600 text-white">
-                        <ChefHat className="mr-1 h-3 w-3" />
-                        Populairst
-                      </Badge>
-                    </div>
-                  )}
-                </div>
+                {workshop.image && (
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={workshop.image}
+                      alt={workshop.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {index === 0 && (
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-amber-600 text-white">
+                          <ChefHat className="mr-1 h-3 w-3" />
+                          Populairst
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="p-6">
                   <h3 className="mb-2 text-xl font-bold group-hover:text-amber-600">
                     {workshop.title}
@@ -207,7 +170,7 @@ export default async function WorkshopsPage() {
                   </p>
                   <div className="flex flex-wrap gap-4 text-sm">
                     <span className="font-semibold text-amber-600">
-                      {workshop.price}
+                      {formatLowestPrice(workshop.priceTiers)}
                     </span>
                     <span className="text-muted-foreground">
                       {workshop.duration}
@@ -237,20 +200,26 @@ export default async function WorkshopsPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
-            {OTHER_ACTIVITIES.map((activity) => (
+            {otherActivities.map((activity) => (
               <Link
                 key={activity.slug}
-                href={`/onze-uitjes/${activity.slug}`}
+                href={
+                  activity.slug === "kookworkshop"
+                    ? "/kookworkshop"
+                    : `/onze-uitjes/${activity.slug}`
+                }
                 className="group flex gap-4 rounded-xl border bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
               >
-                <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
-                  <Image
-                    src={activity.image}
-                    alt={activity.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
+                {activity.image && (
+                  <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg">
+                    <Image
+                      src={activity.image}
+                      alt={activity.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-col justify-center">
                   <h3 className="mb-1 font-bold group-hover:text-amber-600">
                     {activity.title}
@@ -259,7 +228,7 @@ export default async function WorkshopsPage() {
                     {activity.description}
                   </p>
                   <span className="text-sm font-semibold text-amber-600">
-                    {activity.price}
+                    {formatLowestPrice(activity.priceTiers)}
                   </span>
                 </div>
               </Link>

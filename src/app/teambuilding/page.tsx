@@ -39,67 +39,29 @@ export const metadata: Metadata = {
   },
 };
 
-const TEAMBUILDING_WORKSHOPS = [
-  {
-    title: "Kookworkshop",
-    slug: "kookworkshop",
-    description:
-      "Samen koken onder begeleiding van gepassioneerde Arabische koks. Leer authentieke gerechten bereiden en geniet samen van het resultaat.",
-    image: "/images/workshops/kookworkshop.jpg",
-    price: "vanaf \u20ac55 p.p.",
-    duration: "vanaf 2,5 uur",
-    groupSize: "vanaf 8 personen",
-    categories: ["Koken", "Cultureel"],
-  },
-  {
-    title: "Stadsspel / Citygame",
-    slug: "stadsspel",
-    description:
-      "Een interactieve speurtocht door de stad met culturele uitdagingen en verrassende ontmoetingen met statushouders.",
-    image: "/images/workshops/stadsspel.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    categories: ["Outdoor", "Cultureel"],
-  },
-  {
-    title: "The Game - Koffer Challenge",
-    slug: "the-game",
-    description:
-      "Team up and crack it! Zoek samen de code om de koffer te openen. Vereist afstemming, communicatie en samenwerking.",
-    image: "/images/workshops/the-game.jpg",
-    price: "vanaf \u20ac32,50 p.p.",
-    duration: "2-3 uur",
-    groupSize: "10-20 personen",
-    categories: ["Indoor", "Cultureel"],
-  },
-  {
-    title: "Beachvolleybal Workshop",
-    slug: "beachvolleybal-workshop",
-    description:
-      "Actieve teambuilding onder leiding van gecertificeerde trainers. Clinic, toernooi of combinatie van beide.",
-    image: "/images/workshops/beachvolleybal.jpg",
-    price: "vanaf \u20ac25 p.p.",
-    duration: "2-4 uur",
-    groupSize: "12-40 personen",
-    categories: ["Outdoor", "Sport"],
-  },
-  {
-    title: "Lunch & Diner Uitjes",
-    slug: "lunch-diner",
-    description:
-      "Geniet van een unieke Arabische lunch of diner, bereid door statushouders. Van buffet tot uitgebreid meergangen diner.",
-    image: "/images/workshops/lunch-diner.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-    duration: "1-4 uur",
-    groupSize: "vanaf 8 personen",
-    categories: ["Culinair", "Cultureel"],
-  },
-];
+function formatLowestPrice(
+  priceTiers: { priceExclBtw: number }[]
+): string {
+  if (priceTiers.length === 0) return "Op aanvraag";
+  const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
+  return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
+}
 
 export const revalidate = 300; // Revalidate every 5 minutes
 
 export default async function TeambuildingPage() {
+  // Fetch workshops from DB filtered by teambuilding category
+  const dbWorkshops = await prisma.workshop.findMany({
+    where: { isPublished: true },
+    include: {
+      priceTiers: {
+        where: { variantId: null },
+        orderBy: { sortOrder: "asc" },
+      },
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+
   // Fetch average Google rating from DB (same source as social-proof-stats)
   const reviewStats = await prisma.googleReview.aggregate({
     where: { isVisible: true },
@@ -192,7 +154,7 @@ export default async function TeambuildingPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {TEAMBUILDING_WORKSHOPS.map((workshop) => (
+            {dbWorkshops.map((workshop) => (
               <Link
                 key={workshop.slug}
                 href={
@@ -202,24 +164,26 @@ export default async function TeambuildingPage() {
                 }
                 className="group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={workshop.image}
-                    alt={workshop.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {workshop.categories.map((cat) => (
-                      <Badge
-                        key={cat}
-                        className="bg-white/90 text-gray-800 backdrop-blur-sm"
-                      >
-                        {cat}
-                      </Badge>
-                    ))}
+                {workshop.image && (
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={workshop.image}
+                      alt={workshop.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      {workshop.categories.map((cat) => (
+                        <Badge
+                          key={cat}
+                          className="bg-white/90 text-gray-800 backdrop-blur-sm"
+                        >
+                          {cat}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="p-6">
                   <h3 className="mb-2 text-xl font-bold group-hover:text-blue-600">
                     {workshop.title}
@@ -229,7 +193,7 @@ export default async function TeambuildingPage() {
                   </p>
                   <div className="flex flex-wrap gap-4 text-sm">
                     <span className="font-semibold text-blue-600">
-                      {workshop.price}
+                      {formatLowestPrice(workshop.priceTiers)}
                     </span>
                     <span className="text-muted-foreground">
                       {workshop.duration}

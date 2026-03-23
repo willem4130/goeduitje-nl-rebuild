@@ -206,6 +206,8 @@ model Workshop {
   includes        String[]
   isPublished     Boolean           @default(true)
   sortOrder       Int               @default(0)
+  minParticipants Int?
+  maxParticipants Int?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   priceTiers      PriceTier[]

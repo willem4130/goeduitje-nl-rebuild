@@ -37,6 +37,8 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, V
         "Sociale impact - draag bij aan arbeidsparticipatie",
       ],
       sortOrder: 1,
+      minParticipants: 8,
+      maxParticipants: null,
     },
   });
 
@@ -289,6 +291,8 @@ Perfect voor teams die op zoek zijn naar een actieve, culturele en vooral leuke 
         "Sociale impact - ontmoet statushouders",
       ],
       sortOrder: 2,
+      minParticipants: 10,
+      maxParticipants: null,
     },
   });
 
@@ -354,6 +358,8 @@ terwijl jullie samen de puzzel oplossen.`,
         "Sociale impact - werk samen met statushouders",
       ],
       sortOrder: 3,
+      minParticipants: 10,
+      maxParticipants: 20,
     },
   });
 
@@ -400,6 +406,8 @@ uit de Arabische keuken.`,
         "Optioneel: maaltijd uit de Arabische keuken",
       ],
       sortOrder: 4,
+      minParticipants: 8,
+      maxParticipants: 25,
     },
   });
 
@@ -447,6 +455,8 @@ creëer je herinneringen die je team nog lang zal bijblijven.`,
         "Optioneel: drankjes en hapjes",
       ],
       sortOrder: 5,
+      minParticipants: 12,
+      maxParticipants: 40,
     },
   });
 
@@ -489,6 +499,8 @@ een kookworkshop met diner voor de complete ervaring.`,
         "Sociale impact - werk met statushouders",
       ],
       sortOrder: 6,
+      minParticipants: 8,
+      maxParticipants: 100,
     },
   });
 

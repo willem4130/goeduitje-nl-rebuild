@@ -49,10 +49,16 @@ async function getWorkshopsWithPricing(): Promise<WorkshopWithPricing[]> {
   });
 }
 
-function formatEuro(amount: number): string {
+function formatEuro(amount: number | null): string {
+  if (amount === null) return "Op aanvraag";
   return amount % 1 === 0
     ? `€${amount}`
     : `€${amount.toFixed(2).replace(".", ",")}`;
+}
+
+function formatPrice(price: number | null): string {
+  if (price === null) return "Op aanvraag";
+  return `Vanaf ${formatEuro(price)} p.p.`;
 }
 
 function getLowestPriceFromWorkshop(workshop: WorkshopWithPricing): number {
@@ -920,7 +926,7 @@ export default async function LandingPage({ params }: Props) {
   const kookPriceTiers = arabischeVariant?.priceTiers ?? [];
   const kookLowestPrice = kookworkshop
     ? getLowestPriceFromWorkshop(kookworkshop)
-    : 55;
+    : null;
 
   const isVegetarian = landing.isVegetarian;
   const workshopType = isVegetarian
@@ -1036,7 +1042,7 @@ export default async function LandingPage({ params }: Props) {
               <div>
                 <p className="text-sm text-gray-500">Prijs</p>
                 <p className="text-lg font-bold text-gray-900">
-                  Vanaf {formatEuro(kookLowestPrice)} p.p.
+                  {formatPrice(kookLowestPrice)}
                 </p>
                 <p className="text-xs text-gray-500">excl. btw</p>
               </div>
@@ -1701,13 +1707,20 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
   const koffieWs = workshops.find((w) => w.slug === "koffie-thee-workshop");
   const kookWs = workshops.find((w) => w.slug === "kookworkshop");
 
-  const stadsspelLowest = stadsspelWs ? getLowestPriceFromWorkshop(stadsspelWs) : 22.5;
-  const theGameLowest = theGameWs ? getLowestPriceFromWorkshop(theGameWs) : 32.5;
-  const koffieLowest = koffieWs ? getLowestPriceFromWorkshop(koffieWs) : 32.5;
-  const kookLowest = kookWs ? getLowestPriceFromWorkshop(kookWs) : 55;
+  const stadsspelLowest = stadsspelWs ? getLowestPriceFromWorkshop(stadsspelWs) : null;
+  const theGameLowest = theGameWs ? getLowestPriceFromWorkshop(theGameWs) : null;
+  const koffieLowest = koffieWs ? getLowestPriceFromWorkshop(koffieWs) : null;
+  const kookLowest = kookWs ? getLowestPriceFromWorkshop(kookWs) : null;
+
+  // Incl BTW prices
+  const stadsspelLowestIncl = stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : null;
+  const theGameLowestIncl = theGameWs ? getLowestInclFromWorkshop(theGameWs) : null;
+  const koffieLowestIncl = koffieWs ? getLowestInclFromWorkshop(koffieWs) : null;
+  const kookLowestIncl = kookWs ? getLowestInclFromWorkshop(kookWs) : null;
 
   // Overall lowest for teambuilding/bedrijfsuitje
-  const overallLowest = Math.min(stadsspelLowest, theGameLowest, koffieLowest, kookLowest);
+  const allPrices = [stadsspelLowest, theGameLowest, koffieLowest, kookLowest].filter((p): p is number => p !== null);
+  const overallLowest = allPrices.length > 0 ? Math.min(...allPrices) : null;
 
   const heroDescriptions: Record<
     Exclude<LandingType, "kookworkshop">,
@@ -1791,7 +1804,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
       },
       {
         q: "Wat kost een bedrijfsuitje bij Goeduitje?",
-        a: `De prijzen variëren per activiteit. Een kookworkshop begint vanaf ${formatEuro(kookLowest)} p.p., een stadsspel vanaf ${formatEuro(stadsspelLowest)} p.p. en een koffie & thee workshop vanaf ${formatEuro(koffieLowest)} p.p. Neem contact op voor een offerte op maat.`,
+        a: `De prijzen variëren per activiteit. Een kookworkshop begint ${kookLowest !== null ? `vanaf ${formatEuro(kookLowest)} p.p.` : "op aanvraag"}, een stadsspel ${stadsspelLowest !== null ? `vanaf ${formatEuro(stadsspelLowest)} p.p.` : "op aanvraag"} en een koffie & thee workshop ${koffieLowest !== null ? `vanaf ${formatEuro(koffieLowest)} p.p.` : "op aanvraag"}. Neem contact op voor een offerte op maat.`,
       },
     ],
     stadsspel: [
@@ -1819,21 +1832,21 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     { price: string; duration: string; groupSize: string; groupNote: string }
   > = {
     teambuilding: {
-      price: `Vanaf ${formatEuro(overallLowest)} p.p.`,
-      duration: "2-3 uur",
-      groupSize: "Vanaf 8 personen",
+      price: formatPrice(overallLowest),
+      duration: stadsspelWs?.duration ?? "2-3 uur",
+      groupSize: stadsspelWs?.groupSize ?? "Vanaf 8 personen",
       groupNote: "ook grotere groepen",
     },
     bedrijfsuitje: {
-      price: `Vanaf ${formatEuro(overallLowest)} p.p.`,
-      duration: "2-3 uur",
-      groupSize: "Vanaf 8 personen",
+      price: formatPrice(overallLowest),
+      duration: stadsspelWs?.duration ?? "2-3 uur",
+      groupSize: stadsspelWs?.groupSize ?? "Vanaf 8 personen",
       groupNote: "ook grotere groepen",
     },
     stadsspel: {
-      price: `Vanaf ${formatEuro(stadsspelLowest)} p.p.`,
-      duration: "2-3 uur",
-      groupSize: "10-50 personen",
+      price: formatPrice(stadsspelLowest),
+      duration: stadsspelWs?.duration ?? "2-3 uur",
+      groupSize: stadsspelWs?.groupSize ?? "10-50 personen",
       groupNote: "grotere groepen op aanvraag",
     },
   };
@@ -1854,21 +1867,21 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     teambuilding: {
       title: "Tarieven teambuilding activiteiten",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : 27.23) },
+        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelLowestIncl) },
         {
           label: "The Game - Koffer Challenge",
           exclBtw: formatEuro(theGameLowest),
-          inclBtw: formatEuro(theGameWs ? getLowestInclFromWorkshop(theGameWs) : 39),
+          inclBtw: formatEuro(theGameLowestIncl),
         },
         {
           label: "Koffie & Thee Workshop",
           exclBtw: formatEuro(koffieLowest),
-          inclBtw: formatEuro(koffieWs ? getLowestInclFromWorkshop(koffieWs) : 39),
+          inclBtw: formatEuro(koffieLowestIncl),
         },
         {
           label: "Kookworkshop (16+ pers.)",
           exclBtw: formatEuro(kookLowest),
-          inclBtw: formatEuro(kookWs ? getLowestInclFromWorkshop(kookWs) : 67),
+          inclBtw: formatEuro(kookLowestIncl),
           highlight: true,
         },
       ],
@@ -1877,21 +1890,21 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     bedrijfsuitje: {
       title: "Tarieven bedrijfsuitjes",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : 27.23) },
+        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelLowestIncl) },
         {
           label: "The Game - Koffer Challenge",
           exclBtw: formatEuro(theGameLowest),
-          inclBtw: formatEuro(theGameWs ? getLowestInclFromWorkshop(theGameWs) : 39),
+          inclBtw: formatEuro(theGameLowestIncl),
         },
         {
           label: "Koffie & Thee Workshop",
           exclBtw: formatEuro(koffieLowest),
-          inclBtw: formatEuro(koffieWs ? getLowestInclFromWorkshop(koffieWs) : 39),
+          inclBtw: formatEuro(koffieLowestIncl),
         },
         {
           label: "Kookworkshop (16+ pers.)",
           exclBtw: formatEuro(kookLowest),
-          inclBtw: formatEuro(kookWs ? getLowestInclFromWorkshop(kookWs) : 67),
+          inclBtw: formatEuro(kookLowestIncl),
           highlight: true,
         },
       ],
@@ -1907,9 +1920,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
             highlight: index === stadsspelWs.priceTiers.length - 1,
           }))
         : [
-            { label: "10-15 personen", exclBtw: "€27,50", inclBtw: "€33,28" },
-            { label: "16-25 personen", exclBtw: "€25", inclBtw: "€30,25" },
-            { label: "26+ personen", exclBtw: "€22,50", inclBtw: "€27,23", highlight: true },
+            { label: "Op aanvraag", exclBtw: "Op aanvraag", inclBtw: "Op aanvraag" },
           ],
       note: "Prijzen zijn per persoon. Het stadsspel kan ook gecombineerd worden met een kookworkshop.",
     },

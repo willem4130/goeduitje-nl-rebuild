@@ -40,82 +40,29 @@ export const metadata: Metadata = {
   },
 };
 
-const BEDRIJFSUITJE_WORKSHOPS = [
-  {
-    title: "Kookworkshop",
-    slug: "kookworkshop",
-    description:
-      "Het populairste bedrijfsuitje: samen koken onder begeleiding van Arabische koks. Kies uit Arabische, vegetarische of oogst-kookworkshops.",
-    image: "/images/workshops/kookworkshop.jpg",
-    price: "vanaf \u20ac55 p.p.",
-    duration: "vanaf 2,5 uur",
-    highlight: true,
-  },
-  {
-    title: "Stadsspel / Citygame",
-    slug: "stadsspel",
-    description:
-      "Ontdek de stad met je collega\u2019s via een interactieve speurtocht vol culturele uitdagingen en verrassende ontmoetingen.",
-    image: "/images/workshops/stadsspel.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-    duration: "2-3 uur",
-    highlight: false,
-  },
-  {
-    title: "The Game - Koffer Challenge",
-    slug: "the-game",
-    description:
-      "Teamwork op de proef gesteld: zoek samen de code om de koffer te openen. Perfecte test voor communicatie en samenwerking.",
-    image: "/images/workshops/the-game.jpg",
-    price: "vanaf \u20ac32,50 p.p.",
-    duration: "2-3 uur",
-    highlight: false,
-  },
-  {
-    title: "Koffie & Thee Workshop",
-    slug: "koffie-thee-workshop",
-    description:
-      "Ontdek de kunst van Arabische koffie en thee. Experimenteer met kruiden en specerijen onder begeleiding van onze medewerkers.",
-    image: "/images/workshops/koffie-thee.jpg",
-    price: "vanaf \u20ac32,50 p.p.",
-    duration: "in overleg",
-    highlight: false,
-  },
-  {
-    title: "Beachvolleybal Workshop",
-    slug: "beachvolleybal-workshop",
-    description:
-      "Sportief bedrijfsuitje met gecertificeerde trainers. Van clinic tot toernooi, voor beginners \u00e9n gevorderden.",
-    image: "/images/workshops/beachvolleybal.jpg",
-    price: "vanaf \u20ac25 p.p.",
-    duration: "2-4 uur",
-    highlight: false,
-  },
-  {
-    title: "Lunch & Diner Uitjes",
-    slug: "lunch-diner",
-    description:
-      "Culinaire beleving voor je team: van Arabisch buffet tot uitgebreid meergangen diner. Ook te combineren met een kookworkshop.",
-    image: "/images/workshops/lunch-diner.jpg",
-    price: "vanaf \u20ac22,50 p.p.",
-    duration: "1-4 uur",
-    highlight: false,
-  },
-  {
-    title: "Bouw of Bak Battle",
-    slug: "bouw-of-bak-battle",
-    description:
-      "Bouw samen huisjes of maak snacks in een spannende teambuildingsbattle. Verbeter elke ronde jullie strijdplan en verover de eerste plek!",
-    image: "/images/workshops/bouw-of-bak-battle.jpeg",
-    price: "vanaf €25 p.p.",
-    duration: "2-6 uur",
-    highlight: false,
-  },
-];
+function formatLowestPrice(
+  priceTiers: { priceExclBtw: number }[]
+): string {
+  if (priceTiers.length === 0) return "Op aanvraag";
+  const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
+  return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
+}
 
 export const revalidate = 300; // Revalidate every 5 minutes
 
 export default async function BedrijfsuitjesPage() {
+  // Fetch workshops from DB
+  const dbWorkshops = await prisma.workshop.findMany({
+    where: { isPublished: true },
+    include: {
+      priceTiers: {
+        where: { variantId: null },
+        orderBy: { sortOrder: "asc" },
+      },
+    },
+    orderBy: { sortOrder: "asc" },
+  });
+
   // Fetch average Google rating from DB (same source as social-proof-stats)
   const reviewStats = await prisma.googleReview.aggregate({
     where: { isVisible: true },
@@ -209,7 +156,7 @@ export default async function BedrijfsuitjesPage() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {BEDRIJFSUITJE_WORKSHOPS.map((workshop) => (
+            {dbWorkshops.map((workshop, index) => (
               <Link
                 key={workshop.slug}
                 href={
@@ -218,27 +165,29 @@ export default async function BedrijfsuitjesPage() {
                     : `/onze-uitjes/${workshop.slug}`
                 }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
-                  workshop.highlight
+                  index === 0
                     ? "ring-2 ring-emerald-500 ring-offset-2"
                     : ""
                 }`}
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={workshop.image}
-                    alt={workshop.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  {workshop.highlight && (
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-emerald-600 text-white">
-                        <Star className="mr-1 h-3 w-3" />
-                        Populairst
-                      </Badge>
-                    </div>
-                  )}
-                </div>
+                {workshop.image && (
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={workshop.image}
+                      alt={workshop.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {index === 0 && (
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-emerald-600 text-white">
+                          <Star className="mr-1 h-3 w-3" />
+                          Populairst
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="p-6">
                   <h3 className="mb-2 text-xl font-bold group-hover:text-emerald-600">
                     {workshop.title}
@@ -248,7 +197,7 @@ export default async function BedrijfsuitjesPage() {
                   </p>
                   <div className="flex flex-wrap gap-4 text-sm">
                     <span className="font-semibold text-emerald-600">
-                      {workshop.price}
+                      {formatLowestPrice(workshop.priceTiers)}
                     </span>
                     <span className="text-muted-foreground">
                       {workshop.duration}
