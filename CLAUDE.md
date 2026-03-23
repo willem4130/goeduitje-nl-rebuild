@@ -142,6 +142,17 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - **3 consumers**: booking page, workshop configurator popup (first 3 dates), `/onze-uitjes/[slug]` sidebar
 - Seed script: `prisma/seed-open-workshops.ts` (idempotent, migrates old hardcoded data)
 
+### Workshop Data (100% DB-Driven)
+
+- **All workshop data is database-driven** — zero hardcoded prices, durations, group sizes, or participant limits in the frontend
+- Workshop configurator fetches from `api.workshop.list` tRPC query (not hardcoded constants)
+- Category pages (`/teambuilding`, `/bedrijfsuitjes`, `/workshops`) fetch from Prisma with `revalidate = 300`
+- Landing pages use DB prices with "Op aanvraag" fallback when no data
+- **Admin**: Uitjes Catalogus at `/workshop-catalog` in backend — full CRUD for workshops, variants, price tiers, categories
+- Workshop model has `minParticipants`/`maxParticipants` for configurator availability logic
+- **Variants**: Kookworkshop has 5 variants (Arabische, Vegetarische, etc.) — each with own description, duration, includes, price tiers. Editable per-tab in admin.
+- `src/lib/constants/cities.ts` only contains `DUTCH_CITIES` — no workshop data
+
 ### Workshop Configurator
 
 - Small group popup (<8 persons) suggests open workshops
