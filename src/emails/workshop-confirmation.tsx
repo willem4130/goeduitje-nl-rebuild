@@ -23,7 +23,7 @@ interface WorkshopConfirmationEmailProps {
   companyName?: string;
   btwNumber?: string;
   phone?: string;
-  selectedVariants?: Record<string, string>;
+  selectedVariants?: Record<string, string | string[]>;
 }
 
 export const WorkshopConfirmationEmail = ({
@@ -67,12 +67,15 @@ export const WorkshopConfirmationEmail = ({
           </Text>
           <ul style={list}>
             {workshops.map((workshop, index) => {
-              const variant = selectedVariants?.[workshop];
+              const rawVariant = selectedVariants?.[workshop];
+              const variants = Array.isArray(rawVariant) ? rawVariant : rawVariant ? [rawVariant] : [];
+              const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
+              const isUndecided = variants.includes("Nog niet gekozen");
               return (
                 <li key={index} style={listItem}>
                   {workshop}
-                  {variant && variant !== "Nog niet gekozen" && ` — ${variant}`}
-                  {variant === "Nog niet gekozen" &&
+                  {realVariants.length > 0 && ` — ${realVariants.join(", ")}`}
+                  {realVariants.length === 0 && isUndecided &&
                     " — (variant nog niet gekozen)"}
                 </li>
               );

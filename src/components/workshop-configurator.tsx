@@ -84,7 +84,7 @@ export function WorkshopConfigurator() {
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showSmallGroupPopup, setShowSmallGroupPopup] = useState(false);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string[]>>({});
   const router = useRouter();
   const createWorkshop = api.workshop.create.useMutation();
   const { data: upcomingWorkshops = [] } =
@@ -230,10 +230,10 @@ export function WorkshopConfigurator() {
         const ws = workshops.find((w) => w.id === id);
         return ws && ws.variants.length > 0;
       });
-      const missingVariants = workshopsWithVariants.filter((id) => !selectedVariants[id]);
+      const missingVariants = workshopsWithVariants.filter((id) => !selectedVariants[id] || selectedVariants[id].length === 0);
       if (missingVariants.length > 0) {
-        toast.error("Kies een variant", {
-          description: "Selecteer een variant voor elk uitje met meerdere opties.",
+        toast.error("Kies minimaal één variant", {
+          description: "Selecteer minimaal één variant voor elk uitje met meerdere opties.",
         });
         return;
       }
@@ -258,7 +258,7 @@ export function WorkshopConfigurator() {
     try {
       const workshopConfig = await createWorkshop.mutateAsync({
         ...data,
-        selectedVariants: Object.keys(selectedVariants).length > 0 ? selectedVariants : undefined,
+        selectedVariants: Object.keys(selectedVariants).some((k) => selectedVariants[k].length > 0) ? selectedVariants : undefined,
       });
 
       await fetch("/api/send-email", {
@@ -668,25 +668,44 @@ export function WorkshopConfigurator() {
                                             {/* Variant selection - shown when workshop is selected and has variants */}
                                             {field.value?.includes(workshop.id) && workshop.variants.length > 0 && (
                                               <div className="mt-2 space-y-1 border-t pt-2">
-                                                <p className="text-xs font-medium text-muted-foreground mb-1">Kies een variant:</p>
-                                                {workshop.variants.map((variant) => (
-                                                  <label key={variant.id} className="flex items-center gap-2 text-xs cursor-pointer">
-                                                    <input
-                                                      type="radio"
-                                                      name={`variant-${workshop.id}`}
-                                                      checked={selectedVariants[workshop.id] === variant.name}
-                                                      onChange={() => setSelectedVariants((prev) => ({ ...prev, [workshop.id]: variant.name }))}
-                                                      className="text-primary"
-                                                    />
-                                                    <span>{variant.name}</span>
-                                                  </label>
-                                                ))}
+                                                <p className="text-xs font-medium text-muted-foreground mb-1">Kies variant(en):</p>
+                                                {workshop.variants.map((variant) => {
+                                                  const isSelected = selectedVariants[workshop.id]?.includes(variant.name) ?? false;
+                                                  const isUndecided = selectedVariants[workshop.id]?.includes("Nog niet gekozen") ?? false;
+                                                  return (
+                                                    <label key={variant.id} className={`flex items-center gap-2 text-xs cursor-pointer ${isUndecided ? "opacity-50" : ""}`}>
+                                                      <input
+                                                        type="checkbox"
+                                                        checked={isSelected}
+                                                        disabled={isUndecided}
+                                                        onChange={() => setSelectedVariants((prev) => {
+                                                          const current = prev[workshop.id] ?? [];
+                                                          const filtered = current.filter((v) => v !== "Nog niet gekozen");
+                                                          return {
+                                                            ...prev,
+                                                            [workshop.id]: isSelected
+                                                              ? filtered.filter((v) => v !== variant.name)
+                                                              : [...filtered, variant.name],
+                                                          };
+                                                        })}
+                                                        className="text-primary"
+                                                      />
+                                                      <span>{variant.name}</span>
+                                                    </label>
+                                                  );
+                                                })}
                                                 <label className="flex items-center gap-2 text-xs cursor-pointer text-muted-foreground">
                                                   <input
-                                                    type="radio"
-                                                    name={`variant-${workshop.id}`}
-                                                    checked={selectedVariants[workshop.id] === "Nog niet gekozen"}
-                                                    onChange={() => setSelectedVariants((prev) => ({ ...prev, [workshop.id]: "Nog niet gekozen" }))}
+                                                    type="checkbox"
+                                                    checked={selectedVariants[workshop.id]?.includes("Nog niet gekozen") ?? false}
+                                                    onChange={() => setSelectedVariants((prev) => {
+                                                      const current = prev[workshop.id] ?? [];
+                                                      const isUndecided = current.includes("Nog niet gekozen");
+                                                      return {
+                                                        ...prev,
+                                                        [workshop.id]: isUndecided ? [] : ["Nog niet gekozen"],
+                                                      };
+                                                    })}
                                                     className="text-primary"
                                                   />
                                                   <span>Nog niet gekozen</span>
@@ -1018,9 +1037,11 @@ export function WorkshopConfigurator() {
                                     .map(
                                       (id) => {
                                         const name = workshops.find((w) => w.id === id)?.name;
-                                        if (selectedVariants[id] && selectedVariants[id] !== "Nog niet gekozen") {
-                                          return `${name} — ${selectedVariants[id]}`;
-                                        } else if (selectedVariants[id] === "Nog niet gekozen") {
+                                        const variants = selectedVariants[id] ?? [];
+                                        const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
+                                        if (realVariants.length > 0) {
+                                          return `${name} — ${realVariants.join(", ")}`;
+                                        } else if (variants.includes("Nog niet gekozen")) {
                                           return `${name} — (nog niet gekozen)`;
                                         }
                                         return name;

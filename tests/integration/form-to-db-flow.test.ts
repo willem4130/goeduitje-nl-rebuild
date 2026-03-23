@@ -38,6 +38,7 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
       type: "particulier",
       participantCount: 8,
       workshops: ["Kookworkshop"],
+      selectedVariants: { "Kookworkshop": ["Arabische kookworkshop", "Vegetarische kookworkshop"] },
       location: "Nijmegen",
       date: "2026-05-01",
       dateTbd: false,
