@@ -27,6 +27,7 @@ export const workshopRouter = createTRPCRouter({
           phone: input.phone || null,
           companyName: input.companyName || null,
           btwNumber: input.btwNumber || null,
+          selectedVariants: input.selectedVariants ?? undefined,
         },
       });
       return workshopConfig;

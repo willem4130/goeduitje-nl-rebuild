@@ -28,6 +28,7 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
       phone: "0612345678",
       companyName: null,
       btwNumber: null,
+      selectedVariants: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -172,6 +173,7 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
       phone: "0201234567",
       companyName: "Test BV",
       btwNumber: "NL123456789B01",
+      selectedVariants: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -219,6 +221,7 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
       phone: "0612345678",
       companyName: null,
       btwNumber: null,
+      selectedVariants: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

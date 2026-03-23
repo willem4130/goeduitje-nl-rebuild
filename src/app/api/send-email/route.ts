@@ -216,6 +216,7 @@ export async function POST(req: NextRequest) {
             companyName: data.companyName,
             btwNumber: data.btwNumber,
             phone: data.phone,
+            selectedVariants: data.selectedVariants,
           });
           emailData = await resend.emails.send({
             from: FROM_EMAIL,

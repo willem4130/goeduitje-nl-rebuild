@@ -84,6 +84,7 @@ export function WorkshopConfigurator() {
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showSmallGroupPopup, setShowSmallGroupPopup] = useState(false);
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const router = useRouter();
   const createWorkshop = api.workshop.create.useMutation();
   const { data: upcomingWorkshops = [] } =
@@ -132,6 +133,10 @@ export function WorkshopConfigurator() {
         maxParticipants: t.maxParticipants ?? null,
         priceExclBtw: t.priceExclBtw,
         priceInclBtw: t.priceInclBtw,
+      })),
+      variants: (w.variants || []).map((v) => ({
+        id: v.id,
+        name: v.name,
       })),
     }));
   }, [dbWorkshops]);
@@ -217,7 +222,24 @@ export function WorkshopConfigurator() {
 
   const nextStep = async () => {
     const isValid = await validateStep(currentStep);
-    if (isValid && currentStep < STEPS.length) {
+    if (!isValid) return;
+
+    // Check variant selection for workshops with variants (step 1 only)
+    if (currentStep === 1) {
+      const workshopsWithVariants = selectedWorkshops.filter((id) => {
+        const ws = workshops.find((w) => w.id === id);
+        return ws && ws.variants.length > 0;
+      });
+      const missingVariants = workshopsWithVariants.filter((id) => !selectedVariants[id]);
+      if (missingVariants.length > 0) {
+        toast.error("Kies een variant", {
+          description: "Selecteer een variant voor elk uitje met meerdere opties.",
+        });
+        return;
+      }
+    }
+
+    if (currentStep < STEPS.length) {
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     }
@@ -234,7 +256,10 @@ export function WorkshopConfigurator() {
     setIsLoading(true);
 
     try {
-      const workshopConfig = await createWorkshop.mutateAsync(data);
+      const workshopConfig = await createWorkshop.mutateAsync({
+        ...data,
+        selectedVariants: Object.keys(selectedVariants).length > 0 ? selectedVariants : undefined,
+      });
 
       await fetch("/api/send-email", {
         method: "POST",
@@ -259,6 +284,7 @@ export function WorkshopConfigurator() {
             companyName: data.companyName,
             btwNumber: data.btwNumber,
             phone: data.phone,
+            selectedVariants: selectedVariants,
           },
         }),
       });
@@ -619,6 +645,13 @@ export function WorkshopConfigurator() {
                                                         val !== workshop.id
                                                     );
                                                 field.onChange(updatedValue);
+                                                if (!checked) {
+                                                  setSelectedVariants((prev) => {
+                                                    const next = { ...prev };
+                                                    delete next[workshop.id];
+                                                    return next;
+                                                  });
+                                                }
                                               }}
                                             />
                                           </FormControl>
@@ -632,6 +665,34 @@ export function WorkshopConfigurator() {
                                                 </span>
                                               )}
                                             </FormLabel>
+                                            {/* Variant selection - shown when workshop is selected and has variants */}
+                                            {field.value?.includes(workshop.id) && workshop.variants.length > 0 && (
+                                              <div className="mt-2 space-y-1 border-t pt-2">
+                                                <p className="text-xs font-medium text-muted-foreground mb-1">Kies een variant:</p>
+                                                {workshop.variants.map((variant) => (
+                                                  <label key={variant.id} className="flex items-center gap-2 text-xs cursor-pointer">
+                                                    <input
+                                                      type="radio"
+                                                      name={`variant-${workshop.id}`}
+                                                      checked={selectedVariants[workshop.id] === variant.name}
+                                                      onChange={() => setSelectedVariants((prev) => ({ ...prev, [workshop.id]: variant.name }))}
+                                                      className="text-primary"
+                                                    />
+                                                    <span>{variant.name}</span>
+                                                  </label>
+                                                ))}
+                                                <label className="flex items-center gap-2 text-xs cursor-pointer text-muted-foreground">
+                                                  <input
+                                                    type="radio"
+                                                    name={`variant-${workshop.id}`}
+                                                    checked={selectedVariants[workshop.id] === "Nog niet gekozen"}
+                                                    onChange={() => setSelectedVariants((prev) => ({ ...prev, [workshop.id]: "Nog niet gekozen" }))}
+                                                    className="text-primary"
+                                                  />
+                                                  <span>Nog niet gekozen</span>
+                                                </label>
+                                              </div>
+                                            )}
                                           </div>
                                         </FormItem>
                                       )}
@@ -955,8 +1016,15 @@ export function WorkshopConfigurator() {
                               {selectedWorkshops.length > 0
                                 ? selectedWorkshops
                                     .map(
-                                      (id) =>
-                                        workshops.find((w) => w.id === id)?.name
+                                      (id) => {
+                                        const name = workshops.find((w) => w.id === id)?.name;
+                                        if (selectedVariants[id] && selectedVariants[id] !== "Nog niet gekozen") {
+                                          return `${name} — ${selectedVariants[id]}`;
+                                        } else if (selectedVariants[id] === "Nog niet gekozen") {
+                                          return `${name} — (nog niet gekozen)`;
+                                        }
+                                        return name;
+                                      }
                                     )
                                     .join(", ")
                                 : "Geen"}
@@ -969,59 +1037,6 @@ export function WorkshopConfigurator() {
                             </div>
                           </div>
 
-                          {/* Price Estimate */}
-                          {selectedWorkshops.length > 0 &&
-                            participantCount >= 8 && (
-                              <div className="mt-4 border-t pt-4">
-                                <h4 className="text-foreground mb-2 text-sm font-semibold">
-                                  Geschatte prijs
-                                </h4>
-                                <div className="space-y-1 text-sm">
-                                  {selectedWorkshops.map((workshopId) => {
-                                    const workshop = workshops.find(
-                                      (w) => w.id === workshopId
-                                    );
-                                    const tier = getWorkshopPriceFromList(
-                                      workshops,
-                                      workshopId,
-                                      participantCount
-                                    );
-                                    if (!workshop || !tier) return null;
-                                    return (
-                                      <div
-                                        key={workshopId}
-                                        className="flex justify-between"
-                                      >
-                                        <span className="text-muted-foreground">
-                                          {workshop.name}:
-                                        </span>
-                                        <span>
-                                          €{tier.priceExclBtw} p.p. excl btw
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                  <div className="mt-2 flex justify-between border-t pt-2 font-semibold">
-                                    <span>
-                                      Totaal ({participantCount} pers.):
-                                    </span>
-                                    <span className="text-primary">
-                                      €
-                                      {calculateEstimatedPriceFromList(
-                                        workshops,
-                                        selectedWorkshops,
-                                        participantCount
-                                      ).toFixed(2)}{" "}
-                                      excl btw
-                                    </span>
-                                  </div>
-                                  <p className="text-muted-foreground mt-1 text-xs">
-                                    * Indicatieve prijs. Definitieve offerte
-                                    volgt na aanvraag.
-                                  </p>
-                                </div>
-                              </div>
-                            )}
                         </div>
                       </div>
                     )}

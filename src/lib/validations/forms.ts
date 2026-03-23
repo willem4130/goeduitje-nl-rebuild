@@ -118,6 +118,7 @@ export const workshopConfigSchema = z
     workshops: z.array(z.string()).min(1, {
       message: "Selecteer minimaal één uitje.",
     }),
+    selectedVariants: z.record(z.string(), z.string()).optional(),
     location: z.enum(["Nijmegen", "Arnhem", "Amersfoort", "other"], {
       message: "Selecteer een locatie.",
     }),

@@ -299,8 +299,9 @@ model WorkshopConfig {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   phone            String?
-  companyName      String?
-  btwNumber        String?
+  companyName       String?
+  btwNumber         String?
+  selectedVariants  Json?
 
   @@index([createdAt])
   @@index([email])

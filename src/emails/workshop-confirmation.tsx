@@ -23,6 +23,7 @@ interface WorkshopConfirmationEmailProps {
   companyName?: string;
   btwNumber?: string;
   phone?: string;
+  selectedVariants?: Record<string, string>;
 }
 
 export const WorkshopConfirmationEmail = ({
@@ -38,6 +39,7 @@ export const WorkshopConfirmationEmail = ({
   companyName,
   btwNumber,
   phone,
+  selectedVariants,
 }: WorkshopConfirmationEmailProps) => (
   <Html>
     <Head />
@@ -64,11 +66,17 @@ export const WorkshopConfirmationEmail = ({
             <strong>Geselecteerde uitjes:</strong>
           </Text>
           <ul style={list}>
-            {workshops.map((workshop, index) => (
-              <li key={index} style={listItem}>
-                {workshop}
-              </li>
-            ))}
+            {workshops.map((workshop, index) => {
+              const variant = selectedVariants?.[workshop];
+              return (
+                <li key={index} style={listItem}>
+                  {workshop}
+                  {variant && variant !== "Nog niet gekozen" && ` — ${variant}`}
+                  {variant === "Nog niet gekozen" &&
+                    " — (variant nog niet gekozen)"}
+                </li>
+              );
+            })}
           </ul>
 
           <Text style={detailItem}>
