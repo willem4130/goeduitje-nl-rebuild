@@ -150,7 +150,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Landing pages use DB prices with "Op aanvraag" fallback when no data
 - **Admin**: Uitjes Catalogus at `/workshop-catalog` in backend — full CRUD for workshops, variants, price tiers, categories
 - Workshop model has `minParticipants`/`maxParticipants` for configurator availability logic
-- **Variants**: Kookworkshop has 5 variants (Arabische, Vegetarische, etc.) — each with own description, duration, includes, price tiers. Editable per-tab in admin.
+- **Variants**: Kookworkshop has 5 variants (Arabische, Vegetarische, etc.) — each with own description, duration, includes, price tiers. Editable per-tab in admin. Configurator uses **multi-select checkboxes** — users can pick multiple variants per workshop. Stored as `Record<string, string[]>` in `WorkshopConfig.selectedVariants` (JSON).
 - `src/lib/constants/cities.ts` only contains `DUTCH_CITIES` — no workshop data
 
 ### Workshop Configurator
@@ -158,9 +158,10 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Small group popup (<8 persons) suggests open workshops
 - "Bekijk agenda" button links to `/open-kookworkshops`
 - Located in `src/components/workshop-configurator.tsx`
-- On submit → redirects to `/bedankt` + pushes GA4 purchase event via dataLayer
+- On submit → redirects to `/bedankt` (with workshop names + variants in query params) + pushes GA4 purchase event via dataLayer
 - Saves `companyName` and `btwNumber` for zakelijk bookings
-- Confirmation email includes type, company info, and phone number
+- Builds `workshopsDisplay` string (human-readable workshop names with variants) for email and bedankt page
+- Confirmation email includes type, company info, phone number, and selected variants
 
 ### Email System (DB-Driven)
 
