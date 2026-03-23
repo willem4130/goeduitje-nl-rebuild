@@ -303,8 +303,53 @@ model WorkshopConfig {
   btwNumber         String?
   selectedVariants  Json?
 
+  workshopRequest  WorkshopRequest?
+
   @@index([createdAt])
   @@index([email])
+}
+
+// ============================================================
+// WORKSHOP REQUESTS
+// Incoming workshop inquiries (manual + website configurator)
+// Managed via backend admin, written from frontend on configurator submit
+// ============================================================
+model WorkshopRequest {
+  id                      Int       @id @default(autoincrement())
+  status                  String    @default("leeg")
+  contactName             String    @map("contact_name")
+  email                   String
+  phone                   String?
+  organization            String?
+  activityType            String    @map("activity_type")
+  preferredDate           String?   @map("preferred_date")
+  alternativeDate         String?   @map("alternative_date")
+  participants            Int
+  ageGroup                String?   @map("age_group")
+  location                String?
+  hasOwnLocation          Boolean?  @default(false) @map("has_own_location")
+  travelDistance           Int?      @map("travel_distance")
+  specialRequirements     String?   @map("special_requirements")
+  dietaryRestrictions     String?   @map("dietary_restrictions")
+  accessibilityNeeds      String?   @map("accessibility_needs")
+  quotedPrice             Decimal?  @map("quoted_price") @db.Decimal(10, 2)
+  locationFee             Decimal?  @map("location_fee") @db.Decimal(10, 2)
+  finalPrice              Decimal?  @map("final_price") @db.Decimal(10, 2)
+  priceIncludesVat        Boolean?  @default(false) @map("price_includes_vat")
+  quoteEmailSentAt        DateTime? @map("quote_email_sent_at")
+  quotePdfUrl             String?   @map("quote_pdf_url")
+  aiGeneratedEmailContent String?   @map("ai_generated_email_content")
+  notes                   String?
+  source                  String?   @default("website")
+  configId                String?   @unique @map("config_id")
+  config                  WorkshopConfig? @relation(fields: [configId], references: [id])
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@map("workshop_requests")
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
 }
 
 model EmailTemplate {

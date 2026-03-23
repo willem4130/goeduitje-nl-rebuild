@@ -194,6 +194,15 @@ describe("workshop.updateWorkshop", () => {
 });
 
 describe("workshop.create with TBD dates", () => {
+  beforeEach(() => {
+    vi.mocked(prisma.workshop.findMany).mockResolvedValue([
+      { id: "kookworkshop", title: "Kookworkshop" } as any,
+    ]);
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({
+      id: 1,
+    } as any);
+  });
+
   it("stores TBD when dateTbd=true", async () => {
     vi.mocked(prisma.workshopConfig.create).mockResolvedValue({
       id: "c1",

@@ -115,13 +115,13 @@ tests/
 
 ### Forms → Database → Admin Pipeline
 
-| Frontend Form | URL | Component File | DB Table | Backend Admin API | Admin UI |
-| --- | --- | --- | --- | --- | --- |
-| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` | `/api/workshops/configs` | ✅ `/workshops/configs` |
-| Contact Form | `/contact` | `src/components/contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
-| Compact Contact Form | Footer (all pages) | `src/components/compact-contact-form.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
-| Feedback Form | `/feedback` | `src/app/feedback/page.tsx` | `Feedback` | `/api/content/feedback` | ✅ `/feedback` |
-| Open Kookworkshop Booking | `/open-kookworkshops` | `src/app/open-kookworkshops/page.tsx` | `Booking` | `/api/bookings` | ✅ `/bookings` |
+| Frontend Form                      | URL                                      | Component File                             | DB Table                               | Backend Admin API         | Admin UI                                       |
+| ---------------------------------- | ---------------------------------------- | ------------------------------------------ | -------------------------------------- | ------------------------- | ---------------------------------------------- |
+| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` + `workshop_requests` | `/api/workshops/requests` | ✅ `/workshops` (unified with manual requests) |
+| Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
+| Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
+| Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
+| Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking`                              | `/api/bookings`           | ✅ `/bookings`                                 |
 
 ### /test Command
 
@@ -159,9 +159,11 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - "Bekijk agenda" button links to `/open-kookworkshops`
 - Located in `src/components/workshop-configurator.tsx`
 - On submit → redirects to `/bedankt` (with workshop names + variants in query params) + pushes GA4 purchase event via dataLayer
+- **Dual-write**: On submit, creates BOTH a `WorkshopConfig` record AND a `WorkshopRequest` record (source: 'configurator', with configId FK) in a single transaction. This feeds the unified admin CRM pipeline at `/workshops`
 - Saves `companyName` and `btwNumber` for zakelijk bookings
 - Builds `workshopsDisplay` string (human-readable workshop names with variants) for email and bedankt page
 - Confirmation email includes type, company info, phone number, and selected variants
+- **Backfill script**: `prisma/migrate-configs-to-requests.ts` — one-time migration to create WorkshopRequest records for historical WorkshopConfig entries
 
 ### Email System (DB-Driven)
 
@@ -172,11 +174,11 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - **Admin**: Templates editable at `/email-templates` in backend (TipTap rich text editor). Sent emails viewable at `/email-log`
 - **Seed**: `npx tsx prisma/seed-email-templates.ts` populates default templates
 
-| Email Type | Trigger | Template Key |
-| --- | --- | --- |
-| Workshop configurator confirmation | After configurator submit | `workshop-confirmation` |
-| Contact form confirmation | After contact/compact form submit | `contact-confirmation` |
-| Booking confirmation | After gift card or Stripe payment | `booking-confirmation` |
+| Email Type                         | Trigger                           | Template Key            |
+| ---------------------------------- | --------------------------------- | ----------------------- |
+| Workshop configurator confirmation | After configurator submit         | `workshop-confirmation` |
+| Contact form confirmation          | After contact/compact form submit | `contact-confirmation`  |
+| Booking confirmation               | After gift card or Stripe payment | `booking-confirmation`  |
 
 **Email template files** (React fallbacks): `src/emails/workshop-confirmation.tsx`, `src/emails/contact-confirmation.tsx`, `src/emails/booking-confirmation.tsx`
 

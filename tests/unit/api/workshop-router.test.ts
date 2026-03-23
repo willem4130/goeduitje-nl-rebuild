@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/lib/prisma";
@@ -9,6 +10,18 @@ beforeEach(() => {
 });
 
 describe("workshop.create", () => {
+  beforeEach(() => {
+    // Mock workshop name resolution (needed for dual-write)
+    vi.mocked(prisma.workshop.findMany).mockResolvedValue([
+      { id: "kookworkshop", title: "Kookworkshop" } as any,
+      { id: "stadsspel", title: "Stadsspel" } as any,
+    ]);
+    // Mock workshopRequest.create (dual-write target)
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({
+      id: 1,
+    } as any);
+  });
+
   it("creates a workshop config with all fields including phone", async () => {
     const input = {
       type: "particulier" as const,
@@ -35,7 +48,9 @@ describe("workshop.create", () => {
       updatedAt: new Date(),
     };
 
-    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(mockResult as any);
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(
+      mockResult as any
+    );
 
     const result = await caller.workshop.create(input);
 
@@ -47,6 +62,15 @@ describe("workshop.create", () => {
         name: "Jan Jansen",
         email: "jan@example.com",
         phone: "0612345678",
+      }),
+    });
+    // Verify dual-write to workshopRequest
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        source: "configurator",
+        configId: "config-1",
+        contactName: "Jan Jansen",
+        email: "jan@example.com",
       }),
     });
   });
@@ -77,7 +101,9 @@ describe("workshop.create", () => {
       updatedAt: new Date(),
     };
 
-    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(mockResult as any);
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(
+      mockResult as any
+    );
 
     const result = await caller.workshop.create(input);
 
@@ -89,6 +115,13 @@ describe("workshop.create", () => {
         btwNumber: "NL123456789B01",
         name: "Piet Bakker",
         email: "piet@bedrijf.nl",
+      }),
+    });
+    // Verify dual-write includes organization from companyName
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        organization: "Bakker BV",
+        source: "configurator",
       }),
     });
   });
@@ -119,7 +152,9 @@ describe("workshop.create", () => {
       updatedAt: new Date(),
     };
 
-    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(mockResult as any);
+    vi.mocked(prisma.workshopConfig.create).mockResolvedValue(
+      mockResult as any
+    );
 
     await caller.workshop.create(input);
 
@@ -127,6 +162,13 @@ describe("workshop.create", () => {
       data: expect.objectContaining({
         companyName: null,
         btwNumber: null,
+      }),
+    });
+    // Verify dual-write with null organization
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        organization: null,
+        activityType: "Stadsspel",
       }),
     });
   });
@@ -139,7 +181,9 @@ describe("workshop.getConfigs", () => {
       { id: "c1", type: "particulier", createdAt: new Date("2025-01-01") },
     ];
 
-    vi.mocked(prisma.workshopConfig.findMany).mockResolvedValue(mockConfigs as any);
+    vi.mocked(prisma.workshopConfig.findMany).mockResolvedValue(
+      mockConfigs as any
+    );
 
     const result = await caller.workshop.getConfigs();
 
@@ -153,7 +197,9 @@ describe("workshop.getConfigs", () => {
 describe("workshop.getConfigById", () => {
   it("returns config by ID", async () => {
     const mockConfig = { id: "config-1", type: "particulier", name: "Jan" };
-    vi.mocked(prisma.workshopConfig.findUnique).mockResolvedValue(mockConfig as any);
+    vi.mocked(prisma.workshopConfig.findUnique).mockResolvedValue(
+      mockConfig as any
+    );
 
     const result = await caller.workshop.getConfigById({ id: "config-1" });
 
@@ -221,7 +267,9 @@ describe("workshop.getBySlug", () => {
       variants: [{ id: "v1", priceTiers: [] }],
     };
 
-    vi.mocked(prisma.workshop.findUnique).mockResolvedValue(mockWorkshop as any);
+    vi.mocked(prisma.workshop.findUnique).mockResolvedValue(
+      mockWorkshop as any
+    );
 
     const result = await caller.workshop.getBySlug({ slug: "kookworkshop" });
 

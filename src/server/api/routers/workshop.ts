@@ -12,24 +12,79 @@ export const workshopRouter = createTRPCRouter({
   create: publicProcedure
     .input(workshopConfigSchema)
     .mutation(async ({ input }) => {
-      const workshopConfig = await prisma.workshopConfig.create({
-        data: {
-          type: input.type,
-          participantCount: input.participantCount,
-          workshops: input.workshops,
-          location: input.location,
-          customCity: input.customCity || null,
-          date: input.dateTbd ? "TBD" : input.date || null,
-          time: input.timeTbd ? "TBD" : input.time || null,
-          duration: input.duration || null,
-          name: input.name,
-          email: input.email,
-          phone: input.phone || null,
-          companyName: input.companyName || null,
-          btwNumber: input.btwNumber || null,
-          selectedVariants: input.selectedVariants ?? undefined,
-        },
+      // Resolve workshop IDs to human-readable names for the request
+      const workshops = await prisma.workshop.findMany({
+        where: { id: { in: input.workshops } },
+        select: { id: true, title: true },
       });
+      const nameMap = Object.fromEntries(workshops.map((w) => [w.id, w.title]));
+      const activityDisplay = input.workshops
+        .map((id) => nameMap[id] || id)
+        .join(", ");
+
+      // Build a human-readable summary for the notes field
+      const summaryParts: string[] = [
+        `Type: ${input.type}`,
+        `${input.participantCount} deelnemers`,
+      ];
+      if (input.companyName) summaryParts.push(`Bedrijf: ${input.companyName}`);
+      if (input.duration) summaryParts.push(`Duur: ${input.duration}u`);
+      if (input.selectedVariants) {
+        const variantEntries = Object.entries(
+          input.selectedVariants as Record<string, string[]>
+        ).filter(([, v]) => v.length > 0);
+        if (variantEntries.length > 0) {
+          summaryParts.push(
+            `Varianten: ${variantEntries.map(([k, v]) => `${nameMap[k] || k}: ${v.join(", ")}`).join("; ")}`
+          );
+        }
+      }
+
+      // Dual-write: create both WorkshopConfig and WorkshopRequest in a transaction
+      const workshopConfig = await prisma.$transaction(async (tx) => {
+        const config = await tx.workshopConfig.create({
+          data: {
+            type: input.type,
+            participantCount: input.participantCount,
+            workshops: input.workshops,
+            location: input.location,
+            customCity: input.customCity || null,
+            date: input.dateTbd ? "TBD" : input.date || null,
+            time: input.timeTbd ? "TBD" : input.time || null,
+            duration: input.duration || null,
+            name: input.name,
+            email: input.email,
+            phone: input.phone || null,
+            companyName: input.companyName || null,
+            btwNumber: input.btwNumber || null,
+            selectedVariants: input.selectedVariants ?? undefined,
+          },
+        });
+
+        // Also create a WorkshopRequest so it appears in the admin CRM pipeline
+        await tx.workshopRequest.create({
+          data: {
+            status: "leeg",
+            contactName: input.name,
+            email: input.email,
+            phone: input.phone || null,
+            organization: input.companyName || null,
+            activityType: activityDisplay,
+            preferredDate: input.dateTbd ? null : input.date || null,
+            participants: input.participantCount,
+            location:
+              input.location === "other"
+                ? input.customCity || input.location
+                : input.location,
+            source: "configurator",
+            configId: config.id,
+            notes: `Website configuratie: ${summaryParts.join(" | ")}`,
+          },
+        });
+
+        return config;
+      });
+
       return workshopConfig;
     }),
 

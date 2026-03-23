@@ -16,8 +16,8 @@ vi.mock("@/env", () => ({
 }));
 
 // Mock Prisma client
-vi.mock("@/lib/prisma", () => ({
-  prisma: {
+vi.mock("@/lib/prisma", () => {
+  const mockPrisma: Record<string, unknown> = {
     workshopConfig: {
       create: vi.fn(),
       findMany: vi.fn(),
@@ -122,9 +122,23 @@ vi.mock("@/lib/prisma", () => ({
     emailLog: {
       create: vi.fn(),
     },
-    $transaction: vi.fn(),
-  },
-}));
+    workshopRequest: {
+      create: vi.fn(),
+      findMany: vi.fn(),
+      count: vi.fn(),
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    $transaction: vi.fn((cbOrArray: any) => {
+      // Support interactive transactions (callback style)
+      if (typeof cbOrArray === "function") {
+        return cbOrArray(mockPrisma);
+      }
+      // Support batch transactions (array style)
+      return Promise.resolve(cbOrArray);
+    }),
+  };
+  return { prisma: mockPrisma };
+});
 
 // Mock Resend
 vi.mock("@/lib/resend", () => ({
@@ -153,7 +167,11 @@ vi.mock("@/lib/stripe", () => ({
   getStripe: vi.fn(),
   STRIPE_PRICES: { COOKING_WORKSHOP: "price_test" },
   STRIPE_PRODUCTS: {
-    COOKING_WORKSHOP: { name: "Open Kookworkshop", price: 50, priceId: "price_test" },
+    COOKING_WORKSHOP: {
+      name: "Open Kookworkshop",
+      price: 50,
+      priceId: "price_test",
+    },
   },
 }));
 

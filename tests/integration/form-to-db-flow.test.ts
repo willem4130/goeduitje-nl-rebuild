@@ -7,9 +7,19 @@ import { TRPCError } from "@trpc/server";
 const createCaller = createCallerFactory(appRouter);
 const caller = createCaller({ headers: new Headers() });
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 describe("Workshop Configurator → tRPC → Database flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock workshop name resolution (needed for dual-write to workshopRequest)
+    vi.mocked(prisma.workshop.findMany).mockResolvedValue([
+      { id: "Kookworkshop", title: "Kookworkshop" } as any,
+      { id: "Stadsspel", title: "Stadsspel" } as any,
+    ]);
+    // Mock workshopRequest.create (dual-write target)
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({
+      id: 1,
+    } as any);
   });
 
   it("workshop.create saves all fields including phone to WorkshopConfig", async () => {
@@ -38,7 +48,9 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
       type: "particulier",
       participantCount: 8,
       workshops: ["Kookworkshop"],
-      selectedVariants: { "Kookworkshop": ["Arabische kookworkshop", "Vegetarische kookworkshop"] },
+      selectedVariants: {
+        Kookworkshop: ["Arabische kookworkshop", "Vegetarische kookworkshop"],
+      },
       location: "Nijmegen",
       date: "2026-05-01",
       dateTbd: false,
@@ -425,9 +437,19 @@ describe("Feedback admin operations", () => {
 
   it("feedback.getAll with default params", async () => {
     const mockItems = [
-      { id: "fb-1", name: "A", email: "a@x.com", message: "msg", isRead: false, createdAt: new Date(), updatedAt: new Date() },
+      {
+        id: "fb-1",
+        name: "A",
+        email: "a@x.com",
+        message: "msg",
+        isRead: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ];
-    vi.mocked(prisma.feedback.findMany).mockResolvedValueOnce(mockItems as never);
+    vi.mocked(prisma.feedback.findMany).mockResolvedValueOnce(
+      mockItems as never
+    );
 
     const result = await caller.feedback.getAll();
 
@@ -457,7 +479,10 @@ describe("Feedback admin operations", () => {
     const updated = { id: "fb-1", isRead: true };
     vi.mocked(prisma.feedback.update).mockResolvedValueOnce(updated as never);
 
-    const result = await caller.feedback.toggleRead({ id: "fb-1", isRead: true });
+    const result = await caller.feedback.toggleRead({
+      id: "fb-1",
+      isRead: true,
+    });
 
     expect(prisma.feedback.update).toHaveBeenCalledWith({
       where: { id: "fb-1" },
