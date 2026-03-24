@@ -346,10 +346,67 @@ model WorkshopRequest {
   createdAt               DateTime  @default(now()) @map("created_at")
   updatedAt               DateTime  @updatedAt @map("updated_at")
 
+  emailConversation EmailConversation?
+
   @@map("workshop_requests")
   @@index([status])
   @@index([source])
   @@index([createdAt])
+}
+
+// ============================================================
+// EMAIL CRM — Conversations & Messages
+// Stores all email communication per workshop request.
+// Supports drafts, sent items, and manually logged inbound replies.
+// ============================================================
+
+model EmailConversation {
+  id            String    @id @default(cuid())
+  requestId     Int       @unique @map("request_id")
+  subject       String
+  lastMessageAt DateTime  @default(now()) @map("last_message_at")
+  isDraft       Boolean   @default(false) @map("is_draft")
+  isRead        Boolean   @default(false) @map("is_read")
+  isArchived    Boolean   @default(false) @map("is_archived")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  request  WorkshopRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  messages EmailMessage[]
+
+  @@map("email_conversations")
+  @@index([lastMessageAt])
+  @@index([isRead])
+}
+
+model EmailMessage {
+  id              String    @id @default(cuid())
+  conversationId  String    @map("conversation_id")
+  direction       String    @default("outbound") // "outbound" | "inbound"
+  from            String
+  to              String
+  subject         String
+  body            String    // Full HTML
+  plainText       String?   @map("plain_text")
+  templateKey     String?   @map("template_key")
+  variables       Json?
+  status          String    @default("draft") // "draft" | "sent" | "failed"
+  sentAt          DateTime? @map("sent_at")
+  resendId        String?   @unique @map("resend_id")
+  attachmentUrls  String[]  @map("attachment_urls")
+  attachmentNames String[]  @map("attachment_names")
+  errorMessage    String?   @map("error_message")
+  isDeleted       Boolean   @default(false) @map("is_deleted")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  conversation EmailConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("email_messages")
+  @@index([conversationId])
+  @@index([status])
+  @@index([sentAt])
+  @@index([direction])
 }
 
 model EmailTemplate {
