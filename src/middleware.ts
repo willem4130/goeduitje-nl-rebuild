@@ -3,7 +3,18 @@ import { NextResponse, NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only redirect if pathname contains uppercase letters
+  // Skip internal paths and static assets
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/images") ||
+    pathname === "/favicon.ico" ||
+    /\.\w+$/.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
+
+  // Redirect any path with uppercase letters to lowercase
   if (pathname !== pathname.toLowerCase()) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.toLowerCase();
@@ -14,8 +25,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Skip API routes, static files, images, and Next.js internals
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon|images|.*\\.[a-z0-9]+$).*)",
-  ],
+  // Match ALL paths — exclusions handled in the function above
+  matcher: ["/(.*)", "/"],
 };
