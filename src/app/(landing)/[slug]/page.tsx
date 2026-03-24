@@ -876,9 +876,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// Only allow known landing page slugs — unknown slugs return 404
-// This ensures redirects in next.config.mjs work for old Wix URLs
-export const dynamicParams = false;
+// Allow dynamic params so middleware can intercept uppercase URLs
+// (dynamicParams = false causes Vercel CDN to 404 before middleware runs)
+// Unknown slugs are handled by the notFound() call in the page component
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   return ALL_LANDING_PAGES.map((page) => ({
