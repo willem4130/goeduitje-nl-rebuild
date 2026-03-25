@@ -19,8 +19,12 @@ import { SITE_URL } from "@/lib/site-config";
 import { CityGallery } from "@/components/city-gallery";
 
 // Helper to format price display
+function formatEuro(amount: number): string {
+  return amount % 1 === 0 ? `€${amount}` : `€${amount.toFixed(2).replace(".", ",")}`;
+}
+
 function formatPrice(priceExcl: number, priceIncl: number): string {
-  return `€${priceExcl % 1 === 0 ? priceExcl : priceExcl.toFixed(2).replace(".", ",")} excl btw (€${priceIncl % 1 === 0 ? priceIncl : priceIncl.toFixed(2).replace(".", ",")} incl btw) p.p.`;
+  return `${formatEuro(priceExcl)} excl btw (${formatEuro(priceIncl)} incl btw) p.p.`;
 }
 
 // Get lowest price from tiers
@@ -233,8 +237,8 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   <div>
                     <p className="text-muted-foreground text-sm">Prijs</p>
                     <p className="font-semibold">
-                      Vanaf €
-                      {getLowestPrice(workshop.priceTiers, workshop.variants)}{" "}
+                      Vanaf{" "}
+                      {formatEuro(getLowestPrice(workshop.priceTiers, workshop.variants))}{" "}
                       p.p.
                     </p>
                   </div>
@@ -397,7 +401,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                 <div className="bg-muted/50 mt-8 rounded-lg p-6">
                   <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
                   <p className="text-primary mb-4 text-3xl font-bold">
-                    €{getLowestPrice(workshop.priceTiers, workshop.variants)}{" "}
+                    {formatEuro(getLowestPrice(workshop.priceTiers, workshop.variants))}{" "}
                     <span className="text-muted-foreground text-base font-normal">
                       per persoon
                     </span>

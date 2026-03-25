@@ -258,7 +258,7 @@ Perfect voor teams die op zoek zijn naar een actieve, culturele en vooral leuke 
       video: "/images/workshops/workshop 2.mp4",
       image: "/images/workshops/stadsspel.jpg",
       duration: "2-3 uur",
-      groupSize: "10-20 personen",
+      groupSize: "10-50 personen",
       location: "Nijmegen, Arnhem en andere steden",
       categories: ["Outdoor", "Teambuilding", "Cultureel"],
       includes: [
