@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   ArrowLeft,
   Calendar,
-  Sparkles,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site-config";
@@ -117,41 +116,17 @@ export async function generateStaticParams() {
   }));
 }
 
-// Dutch date formatting helpers for open workshop sessions
-const DUTCH_DAY_NAMES_FULL = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
-const DUTCH_MONTHS_SHORT = ["JAN", "FEB", "MRT", "APR", "MEI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC"];
-const DUTCH_MONTHS_FULL = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
-
 export default async function WorkshopDetailPage({ params }: Props) {
   const { slug } = await params;
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
 
-  const [workshop, reviewCache, upcomingSessionsRaw] = await Promise.all([
+  const [workshop, reviewCache] = await Promise.all([
     getWorkshop(slug),
     prisma.google_reviews_cache.findUnique({ where: { id: "singleton" } }),
-    prisma.openWorkshopSession.findMany({
-      where: { isActive: true, date: { gte: now } },
-      orderBy: { date: "asc" },
-    }),
   ]);
 
   if (!workshop) {
     notFound();
   }
-
-  const upcomingWorkshops = upcomingSessionsRaw.map((session) => {
-    const dayOfWeek = session.date.getDay();
-    const monthIndex = session.date.getMonth();
-    return {
-      id: session.id,
-      dateDisplay: `${DUTCH_DAY_NAMES_FULL[dayOfWeek]} ${session.date.getDate()} ${DUTCH_MONTHS_FULL[monthIndex]}`,
-      dayNumber: session.date.getDate().toString(),
-      month: DUTCH_MONTHS_SHORT[monthIndex],
-      time: `${session.startTime} - ${session.endTime}`,
-      location: session.location,
-    };
-  });
 
   const workshopJsonLd = {
     "@context": "https://schema.org",
@@ -305,21 +280,9 @@ export default async function WorkshopDetailPage({ params }: Props) {
                     <TabsTrigger
                       key={variant.id}
                       value={variant.id}
-                      className={
-                        variant.name === "Open Kookworkshops"
-                          ? "relative rounded-full border-2 border-amber-500 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-2 text-sm font-semibold text-amber-900 transition-all data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg"
-                          : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2 text-sm font-medium transition-all"
-                      }
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full border px-4 py-2 text-sm font-medium transition-all"
                     >
-                      {variant.name === "Open Kookworkshops" && (
-                        <Sparkles className="mr-1.5 inline h-4 w-4" />
-                      )}
                       {variant.name}
-                      {variant.name === "Open Kookworkshops" && (
-                        <Badge className="ml-2 hidden bg-amber-600 text-[10px] text-white hover:bg-amber-600 sm:inline-flex">
-                          Particulieren
-                        </Badge>
-                      )}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -362,95 +325,39 @@ export default async function WorkshopDetailPage({ params }: Props) {
                         </ul>
                       </div>
 
-                      {/* Sidebar - Pricing or Agenda */}
+                      {/* Sidebar - Pricing */}
                       <div>
-                        {variant.name === "Open Kookworkshops" ? (
-                          /* Agenda for Open Kookworkshops */
-                          <div className="rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
-                            <h4 className="mb-4 flex items-center gap-2 font-semibold text-amber-900">
-                              <Calendar className="h-5 w-5 text-amber-600" />
-                              Agenda
-                            </h4>
-                            <p className="text-muted-foreground mb-4 text-sm">
-                              Meld je aan voor een datum die jou past!
+                        <div className="bg-muted/50 rounded-lg p-6">
+                          <h4 className="mb-4 font-semibold">Prijzen</h4>
+                          <div className="space-y-2">
+                            {variant.priceTiers.map((tier, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center justify-between text-xs sm:text-sm"
+                              >
+                                <span className="text-muted-foreground">
+                                  {tier.groupSize}
+                                </span>
+                                <span className="font-medium">
+                                  {formatPrice(
+                                    tier.priceExclBtw,
+                                    tier.priceInclBtw
+                                  )}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          {workshop.slug === "kookworkshop" && (
+                            <p className="text-muted-foreground mt-3 text-xs italic">
+                              Prijzen zijn exclusief locatiekosten en drankjes
                             </p>
-                            <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1">
-                              {upcomingWorkshops.length > 0 ? (
-                                upcomingWorkshops.map((ws) => (
-                                  <div
-                                    key={ws.id}
-                                    className="flex items-center gap-3 rounded-md border border-amber-200 bg-white p-3 transition-colors hover:border-amber-400"
-                                  >
-                                    <div className="flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded bg-amber-100 text-amber-900">
-                                      <span className="text-[10px] font-semibold uppercase">
-                                        {ws.month}
-                                      </span>
-                                      <span className="text-lg leading-none font-bold">
-                                        {ws.dayNumber}
-                                      </span>
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <p className="truncate text-sm font-medium">
-                                        {ws.dateDisplay}
-                                      </p>
-                                      <p className="text-muted-foreground text-xs">
-                                        {ws.time} • {ws.location}
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))
-                              ) : (
-                                <div className="rounded-md border bg-white p-3 text-center">
-                                  <p className="text-muted-foreground text-sm">
-                                    Nieuwe data volgen binnenkort
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                            <Button
-                              asChild
-                              className="mt-4 w-full bg-amber-600 hover:bg-amber-700"
-                            >
-                              <Link href="/open-kookworkshops">
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                Direct inschrijven
-                              </Link>
-                            </Button>
-                          </div>
-                        ) : (
-                          /* Standard Pricing */
-                          <div className="bg-muted/50 rounded-lg p-6">
-                            <h4 className="mb-4 font-semibold">Prijzen</h4>
-                            <div className="space-y-2">
-                              {variant.priceTiers.map((tier, i) => (
-                                <div
-                                  key={i}
-                                  className="flex items-center justify-between text-xs sm:text-sm"
-                                >
-                                  <span className="text-muted-foreground">
-                                    {tier.groupSize}
-                                  </span>
-                                  <span className="font-medium">
-                                    {formatPrice(
-                                      tier.priceExclBtw,
-                                      tier.priceInclBtw
-                                    )}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                            {workshop.slug === "kookworkshop" && (
-                              <p className="text-muted-foreground mt-3 text-xs italic">
-                                Prijzen zijn exclusief locatiekosten en drankjes
-                              </p>
-                            )}
-                            <Button asChild className="mt-6 w-full">
-                              <Link href="/onze-uitjes#configurator">
-                                Configureer dit uitje
-                              </Link>
-                            </Button>
-                          </div>
-                        )}
+                          )}
+                          <Button asChild className="mt-6 w-full">
+                            <Link href="/onze-uitjes#configurator">
+                              Configureer dit uitje
+                            </Link>
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </TabsContent>

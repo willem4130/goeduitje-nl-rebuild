@@ -202,11 +202,12 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 
 ### GTM / GA4 Tracking
 
-- GTM container `GTM-PZCH2S3R` loaded via `next/script` in `src/app/layout.tsx`
+- GTM container `GTM-PZCH2S3R` loaded via `@next/third-parties/google` `GoogleTagManager` component in `src/app/layout.tsx`
 - Env var: `NEXT_PUBLIC_GTM_ID` (set on Vercel production)
-- GTM noscript fallback in `<body>` for crawlers
+- GTM noscript fallback in `<body>` for crawlers (added manually — the official component doesn't include it)
 - GA4 `purchase` event pushed via `window.dataLayer` on configurator submit → `/bedankt`
 - Conversion tracking on `/bedankt` thank-you page
+- `window.dataLayer` type is declared by `@next/third-parties` — do NOT add a duplicate `declare global` in components
 
 ### Dynamic Pricing on Landing Pages
 

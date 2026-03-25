@@ -239,27 +239,6 @@ Kies uit verschillende kookworkshops: Arabische kookworkshop, Oogsten & Koken, V
     ],
   });
 
-  // Kookworkshop Variant 5: Open Kookworkshops (for individuals - no price tiers, agenda only)
-  await prisma.workshopVariant.create({
-    data: {
-      workshopId: kookworkshop.id,
-      name: "Open Kookworkshops",
-      description:
-        "De open kookworkshops vinden plaats op verschillende locaties in Nijmegen. In kleine groepjes worden twee heerlijke hoofdgerechten gekookt, die daarna gezellig samen worden opgegeten. De workshop wordt afgesloten met een zelfgemaakt toetje. Perfect voor particulieren die willen kennismaken met onze workshops.",
-      duration: "2,5 tot 3 uur",
-      includes: [
-        "Begeleiding door koks",
-        "Alle ingrediënten",
-        "Twee hoofdgerechten",
-        "Zelfgemaakt toetje",
-        "Gezellig samen eten",
-        "Locatie: Nijmegen",
-      ],
-      sortOrder: 5,
-    },
-  });
-  // Note: No price tiers for Open Kookworkshops - agenda display only
-
   // 2. Stadsspel
   const stadsspel = await prisma.workshop.create({
     data: {
