@@ -65,15 +65,15 @@ export const openSessionsRouter = createTRPCRouter({
         (sum, b) => sum + b.numberOfPeople,
         0
       );
-      const dayOfWeek = session.date.getDay();
-      const monthIndex = session.date.getMonth();
+      const dayOfWeek = session.date.getUTCDay();
+      const monthIndex = session.date.getUTCMonth();
 
       return {
         id: session.id,
         date: session.date.toISOString().split("T")[0],
-        dateDisplay: `${DUTCH_DAY_NAMES_FULL[dayOfWeek]} ${session.date.getDate()} ${DUTCH_MONTHS_FULL[monthIndex]}`,
+        dateDisplay: `${DUTCH_DAY_NAMES_FULL[dayOfWeek]} ${session.date.getUTCDate()} ${DUTCH_MONTHS_FULL[monthIndex]}`,
         dayName: DUTCH_DAYS[dayOfWeek],
-        dayNumber: session.date.getDate().toString(),
+        dayNumber: session.date.getUTCDate().toString(),
         month: DUTCH_MONTHS[monthIndex],
         time: `${session.startTime} - ${session.endTime}`,
         location: session.location,
