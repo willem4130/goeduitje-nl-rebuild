@@ -134,12 +134,13 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Max **t/m 15 personen** per booking
 - **Database-driven**: Sessions stored in `OpenWorkshopSession` table, managed via admin backend at `/sessions`
 - **Dynamic capacity**: Available seats computed from actual paid bookings (`maxCapacity - SUM(numberOfPeople)`)
+- **Manual "Volgeboekt" override**: `isFull` boolean on `OpenWorkshopSession` — admin can mark sessions as full regardless of capacity. Session remains visible but greyed out and not bookable. Booking mutation also rejects if `isFull: true`.
 - Price per person stored per session (default €60), fallback constant in `src/lib/open-workshops.ts`
-- tRPC router: `src/server/api/routers/openSessions.ts` — `getUpcoming` query with Dutch date formatting
+- tRPC router: `src/server/api/routers/openSessions.ts` — `getUpcoming` query with Dutch date formatting (UTC methods for timezone safety)
 - Bookings linked via `sessionId` FK on `Booking` model
 - **Date picker UI**: compact list grouped by month (e.g. "Maart 2026"), collapses after selection with "Wijzig" to reopen, auto-scrolls to form
-- "Vol" badge when session is full, "Nog X plekken" when low availability
-- **3 consumers**: booking page, workshop configurator popup (first 3 dates), `/onze-uitjes/[slug]` sidebar
+- "Volgeboekt" badge when session is full (manual or capacity), "Nog X plekken" when low availability
+- **3 consumers**: booking page, workshop configurator popup (first 3 bookable dates — skips full sessions), `/onze-uitjes/[slug]` sidebar
 - Seed script: `prisma/seed-open-workshops.ts` (idempotent, migrates old hardcoded data)
 
 ### Workshop Data (100% DB-Driven)
@@ -284,8 +285,8 @@ Team photos page uses **Server Component** pattern (not client-side tRPC):
 
 Theory of Change diagrams are **static images** (not dynamic SVG):
 
-- `public/images/impact/toc-medewerker.png` — downloaded from original Wix site
-- `public/images/impact/toc-deelnemer.png` — downloaded from original Wix site
+- `public/images/impact/toc-medewerker.jpg` — updated March 2026
+- `public/images/impact/toc-deelnemer.jpg` — updated March 2026
 - Displayed via `<Image>` in `src/app/onze-impact/page.tsx` with `overflow-x-auto` for mobile scrolling
 
 ## SEO
@@ -429,6 +430,7 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 - Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
 - Use client-side tRPC `useQuery` for pages that can be Server Components — use Prisma directly in Server Components instead (see onze-medewerkers pattern)
 - Use `StaggerChildren` with CSS `columns` layout — the `useInView` + `opacity: 0` initial state creates a deadlock where the container has no measurable height, so `IntersectionObserver` never fires. Use a plain `<div>` instead for column layouts with dynamic content.
+- Use local timezone methods (`.getDay()`, `.getDate()`, `.getMonth()`) on DB dates — dates stored as midnight UTC shift by -1 day for viewers west of UTC. Always use `.getUTCDay()`, `.getUTCDate()`, `.getUTCMonth()` or `toLocaleDateString()` with explicit `timeZone: 'Europe/Amsterdam'`.
 
 ## Reference Docs
 
