@@ -229,9 +229,6 @@ export default function JullieErvaringenPage() {
                       <h2 className="text-primary tracking-tight">
                         Uitgelichte Reviews
                       </h2>
-                      <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg leading-relaxed">
-                        Onze meest gewaardeerde ervaringen
-                      </p>
                     </div>
                   </ScrollReveal>
 

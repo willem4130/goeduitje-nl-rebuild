@@ -98,7 +98,7 @@ export function WorkshopConfigurator() {
       dateTbd: false,
       time: "",
       timeTbd: false,
-      duration: 2,
+      duration: 2.5,
       companyName: "",
       btwNumber: "",
       name: "",
