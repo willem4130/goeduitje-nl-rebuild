@@ -1054,7 +1054,7 @@ export default async function LandingPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Duur</p>
-                <p className="text-lg font-bold text-gray-900">Vanaf 2,5 uur</p>
+                <p className="text-lg font-bold text-gray-900">{kookworkshop?.duration ?? "Vanaf 2,5 uur"}</p>
                 <p className="text-xs text-gray-500">volledig naar wens</p>
               </div>
             </div>
@@ -1065,7 +1065,7 @@ export default async function LandingPage({ params }: Props) {
               <div>
                 <p className="text-sm text-gray-500">Groepsgrootte</p>
                 <p className="text-lg font-bold text-gray-900">
-                  Vanaf 8 personen
+                  {kookworkshop?.groupSize ?? "Vanaf 8 personen"}
                 </p>
                 <p className="text-xs text-gray-500">ook grotere groepen</p>
               </div>
