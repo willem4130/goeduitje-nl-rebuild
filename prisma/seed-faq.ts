@@ -8,14 +8,14 @@ const faqData = [
     category: "Boekingen",
     question: "Hoe kan ik een workshop boeken?",
     answer:
-      "U kunt eenvoudig een workshop boeken via onze website. Kies de gewenste workshop, selecteer een datum en vul uw gegevens in. Na betaling ontvangt u direct een bevestiging per e-mail.",
+      "Als je de uitjes configurator invult krijg je binnen 48 uur een reactie met een prijsvoorstel indien de gewenste datum nog beschikbaar is. Door akkoord te gaan met het prijsvoorstel boek je de workshop.\nWil je sneller weten of de door jouw gewenste datum en tijd mogelijk is? Bel dan met Guus 06-52675891.",
     sortOrder: 1,
   },
   {
     category: "Boekingen",
     question: "Hoeveel personen moeten er minimaal deelnemen?",
     answer:
-      "Het minimum aantal deelnemers verschilt per workshop. Over het algemeen is het minimum 8 personen. Bij sommige workshops is dit 6 of 10 personen. U vindt dit bij de workshopbeschrijving.",
+      "Het minimum aantal deelnemers verschilt per workshop.\nBij de kookworkshop rekenen we vanaf 8 personen een prijs per persoon. Ben je met minder dan 8 personen dan rekenen we een vaste prijs die afhankelijk is van reistijd tot de locatie.\n\nVoor kleinere groepen en individuen organiseren wij regelmatig open kookworkshops. Kijk voor de beschikbare open kookworkshops op www.goeduitje.nl/open-kookworkshops\n\nVoor de andere workshops en activiteiten vindt u het minimale aantal bij de workshopbeschrijving.",
     sortOrder: 2,
   },
   {
@@ -29,22 +29,29 @@ const faqData = [
     category: "Boekingen",
     question: "Hoe ver van tevoren moet ik boeken?",
     answer:
-      "Wij adviseren om minimaal 2 weken van tevoren te boeken. Voor populaire data en in het hoogseizoen raden we aan om nog eerder te reserveren. Last-minute boekingen zijn soms mogelijk, neem hiervoor contact met ons op.",
+      "Beschikbaarheid is afhankelijk van reeds geplaatste boekingen.\n\nIn het hoogseizoen (april t/m juni en september t/m december) raden wij aan om minimaal zes weken van tevoren te boeken.\n\nLast-minute boekingen zijn soms mogelijk, neem hiervoor contact met ons op.",
     sortOrder: 4,
+  },
+  {
+    category: "Boekingen",
+    question: "Hebben jullie ook cadeaubonnen?",
+    answer:
+      "Voor onze Open Kookworkshops hebben wij cadeaubonnen. Die vind je hier (link naar cadeaubon).",
+    sortOrder: 5,
   },
   // Betaling & Annulering
   {
     category: "Betaling & Annulering",
     question: "Welke betaalmethoden accepteren jullie?",
     answer:
-      "Wij accepteren iDEAL, creditcard (Visa, Mastercard), en betaling op factuur voor zakelijke klanten. De betaling verloopt via Stripe, een beveiligde betalingsverwerker.",
+      "Voor privé-workshops / gesloten boekingen sturen wij achteraf een rekening met een betalingstermijn van 14 dagen. Voor grote groepen (boven 20 personen) vragen wij om een aanbetaling van 40%.\n\nDe betaling van deelname aan Open Kookworkshops verloopt via Stripe, een beveiligde betalingsverwerker.",
     sortOrder: 1,
   },
   {
     category: "Betaling & Annulering",
     question: "Kan ik mijn boeking annuleren?",
     answer:
-      "Ja, annuleren is mogelijk. Tot 30 dagen voor de activiteit ontvangt u volledige restitutie minus €25 administratiekosten. Tussen 14-30 dagen krijgt u 50% terug. Binnen 14 dagen is helaas geen restitutie mogelijk.",
+      "Ja, annuleren is mogelijk. Tot 30 dagen voor de activiteit brengen wij €25 administratiekosten in rekening. Tussen 14-30 dagen voor de datum van de activiteit brengen wij 20% van het prijsvoorstel in rekening. Binnen 14 dagen zijn wij helaas genoodzaakt om het volledige bedrag in rekening te brengen.",
     sortOrder: 2,
   },
   {
@@ -59,7 +66,7 @@ const faqData = [
     category: "Praktische informatie",
     question: "Wat moet ik meenemen naar een workshop?",
     answer:
-      "Dit hangt af van de workshop. Bij kookworkshops zorgen wij voor alle ingrediënten en materialen. We adviseren comfortabele kleding te dragen. Specifieke benodigdheden staan vermeld in uw bevestigingsmail.",
+      "Wij verzorgen alle materialen. Bij sommige spellen maakt u gebruik van uw telefoon; wij vermelden dit in de bevestigingsmail.",
     sortOrder: 1,
   },
   {
@@ -73,7 +80,7 @@ const faqData = [
     category: "Praktische informatie",
     question: "Waar vinden de workshops plaats?",
     answer:
-      "Onze workshops vinden plaats op diverse locaties door heel Nederland. De exacte locatie en routebeschrijving ontvangt u in uw bevestigingsmail. We kunnen ook op locatie bij uw bedrijf komen voor grotere groepen.",
+      "Onze kookworkshops vinden plaats op uw locatie of, als u geen geschikte locatie heeft, op een externe locatie in overleg. We maken regelmatig gebruik van locaties in Nijmegen, Arnhem en Amersfoort, maar we hebben op tientallen andere locaties gekookt.\n\nOnze spellen kunnen zowel binnen als buiten worden gespeeld. We kiezen de locatie in overleg met u; een stadscentrum, een park of liever in de natuur.",
     sortOrder: 3,
   },
   {
@@ -88,7 +95,7 @@ const faqData = [
     category: "Voor bedrijven",
     question: "Kunnen jullie een factuur sturen?",
     answer:
-      "Ja, voor zakelijke klanten kunnen we een factuur sturen met een betalingstermijn van 14 dagen. Neem contact met ons op voor deze optie.",
+      "Ja, wij sturen altijd achteraf een factuur met een betalingstermijn van 14 dagen.",
     sortOrder: 1,
   },
   {
@@ -102,7 +109,7 @@ const faqData = [
     category: "Voor bedrijven",
     question: "Kunnen jullie catering verzorgen?",
     answer:
-      "Bij veel van onze workshops is catering inbegrepen. Voor extra catering of speciale wensen kunnen we in overleg aanvullende arrangementen aanbieden.",
+      "Jazeker. Om onze impact te vergroten en onze medewerkers meer uren te laten maken bieden wij catering aan. Dit kan zowel in combinatie met onze spellen als los. De opties vindt u bij Lunch & Diner Uitjes.",
     sortOrder: 3,
   },
 ];
