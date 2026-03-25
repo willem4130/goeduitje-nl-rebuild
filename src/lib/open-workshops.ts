@@ -16,6 +16,7 @@ export interface OpenWorkshop {
   maxCapacity: number;
   location: string;
   pricePerPerson: number;
+  isFull: boolean;
 }
 
 // Default price per person (fallback if no sessions in DB)

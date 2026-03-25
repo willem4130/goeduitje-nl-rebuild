@@ -42,8 +42,7 @@ export default function BookingPage() {
   const createBooking = api.booking.create.useMutation();
   const { data: workshops = [], isLoading: isLoadingWorkshops } =
     api.openSessions.getUpcoming.useQuery();
-  const PRICE_PER_PERSON =
-    workshops[0]?.pricePerPerson ?? OPEN_WORKSHOP_PRICE;
+  const PRICE_PER_PERSON = workshops[0]?.pricePerPerson ?? OPEN_WORKSHOP_PRICE;
   const [selectedWorkshop, setSelectedWorkshop] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -55,17 +54,17 @@ export default function BookingPage() {
   const [dateCollapsed, setDateCollapsed] = useState(false);
   const dateCardRef = useRef<HTMLDivElement>(null);
 
-  const handleSelectDate = useCallback(
-    (id: string) => {
-      setSelectedWorkshop(id);
-      setDateCollapsed(true);
-      // Scroll so the collapsed date card + form are visible together
-      setTimeout(() => {
-        dateCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 150);
-    },
-    []
-  );
+  const handleSelectDate = useCallback((id: string) => {
+    setSelectedWorkshop(id);
+    setDateCollapsed(true);
+    // Scroll so the collapsed date card + form are visible together
+    setTimeout(() => {
+      dateCardRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 150);
+  }, []);
 
   // Gift card state
   const [hasGiftCard, setHasGiftCard] = useState(false);
@@ -382,7 +381,7 @@ export default function BookingPage() {
                         return (
                           <button
                             onClick={() => setDateCollapsed(false)}
-                            className="border-primary bg-primary/5 flex w-full items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all duration-200 hover:bg-primary/10"
+                            className="border-primary bg-primary/5 hover:bg-primary/10 flex w-full items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all duration-200"
                           >
                             <div className="bg-primary flex size-5 shrink-0 items-center justify-center rounded-full">
                               <IconCheck className="text-primary-foreground size-3" />
@@ -447,24 +446,25 @@ export default function BookingPage() {
                                 {group.items.map((workshop) => {
                                   const isSelected =
                                     selectedWorkshop === workshop.id;
+                                  const isFull =
+                                    workshop.isFull ||
+                                    workshop.availableSeats === 0;
                                   const isLowSeats =
+                                    !isFull &&
                                     workshop.availableSeats > 0 &&
                                     workshop.availableSeats <= 3;
-                                  const isFull =
-                                    workshop.availableSeats === 0;
 
                                   return (
                                     <button
                                       key={workshop.id}
                                       onClick={() =>
-                                        !isFull &&
-                                        handleSelectDate(workshop.id)
+                                        !isFull && handleSelectDate(workshop.id)
                                       }
                                       disabled={isFull}
                                       className={cn(
                                         "flex w-full items-center gap-4 rounded-lg border-2 px-4 py-3 text-left transition-all duration-200",
                                         isFull
-                                          ? "cursor-not-allowed border-border bg-muted/50 opacity-60"
+                                          ? "border-border bg-muted/50 cursor-not-allowed opacity-60"
                                           : isSelected
                                             ? "border-primary bg-primary/5 shadow-sm"
                                             : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
@@ -514,7 +514,7 @@ export default function BookingPage() {
                                               variant="destructive"
                                               className="text-xs"
                                             >
-                                              Vol
+                                              Volgeboekt
                                             </Badge>
                                           )}
                                           {isLowSeats && (

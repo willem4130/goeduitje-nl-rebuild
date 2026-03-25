@@ -231,6 +231,7 @@ model OpenWorkshopSession {
   maxCapacity    Int       @default(12)
   pricePerPerson Float     @default(60)
   isActive       Boolean   @default(true)
+  isFull         Boolean   @default(false)
   notes          String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt

@@ -22,6 +22,7 @@ describe("OpenWorkshop type", () => {
       maxCapacity: 12,
       location: "Nijmegen",
       pricePerPerson: 60,
+      isFull: false,
     };
 
     expect(workshop.id).toBe("test-id");

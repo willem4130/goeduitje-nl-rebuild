@@ -22,7 +22,9 @@ const createBookingSchema = z.object({
   remainingAmount: z.number(),
   amountPaid: z.number().optional(),
   currency: z.string().default("eur"),
-  paymentMethod: z.enum(["gift_card", "stripe", "gift_card_partial"]).optional(),
+  paymentMethod: z
+    .enum(["gift_card", "stripe", "gift_card_partial"])
+    .optional(),
   paymentStatus: z.string().default("pending"),
 });
 
@@ -67,6 +69,13 @@ export const bookingRouter = createTRPCRouter({
               throw new TRPCError({
                 code: "NOT_FOUND",
                 message: "Sessie niet gevonden",
+              });
+            }
+
+            if (session.isFull) {
+              throw new TRPCError({
+                code: "PRECONDITION_FAILED",
+                message: "Deze sessie is volgeboekt.",
               });
             }
 

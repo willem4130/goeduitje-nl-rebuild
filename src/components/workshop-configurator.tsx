@@ -78,7 +78,9 @@ export function WorkshopConfigurator() {
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showSmallGroupPopup, setShowSmallGroupPopup] = useState(false);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string[]>>({});
+  const [selectedVariants, setSelectedVariants] = useState<
+    Record<string, string[]>
+  >({});
   const router = useRouter();
   const createWorkshop = api.workshop.create.useMutation();
   const { data: upcomingWorkshops = [] } =
@@ -137,7 +139,11 @@ export function WorkshopConfigurator() {
 
   // Filter out workshops that don't meet participant requirements
   useEffect(() => {
-    if (participantCount && selectedWorkshops.length > 0 && workshops.length > 0) {
+    if (
+      participantCount &&
+      selectedWorkshops.length > 0 &&
+      workshops.length > 0
+    ) {
       const validWorkshops = selectedWorkshops.filter((workshopId) => {
         const workshop = workshops.find((w) => w.id === workshopId);
         return workshop && participantCount >= workshop.minParticipants;
@@ -168,7 +174,8 @@ export function WorkshopConfigurator() {
     if (
       participantCount === 0 ||
       participantCount >= 8 ||
-      upcomingWorkshops.length === 0
+      upcomingWorkshops.filter((w) => !w.isFull && w.availableSeats > 0)
+        .length === 0
     ) {
       return;
     }
@@ -224,10 +231,13 @@ export function WorkshopConfigurator() {
         const ws = workshops.find((w) => w.id === id);
         return ws && ws.variants.length > 0;
       });
-      const missingVariants = workshopsWithVariants.filter((id) => !selectedVariants[id] || selectedVariants[id].length === 0);
+      const missingVariants = workshopsWithVariants.filter(
+        (id) => !selectedVariants[id] || selectedVariants[id].length === 0
+      );
       if (missingVariants.length > 0) {
         toast.error("Kies minimaal één variant", {
-          description: "Selecteer minimaal één variant voor elk uitje met meerdere opties.",
+          description:
+            "Selecteer minimaal één variant voor elk uitje met meerdere opties.",
         });
         return;
       }
@@ -252,7 +262,11 @@ export function WorkshopConfigurator() {
     try {
       const workshopConfig = await createWorkshop.mutateAsync({
         ...data,
-        selectedVariants: Object.keys(selectedVariants).some((k) => selectedVariants[k].length > 0) ? selectedVariants : undefined,
+        selectedVariants: Object.keys(selectedVariants).some(
+          (k) => selectedVariants[k].length > 0
+        )
+          ? selectedVariants
+          : undefined,
       });
 
       // Build human-readable workshops list with variant info
@@ -260,8 +274,10 @@ export function WorkshopConfigurator() {
         const name = workshops.find((w) => w.id === id)?.name || id;
         const variants = selectedVariants[id] ?? [];
         const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
-        if (realVariants.length > 0) return `${name} (${realVariants.join(", ")})`;
-        if (variants.includes("Nog niet gekozen")) return `${name} (variant nog niet gekozen)`;
+        if (realVariants.length > 0)
+          return `${name} (${realVariants.join(", ")})`;
+        if (variants.includes("Nog niet gekozen"))
+          return `${name} (variant nog niet gekozen)`;
         return name;
       });
 
@@ -436,12 +452,15 @@ export function WorkshopConfigurator() {
                   Eerstvolgende data:
                 </p>
                 <div className="space-y-1 text-sm text-amber-700">
-                  {upcomingWorkshops.slice(0, 3).map((workshop) => (
-                    <div key={workshop.id} className="flex justify-between">
-                      <span>{workshop.dateDisplay}</span>
-                      <span className="font-medium">{workshop.time}</span>
-                    </div>
-                  ))}
+                  {upcomingWorkshops
+                    .filter((w) => !w.isFull && w.availableSeats > 0)
+                    .slice(0, 3)
+                    .map((workshop) => (
+                      <div key={workshop.id} className="flex justify-between">
+                        <span>{workshop.dateDisplay}</span>
+                        <span className="font-medium">{workshop.time}</span>
+                      </div>
+                    ))}
                 </div>
                 <p className="mt-2 text-xs text-amber-600">
                   €{upcomingWorkshops[0]?.pricePerPerson ?? OPEN_WORKSHOP_PRICE}{" "}
@@ -614,115 +633,196 @@ export function WorkshopConfigurator() {
                               <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
                                 {workshopsLoading ? (
                                   <div className="col-span-full flex items-center justify-center py-4">
-                                    <IconLoader2 className="size-5 animate-spin text-muted-foreground" />
+                                    <IconLoader2 className="text-muted-foreground size-5 animate-spin" />
                                   </div>
-                                ) : workshops.map((workshop) => {
-                                  const available = isWorkshopAvailable(
-                                    workshop.id
-                                  );
-                                  return (
-                                    <FormField
-                                      key={workshop.id}
-                                      control={form.control}
-                                      name="workshops"
-                                      render={({ field }) => (
-                                        <FormItem
-                                          className={`flex items-center space-y-0 space-x-2 rounded-md border p-1.5 ${
-                                            !available
-                                              ? "border-muted bg-muted/20 opacity-60"
-                                              : "border-border"
-                                          }`}
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(
-                                                workshop.id
-                                              )}
-                                              disabled={!available}
-                                              onCheckedChange={(checked) => {
-                                                const updatedValue = checked
-                                                  ? [
-                                                      ...field.value,
-                                                      workshop.id,
-                                                    ]
-                                                  : field.value?.filter(
-                                                      (val) =>
-                                                        val !== workshop.id
+                                ) : (
+                                  workshops.map((workshop) => {
+                                    const available = isWorkshopAvailable(
+                                      workshop.id
+                                    );
+                                    return (
+                                      <FormField
+                                        key={workshop.id}
+                                        control={form.control}
+                                        name="workshops"
+                                        render={({ field }) => (
+                                          <FormItem
+                                            className={`flex items-center space-y-0 space-x-2 rounded-md border p-1.5 ${
+                                              !available
+                                                ? "border-muted bg-muted/20 opacity-60"
+                                                : "border-border"
+                                            }`}
+                                          >
+                                            <FormControl>
+                                              <Checkbox
+                                                checked={field.value?.includes(
+                                                  workshop.id
+                                                )}
+                                                disabled={!available}
+                                                onCheckedChange={(checked) => {
+                                                  const updatedValue = checked
+                                                    ? [
+                                                        ...field.value,
+                                                        workshop.id,
+                                                      ]
+                                                    : field.value?.filter(
+                                                        (val) =>
+                                                          val !== workshop.id
+                                                      );
+                                                  field.onChange(updatedValue);
+                                                  if (!checked) {
+                                                    setSelectedVariants(
+                                                      (prev) => {
+                                                        const next = {
+                                                          ...prev,
+                                                        };
+                                                        delete next[
+                                                          workshop.id
+                                                        ];
+                                                        return next;
+                                                      }
                                                     );
-                                                field.onChange(updatedValue);
-                                                if (!checked) {
-                                                  setSelectedVariants((prev) => {
-                                                    const next = { ...prev };
-                                                    delete next[workshop.id];
-                                                    return next;
-                                                  });
-                                                }
-                                              }}
-                                            />
-                                          </FormControl>
-                                          <div className="min-w-0 flex-1">
-                                            <FormLabel className="cursor-pointer text-sm leading-tight font-normal">
-                                              {workshop.name}
-                                              {!available && (
-                                                <span className="text-muted-foreground ml-1 text-[10px]">
-                                                  (min.{" "}
-                                                  {workshop.minParticipants})
-                                                </span>
-                                              )}
-                                            </FormLabel>
-                                            {/* Variant selection - shown when workshop is selected and has variants */}
-                                            {field.value?.includes(workshop.id) && workshop.variants.length > 0 && (
-                                              <div className="mt-2 space-y-1 border-t pt-2">
-                                                <p className="text-xs font-medium text-muted-foreground mb-1">Kies variant(en):</p>
-                                                {workshop.variants.map((variant) => {
-                                                  const isSelected = selectedVariants[workshop.id]?.includes(variant.name) ?? false;
-                                                  const isUndecided = selectedVariants[workshop.id]?.includes("Nog niet gekozen") ?? false;
-                                                  return (
-                                                    <label key={variant.id} className={`flex items-center gap-2 text-xs cursor-pointer ${isUndecided ? "opacity-50" : ""}`}>
+                                                  }
+                                                }}
+                                              />
+                                            </FormControl>
+                                            <div className="min-w-0 flex-1">
+                                              <FormLabel className="cursor-pointer text-sm leading-tight font-normal">
+                                                {workshop.name}
+                                                {!available && (
+                                                  <span className="text-muted-foreground ml-1 text-[10px]">
+                                                    (min.{" "}
+                                                    {workshop.minParticipants})
+                                                  </span>
+                                                )}
+                                              </FormLabel>
+                                              {/* Variant selection - shown when workshop is selected and has variants */}
+                                              {field.value?.includes(
+                                                workshop.id
+                                              ) &&
+                                                workshop.variants.length >
+                                                  0 && (
+                                                  <div className="mt-2 space-y-1 border-t pt-2">
+                                                    <p className="text-muted-foreground mb-1 text-xs font-medium">
+                                                      Kies variant(en):
+                                                    </p>
+                                                    {workshop.variants.map(
+                                                      (variant) => {
+                                                        const isSelected =
+                                                          selectedVariants[
+                                                            workshop.id
+                                                          ]?.includes(
+                                                            variant.name
+                                                          ) ?? false;
+                                                        const isUndecided =
+                                                          selectedVariants[
+                                                            workshop.id
+                                                          ]?.includes(
+                                                            "Nog niet gekozen"
+                                                          ) ?? false;
+                                                        return (
+                                                          <label
+                                                            key={variant.id}
+                                                            className={`flex cursor-pointer items-center gap-2 text-xs ${isUndecided ? "opacity-50" : ""}`}
+                                                          >
+                                                            <input
+                                                              type="checkbox"
+                                                              checked={
+                                                                isSelected
+                                                              }
+                                                              disabled={
+                                                                isUndecided
+                                                              }
+                                                              onChange={() =>
+                                                                setSelectedVariants(
+                                                                  (prev) => {
+                                                                    const current =
+                                                                      prev[
+                                                                        workshop
+                                                                          .id
+                                                                      ] ?? [];
+                                                                    const filtered =
+                                                                      current.filter(
+                                                                        (v) =>
+                                                                          v !==
+                                                                          "Nog niet gekozen"
+                                                                      );
+                                                                    return {
+                                                                      ...prev,
+                                                                      [workshop.id]:
+                                                                        isSelected
+                                                                          ? filtered.filter(
+                                                                              (
+                                                                                v
+                                                                              ) =>
+                                                                                v !==
+                                                                                variant.name
+                                                                            )
+                                                                          : [
+                                                                              ...filtered,
+                                                                              variant.name,
+                                                                            ],
+                                                                    };
+                                                                  }
+                                                                )
+                                                              }
+                                                              className="text-primary"
+                                                            />
+                                                            <span>
+                                                              {variant.name}
+                                                            </span>
+                                                          </label>
+                                                        );
+                                                      }
+                                                    )}
+                                                    <label className="text-muted-foreground flex cursor-pointer items-center gap-2 text-xs">
                                                       <input
                                                         type="checkbox"
-                                                        checked={isSelected}
-                                                        disabled={isUndecided}
-                                                        onChange={() => setSelectedVariants((prev) => {
-                                                          const current = prev[workshop.id] ?? [];
-                                                          const filtered = current.filter((v) => v !== "Nog niet gekozen");
-                                                          return {
-                                                            ...prev,
-                                                            [workshop.id]: isSelected
-                                                              ? filtered.filter((v) => v !== variant.name)
-                                                              : [...filtered, variant.name],
-                                                          };
-                                                        })}
+                                                        checked={
+                                                          selectedVariants[
+                                                            workshop.id
+                                                          ]?.includes(
+                                                            "Nog niet gekozen"
+                                                          ) ?? false
+                                                        }
+                                                        onChange={() =>
+                                                          setSelectedVariants(
+                                                            (prev) => {
+                                                              const current =
+                                                                prev[
+                                                                  workshop.id
+                                                                ] ?? [];
+                                                              const isUndecided =
+                                                                current.includes(
+                                                                  "Nog niet gekozen"
+                                                                );
+                                                              return {
+                                                                ...prev,
+                                                                [workshop.id]:
+                                                                  isUndecided
+                                                                    ? []
+                                                                    : [
+                                                                        "Nog niet gekozen",
+                                                                      ],
+                                                              };
+                                                            }
+                                                          )
+                                                        }
                                                         className="text-primary"
                                                       />
-                                                      <span>{variant.name}</span>
+                                                      <span>
+                                                        Nog niet gekozen
+                                                      </span>
                                                     </label>
-                                                  );
-                                                })}
-                                                <label className="flex items-center gap-2 text-xs cursor-pointer text-muted-foreground">
-                                                  <input
-                                                    type="checkbox"
-                                                    checked={selectedVariants[workshop.id]?.includes("Nog niet gekozen") ?? false}
-                                                    onChange={() => setSelectedVariants((prev) => {
-                                                      const current = prev[workshop.id] ?? [];
-                                                      const isUndecided = current.includes("Nog niet gekozen");
-                                                      return {
-                                                        ...prev,
-                                                        [workshop.id]: isUndecided ? [] : ["Nog niet gekozen"],
-                                                      };
-                                                    })}
-                                                    className="text-primary"
-                                                  />
-                                                  <span>Nog niet gekozen</span>
-                                                </label>
-                                              </div>
-                                            )}
-                                          </div>
-                                        </FormItem>
-                                      )}
-                                    />
-                                  );
-                                })}
+                                                  </div>
+                                                )}
+                                            </div>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    );
+                                  })
+                                )}
                               </div>
                               <FormMessage />
                             </FormItem>
@@ -1039,19 +1139,24 @@ export function WorkshopConfigurator() {
                               <span className="font-medium">Uitjes:</span>{" "}
                               {selectedWorkshops.length > 0
                                 ? selectedWorkshops
-                                    .map(
-                                      (id) => {
-                                        const name = workshops.find((w) => w.id === id)?.name;
-                                        const variants = selectedVariants[id] ?? [];
-                                        const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
-                                        if (realVariants.length > 0) {
-                                          return `${name} — ${realVariants.join(", ")}`;
-                                        } else if (variants.includes("Nog niet gekozen")) {
-                                          return `${name} — (nog niet gekozen)`;
-                                        }
-                                        return name;
+                                    .map((id) => {
+                                      const name = workshops.find(
+                                        (w) => w.id === id
+                                      )?.name;
+                                      const variants =
+                                        selectedVariants[id] ?? [];
+                                      const realVariants = variants.filter(
+                                        (v) => v !== "Nog niet gekozen"
+                                      );
+                                      if (realVariants.length > 0) {
+                                        return `${name} — ${realVariants.join(", ")}`;
+                                      } else if (
+                                        variants.includes("Nog niet gekozen")
+                                      ) {
+                                        return `${name} — (nog niet gekozen)`;
                                       }
-                                    )
+                                      return name;
+                                    })
                                     .join(", ")
                                 : "Geen"}
                             </div>
@@ -1062,7 +1167,6 @@ export function WorkshopConfigurator() {
                                 : location}
                             </div>
                           </div>
-
                         </div>
                       </div>
                     )}
