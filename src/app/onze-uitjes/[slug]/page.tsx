@@ -409,23 +409,25 @@ export default async function WorkshopDetailPage({ params }: Props) {
 
                   {/* Price tiers */}
                   {workshop.priceTiers && workshop.priceTiers.length > 0 && (
-                    <div className="mb-4 space-y-2">
-                      <p className="text-sm font-semibold">
+                    <div className="mb-4">
+                      <p className="mb-3 text-sm font-semibold">
                         Prijzen per groepsgrootte:
                       </p>
-                      {workshop.priceTiers.map((tier, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center justify-between text-xs sm:text-sm"
-                        >
-                          <span className="text-muted-foreground">
-                            {tier.groupSize}
-                          </span>
-                          <span className="font-medium">
-                            {formatPrice(tier.priceExclBtw, tier.priceInclBtw)}
-                          </span>
-                        </div>
-                      ))}
+                      <div className="space-y-2">
+                        {workshop.priceTiers.map((tier, i) => (
+                          <div
+                            key={i}
+                            className="flex items-baseline gap-3 text-sm"
+                          >
+                            <span className="text-muted-foreground w-24 shrink-0">
+                              {tier.groupSize}
+                            </span>
+                            <span className="font-medium">
+                              {formatPrice(tier.priceExclBtw, tier.priceInclBtw)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
 
