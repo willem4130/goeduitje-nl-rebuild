@@ -2332,7 +2332,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/workshops/wat-uniek-maakt.jpg"
+                src={type === "stadsspel" ? "/images/workshops/stadsspel.jpg" : "/images/workshops/wat-uniek-maakt.jpg"}
                 alt={`${label} ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"
@@ -2386,7 +2386,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
                     </h3>
                     <p className="text-muted-foreground">
                       {type === "stadsspel"
-                        ? "Het stadsspel is geschikt voor groepen van 10-20 personen. Bij grotere groepen splitsen we op in meerdere teams. Neem contact op voor de mogelijkheden."
+                        ? "Het stadsspel is geschikt voor groepen van 10-50 personen. Bij grotere groepen splitsen we op in meerdere teams. Neem contact op voor de mogelijkheden."
                         : "Onze activiteiten zijn geschikt voor groepen vanaf 8 personen. Ook voor grotere groepen (50+) hebben we ruime ervaring. Neem contact op voor maatwerk."}
                     </p>
                   </div>
@@ -2406,7 +2406,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
                     </h3>
                     <p className="text-muted-foreground">
                       {type === "stadsspel"
-                        ? `Het stadsspel kan op elke (toegankelijke) plek gespeeld worden in ${landing.city} of omgeving. We stemmen de locatie af op jullie wensen.`
+                        ? `Het stadsspel kan op elke (toegankelijke) plek gespeeld worden in ${landing.city} of omgeving. In het centrum of juist in een park. We stemmen de locatie af op jullie wensen.`
                         : `Onze activiteiten worden georganiseerd bij jou op locatie of we huren een locatie naar keuze in ${landing.city} of omgeving.`}
                     </p>
                   </div>
