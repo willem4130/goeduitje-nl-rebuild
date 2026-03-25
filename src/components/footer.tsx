@@ -58,13 +58,13 @@ const socialLinks = [
     name: "Facebook",
     href: "https://facebook.com/goeduitje",
     icon: Facebook,
-    color: "hover:text-blue-600",
+    color: "hover:text-secondary",
   },
   {
     name: "LinkedIn",
     href: "https://linkedin.com/company/goeduitje",
     icon: Linkedin,
-    color: "hover:text-blue-700",
+    color: "hover:text-secondary",
   },
 ];
 

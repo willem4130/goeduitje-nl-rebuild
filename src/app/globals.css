@@ -57,20 +57,20 @@
   --popover: oklch(1 0 0); /* White */
   --popover-foreground: oklch(0 0 0); /* Black */
 
-  /* Primary - Rose/Pink #C84869 */
-  --primary: oklch(0.56 0.15 10); /* Rose */
+  /* Primary - Brand Red #902C3E */
+  --primary: oklch(0.449 0.134 14); /* #902C3E */
   --primary-foreground: oklch(1 0 0); /* White */
 
-  /* Secondary - Dark Blue #213E8C */
-  --secondary: oklch(0.33 0.12 265); /* Blue */
+  /* Secondary - Brand Blue #1C7EAE */
+  --secondary: oklch(0.562 0.112 236); /* #1C7EAE */
   --secondary-foreground: oklch(1 0 0); /* White */
 
   /* Muted - Light Gray #CCCCCC */
   --muted: oklch(0.85 0 0); /* Light Gray */
   --muted-foreground: oklch(0.25 0 0); /* Dark Gray #333333 */
 
-  /* Accent - Light Blue #CFE1FF */
-  --accent: oklch(0.91 0.04 265); /* Light Blue */
+  /* Accent - Light Blue (derived from brand blue #1C7EAE) */
+  --accent: oklch(0.91 0.04 236); /* Light Blue */
   --accent-foreground: oklch(0.2 0 0); /* Dark text */
 
   /* Destructive - Dark Rose #870026 */
@@ -80,11 +80,11 @@
   /* Border & Input - Refined for editorial sophistication */
   --border: oklch(0.9 0 0 / 0.15); /* Subtle gray border, sophisticated */
   --input: oklch(0.92 0 0); /* Lighter input background */
-  --ring: oklch(0.56 0.15 10); /* Primary Rose for focus */
+  --ring: oklch(0.449 0.134 14); /* Primary #902C3E for focus */
 
   /* Chart Colors - Using brand palette */
-  --chart-1: oklch(0.56 0.15 10); /* Primary Rose */
-  --chart-2: oklch(0.33 0.12 265); /* Secondary Blue */
+  --chart-1: oklch(0.449 0.134 14); /* Primary #902C3E */
+  --chart-2: oklch(0.562 0.112 236); /* Secondary #1C7EAE */
   --chart-3: oklch(0.91 0.04 265); /* Accent Light Blue */
   --chart-4: oklch(0.42 0.1 265); /* Medium Blue */
   --chart-5: oklch(0.74 0.12 15); /* Light Pink */

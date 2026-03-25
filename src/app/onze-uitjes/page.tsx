@@ -99,7 +99,7 @@ export default function OnzeUitjesPage() {
                   "Activiteiten die je team verbinden én impact maken.",
                 href: "/teambuilding",
                 icon: Users,
-                color: "text-blue-600",
+                color: "text-secondary",
               },
               {
                 title: "Bedrijfsuitjes",

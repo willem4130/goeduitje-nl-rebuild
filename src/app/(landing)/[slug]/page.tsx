@@ -736,13 +736,13 @@ const THEMES: Record<LandingType, ThemeConfig> = {
     ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
   },
   teambuilding: {
-    gradient: "from-blue-50 via-sky-50 to-white",
-    badge: "bg-blue-100 text-blue-800 hover:bg-blue-100",
-    button: "bg-blue-600 hover:bg-blue-700",
-    accent: "text-blue-600",
-    iconBg: "bg-blue-100",
-    ctaBg: "bg-blue-600",
-    ctaButton: "bg-white text-blue-600 hover:bg-white/90",
+    gradient: "from-secondary/10 via-sky-50 to-white",
+    badge: "bg-secondary/15 text-secondary hover:bg-secondary/15",
+    button: "bg-secondary hover:bg-secondary/90",
+    accent: "text-secondary",
+    iconBg: "bg-secondary/15",
+    ctaBg: "bg-secondary",
+    ctaButton: "bg-white text-secondary hover:bg-white/90",
     ctaOutline: "border-white bg-transparent text-white hover:bg-white/10",
   },
   bedrijfsuitje: {
@@ -2047,7 +2047,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
         <div className="container mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div
-              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-secondary/10" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
             >
               <div
                 className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
@@ -2063,7 +2063,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
               </div>
             </div>
             <div
-              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-secondary/10" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
             >
               <div
                 className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
@@ -2081,7 +2081,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
               </div>
             </div>
             <div
-              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-blue-50/50" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
+              className={`flex items-center gap-4 rounded-xl border p-4 ${type === "teambuilding" ? "bg-secondary/10" : type === "bedrijfsuitje" ? "bg-green-50/50" : "bg-indigo-50/50"}`}
             >
               <div
                 className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg ${theme.iconBg}`}
@@ -2178,7 +2178,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
                     <tr
                       className={
                         type === "teambuilding"
-                          ? "bg-blue-50"
+                          ? "bg-secondary/10"
                           : type === "bedrijfsuitje"
                             ? "bg-green-50"
                             : "bg-indigo-50"
@@ -2202,7 +2202,7 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
                         className={
                           tier.highlight
                             ? type === "teambuilding"
-                              ? "bg-blue-50/50"
+                              ? "bg-secondary/10"
                               : type === "bedrijfsuitje"
                                 ? "bg-green-50/50"
                                 : "bg-indigo-50/50"

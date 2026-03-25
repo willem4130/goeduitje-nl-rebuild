@@ -123,8 +123,8 @@ export function HomeContent({ pageContent, siteStats }: HomeContentProps) {
                     "Versterk je team met activiteiten die verbinden én impact maken.",
                   href: "/teambuilding",
                   icon: Users,
-                  color: "text-blue-600",
-                  bg: "bg-blue-50 hover:bg-blue-100/70",
+                  color: "text-secondary",
+                  bg: "bg-secondary/10 hover:bg-secondary/15",
                 },
                 {
                   title: "Bedrijfsuitjes",

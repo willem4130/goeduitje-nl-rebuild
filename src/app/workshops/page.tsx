@@ -319,16 +319,16 @@ export default async function WorkshopsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Link
                 href="/teambuilding"
-                className="group rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+                className="group rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
               >
-                <h3 className="mb-2 font-bold group-hover:text-blue-600">
+                <h3 className="mb-2 font-bold group-hover:text-secondary">
                   Teambuilding activiteiten
                 </h3>
                 <p className="text-muted-foreground text-sm">
                   Versterk je team met unieke activiteiten begeleid door
                   statushouders.
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-blue-600">
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
                   Bekijk teambuilding
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </span>

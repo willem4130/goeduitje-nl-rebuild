@@ -71,10 +71,10 @@ export default async function TeambuildingPage() {
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-indigo-50 to-white py-16 lg:py-24">
+      <section className="bg-gradient-to-br from-secondary/10 via-indigo-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">
+            <Badge className="mb-4 bg-secondary/15 text-secondary hover:bg-secondary/15">
               <Users className="mr-1 h-3 w-3" />
               Teambuilding
             </Badge>
@@ -113,7 +113,7 @@ export default async function TeambuildingPage() {
         <div className="container mx-auto max-w-7xl px-6">
           <div className="grid gap-6 md:grid-cols-3">
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <Heart className="mx-auto mb-3 h-8 w-8 text-blue-600" />
+              <Heart className="mx-auto mb-3 h-8 w-8 text-secondary" />
               <h3 className="mb-2 font-bold">Sociale impact</h3>
               <p className="text-muted-foreground text-sm">
                 Onze activiteiten worden begeleid door statushouders en
@@ -121,7 +121,7 @@ export default async function TeambuildingPage() {
               </p>
             </div>
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <MapPin className="mx-auto mb-3 h-8 w-8 text-blue-600" />
+              <MapPin className="mx-auto mb-3 h-8 w-8 text-secondary" />
               <h3 className="mb-2 font-bold">Op locatie naar keuze</h3>
               <p className="text-muted-foreground text-sm">
                 Wij komen naar jullie toe of organiseren op een van onze
@@ -129,7 +129,7 @@ export default async function TeambuildingPage() {
               </p>
             </div>
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <Star className="mx-auto mb-3 h-8 w-8 text-blue-600" />
+              <Star className="mx-auto mb-3 h-8 w-8 text-secondary" />
               <h3 className="mb-2 font-bold">Op maat gemaakt</h3>
               <p className="text-muted-foreground text-sm">
                 Elk programma wordt aangepast aan jullie wensen, groepsgrootte
@@ -185,14 +185,14 @@ export default async function TeambuildingPage() {
                   </div>
                 )}
                 <div className="p-6">
-                  <h3 className="mb-2 text-xl font-bold group-hover:text-blue-600">
+                  <h3 className="mb-2 text-xl font-bold group-hover:text-secondary">
                     {workshop.title}
                   </h3>
                   <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                     {workshop.description}
                   </p>
                   <div className="flex flex-wrap gap-4 text-sm">
-                    <span className="font-semibold text-blue-600">
+                    <span className="font-semibold text-secondary">
                       {formatLowestPrice(workshop.priceTiers)}
                     </span>
                     <span className="text-muted-foreground">
@@ -225,27 +225,27 @@ export default async function TeambuildingPage() {
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
                   <span>
                     Verbeter teamcommunicatie en samenwerking op een
                     laagdrempelige manier
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
                   <span>
                     Maak kennis met andere culturen en verbreed je perspectief
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
                   <span>
                     Draag bij aan de integratie en arbeidsparticipatie van
                     statushouders
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
                   <span>
                     Kies uit actieve, culinaire of creatieve activiteiten voor
                     elk type team
@@ -293,16 +293,16 @@ export default async function TeambuildingPage() {
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/teambuilding-nijmegen"
-                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
               >
-                <MapPin className="h-4 w-4 text-blue-600" />
+                <MapPin className="h-4 w-4 text-secondary" />
                 Teambuilding Nijmegen
               </Link>
               <Link
                 href="/teambuilding-arnhem"
-                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
               >
-                <MapPin className="h-4 w-4 text-blue-600" />
+                <MapPin className="h-4 w-4 text-secondary" />
                 Teambuilding Arnhem
               </Link>
             </div>
@@ -310,7 +310,7 @@ export default async function TeambuildingPage() {
               Niet in de buurt? Geen probleem — we komen door heel Nederland.{" "}
               <Link
                 href="/contact"
-                className="text-blue-600 underline hover:text-blue-800"
+                className="text-secondary underline hover:text-secondary"
               >
                 Neem contact op
               </Link>{" "}
@@ -321,7 +321,7 @@ export default async function TeambuildingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 py-16 text-white lg:py-20">
+      <section className="bg-secondary py-16 text-white lg:py-20">
         <div className="container mx-auto max-w-7xl px-6 text-center">
           <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
             Klaar voor jullie teambuilding?
@@ -334,7 +334,7 @@ export default async function TeambuildingPage() {
             <Button
               asChild
               size="lg"
-              className="bg-white text-blue-600 hover:bg-white/90"
+              className="bg-white text-secondary hover:bg-white/90"
             >
               <Link href="/onze-uitjes#configurator">
                 <Calendar className="mr-2 h-5 w-5" />
