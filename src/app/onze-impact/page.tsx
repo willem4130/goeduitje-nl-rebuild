@@ -150,10 +150,10 @@ export default function OnzeImpactPage() {
             </h3>
             <div className="overflow-x-auto">
               <Image
-                src="/images/impact/toc-medewerker.png"
+                src="/images/impact/toc-medewerker.jpg"
                 alt="Theory of Change medewerker - diagram met activiteiten, outputs, directe effecten en indirecte effecten"
-                width={1976}
-                height={776}
+                width={1600}
+                height={630}
                 className="w-full min-w-[700px]"
                 priority
               />
@@ -171,10 +171,10 @@ export default function OnzeImpactPage() {
             </h3>
             <div className="overflow-x-auto">
               <Image
-                src="/images/impact/toc-deelnemer.png"
+                src="/images/impact/toc-deelnemer.jpg"
                 alt="Theory of Change klant/deelnemer - diagram met activiteiten, outputs, directe effecten en indirecte effecten"
-                width={1964}
-                height={776}
+                width={1600}
+                height={630}
                 className="w-full min-w-[700px]"
                 priority
               />
@@ -433,4 +433,3 @@ export default function OnzeImpactPage() {
     </div>
   );
 }
-
