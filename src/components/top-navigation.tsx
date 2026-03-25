@@ -59,10 +59,10 @@ export function TopNavigation({
   return (
     <motion.nav
       className={cn(
-        "fixed top-0 z-50 w-full backdrop-blur-xl transition-all duration-300",
+        "fixed top-0 z-50 w-full transition-all duration-300 bg-background",
         isScrolled
-          ? "bg-background/70 shadow-editorial"
-          : "bg-background/95 shadow-editorial-sm"
+          ? "shadow-editorial"
+          : "shadow-editorial-sm"
       )}
     >
       <div className="container">
@@ -190,7 +190,7 @@ export function TopNavigation({
           transition={{ duration: 0.3 }}
           className="border-t md:hidden"
         >
-          <div className="bg-background/95 backdrop-blur-xl">
+          <div className="bg-background">
             <div className="container space-y-1 py-6">
               {navigationItems.map((item, index) => (
                 <motion.div
