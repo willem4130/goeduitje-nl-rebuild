@@ -344,15 +344,22 @@ model WorkshopRequest {
   source                  String?   @default("website")
   configId                String?   @unique @map("config_id")
   config                  WorkshopConfig? @relation(fields: [configId], references: [id])
+  cancelReason            String?   @map("cancel_reason")
+  nextFollowUpDate        DateTime? @map("next_follow_up_date")
+  assignedToId            Int?      @map("assigned_to_id")
+  assignedTo              AdminUser? @relation(fields: [assignedToId], references: [id])
   createdAt               DateTime  @default(now()) @map("created_at")
   updatedAt               DateTime  @updatedAt @map("updated_at")
 
   emailConversation EmailConversation?
+  statusAuditLogs   StatusAuditLog[]
+  quoteVersions     QuoteVersion[]
 
   @@map("workshop_requests")
   @@index([status])
   @@index([source])
   @@index([createdAt])
+  @@index([assignedToId])
 }
 
 // ============================================================
@@ -594,7 +601,47 @@ model AdminUser {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @default(now()) @map("updated_at")
 
+  assignedRequests WorkshopRequest[]
+
   @@map("users")
+}
+
+// ============================================================
+// STATUS AUDIT LOG — Tracks every status change on workshop requests
+// ============================================================
+model StatusAuditLog {
+  id        String   @id @default(cuid())
+  requestId Int      @map("request_id")
+  oldStatus String   @map("old_status")
+  newStatus String   @map("new_status")
+  changedBy String?  @map("changed_by")
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  request WorkshopRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@map("status_audit_log")
+  @@index([requestId])
+  @@index([createdAt])
+}
+
+// ============================================================
+// QUOTE VERSIONS — Stores every AI-generated quote for history
+// ============================================================
+model QuoteVersion {
+  id           String    @id @default(cuid())
+  requestId    Int       @map("request_id")
+  version      Int       @default(1)
+  emailContent String    @map("email_content")
+  generatedAt  DateTime  @default(now()) @map("generated_at")
+  generatedBy  String?   @map("generated_by")
+  wasSent      Boolean   @default(false) @map("was_sent")
+  sentAt       DateTime? @map("sent_at")
+
+  request WorkshopRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@map("quote_versions")
+  @@index([requestId])
 }
 
 // ============================================================
