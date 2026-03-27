@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Bedankt",
@@ -22,6 +23,12 @@ export default async function BedanktPage({
     typeof params.personen === "string" ? params.personen : undefined;
   const workshops =
     typeof params.workshops === "string" ? params.workshops : undefined;
+
+  const teamsRow = await prisma.pageContent.findFirst({
+    where: { page: "site-stats", key: "teamsCount" },
+    select: { value: true },
+  });
+  const teamsCount = teamsRow?.value || "150+";
 
   return (
     <main className="flex min-h-[70vh] flex-col items-center justify-center px-6 py-24">
@@ -66,7 +73,7 @@ export default async function BedanktPage({
           <Users className="text-primary h-5 w-5" />
           <span className="text-muted-foreground text-sm">
             Meer dan{" "}
-            <span className="text-foreground font-semibold">150 teams</span>{" "}
+            <span className="text-foreground font-semibold">{teamsCount} teams</span>{" "}
             gingen je voor
           </span>
         </div>

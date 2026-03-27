@@ -36,7 +36,7 @@ const faqData = [
     category: "Boekingen",
     question: "Hebben jullie ook cadeaubonnen?",
     answer:
-      "Voor onze Open Kookworkshops hebben wij cadeaubonnen. Die vind je hier (link naar cadeaubon).",
+      "Voor onze open kookworkshops hebben we cadeaubonnen voor één of meerdere personen à € 60 per persoon. Stuur een mailtje naar guus@goeduitje.nl voor een gepersonaliseerde cadeaubon.",
     sortOrder: 5,
   },
   // Betaling & Annulering
