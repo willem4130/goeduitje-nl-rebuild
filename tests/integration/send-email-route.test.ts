@@ -54,10 +54,15 @@ describe("POST /api/send-email", () => {
   });
 
   it("successfully sends contact-confirmation email", async () => {
-    vi.mocked(resend.emails.send).mockResolvedValueOnce({
-      data: { id: "email-123" },
-      error: null,
-    } as never);
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-123" },
+        error: null,
+      } as never)
+      .mockResolvedValueOnce({
+        data: { id: "admin-notif-123" },
+        error: null,
+      } as never);
 
     const req = createRequest({
       type: "contact-confirmation",
@@ -69,7 +74,8 @@ describe("POST /api/send-email", () => {
 
     expect(res.status).toBe(200);
     expect(json.success).toBe(true);
-    expect(resend.emails.send).toHaveBeenCalledOnce();
+    // 2 calls: customer confirmation + admin notification
+    expect(resend.emails.send).toHaveBeenCalledTimes(2);
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ["user@example.com"],
@@ -79,11 +85,16 @@ describe("POST /api/send-email", () => {
   });
 
   it("successfully sends workshop-confirmation email", async () => {
-    vi.mocked(resend.emails.send).mockResolvedValueOnce({
-      data: { id: "email-456" },
-      error: null,
-      headers: null,
-    } as never);
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-456" },
+        error: null,
+        headers: null,
+      } as never)
+      .mockResolvedValueOnce({
+        data: { id: "admin-notif-456" },
+        error: null,
+      } as never);
 
     const req = createRequest({
       type: "workshop-confirmation",
@@ -112,10 +123,15 @@ describe("POST /api/send-email", () => {
   });
 
   it("sends booking-confirmation email successfully", async () => {
-    vi.mocked(resend.emails.send).mockResolvedValueOnce({
-      data: { id: "email-booking-1" },
-      error: null,
-    } as never);
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-booking-1" },
+        error: null,
+      } as never)
+      .mockResolvedValueOnce({
+        data: { id: "admin-notif-booking-1" },
+        error: null,
+      } as never);
 
     const req = createRequest({
       type: "booking-confirmation",
@@ -144,10 +160,15 @@ describe("POST /api/send-email", () => {
   });
 
   it("contact-confirmation uses Dutch subject", async () => {
-    vi.mocked(resend.emails.send).mockResolvedValueOnce({
-      data: { id: "email-contact-nl" },
-      error: null,
-    } as never);
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-contact-nl" },
+        error: null,
+      } as never)
+      .mockResolvedValueOnce({
+        data: { id: "admin-notif-contact-nl" },
+        error: null,
+      } as never);
 
     const req = createRequest({
       type: "contact-confirmation",
@@ -164,6 +185,68 @@ describe("POST /api/send-email", () => {
         subject: "Bedankt voor je bericht - Kookworkshop vraag",
       })
     );
+  });
+
+  it("sends admin notification to guus@goeduitje.nl after customer email", async () => {
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-customer" },
+        error: null,
+      } as never)
+      .mockResolvedValueOnce({
+        data: { id: "admin-notif" },
+        error: null,
+      } as never);
+
+    const req = createRequest({
+      type: "workshop-confirmation",
+      to: "user@example.com",
+      data: {
+        name: "Piet",
+        workshopId: "WS-001",
+        workshops: ["Kookworkshop"],
+        participantCount: 10,
+        location: "Nijmegen",
+        date: "2026-04-01",
+        time: "14:00",
+      },
+    });
+    const res = await POST(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.success).toBe(true);
+    expect(resend.emails.send).toHaveBeenCalledTimes(2);
+
+    // Second call should be the admin notification
+    expect(resend.emails.send).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        to: ["guus@goeduitje.nl"],
+        subject: "Nieuwe aanvraag: Uitjes Configurator",
+      })
+    );
+  });
+
+  it("still succeeds when admin notification fails", async () => {
+    vi.mocked(resend.emails.send)
+      .mockResolvedValueOnce({
+        data: { id: "email-customer" },
+        error: null,
+      } as never)
+      .mockRejectedValueOnce(new Error("Admin email failed"));
+
+    const req = createRequest({
+      type: "contact-confirmation",
+      to: "user@example.com",
+      data: { name: "Jan", subject: "Test" },
+    });
+    const res = await POST(req);
+    const json = await res.json();
+
+    // Customer response should still succeed
+    expect(res.status).toBe(200);
+    expect(json.success).toBe(true);
   });
 
   it("returns 500 when resend throws an error", async () => {

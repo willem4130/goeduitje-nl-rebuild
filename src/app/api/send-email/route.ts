@@ -8,6 +8,9 @@ import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 import { BookingConfirmationEmail } from "@/emails/booking-confirmation";
 import { render } from "@react-email/render";
 
+const ADMIN_EMAIL = "guus@goeduitje.nl";
+const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
+
 /**
  * Replace {variable} placeholders in a string with actual values.
  */
@@ -65,6 +68,138 @@ async function logEmail(
     });
   } catch (err) {
     console.error("Failed to log email:", err);
+  }
+}
+
+/**
+ * Build a plain-text summary of the form submission for admin notification.
+ */
+function buildAdminNotificationBody(
+  type: string,
+  customerEmail: string,
+  data: Record<string, unknown>
+): string {
+  const lines: string[] = [];
+
+  switch (type) {
+    case "contact-confirmation":
+      lines.push("Formulier: Contactformulier");
+      lines.push(`Naam: ${data.name || "Onbekend"}`);
+      lines.push(`E-mail: ${customerEmail}`);
+      if (data.subject) lines.push(`Onderwerp: ${data.subject}`);
+      if (data.message) lines.push(`Bericht: ${data.message}`);
+      lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/feedback`);
+      break;
+
+    case "workshop-confirmation":
+      lines.push("Formulier: Uitjes Configurator");
+      lines.push(`Naam: ${data.name || "Onbekend"}`);
+      lines.push(`E-mail: ${customerEmail}`);
+      if (data.participantCount)
+        lines.push(`Aantal deelnemers: ${data.participantCount}`);
+      if (data.workshopsDisplay)
+        lines.push(`Uitje(s): ${data.workshopsDisplay}`);
+      else if (data.workshops)
+        lines.push(
+          `Uitje(s): ${Array.isArray(data.workshops) ? data.workshops.join(", ") : data.workshops}`
+        );
+      if (data.location) lines.push(`Locatie: ${data.location}`);
+      if (data.date) lines.push(`Datum: ${data.date}`);
+      if (data.time) lines.push(`Tijd: ${data.time}`);
+      if (data.type) lines.push(`Type: ${data.type}`);
+      if (data.companyName) lines.push(`Bedrijf: ${data.companyName}`);
+      if (data.phone) lines.push(`Telefoon: ${data.phone}`);
+      if (data.workshopId)
+        lines.push(
+          "",
+          `Bekijk in admin: ${ADMIN_PANEL_URL}/workshops/${data.workshopId}`
+        );
+      else lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/workshops`);
+      break;
+
+    case "booking-confirmation":
+      lines.push("Formulier: Open Kookworkshop Boeking");
+      lines.push(
+        `Naam: ${data.firstName || ""} ${data.lastName || ""}`.trim()
+      );
+      lines.push(`E-mail: ${customerEmail}`);
+      if (data.numberOfPeople)
+        lines.push(`Aantal personen: ${data.numberOfPeople}`);
+      if (data.workshopDate) lines.push(`Datum: ${data.workshopDate}`);
+      if (data.location) lines.push(`Locatie: ${data.location}`);
+      if (data.totalPrice) lines.push(`Totaalprijs: €${data.totalPrice}`);
+      if (data.paymentMethod)
+        lines.push(`Betaalmethode: ${data.paymentMethod}`);
+      if (data.dietaryRequirement)
+        lines.push(`Dieetwens: ${data.dietaryRequirement}`);
+      if (data.allergies) lines.push(`Allergieën: ${data.allergies}`);
+      lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/bookings`);
+      break;
+
+    default:
+      lines.push(`Formulier: ${type}`);
+      lines.push(`E-mail: ${customerEmail}`);
+      lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}`);
+      break;
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Send a plain-text admin notification email. Non-blocking — failures are
+ * logged but never prevent the customer response from succeeding.
+ */
+async function sendAdminNotification(
+  type: string,
+  customerEmail: string,
+  data: Record<string, unknown>
+) {
+  // Skip admin notification for types that aren't customer-facing form submissions
+  const notifyTypes = [
+    "contact-confirmation",
+    "workshop-confirmation",
+    "booking-confirmation",
+  ];
+  if (!notifyTypes.includes(type)) return;
+
+  const typeLabels: Record<string, string> = {
+    "contact-confirmation": "Contactformulier",
+    "workshop-confirmation": "Uitjes Configurator",
+    "booking-confirmation": "Open Kookworkshop Boeking",
+  };
+
+  const subject = `Nieuwe aanvraag: ${typeLabels[type] || type}`;
+  const body = buildAdminNotificationBody(type, customerEmail, data);
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: [ADMIN_EMAIL],
+      subject,
+      text: body,
+    });
+    await logEmail(
+      `admin-notification-${type}`,
+      ADMIN_EMAIL,
+      subject,
+      body,
+      data,
+      "sent"
+    );
+  } catch (err) {
+    // Never let admin notification failure break the customer flow
+    const errMsg = err instanceof Error ? err.message : "Unknown error";
+    console.error("Failed to send admin notification:", errMsg);
+    await logEmail(
+      `admin-notification-${type}`,
+      ADMIN_EMAIL,
+      subject,
+      body,
+      data,
+      "failed",
+      errMsg
+    );
   }
 }
 
@@ -262,6 +397,9 @@ export async function POST(req: NextRequest) {
           );
       }
     }
+
+    // Send admin notification (non-blocking — won't affect customer response)
+    await sendAdminNotification(type, to, data);
 
     return NextResponse.json({ success: true, data: emailData });
   } catch (error) {

@@ -379,6 +379,7 @@ model ConfirmedWorkshop {
   request                  WorkshopRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
   confirmedDate            String    @map("confirmed_date")
   startTime                String?   @map("start_time")
+  endTime                  String?   @map("end_time")
   walkInTime               String?   @map("walk_in_time")
   actualParticipants       Int?      @map("actual_participants")
   location                 String?
@@ -387,10 +388,36 @@ model ConfirmedWorkshop {
   goeduitjeProvidesGlasses Boolean   @default(false) @map("goeduitje_provides_glasses")
   allergies                String?
   dietaryRequirements      String?   @map("dietary_requirements")
+
+  // Location Details
+  locationName             String?   @map("location_name")
+  locationAddress          String?   @map("location_address")
+  locationCity             String?   @map("location_city")
+  locationContactPerson    String?   @map("location_contact_person")
+  locationContactPhone     String?   @map("location_contact_phone")
+
+  // Materials
+  materialsUsed            Json?     @map("materials_used")
+  materialsCost            Decimal?  @map("materials_cost") @db.Decimal(10, 2)
+
+  // Staff
+  leadInstructor           String?   @map("lead_instructor")
+  assistants               Json?
+
+  // Outcomes
+  workshopNotes            String?   @map("workshop_notes")
+  customerSatisfaction     Int?      @map("customer_satisfaction")
+
+  // Financial
   paymentStatus            String    @default("pending") @map("payment_status")
+  paymentDate              String?   @map("payment_date")
+  paymentMethod            String?   @map("payment_method")
   paymentAmount            Decimal?  @map("payment_amount") @db.Decimal(10, 2)
   invoiceNumber            String?   @map("invoice_number")
+  invoiceUrl               String?   @map("invoice_url")
+
   notes                    String?
+  completedAt              DateTime? @map("completed_at")
   createdAt                DateTime  @default(now()) @map("created_at")
   updatedAt                DateTime  @default(now()) @map("updated_at")
 
