@@ -342,24 +342,59 @@ model WorkshopRequest {
   aiGeneratedEmailContent String?   @map("ai_generated_email_content")
   notes                   String?
   source                  String?   @default("website")
+  sourceDetail            String?   @map("source_detail")
   configId                String?   @unique @map("config_id")
   config                  WorkshopConfig? @relation(fields: [configId], references: [id])
   cancelReason            String?   @map("cancel_reason")
+  noOrderReason           String?   @map("no_order_reason")
   nextFollowUpDate        DateTime? @map("next_follow_up_date")
   assignedToId            Int?      @map("assigned_to_id")
   assignedTo              AdminUser? @relation(fields: [assignedToId], references: [id])
+  priceType               String?   @map("price_type")
+  drinksCost              String?   @map("drinks_cost")
+  allergies               String?
+  seatingOnCushions       Boolean?  @default(false) @map("seating_on_cushions")
   createdAt               DateTime  @default(now()) @map("created_at")
   updatedAt               DateTime  @updatedAt @map("updated_at")
 
-  emailConversation EmailConversation?
-  statusAuditLogs   StatusAuditLog[]
-  quoteVersions     QuoteVersion[]
+  emailConversation  EmailConversation?
+  statusAuditLogs    StatusAuditLog[]
+  quoteVersions      QuoteVersion[]
+  confirmedWorkshop  ConfirmedWorkshop?
 
   @@map("workshop_requests")
   @@index([status])
   @@index([source])
   @@index([createdAt])
   @@index([assignedToId])
+}
+
+// ============================================================
+// CONFIRMED WORKSHOPS — Booking details for confirmed requests
+// Auto-created when status → "opdracht"
+// ============================================================
+model ConfirmedWorkshop {
+  id                       Int       @id @default(autoincrement())
+  requestId                Int       @unique @map("request_id")
+  request                  WorkshopRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  confirmedDate            String    @map("confirmed_date")
+  startTime                String?   @map("start_time")
+  walkInTime               String?   @map("walk_in_time")
+  actualParticipants       Int?      @map("actual_participants")
+  location                 String?
+  instructor               String?
+  goeduitjeProvidesDrinks  Boolean   @default(false) @map("goeduitje_provides_drinks")
+  goeduitjeProvidesGlasses Boolean   @default(false) @map("goeduitje_provides_glasses")
+  allergies                String?
+  dietaryRequirements      String?   @map("dietary_requirements")
+  paymentStatus            String    @default("pending") @map("payment_status")
+  paymentAmount            Decimal?  @map("payment_amount") @db.Decimal(10, 2)
+  invoiceNumber            String?   @map("invoice_number")
+  notes                    String?
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @default(now()) @map("updated_at")
+
+  @@map("confirmed_workshops")
 }
 
 // ============================================================
