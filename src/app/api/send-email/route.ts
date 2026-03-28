@@ -8,7 +8,7 @@ import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 import { BookingConfirmationEmail } from "@/emails/booking-confirmation";
 import { render } from "@react-email/render";
 
-const ADMIN_EMAIL = "guus@goeduitje.nl";
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl";
 const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
 
 /**
