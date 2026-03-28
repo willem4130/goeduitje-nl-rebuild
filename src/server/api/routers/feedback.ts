@@ -2,6 +2,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 
 const submitFeedbackSchema = z.object({
   name: z.string().min(2, "Naam moet minimaal 2 karakters zijn"),
@@ -44,10 +45,40 @@ export const feedbackRouter = createTRPCRouter({
           },
         });
 
+        // Send admin notification (no customer email for feedback)
+        try {
+          const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl";
+          const resend = getResend();
+          const ratingText = input.rating ? `${"★".repeat(input.rating)}${"☆".repeat(5 - input.rating)}` : "Geen rating";
+          await resend.emails.send({
+            from: `Goeduitje Feedback <${FROM_EMAIL}>`,
+            to: adminEmail,
+            subject: `Nieuwe feedback van ${input.name}`,
+            text: [
+              `Nieuwe feedback ontvangen`,
+              ``,
+              `Van: ${input.name} (${input.email})`,
+              `Datum uitje: ${input.eventDate || "-"}`,
+              `Locatie: ${input.eventLocation || "-"}`,
+              `Rating: ${ratingText}`,
+              ``,
+              `Wat vond je het beste:`,
+              input.whatWasBest || "-",
+              ``,
+              `Wat kunnen we verbeteren:`,
+              input.whatToImprove || "-",
+              ``,
+              `Bekijk in admin: https://goeduitje-backend.vercel.app/feedback/ervaringen`,
+            ].join("\n"),
+          });
+        } catch {
+          // Admin notification failed silently
+        }
+
         return {
           success: true,
           message:
-            "Bedankt voor je feedback! We nemen zo snel mogelijk contact met je op.",
+            "Bedankt voor je feedback! We waarderen het enorm.",
           feedback,
         };
       } catch {
