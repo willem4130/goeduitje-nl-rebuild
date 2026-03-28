@@ -73,7 +73,7 @@ export const BookingConfirmationEmail = ({
 
           <Text style={detailItem}>
             <strong>Betaalmethode:</strong>{" "}
-            {paymentMethod === "gift_card" ? "Cadeaubon" : "Online betaling"}
+            {paymentMethod === "gift_card" ? "Cadeaubon" : paymentMethod === "aanvraag" ? "Betaling via Guus" : "Online betaling"}
           </Text>
 
           {giftCardId && (

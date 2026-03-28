@@ -53,7 +53,7 @@ export const openSessionsRouter = createTRPCRouter({
       },
       include: {
         bookings: {
-          where: { paymentStatus: "paid" },
+          where: { paymentStatus: { in: ["paid", "pending"] } },
           select: { numberOfPeople: true },
         },
       },

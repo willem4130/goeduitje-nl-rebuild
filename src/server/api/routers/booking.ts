@@ -82,7 +82,7 @@ export const bookingRouter = createTRPCRouter({
             const bookedCount = await tx.booking.aggregate({
               where: {
                 sessionId: input.sessionId,
-                paymentStatus: "paid",
+                paymentStatus: { in: ["paid", "pending"] },
               },
               _sum: { numberOfPeople: true },
             });
