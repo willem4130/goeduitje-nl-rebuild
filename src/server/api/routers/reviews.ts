@@ -269,43 +269,45 @@ async function refreshReviewsFromGoogle(): Promise<{
       reviews: ProcessedReview[],
       sortOrder: SortOrder
     ) => {
-      for (const review of reviews) {
-        const existing = await prisma.googleReview.findUnique({
-          where: { googleReviewId: review.googleReviewId },
-        });
-
-        if (existing) {
-          // Update existing review (relative time might change)
-          await prisma.googleReview.update({
+      await prisma.$transaction(async (tx) => {
+        for (const review of reviews) {
+          const existing = await tx.googleReview.findUnique({
             where: { googleReviewId: review.googleReviewId },
-            data: {
-              text: review.text,
-              relativeTime: review.relativeTime,
-              lastSeenAt: now,
-            },
           });
-          updatedReviews++;
-        } else {
-          // Create new review
-          await prisma.googleReview.create({
-            data: {
-              googleReviewId: review.googleReviewId,
-              authorName: review.authorName,
-              authorPhotoUrl: review.authorPhotoUrl,
-              rating: review.rating,
-              text: review.text,
-              relativeTime: review.relativeTime,
-              reviewTime: review.reviewTime,
-              language: review.language,
-              sortOrder,
-              isVisible: true,
-              fetchedAt: now,
-              lastSeenAt: now,
-            },
-          });
-          newReviews++;
+
+          if (existing) {
+            // Update existing review (relative time might change)
+            await tx.googleReview.update({
+              where: { googleReviewId: review.googleReviewId },
+              data: {
+                text: review.text,
+                relativeTime: review.relativeTime,
+                lastSeenAt: now,
+              },
+            });
+            updatedReviews++;
+          } else {
+            // Create new review
+            await tx.googleReview.create({
+              data: {
+                googleReviewId: review.googleReviewId,
+                authorName: review.authorName,
+                authorPhotoUrl: review.authorPhotoUrl,
+                rating: review.rating,
+                text: review.text,
+                relativeTime: review.relativeTime,
+                reviewTime: review.reviewTime,
+                language: review.language,
+                sortOrder,
+                isVisible: true,
+                fetchedAt: now,
+                lastSeenAt: now,
+              },
+            });
+            newReviews++;
+          }
         }
-      }
+      });
     };
 
     await processReviews(mostRelevant, "most_relevant");

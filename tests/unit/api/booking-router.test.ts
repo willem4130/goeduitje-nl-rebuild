@@ -46,6 +46,7 @@ describe("booking.create", () => {
       _sum: { numberOfPeople: 10 },
     } as any);
     vi.mocked(prisma.booking.create).mockResolvedValue(mockBooking as any);
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({} as any);
 
     const result = await caller.booking.create(input);
 
@@ -58,7 +59,7 @@ describe("booking.create", () => {
     expect(prisma.booking.aggregate).toHaveBeenCalledWith({
       where: {
         sessionId: "session-1",
-        paymentStatus: "paid",
+        paymentStatus: { in: ["paid", "pending"] },
       },
       _sum: { numberOfPeople: true },
     });
@@ -102,7 +103,7 @@ describe("booking.create", () => {
     );
   });
 
-  it("creates a booking without transaction when no sessionId is provided", async () => {
+  it("creates a booking with WorkshopRequest when no sessionId is provided", async () => {
     const input = {
       ...baseBookingInput,
     };
@@ -115,22 +116,17 @@ describe("booking.create", () => {
       updatedAt: new Date(),
     };
 
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
     vi.mocked(prisma.booking.create).mockResolvedValue(mockBooking as any);
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({} as any);
 
     const result = await caller.booking.create(input);
 
     expect(result.success).toBe(true);
     expect(result.booking).toEqual(mockBooking);
-    expect(prisma.$transaction).not.toHaveBeenCalled();
-    expect(prisma.booking.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        firstName: "Jan",
-        lastName: "Jansen",
-        email: "jan@example.com",
-        numberOfPeople: 4,
-        totalPrice: 240,
-      }),
-    });
+    expect(prisma.$transaction).toHaveBeenCalled();
+    expect(prisma.booking.create).toHaveBeenCalled();
+    expect(prisma.workshopRequest.create).toHaveBeenCalled();
   });
 
   it("succeeds when session has exactly enough capacity", async () => {

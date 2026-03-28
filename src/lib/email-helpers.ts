@@ -14,7 +14,6 @@ export async function sendEmail({ type, to, data }: SendEmailParams) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-secret": process.env.NEXT_PUBLIC_API_SECRET ?? "",
     },
     body: JSON.stringify({ type, to, data }),
   });

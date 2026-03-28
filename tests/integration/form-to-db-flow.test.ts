@@ -558,6 +558,9 @@ describe("Booking Overbooking Protection", () => {
           }),
           create: vi.fn().mockResolvedValue(mockBooking),
         },
+        workshopRequest: {
+          create: vi.fn().mockResolvedValue({}),
+        },
       };
       return cb(tx);
     });

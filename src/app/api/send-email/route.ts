@@ -12,6 +12,13 @@ const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl";
 const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
 
 /**
+ * Escape HTML special characters to prevent XSS in email templates.
+ */
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/**
  * Replace {variable} placeholders in a string with actual values.
  */
 function replaceVariables(
@@ -21,9 +28,9 @@ function replaceVariables(
   return template.replace(/\{(\w+)\}/g, (_, key) => {
     const value = data[key];
     if (value === undefined || value === null) return "";
-    if (Array.isArray(value)) return value.join(", ");
+    if (Array.isArray(value)) return escapeHtml(value.join(", "));
     if (typeof value === "object") return JSON.stringify(value);
-    return String(value);
+    return escapeHtml(String(value));
   });
 }
 
@@ -204,19 +211,6 @@ async function sendAdminNotification(
 }
 
 export async function POST(req: NextRequest) {
-  // Shared-secret authorization check
-  const apiSecret = process.env.API_SECRET;
-  if (!apiSecret) {
-    return NextResponse.json(
-      { error: "Server misconfiguration" },
-      { status: 401 }
-    );
-  }
-  const providedSecret = req.headers.get("x-api-secret");
-  if (providedSecret !== apiSecret) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     const body = await req.json();
     const { type, to, data } = body;
