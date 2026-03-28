@@ -8,7 +8,7 @@ import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 import { BookingConfirmationEmail } from "@/emails/booking-confirmation";
 import { render } from "@react-email/render";
 
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl";
+const ADMIN_EMAILS = (process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl").split(",").map(e => e.trim());
 const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
 
 /**
@@ -182,13 +182,13 @@ async function sendAdminNotification(
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
-      to: [ADMIN_EMAIL],
+      to: ADMIN_EMAILS,
       subject,
       text: body,
     });
     await logEmail(
       `admin-notification-${type}`,
-      ADMIN_EMAIL,
+      ADMIN_EMAILS.join(","),
       subject,
       body,
       data,
@@ -200,7 +200,7 @@ async function sendAdminNotification(
     console.error("Failed to send admin notification:", errMsg);
     await logEmail(
       `admin-notification-${type}`,
-      ADMIN_EMAIL,
+      ADMIN_EMAILS.join(","),
       subject,
       body,
       data,

@@ -47,12 +47,12 @@ export const feedbackRouter = createTRPCRouter({
 
         // Send admin notification (no customer email for feedback)
         try {
-          const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl";
+          const adminEmails = (process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl").split(",").map(e => e.trim());
           const resend = getResend();
           const ratingText = input.rating ? `${"★".repeat(input.rating)}${"☆".repeat(5 - input.rating)}` : "Geen rating";
           await resend.emails.send({
             from: `Goeduitje Feedback <${FROM_EMAIL}>`,
-            to: adminEmail,
+            to: adminEmails,
             subject: `Nieuwe feedback van ${input.name}`,
             text: [
               `Nieuwe feedback ontvangen`,
