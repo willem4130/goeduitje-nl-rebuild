@@ -121,7 +121,7 @@ tests/
 | Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
 | Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
 | Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
-| Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking`                              | `/api/bookings`           | ✅ `/bookings`                                 |
+| Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking` + `WorkshopRequest`          | `/api/bookings` + `/api/workshops/requests` | ✅ `/bookings` + `/workshops` (CRM) |
 
 ### /test Command
 
@@ -132,8 +132,10 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 ### Open Kookworkshops (/open-kookworkshops)
 
 - Max **t/m 15 personen** per booking
+- **No Stripe** — booking is a simple request form (like workshop configurator). Payment handled offline by admin.
+- **Dual-write**: On submit, creates BOTH a `Booking` record (capacity tracking) AND a `WorkshopRequest` record (source: `'open_kookworkshop'`, CRM pipeline). The request appears in Workshop Aanvragen with all CRM features (email compose, status pipeline, timeline).
 - **Database-driven**: Sessions stored in `OpenWorkshopSession` table, managed via admin backend at `/sessions`
-- **Dynamic capacity**: Available seats computed from actual paid bookings (`maxCapacity - SUM(numberOfPeople)`)
+- **Dynamic capacity**: Available seats computed from bookings (`maxCapacity - SUM(numberOfPeople)`)
 - **Manual "Volgeboekt" override**: `isFull` boolean on `OpenWorkshopSession` — admin can mark sessions as full regardless of capacity. Session remains visible but greyed out and not bookable. Booking mutation also rejects if `isFull: true`.
 - Price per person stored per session (default €60), fallback constant in `src/lib/open-workshops.ts`
 - tRPC router: `src/server/api/routers/openSessions.ts` — `getUpcoming` query with Dutch date formatting (UTC methods for timezone safety)
@@ -168,18 +170,20 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 
 ### Email System (DB-Driven)
 
-- **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`)
+- **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). **Testing mode**: currently `onboarding@resend.dev` on Vercel (Resend test sender, no domain verification needed). Switch back to `guus@goeduitje.nl` after Cloudflare DNS + Resend domain verification.
+- **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to the admin with form type, customer details, and admin panel link. Fails silently so customer flow is never broken. Recipient configured via `ADMIN_NOTIFICATION_EMAIL` env var (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl` for testing.
 - **DB templates**: `EmailTemplate` model stores editable templates with `{variable}` placeholders
 - **Fallback**: If no DB template exists (or `isActive: false`), hardcoded React email components in `src/emails/` are used
 - **Logging**: Every sent email is logged to `EmailLog` table (resolved subject, body, variables, status)
 - **Admin**: Templates editable at `/email-templates` in backend (TipTap rich text editor). Sent emails viewable at `/email-log`
 - **Seed**: `npx tsx prisma/seed-email-templates.ts` populates default templates
 
-| Email Type                         | Trigger                           | Template Key            |
-| ---------------------------------- | --------------------------------- | ----------------------- |
-| Workshop configurator confirmation | After configurator submit         | `workshop-confirmation` |
-| Contact form confirmation          | After contact/compact form submit | `contact-confirmation`  |
-| Booking confirmation               | After gift card or Stripe payment | `booking-confirmation`  |
+| Email Type                         | Trigger                           | Template Key                    |
+| ---------------------------------- | --------------------------------- | ------------------------------- |
+| Workshop configurator confirmation | After configurator submit         | `workshop-confirmation`         |
+| Contact form confirmation          | After contact/compact form submit | `contact-confirmation`          |
+| Booking confirmation               | After open kookworkshop signup    | `booking-confirmation`          |
+| Admin notification (all forms)     | After each customer email         | `admin-notification-{type}`     |
 
 **Email template files** (React fallbacks): `src/emails/workshop-confirmation.tsx`, `src/emails/contact-confirmation.tsx`, `src/emails/booking-confirmation.tsx`
 
