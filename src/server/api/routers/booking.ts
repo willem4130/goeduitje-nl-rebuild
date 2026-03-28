@@ -105,7 +105,7 @@ export const bookingRouter = createTRPCRouter({
                 email: input.email,
                 participants: input.numberOfPeople,
                 activityType: "Open Kookworkshop",
-                preferredDate: input.workshopDate ? new Date(input.workshopDate) : null,
+                preferredDate: input.workshopDate || null,
                 source: "open_kookworkshop",
                 status: "leeg",
                 specialRequirements: [
@@ -123,17 +123,16 @@ export const bookingRouter = createTRPCRouter({
           return { success: true, booking };
         }
 
-        const booking = await prisma.booking.create({ data: bookingData });
+        const booking = await prisma.$transaction(async (tx) => {
+          const created = await tx.booking.create({ data: bookingData });
 
-        // Also create a WorkshopRequest for the CRM pipeline (like the configurator does)
-        try {
-          await prisma.workshopRequest.create({
+          await tx.workshopRequest.create({
             data: {
               contactName: `${input.firstName} ${input.lastName}`,
               email: input.email,
               participants: input.numberOfPeople,
               activityType: "Open Kookworkshop",
-              preferredDate: input.workshopDate ? new Date(input.workshopDate) : null,
+              preferredDate: input.workshopDate || null,
               source: "open_kookworkshop",
               status: "leeg",
               specialRequirements: [
@@ -144,9 +143,9 @@ export const bookingRouter = createTRPCRouter({
               updatedAt: new Date(),
             },
           });
-        } catch {
-          // CRM request creation failed but booking was saved — not critical
-        }
+
+          return created;
+        });
 
         return { success: true, booking };
       } catch (error) {
