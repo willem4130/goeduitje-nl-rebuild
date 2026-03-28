@@ -38,7 +38,7 @@ src/
 │   ├── booking.ts                # Booking CRUD (with sessionId FK)
 │   ├── recipes.ts                # Recipe CRUD (getAll, getBySlug, create, update, delete, togglePublish)
 │   ├── reviews.ts                # Google Reviews (visibility filtering)
-│   ├── testimonials.ts           # Legacy testimonials
+│   ├── testimonials.ts           # Testimonials (getFeatured only)
 │   └── *.ts                      # Other routers
 └── prisma/
     ├── schema.prisma             # Database schema (source of truth)
@@ -457,6 +457,9 @@ Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 | `NEXT_PUBLIC_GTM_ID`    | Google Tag Manager container ID (`GTM-PZCH2S3R`) |
 | `GOOGLE_PLACES_API_KEY` | Google Places API for reviews                    |
 | `GOOGLE_PLACE_ID`       | Google Place ID for Goeduitje                    |
+| `RESEND_API_KEY`        | Resend email service API key                     |
+| `FROM_EMAIL`            | Sender email (test: `onboarding@resend.dev`)     |
+| `ADMIN_NOTIFICATION_EMAIL` | Admin notification recipient (test: `willem@scex.nl`) |
 | `SKIP_ENV_VALIDATION`   | Skip t3-env validation on build                  |
 
 ## ⚠️ CMS Image/Video Override Pattern
