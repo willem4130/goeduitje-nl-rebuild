@@ -19,10 +19,9 @@ src/
 │   ├── onze-medewerkers/         # Team photos (Server Component + Client content)
 │   ├── onze-impact/              # Impact page with ToC diagrams (static images)
 │   ├── recepten/[slug]/          # Recipe pages (13)
-│   ├── open-kookworkshops/        # Open workshop booking (t/m 15 persons)
+│   ├── open-kookworkshops/        # Open workshop signup (t/m 15 persons, no Stripe)
 │   ├── jullie-ervaringen/        # Google Reviews page
-│   ├── bedankt/                  # Thank-you page after configurator submission
-│   └── checkout/                 # Stripe payment flow
+│   └── bedankt/                  # Thank-you page (teams count from DB KPI)
 ├── components/
 │   ├── ui/                       # shadcn/ui (DO NOT MODIFY)
 │   ├── city-gallery.tsx          # Locaties section component
@@ -56,11 +55,11 @@ src/
 | City landing pages    | 87    | `(landing)/[slug]/page.tsx`                                         |
 | Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop`                     |
 | Recipe pages          | 13    | `recepten/[slug]/page.tsx`                                          |
-| Utility pages         | 7     | bedankt, checkout/\*, error, loading, cookies, privacy, voorwaarden |
+| Utility pages         | 6     | bedankt, error, loading, cookies, privacy, voorwaarden |
 
 ## Tech Stack
 
-Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwind CSS 4 | Framer Motion | Stripe | Resend
+Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwind CSS 4 | Framer Motion | Resend
 
 ## Code Quality
 
@@ -93,14 +92,13 @@ npm run lint              # ESLint
 
 ```
 tests/
-├── setup/vitest.setup.ts        # Global mocks (Prisma, Stripe, Resend, env)
+├── setup/vitest.setup.ts        # Global mocks (Prisma, Resend, env)
 ├── unit/
 │   ├── lib/                     # Utility + validation tests (5 files)
 │   └── api/                     # tRPC router + API route tests (16 files)
 ├── integration/
 │   ├── prisma-schema-validation.test.ts  # All Prisma models verified
 │   ├── backend-schema-sync.test.ts       # Prisma↔Drizzle sync for shared tables
-│   ├── checkout-route.test.ts            # Stripe checkout route tests
 │   ├── send-email-route.test.ts          # Email sending route tests
 │   ├── form-to-db-flow.test.ts           # Workshop + contact form → DB flow
 │   └── form-roundtrip.test.ts            # Live: form → DB → admin API
