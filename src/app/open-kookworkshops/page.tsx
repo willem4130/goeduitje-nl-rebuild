@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+// Checkbox removed — gift card UI stripped for simplified booking flow
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -29,7 +29,6 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
-import { STRIPE_PRODUCTS } from "@/lib/stripe-products";
 import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
@@ -66,20 +65,10 @@ export default function BookingPage() {
     }, 150);
   }, []);
 
-  // Gift card state
-  const [hasGiftCard, setHasGiftCard] = useState(false);
-  const [giftCardId, setGiftCardId] = useState("");
-  const [giftCardValue, setGiftCardValue] = useState("");
-
-  // Calculate total price
+  // Calculate total price (informational only — payment handled offline by admin)
   const totalPrice = numberOfPeople
     ? parseInt(numberOfPeople) * PRICE_PER_PERSON
     : 0;
-
-  // Calculate remaining amount after gift card
-  const giftCardAmount =
-    hasGiftCard && giftCardValue ? parseFloat(giftCardValue) : 0;
-  const remainingAmount = Math.max(0, totalPrice - giftCardAmount);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,24 +87,6 @@ export default function BookingPage() {
       return;
     }
 
-    // Validate gift card fields if gift card is selected
-    if (hasGiftCard) {
-      if (!giftCardId || !giftCardValue) {
-        toast.error("Vul de cadeaubon gegevens in", {
-          description: "Zowel de cadeaubon code als de waarde zijn verplicht.",
-        });
-        return;
-      }
-
-      const giftValue = parseFloat(giftCardValue);
-      if (isNaN(giftValue) || giftValue <= 0) {
-        toast.error("Ongeldige cadeaubon waarde", {
-          description: "Voer een geldige waarde in (bijv. 25 of 50).",
-        });
-        return;
-      }
-    }
-
     const numPeople = parseInt(numberOfPeople);
     if (numPeople < 1 || numPeople > 15) {
       toast.error("Ongeldig aantal personen", {
@@ -129,120 +100,70 @@ export default function BookingPage() {
     try {
       const workshop = workshops.find((w) => w.id === selectedWorkshop);
 
-      // If gift card covers full amount, skip Stripe and save directly
-      if (hasGiftCard && remainingAmount <= 0) {
-        await createBooking.mutateAsync({
-          sessionId: selectedWorkshop,
-          workshopId: selectedWorkshop,
-          workshopDate: workshop?.dateDisplay || "",
-          firstName,
-          lastName,
-          email,
-          numberOfPeople: numPeople,
-          dietaryRequirement,
-          allergies: allergies || undefined,
-          totalPrice,
-          remainingAmount: 0,
-          amountPaid: giftCardAmount,
-          hasGiftCard: true,
-          paymentMethod: "gift_card",
-          paymentStatus: "paid",
-          giftCardId,
-          giftCardValue: giftCardAmount,
-        });
-
-        // Send booking confirmation email
-        try {
-          await fetch("/api/send-email", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-secret": process.env.NEXT_PUBLIC_API_SECRET ?? "",
-            },
-            body: JSON.stringify({
-              type: "booking-confirmation",
-              to: email,
-              data: {
-                firstName,
-                lastName,
-                workshopDate: workshop?.dateDisplay || "",
-                numberOfPeople: numPeople,
-                totalPrice,
-                paymentMethod: "gift_card",
-                giftCardId,
-                location: workshop?.location || "Nijmegen",
-                dietaryRequirement,
-                allergies: allergies || undefined,
-              },
-            }),
-          });
-        } catch {
-          // Email failed but booking was saved
-        }
-
-        toast.success("Boeking succesvol!", {
-          description:
-            "Je cadeaubon dekt de volledige kosten. Je ontvangt een bevestigingsmail.",
-        });
-
-        // Reset form
-        setSelectedWorkshop(null);
-        setDateCollapsed(false);
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setNumberOfPeople("");
-        setDietaryRequirement("geen");
-        setAllergies("");
-        setHasGiftCard(false);
-        setGiftCardId("");
-        setGiftCardValue("");
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Create Stripe checkout session for remaining amount
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId: STRIPE_PRODUCTS.COOKING_WORKSHOP.priceId,
-          quantity: numPeople,
-          metadata: {
-            sessionId: selectedWorkshop,
-            workshopId: selectedWorkshop,
-            workshopDate: workshop?.dateDisplay,
-            firstName,
-            lastName,
-            email,
-            numberOfPeople: numPeople,
-            dietaryRequirement,
-            allergies,
-            hasGiftCard,
-            giftCardId: hasGiftCard ? giftCardId : undefined,
-            giftCardValue: hasGiftCard ? giftCardAmount : undefined,
-            totalPrice,
-            remainingAmount,
-          },
-        }),
+      // Save booking (for capacity tracking) + creates WorkshopRequest (for CRM pipeline)
+      await createBooking.mutateAsync({
+        sessionId: selectedWorkshop,
+        workshopId: selectedWorkshop,
+        workshopDate: workshop?.dateDisplay || "",
+        firstName,
+        lastName,
+        email,
+        numberOfPeople: numPeople,
+        dietaryRequirement,
+        allergies: allergies || undefined,
+        totalPrice,
+        remainingAmount: totalPrice,
+        paymentStatus: "pending",
       });
 
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
+      // Send confirmation email
+      try {
+        await fetch("/api/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-secret": process.env.NEXT_PUBLIC_API_SECRET ?? "",
+          },
+          body: JSON.stringify({
+            type: "booking-confirmation",
+            to: email,
+            data: {
+              firstName,
+              lastName,
+              workshopDate: workshop?.dateDisplay || "",
+              numberOfPeople: numPeople,
+              totalPrice,
+              paymentMethod: "aanvraag",
+              location: workshop?.location || "Nijmegen",
+              dietaryRequirement,
+              allergies: allergies || undefined,
+            },
+          }),
+        });
+      } catch {
+        // Email failed but booking was saved
       }
 
-      // Redirect to Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      toast.success("Aanmelding ontvangen!", {
+        description:
+          "Je ontvangt een bevestigingsmail. We nemen contact op over de betaling.",
+      });
+
+      // Reset form
+      setSelectedWorkshop(null);
+      setDateCollapsed(false);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setNumberOfPeople("");
+      setDietaryRequirement("geen");
+      setAllergies("");
+      setIsSubmitting(false);
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error("Booking error:", error);
       toast.error("Er is iets misgegaan", {
-        description: "We konden de betaling niet starten. Probeer het opnieuw.",
+        description:
+          "We konden de aanmelding niet verwerken. Probeer het opnieuw.",
       });
       setIsSubmitting(false);
     }
@@ -665,100 +586,22 @@ export default function BookingPage() {
                         </div>
                       </div>
 
-                      {/* Gift Card Section */}
-                      <div className="border-border bg-muted/50 space-y-4 rounded-lg border p-4">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="hasGiftCard"
-                            checked={hasGiftCard}
-                            onCheckedChange={(checked) => {
-                              setHasGiftCard(checked as boolean);
-                              if (!checked) {
-                                setGiftCardId("");
-                                setGiftCardValue("");
-                              }
-                            }}
-                          />
-                          <Label
-                            htmlFor="hasGiftCard"
-                            className="flex items-center gap-2 text-base leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            <IconGift className="text-primary size-5" />
-                            Ik heb een cadeaubon
-                          </Label>
+                      {/* Price Info */}
+                      {totalPrice > 0 && (
+                        <div className="bg-muted/50 border-border rounded-lg border p-4">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">
+                              {numberOfPeople} {parseInt(numberOfPeople) === 1 ? "persoon" : "personen"} x €{PRICE_PER_PERSON}
+                            </span>
+                            <span className="text-lg font-semibold">
+                              €{totalPrice.toFixed(2)}
+                            </span>
+                          </div>
+                          <p className="text-muted-foreground mt-1 text-xs">
+                            Betaling wordt na aanmelding geregeld via Guus.
+                          </p>
                         </div>
-
-                        {hasGiftCard && (
-                          <div className="grid gap-4 pt-2 pl-6 sm:grid-cols-2">
-                            <div className="space-y-2">
-                              <Label htmlFor="giftCardId">
-                                Cadeaubon code *
-                              </Label>
-                              <Input
-                                id="giftCardId"
-                                type="text"
-                                placeholder="Bijvoorbeeld: GOEDUITJE-2024-ABC"
-                                value={giftCardId}
-                                onChange={(e) => setGiftCardId(e.target.value)}
-                                required={hasGiftCard}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="giftCardValue">
-                                Waarde cadeaubon (€) *
-                              </Label>
-                              <Input
-                                id="giftCardValue"
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                placeholder="Bijvoorbeeld: 50"
-                                value={giftCardValue}
-                                onChange={(e) =>
-                                  setGiftCardValue(e.target.value)
-                                }
-                                required={hasGiftCard}
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Price Summary */}
-                        {totalPrice > 0 && (
-                          <div className="bg-background space-y-2 rounded-md border p-3 text-sm">
-                            <div className="flex items-center justify-between">
-                              <span className="text-muted-foreground">
-                                Totaal:
-                              </span>
-                              <span className="font-medium">
-                                €{totalPrice.toFixed(2)}
-                              </span>
-                            </div>
-                            {hasGiftCard && giftCardAmount > 0 && (
-                              <>
-                                <div className="flex items-center justify-between text-green-600 dark:text-green-400">
-                                  <span>Cadeaubon:</span>
-                                  <span className="font-medium">
-                                    -€{giftCardAmount.toFixed(2)}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between border-t pt-2 text-base font-semibold">
-                                  <span>Te betalen:</span>
-                                  <span
-                                    className={
-                                      remainingAmount === 0
-                                        ? "text-green-600 dark:text-green-400"
-                                        : ""
-                                    }
-                                  >
-                                    €{remainingAmount.toFixed(2)}
-                                  </span>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                      )}
 
                       {/* Submit Button */}
                       <Button
@@ -770,36 +613,14 @@ export default function BookingPage() {
                         {isSubmitting ? (
                           "Laden..."
                         ) : selectedWorkshop && totalPrice > 0 ? (
-                          remainingAmount === 0 ? (
-                            <>
-                              <IconCheck className="mr-2 size-5" />
-                              Rond aanmelding af (volledig betaald met
-                              cadeaubon)
-                            </>
-                          ) : hasGiftCard && remainingAmount < totalPrice ? (
-                            <>
-                              <IconCreditCard className="mr-2 size-5" />
-                              Betaal restbedrag van €
-                              {remainingAmount.toFixed(2)}
-                            </>
-                          ) : (
-                            <>
-                              <IconCreditCard className="mr-2 size-5" />
-                              Betaal €{totalPrice.toFixed(2)} en rond aanmelding
-                              af
-                            </>
-                          )
+                          <>
+                            <IconCheck className="mr-2 size-5" />
+                            Aanmelden voor open kookworkshop
+                          </>
                         ) : (
                           "Selecteer eerst een datum en aantal personen"
                         )}
                       </Button>
-
-                      {remainingAmount > 0 && (
-                        <p className="text-muted-foreground text-center text-sm">
-                          Je wordt doorgestuurd naar een beveiligde Stripe
-                          betalingspagina
-                        </p>
-                      )}
                     </form>
                   </CardContent>
                 </Card>

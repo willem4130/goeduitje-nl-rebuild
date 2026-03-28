@@ -96,13 +96,58 @@ export const bookingRouter = createTRPCRouter({
               });
             }
 
-            return await tx.booking.create({ data: bookingData });
+            const created = await tx.booking.create({ data: bookingData });
+
+            // Also create a WorkshopRequest for the CRM pipeline
+            await tx.workshopRequest.create({
+              data: {
+                contactName: `${input.firstName} ${input.lastName}`,
+                email: input.email,
+                participants: input.numberOfPeople,
+                activityType: "Open Kookworkshop",
+                preferredDate: input.workshopDate ? new Date(input.workshopDate) : null,
+                source: "open_kookworkshop",
+                status: "leeg",
+                specialRequirements: [
+                  input.dietaryRequirement && input.dietaryRequirement !== "geen" ? `Dieet: ${input.dietaryRequirement}` : null,
+                  input.allergies ? `Allergieën: ${input.allergies}` : null,
+                ].filter(Boolean).join("\n") || null,
+                notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
+                updatedAt: new Date(),
+              },
+            });
+
+            return created;
           });
 
           return { success: true, booking };
         }
 
         const booking = await prisma.booking.create({ data: bookingData });
+
+        // Also create a WorkshopRequest for the CRM pipeline (like the configurator does)
+        try {
+          await prisma.workshopRequest.create({
+            data: {
+              contactName: `${input.firstName} ${input.lastName}`,
+              email: input.email,
+              participants: input.numberOfPeople,
+              activityType: "Open Kookworkshop",
+              preferredDate: input.workshopDate ? new Date(input.workshopDate) : null,
+              source: "open_kookworkshop",
+              status: "leeg",
+              specialRequirements: [
+                input.dietaryRequirement && input.dietaryRequirement !== "geen" ? `Dieet: ${input.dietaryRequirement}` : null,
+                input.allergies ? `Allergieën: ${input.allergies}` : null,
+              ].filter(Boolean).join("\n") || null,
+              notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
+              updatedAt: new Date(),
+            },
+          });
+        } catch {
+          // CRM request creation failed but booking was saved — not critical
+        }
+
         return { success: true, booking };
       } catch (error) {
         if (error instanceof TRPCError) throw error;
