@@ -169,7 +169,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 ### Email System (DB-Driven)
 
 - **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). **Testing mode**: currently `onboarding@resend.dev` on Vercel (Resend test sender, no domain verification needed). Switch back to `guus@goeduitje.nl` after Cloudflare DNS + Resend domain verification.
-- **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to the admin with form type, customer details, and admin panel link. Fails silently so customer flow is never broken. Recipient configured via `ADMIN_NOTIFICATION_EMAIL` env var (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl` for testing.
+- **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to admin(s) with form type, customer details, and admin panel link. Fire-and-forget (`.catch`) so customer flow is never broken. Recipients configured via `ADMIN_NOTIFICATION_EMAIL` env var — supports comma-separated emails (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl,guus@goeduitje.nl` for testing.
 - **DB templates**: `EmailTemplate` model stores editable templates with `{variable}` placeholders
 - **Fallback**: If no DB template exists (or `isActive: false`), hardcoded React email components in `src/emails/` are used
 - **Logging**: Every sent email is logged to `EmailLog` table (resolved subject, body, variables, status)
