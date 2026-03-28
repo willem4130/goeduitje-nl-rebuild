@@ -15,7 +15,7 @@ const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
  * Escape HTML special characters to prevent XSS in email templates.
  */
 function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 /**
