@@ -4,8 +4,6 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
 const createBookingSchema = z.object({
-  stripeSessionId: z.string().optional(),
-  stripePaymentId: z.string().optional(),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   email: z.string().email(),
@@ -23,7 +21,7 @@ const createBookingSchema = z.object({
   amountPaid: z.number().optional(),
   currency: z.string().default("eur"),
   paymentMethod: z
-    .enum(["gift_card", "stripe", "gift_card_partial"])
+    .enum(["gift_card"])
     .optional(),
   paymentStatus: z.string().default("pending"),
 });
@@ -37,8 +35,6 @@ export const bookingRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       try {
         const bookingData = {
-          stripeSessionId: input.stripeSessionId,
-          stripePaymentId: input.stripePaymentId,
           firstName: input.firstName,
           lastName: input.lastName,
           email: input.email,

@@ -62,45 +62,6 @@ export type SettingsFormValues = {
   allowRegistration: boolean;
 };
 
-// Newsletter Subscription Schema
-export const newsletterSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-});
-
-export type NewsletterFormValues = z.infer<typeof newsletterSchema>;
-
-// Profile Update Schema
-export const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(3, {
-      message: "Username must be at least 3 characters.",
-    })
-    .max(20, {
-      message: "Username must not exceed 20 characters.",
-    }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  bio: z
-    .string()
-    .max(500, {
-      message: "Bio must not exceed 500 characters.",
-    })
-    .optional(),
-  website: z
-    .string()
-    .url({
-      message: "Please enter a valid URL.",
-    })
-    .optional()
-    .or(z.literal("")),
-});
-
-export type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
 // Workshop Configuration Schema
 export const workshopConfigSchema = z
   .object({

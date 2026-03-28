@@ -21,7 +21,6 @@ export default defineConfig({
       exclude: [
         "src/components/ui/**",
         "src/lib/prisma.ts",
-        "src/lib/stripe.ts",
         "src/lib/resend.ts",
         "src/lib/google-places.ts",
         "src/lib/animations.ts",
@@ -29,7 +28,6 @@ export default defineConfig({
         "src/lib/email-helpers.ts",
         "src/lib/image-placeholders.ts",
         "src/lib/site-assets.ts",
-        "src/lib/stripe-client.ts",
         "src/app/api/trpc/**",
         "src/app/api/webhooks/**",
         "**/*.d.ts",

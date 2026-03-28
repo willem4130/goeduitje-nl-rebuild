@@ -392,8 +392,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Send admin notification (non-blocking — won't affect customer response)
-    await sendAdminNotification(type, to, data);
+    // Send admin notification (fire-and-forget — won't affect customer response)
+    sendAdminNotification(type, to, data).catch((err) =>
+      console.error('[Admin notification failed]', err)
+    );
 
     return NextResponse.json({ success: true, data: emailData });
   } catch (error) {

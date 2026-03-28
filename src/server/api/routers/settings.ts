@@ -26,41 +26,6 @@ export const settingsRouter = createTRPCRouter({
     return { ...DEFAULT_SETTINGS, ...settingsMap };
   }),
 
-  // Get single setting
-  get: publicProcedure
-    .input(z.object({ key: z.string() }))
-    .query(async ({ input }) => {
-      const setting = await prisma.siteSetting.findUnique({
-        where: { key: input.key },
-      });
-      return (
-        setting?.value ??
-        DEFAULT_SETTINGS[input.key as keyof typeof DEFAULT_SETTINGS] ??
-        null
-      );
-    }),
-
-  // Update single setting
-  update: publicProcedure
-    .input(
-      z.object({
-        key: z.string(),
-        value: z.string(),
-        type: z.enum(["text", "boolean", "number", "json"]).optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      return await prisma.siteSetting.upsert({
-        where: { key: input.key },
-        update: { value: input.value },
-        create: {
-          key: input.key,
-          value: input.value,
-          type: input.type ?? "text",
-        },
-      });
-    }),
-
   // Update multiple settings at once
   updateMany: publicProcedure
     .input(

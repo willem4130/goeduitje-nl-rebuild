@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   contactFormSchema,
   workshopConfigSchema,
-  newsletterSchema,
   userFormSchema,
 } from "@/lib/validations/forms";
 
@@ -67,28 +66,28 @@ describe("workshopConfigSchema", () => {
   });
 
   it("accepts valid particulier data (no companyName needed)", () => {
-    const { companyName, btwNumber, ...rest } = validZakelijk;
+    const { companyName: _cn, btwNumber: _btw, ...rest } = validZakelijk;
     expect(
       workshopConfigSchema.safeParse({ ...rest, type: "particulier" }).success
     ).toBe(true);
   });
 
   it("dateTbd: true → date not required", () => {
-    const { date, ...rest } = validZakelijk;
+    const { date: _d, ...rest } = validZakelijk;
     expect(
       workshopConfigSchema.safeParse({ ...rest, dateTbd: true }).success
     ).toBe(true);
   });
 
   it("timeTbd: true → time not required", () => {
-    const { time, ...rest } = validZakelijk;
+    const { time: _t, ...rest } = validZakelijk;
     expect(
       workshopConfigSchema.safeParse({ ...rest, timeTbd: true }).success
     ).toBe(true);
   });
 
   it("type: zakelijk without companyName → fails", () => {
-    const { companyName, ...rest } = validZakelijk;
+    const { companyName: _cn, ...rest } = validZakelijk;
     const result = workshopConfigSchema.safeParse(rest);
     expect(result.success).toBe(false);
   });
@@ -102,7 +101,7 @@ describe("workshopConfigSchema", () => {
   });
 
   it("dateTbd: false without date → fails", () => {
-    const { date, ...rest } = validZakelijk;
+    const { date: _d, ...rest } = validZakelijk;
     const result = workshopConfigSchema.safeParse({ ...rest, dateTbd: false });
     expect(result.success).toBe(false);
   });
@@ -157,7 +156,7 @@ describe("workshopConfigSchema", () => {
   });
 
   it("requires companyName when type is zakelijk", () => {
-    const { companyName, ...rest } = validZakelijk;
+    const { companyName: _cn, ...rest } = validZakelijk;
     const result = workshopConfigSchema.safeParse({
       ...rest,
       type: "zakelijk",
@@ -167,7 +166,7 @@ describe("workshopConfigSchema", () => {
   });
 
   it("does not require companyName when type is particulier", () => {
-    const { companyName, btwNumber, ...rest } = validZakelijk;
+    const { companyName: _cn, btwNumber: _btw, ...rest } = validZakelijk;
     const result = workshopConfigSchema.safeParse({
       ...rest,
       type: "particulier",
@@ -176,23 +175,9 @@ describe("workshopConfigSchema", () => {
   });
 
   it("accepts optional btwNumber for zakelijk", () => {
-    const { btwNumber, ...rest } = validZakelijk;
+    const { btwNumber: _btw, ...rest } = validZakelijk;
     const result = workshopConfigSchema.safeParse(rest);
     expect(result.success).toBe(true);
-  });
-});
-
-describe("newsletterSchema", () => {
-  it("accepts valid email", () => {
-    expect(
-      newsletterSchema.safeParse({ email: "test@example.com" }).success
-    ).toBe(true);
-  });
-
-  it("rejects invalid email", () => {
-    expect(newsletterSchema.safeParse({ email: "notvalid" }).success).toBe(
-      false
-    );
   });
 });
 
