@@ -20,6 +20,3 @@ export const resend = process.env.RESEND_API_KEY
 
 // Default sender email - Update this to your verified domain
 export const FROM_EMAIL = process.env.FROM_EMAIL || "guus@goeduitje.nl";
-
-// Support/reply-to email
-export const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "info@goeduitje.nl";

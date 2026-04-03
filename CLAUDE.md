@@ -49,12 +49,12 @@ src/
 
 ## Total Pages: 136
 
-| Type                  | Count | Template                                                            |
-| --------------------- | ----- | ------------------------------------------------------------------- |
-| Static pages          | 22    | Individual page.tsx files                                           |
-| City landing pages    | 87    | `(landing)/[slug]/page.tsx`                                         |
-| Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop`                     |
-| Recipe pages          | 13    | `recepten/[slug]/page.tsx`                                          |
+| Type                  | Count | Template                                               |
+| --------------------- | ----- | ------------------------------------------------------ |
+| Static pages          | 22    | Individual page.tsx files                              |
+| City landing pages    | 87    | `(landing)/[slug]/page.tsx`                            |
+| Workshop detail pages | 7     | `onze-uitjes/[slug]/page.tsx` + `/kookworkshop`        |
+| Recipe pages          | 13    | `recepten/[slug]/page.tsx`                             |
 | Utility pages         | 6     | bedankt, error, loading, cookies, privacy, voorwaarden |
 
 ## Tech Stack
@@ -113,13 +113,13 @@ tests/
 
 ### Forms → Database → Admin Pipeline
 
-| Frontend Form                      | URL                                      | Component File                             | DB Table                               | Backend Admin API         | Admin UI                                       |
-| ---------------------------------- | ---------------------------------------- | ------------------------------------------ | -------------------------------------- | ------------------------- | ---------------------------------------------- |
-| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` + `workshop_requests` | `/api/workshops/requests` | ✅ `/workshops` (unified with manual requests) |
-| Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
-| Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
-| Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback`   | ✅ `/feedback`                                 |
-| Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking` + `WorkshopRequest`          | `/api/bookings` + `/api/workshops/requests` | ✅ `/bookings` + `/workshops` (CRM) |
+| Frontend Form                      | URL                                      | Component File                             | DB Table                               | Backend Admin API                           | Admin UI                                       |
+| ---------------------------------- | ---------------------------------------- | ------------------------------------------ | -------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
+| Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` + `workshop_requests` | `/api/workshops/requests`                   | ✅ `/workshops` (unified with manual requests) |
+| Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
+| Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
+| Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
+| Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking` + `WorkshopRequest`          | `/api/bookings` + `/api/workshops/requests` | ✅ `/bookings` + `/workshops` (CRM)            |
 
 ### /test Command
 
@@ -168,7 +168,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 
 ### Email System (DB-Driven)
 
-- **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). **Testing mode**: currently `onboarding@resend.dev` on Vercel (Resend test sender, no domain verification needed). Switch back to `guus@goeduitje.nl` after Cloudflare DNS + Resend domain verification.
+- **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). Domain verified in Resend via Cloudflare DNS.
 - **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to admin(s) with form type, customer details, and admin panel link. Fire-and-forget (`.catch`) so customer flow is never broken. Recipients configured via `ADMIN_NOTIFICATION_EMAIL` env var — supports comma-separated emails (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl,guus@goeduitje.nl` for testing.
 - **DB templates**: `EmailTemplate` model stores editable templates with `{variable}` placeholders
 - **Fallback**: If no DB template exists (or `isActive: false`), hardcoded React email components in `src/emails/` are used
@@ -176,12 +176,12 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - **Admin**: Templates editable at `/email-templates` in backend (TipTap rich text editor). Sent emails viewable at `/email-log`
 - **Seed**: `npx tsx prisma/seed-email-templates.ts` populates default templates
 
-| Email Type                         | Trigger                           | Template Key                    |
-| ---------------------------------- | --------------------------------- | ------------------------------- |
-| Workshop configurator confirmation | After configurator submit         | `workshop-confirmation`         |
-| Contact form confirmation          | After contact/compact form submit | `contact-confirmation`          |
-| Booking confirmation               | After open kookworkshop signup    | `booking-confirmation`          |
-| Admin notification (all forms)     | After each customer email         | `admin-notification-{type}`     |
+| Email Type                         | Trigger                           | Template Key                |
+| ---------------------------------- | --------------------------------- | --------------------------- |
+| Workshop configurator confirmation | After configurator submit         | `workshop-confirmation`     |
+| Contact form confirmation          | After contact/compact form submit | `contact-confirmation`      |
+| Booking confirmation               | After open kookworkshop signup    | `booking-confirmation`      |
+| Admin notification (all forms)     | After each customer email         | `admin-notification-{type}` |
 
 **Email template files** (React fallbacks): `src/emails/workshop-confirmation.tsx`, `src/emails/contact-confirmation.tsx`, `src/emails/booking-confirmation.tsx`
 
@@ -450,17 +450,17 @@ Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 
 ### Vercel Environment Variables (Production)
 
-| Variable                | Purpose                                          |
-| ----------------------- | ------------------------------------------------ |
-| `DATABASE_URL`          | Neon PostgreSQL connection string                |
-| `NEXT_PUBLIC_APP_URL`   | Public app URL                                   |
-| `NEXT_PUBLIC_GTM_ID`    | Google Tag Manager container ID (`GTM-PZCH2S3R`) |
-| `GOOGLE_PLACES_API_KEY` | Google Places API for reviews                    |
-| `GOOGLE_PLACE_ID`       | Google Place ID for Goeduitje                    |
-| `RESEND_API_KEY`        | Resend email service API key                     |
-| `FROM_EMAIL`            | Sender email (test: `onboarding@resend.dev`)     |
+| Variable                   | Purpose                                               |
+| -------------------------- | ----------------------------------------------------- |
+| `DATABASE_URL`             | Neon PostgreSQL connection string                     |
+| `NEXT_PUBLIC_APP_URL`      | Public app URL                                        |
+| `NEXT_PUBLIC_GTM_ID`       | Google Tag Manager container ID (`GTM-PZCH2S3R`)      |
+| `GOOGLE_PLACES_API_KEY`    | Google Places API for reviews                         |
+| `GOOGLE_PLACE_ID`          | Google Place ID for Goeduitje                         |
+| `RESEND_API_KEY`           | Resend email service API key                          |
+| `FROM_EMAIL`               | Sender email (`guus@goeduitje.nl`)                    |
 | `ADMIN_NOTIFICATION_EMAIL` | Admin notification recipient (test: `willem@scex.nl`) |
-| `SKIP_ENV_VALIDATION`   | Skip t3-env validation on build                  |
+| `SKIP_ENV_VALIDATION`      | Skip t3-env validation on build                       |
 
 ## ⚠️ CMS Image/Video Override Pattern
 

@@ -78,7 +78,9 @@ export const openSessionsRouter = createTRPCRouter({
         time: `${session.startTime} - ${session.endTime}`,
         location: session.location,
         maxCapacity: session.maxCapacity,
-        availableSeats: session.isFull ? 0 : session.maxCapacity - bookedSeats,
+        availableSeats: session.isFull
+          ? 0
+          : Math.max(0, session.maxCapacity - bookedSeats),
         pricePerPerson: session.pricePerPerson,
         isFull: session.isFull,
       };
