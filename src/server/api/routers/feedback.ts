@@ -17,7 +17,7 @@ const submitFeedbackSchema = z.object({
   eventLocation: z.string().optional(),
   whatWasBest: z.string().optional(),
   whatToImprove: z.string().optional(),
-  source: z.enum(["contact", "feedback"]).optional(),
+  source: z.enum(["contact", "feedback"]),
 });
 
 export const feedbackRouter = createTRPCRouter({

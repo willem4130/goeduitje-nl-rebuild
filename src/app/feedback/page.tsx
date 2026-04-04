@@ -66,6 +66,7 @@ export default function FeedbackPage() {
       eventLocation: data.location,
       whatWasBest: data.whatWasBest,
       whatToImprove: data.whatToImprove,
+      source: "feedback",
     });
   };
 

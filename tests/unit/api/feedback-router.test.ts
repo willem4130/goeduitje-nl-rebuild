@@ -17,6 +17,7 @@ describe("feedback.submit", () => {
       subject: "Geweldige workshop",
       message: "Het was een fantastische ervaring!",
       rating: 5,
+      source: "feedback" as const,
     };
 
     const mockFeedback = {
@@ -59,6 +60,7 @@ describe("feedback.submit", () => {
       eventLocation: "Nijmegen",
       whatWasBest: "De sfeer en het eten",
       whatToImprove: "Meer vegetarische opties",
+      source: "feedback" as const,
     };
 
     const mockFeedback = {
@@ -94,6 +96,7 @@ describe("feedback.submit", () => {
       name: "Karel Smit",
       email: "karel@example.com",
       message: "Ik heb een vraag over de workshops in Arnhem.",
+      source: "contact" as const,
     };
 
     const mockFeedback = {
@@ -140,11 +143,10 @@ describe("feedback.submit", () => {
       name: "Jan Jansen",
       email: "jan@example.com",
       message: "Test bericht voor de feedback",
+      source: "contact" as const,
     };
 
-    await expect(caller.feedback.submit(input)).rejects.toThrow(
-      /misgegaan/
-    );
+    await expect(caller.feedback.submit(input)).rejects.toThrow(/misgegaan/);
   });
 });
 
@@ -155,7 +157,9 @@ describe("feedback.getAll", () => {
   ];
 
   it("returns feedback list with default limit 50", async () => {
-    vi.mocked(prisma.feedback.findMany).mockResolvedValue(mockFeedbackList as any);
+    vi.mocked(prisma.feedback.findMany).mockResolvedValue(
+      mockFeedbackList as any
+    );
 
     const result = await caller.feedback.getAll();
 
@@ -169,7 +173,9 @@ describe("feedback.getAll", () => {
   });
 
   it("filters by isRead when provided", async () => {
-    vi.mocked(prisma.feedback.findMany).mockResolvedValue([mockFeedbackList[0]!] as any);
+    vi.mocked(prisma.feedback.findMany).mockResolvedValue([
+      mockFeedbackList[0]!,
+    ] as any);
 
     await caller.feedback.getAll({ isRead: false });
 
@@ -186,7 +192,10 @@ describe("feedback.toggleRead", () => {
     const mockUpdated = { id: "fb-1", isRead: true };
     vi.mocked(prisma.feedback.update).mockResolvedValue(mockUpdated as any);
 
-    const result = await caller.feedback.toggleRead({ id: "fb-1", isRead: true });
+    const result = await caller.feedback.toggleRead({
+      id: "fb-1",
+      isRead: true,
+    });
 
     expect(result).toEqual(mockUpdated);
     expect(prisma.feedback.update).toHaveBeenCalledWith({

@@ -111,6 +111,7 @@ export default function BookingPage() {
         totalPrice,
         remainingAmount: totalPrice,
         paymentStatus: "pending",
+        paymentMethod: "overschrijving per bank",
       });
 
       // Send confirmation email

@@ -296,6 +296,7 @@ describe("Contact Form → tRPC → Database flow", () => {
       subject: "Vraag over workshops",
       message: "Ik wil graag meer informatie over de kookworkshop.",
       rating: 5,
+      source: "contact",
     });
 
     expect(result.success).toBe(true);
@@ -320,6 +321,7 @@ describe("Contact Form → tRPC → Database flow", () => {
       name: "Test User",
       email: "test@example.com",
       message: "Dit is een testbericht voor feedback.",
+      source: "contact",
     });
 
     expect(prisma.feedback.create).toHaveBeenCalledWith({
@@ -337,6 +339,7 @@ describe("Contact Form → tRPC → Database flow", () => {
         name: "Error Test",
         email: "error@example.com",
         message: "This should trigger an error in the database layer.",
+        source: "contact",
       })
     ).rejects.toThrow();
   });
@@ -378,6 +381,7 @@ describe("Feedback Form → tRPC → Database flow (structured fields)", () => {
       eventLocation: "Nijmegen",
       whatWasBest: "De sfeer en het eten waren fantastisch",
       whatToImprove: "Meer tijd voor de desserts",
+      source: "feedback",
     });
 
     expect(result.success).toBe(true);
@@ -418,6 +422,7 @@ describe("Feedback Form → tRPC → Database flow (structured fields)", () => {
       name: "Lisa",
       email: "lisa@example.com",
       message: "Ik wil graag meer informatie over jullie workshops.",
+      source: "contact",
     });
 
     const createCall = vi.mocked(prisma.feedback.create).mock.calls[0]![0];

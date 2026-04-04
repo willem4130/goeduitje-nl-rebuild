@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/lib/prisma";
 
-const caller = appRouter.createCaller({} as unknown);
+const caller = appRouter.createCaller({} as any);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -24,7 +24,9 @@ const mockTestimonial = {
 
 describe("testimonials.getFeatured", () => {
   it("returns featured published testimonials", async () => {
-    vi.mocked(prisma.testimonial.findMany).mockResolvedValue([mockTestimonial] as unknown);
+    vi.mocked(prisma.testimonial.findMany).mockResolvedValue([
+      mockTestimonial,
+    ] as any);
     const result = await caller.testimonials.getFeatured();
     expect(result).toEqual([mockTestimonial]);
     expect(prisma.testimonial.findMany).toHaveBeenCalledWith({

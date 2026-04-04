@@ -20,9 +20,7 @@ const createBookingSchema = z.object({
   remainingAmount: z.number(),
   amountPaid: z.number().optional(),
   currency: z.string().default("eur"),
-  paymentMethod: z
-    .enum(["gift_card"])
-    .optional(),
+  paymentMethod: z.string().optional(),
   paymentStatus: z.string().default("pending"),
 });
 
@@ -104,10 +102,16 @@ export const bookingRouter = createTRPCRouter({
                 preferredDate: input.workshopDate || null,
                 source: "open_kookworkshop",
                 status: "leeg",
-                specialRequirements: [
-                  input.dietaryRequirement && input.dietaryRequirement !== "geen" ? `Dieet: ${input.dietaryRequirement}` : null,
-                  input.allergies ? `Allergieën: ${input.allergies}` : null,
-                ].filter(Boolean).join("\n") || null,
+                specialRequirements:
+                  [
+                    input.dietaryRequirement &&
+                    input.dietaryRequirement !== "geen"
+                      ? `Dieet: ${input.dietaryRequirement}`
+                      : null,
+                    input.allergies ? `Allergieën: ${input.allergies}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join("\n") || null,
                 notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
                 updatedAt: new Date(),
               },
@@ -131,10 +135,16 @@ export const bookingRouter = createTRPCRouter({
               preferredDate: input.workshopDate || null,
               source: "open_kookworkshop",
               status: "leeg",
-              specialRequirements: [
-                input.dietaryRequirement && input.dietaryRequirement !== "geen" ? `Dieet: ${input.dietaryRequirement}` : null,
-                input.allergies ? `Allergieën: ${input.allergies}` : null,
-              ].filter(Boolean).join("\n") || null,
+              specialRequirements:
+                [
+                  input.dietaryRequirement &&
+                  input.dietaryRequirement !== "geen"
+                    ? `Dieet: ${input.dietaryRequirement}`
+                    : null,
+                  input.allergies ? `Allergieën: ${input.allergies}` : null,
+                ]
+                  .filter(Boolean)
+                  .join("\n") || null,
               notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
               updatedAt: new Date(),
             },

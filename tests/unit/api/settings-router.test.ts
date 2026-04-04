@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/lib/prisma";
 
-const caller = appRouter.createCaller({} as unknown);
+const caller = appRouter.createCaller({} as any);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -11,16 +11,24 @@ beforeEach(() => {
 describe("settings.getAll", () => {
   it("returns settings merged with defaults", async () => {
     vi.mocked(prisma.siteSetting.findMany).mockResolvedValue([
-      { key: "siteName", value: "Custom Name", type: "text", id: "1", updatedAt: new Date() },
-    ] as unknown);
+      {
+        key: "siteName",
+        value: "Custom Name",
+        type: "text",
+        id: "1",
+        updatedAt: new Date(),
+      },
+    ] as any);
     const result = await caller.settings.getAll();
-    expect(result).toEqual(expect.objectContaining({
-      siteName: "Custom Name",
-      siteDescription: "Unieke bedrijfsuitjes met sociale impact",
-      contactEmail: "info@goeduitje.nl",
-      maintenanceMode: "false",
-      allowRegistration: "true",
-    }));
+    expect(result).toEqual(
+      expect.objectContaining({
+        siteName: "Custom Name",
+        siteDescription: "Unieke bedrijfsuitjes met sociale impact",
+        contactEmail: "info@goeduitje.nl",
+        maintenanceMode: "false",
+        allowRegistration: "true",
+      })
+    );
   });
 
   it("returns all defaults when no settings in DB", async () => {
@@ -32,7 +40,7 @@ describe("settings.getAll", () => {
 
 describe("settings.updateMany", () => {
   it("upserts all settings at once", async () => {
-    vi.mocked(prisma.siteSetting.upsert).mockResolvedValue({} as unknown);
+    vi.mocked(prisma.siteSetting.upsert).mockResolvedValue({} as any);
     const result = await caller.settings.updateMany({
       siteName: "Test",
       siteDescription: "Test description that is long enough",

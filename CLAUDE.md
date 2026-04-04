@@ -116,9 +116,9 @@ tests/
 | Frontend Form                      | URL                                      | Component File                             | DB Table                               | Backend Admin API                           | Admin UI                                       |
 | ---------------------------------- | ---------------------------------------- | ------------------------------------------ | -------------------------------------- | ------------------------------------------- | ---------------------------------------------- |
 | Workshop Configurator (multi-step) | `/` and `/onze-uitjes` (`#configurator`) | `src/components/workshop-configurator.tsx` | `WorkshopConfig` + `workshop_requests` | `/api/workshops/requests`                   | ✅ `/workshops` (unified with manual requests) |
-| Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
-| Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
-| Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback`                     | ✅ `/feedback`                                 |
+| Contact Form                       | `/contact`                               | `src/components/contact-form.tsx`          | `Feedback`                             | `/api/content/feedback?type=contact`        | ✅ `/contact`                                  |
+| Compact Contact Form               | Footer (all pages)                       | `src/components/compact-contact-form.tsx`  | `Feedback`                             | `/api/content/feedback?type=contact`        | ✅ `/contact`                                  |
+| Feedback Form                      | `/feedback`                              | `src/app/feedback/page.tsx`                | `Feedback`                             | `/api/content/feedback?type=feedback`       | ✅ `/feedback/ervaringen`                      |
 | Open Kookworkshop Booking          | `/open-kookworkshops`                    | `src/app/open-kookworkshops/page.tsx`      | `Booking` + `WorkshopRequest`          | `/api/bookings` + `/api/workshops/requests` | ✅ `/bookings` + `/workshops` (CRM)            |
 
 ### /test Command
@@ -130,7 +130,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 ### Open Kookworkshops (/open-kookworkshops)
 
 - Max **t/m 15 personen** per booking
-- **No Stripe** — booking is a simple request form (like workshop configurator). Payment handled offline by admin.
+- **No Stripe** — booking is a simple request form (like workshop configurator). Payment method is "overschrijving per bank" (stored in DB + shown in email). Payment handled offline by admin.
 - **Dual-write**: On submit, creates BOTH a `Booking` record (capacity tracking) AND a `WorkshopRequest` record (source: `'open_kookworkshop'`, CRM pipeline). The request appears in Workshop Aanvragen with all CRM features (email compose, status pipeline, timeline).
 - **Database-driven**: Sessions stored in `OpenWorkshopSession` table, managed via admin backend at `/sessions`
 - **Dynamic capacity**: Available seats computed from bookings (`maxCapacity - SUM(numberOfPeople)`)
