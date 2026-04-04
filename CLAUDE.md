@@ -80,7 +80,7 @@ Fix ALL errors before committing. No exceptions.
 ### Run Tests
 
 ```bash
-npm run test:run          # Unit + integration (392 tests)
+npm run test:run          # Unit + integration (345 tests)
 npm run test:coverage     # With coverage report
 npm run test:e2e          # Playwright E2E (37 tests, needs dev server)
 npm run test:integration  # Form→DB→Admin round-trip (needs live deployments)
