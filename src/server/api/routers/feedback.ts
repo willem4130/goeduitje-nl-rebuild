@@ -17,6 +17,7 @@ const submitFeedbackSchema = z.object({
   eventLocation: z.string().optional(),
   whatWasBest: z.string().optional(),
   whatToImprove: z.string().optional(),
+  source: z.enum(["contact", "feedback"]).optional(),
 });
 
 export const feedbackRouter = createTRPCRouter({
@@ -45,40 +46,47 @@ export const feedbackRouter = createTRPCRouter({
           },
         });
 
-        // Send admin notification (no customer email for feedback)
-        try {
-          const adminEmails = (process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl").split(",").map(e => e.trim());
-          const resend = getResend();
-          const ratingText = input.rating ? `${"★".repeat(input.rating)}${"☆".repeat(5 - input.rating)}` : "Geen rating";
-          await resend.emails.send({
-            from: `Goeduitje Feedback <${FROM_EMAIL}>`,
-            to: adminEmails,
-            subject: `Nieuwe feedback van ${input.name}`,
-            text: [
-              `Nieuwe feedback ontvangen`,
-              ``,
-              `Van: ${input.name} (${input.email})`,
-              `Datum uitje: ${input.eventDate || "-"}`,
-              `Locatie: ${input.eventLocation || "-"}`,
-              `Rating: ${ratingText}`,
-              ``,
-              `Wat vond je het beste:`,
-              input.whatWasBest || "-",
-              ``,
-              `Wat kunnen we verbeteren:`,
-              input.whatToImprove || "-",
-              ``,
-              `Bekijk in admin: https://goeduitje-backend.vercel.app/feedback/ervaringen`,
-            ].join("\n"),
-          });
-        } catch {
-          // Admin notification failed silently
-        }
+        // Send admin notification for post-event feedback only — contact form
+        // has its own admin notification via /api/send-email
+        if (input.source !== "contact")
+          try {
+            const adminEmails = (
+              process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl"
+            )
+              .split(",")
+              .map((e) => e.trim());
+            const resend = getResend();
+            const ratingText = input.rating
+              ? `${"★".repeat(input.rating)}${"☆".repeat(5 - input.rating)}`
+              : "Geen rating";
+            await resend.emails.send({
+              from: `Goeduitje Feedback <${FROM_EMAIL}>`,
+              to: adminEmails,
+              subject: `Nieuwe feedback van ${input.name}`,
+              text: [
+                `Nieuwe feedback ontvangen`,
+                ``,
+                `Van: ${input.name} (${input.email})`,
+                `Datum uitje: ${input.eventDate || "-"}`,
+                `Locatie: ${input.eventLocation || "-"}`,
+                `Rating: ${ratingText}`,
+                ``,
+                `Wat vond je het beste:`,
+                input.whatWasBest || "-",
+                ``,
+                `Wat kunnen we verbeteren:`,
+                input.whatToImprove || "-",
+                ``,
+                `Bekijk in admin: https://goeduitje-backend.vercel.app/feedback/ervaringen`,
+              ].join("\n"),
+            });
+          } catch {
+            // Admin notification failed silently
+          }
 
         return {
           success: true,
-          message:
-            "Bedankt voor je feedback! We waarderen het enorm.",
+          message: "Bedankt voor je feedback! We waarderen het enorm.",
           feedback,
         };
       } catch {

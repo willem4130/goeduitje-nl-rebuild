@@ -8,14 +8,23 @@ import { WorkshopConfirmationEmail } from "@/emails/workshop-confirmation";
 import { BookingConfirmationEmail } from "@/emails/booking-confirmation";
 import { render } from "@react-email/render";
 
-const ADMIN_EMAILS = (process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl").split(",").map(e => e.trim());
+const ADMIN_EMAILS = (
+  process.env.ADMIN_NOTIFICATION_EMAIL || "guus@goeduitje.nl"
+)
+  .split(",")
+  .map((e) => e.trim());
 const ADMIN_PANEL_URL = "https://goeduitje-backend.vercel.app";
 
 /**
  * Escape HTML special characters to prevent XSS in email templates.
  */
 function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
@@ -95,7 +104,7 @@ function buildAdminNotificationBody(
       lines.push(`E-mail: ${customerEmail}`);
       if (data.subject) lines.push(`Onderwerp: ${data.subject}`);
       if (data.message) lines.push(`Bericht: ${data.message}`);
-      lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/feedback`);
+      lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/contact`);
       break;
 
     case "workshop-confirmation":
@@ -116,19 +125,17 @@ function buildAdminNotificationBody(
       if (data.type) lines.push(`Type: ${data.type}`);
       if (data.companyName) lines.push(`Bedrijf: ${data.companyName}`);
       if (data.phone) lines.push(`Telefoon: ${data.phone}`);
-      if (data.workshopId)
+      if (data.workshopRequestId)
         lines.push(
           "",
-          `Bekijk in admin: ${ADMIN_PANEL_URL}/workshops/${data.workshopId}`
+          `Bekijk in admin: ${ADMIN_PANEL_URL}/workshops/${data.workshopRequestId}`
         );
       else lines.push("", `Bekijk in admin: ${ADMIN_PANEL_URL}/workshops`);
       break;
 
     case "booking-confirmation":
       lines.push("Formulier: Open Kookworkshop Boeking");
-      lines.push(
-        `Naam: ${data.firstName || ""} ${data.lastName || ""}`.trim()
-      );
+      lines.push(`Naam: ${data.firstName || ""} ${data.lastName || ""}`.trim());
       lines.push(`E-mail: ${customerEmail}`);
       if (data.numberOfPeople)
         lines.push(`Aantal personen: ${data.numberOfPeople}`);
@@ -332,10 +339,9 @@ export async function POST(req: NextRequest) {
           break;
 
         case "workshop-confirmation": {
-          const subject = `Uitje Configuratie Bevestiging - #${data.workshopId}`;
+          const subject = `Bevestiging aanvraag uitje`;
           const component = WorkshopConfirmationEmail({
             name: data.name,
-            workshopId: data.workshopId,
             workshops: data.workshops,
             participantCount: data.participantCount,
             location: data.location,
@@ -394,7 +400,7 @@ export async function POST(req: NextRequest) {
 
     // Send admin notification (fire-and-forget — won't affect customer response)
     sendAdminNotification(type, to, data).catch((err) =>
-      console.error('[Admin notification failed]', err)
+      console.error("[Admin notification failed]", err)
     );
 
     return NextResponse.json({ success: true, data: emailData });

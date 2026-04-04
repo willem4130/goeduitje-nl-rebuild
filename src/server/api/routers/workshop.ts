@@ -62,7 +62,7 @@ export const workshopRouter = createTRPCRouter({
         });
 
         // Also create a WorkshopRequest so it appears in the admin CRM pipeline
-        await tx.workshopRequest.create({
+        const request = await tx.workshopRequest.create({
           data: {
             status: "leeg",
             contactName: input.name,
@@ -82,7 +82,7 @@ export const workshopRouter = createTRPCRouter({
           },
         });
 
-        return config;
+        return { ...config, requestId: request.id };
       });
 
       return workshopConfig;

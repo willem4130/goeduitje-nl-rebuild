@@ -292,6 +292,7 @@ export function WorkshopConfigurator() {
           data: {
             name: data.name,
             workshopId: workshopConfig.id,
+            workshopRequestId: workshopConfig.requestId,
             workshops: data.workshops,
             workshopsDisplay: workshopsDisplay.join(", "),
             participantCount: data.participantCount,
