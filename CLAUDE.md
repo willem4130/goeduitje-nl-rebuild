@@ -61,6 +61,21 @@ src/
 
 Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwind CSS 4 | Framer Motion | Resend
 
+## API Security
+
+### tRPC Procedure Types (`src/server/api/trpc.ts`)
+
+| Procedure | Auth | Rate Limit | Use For |
+|-----------|------|-----------|---------|
+| `publicProcedure` | None | None | Public read queries (getAll, getBySlug, etc.) |
+| `rateLimitedProcedure` | None | 5/min per IP | Public form submissions (workshop.create, booking.create, feedback.submit) |
+| `protectedProcedure` | `x-api-secret` header | None | CMS write operations (create, update, delete, togglePublish) |
+
+- **API_SECRET** env var must be set on Vercel — all `protectedProcedure` mutations return 401 without it
+- **Rate limiting**: In-memory sliding window (`src/lib/rate-limit.ts`), skipped in test environment
+- **POST /api/send-email**: Rate limited to 10/min per IP
+- When adding new tRPC mutations: use `protectedProcedure` for admin/CMS writes, `rateLimitedProcedure` for public form submissions, `publicProcedure` for reads
+
 ## Code Quality
 
 ```bash
@@ -460,6 +475,7 @@ Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 | `RESEND_API_KEY`           | Resend email service API key                          |
 | `FROM_EMAIL`               | Sender email (`guus@goeduitje.nl`)                    |
 | `ADMIN_NOTIFICATION_EMAIL` | Admin notification recipient (test: `willem@scex.nl`) |
+| `API_SECRET`               | Shared secret for tRPC `protectedProcedure` mutations |
 | `SKIP_ENV_VALIDATION`      | Skip t3-env validation on build                       |
 
 ## ⚠️ CMS Image/Video Override Pattern
