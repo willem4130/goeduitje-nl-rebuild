@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure, rateLimitedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -24,7 +24,7 @@ export const feedbackRouter = createTRPCRouter({
   /**
    * Submit new feedback
    */
-  submit: publicProcedure
+  submit: rateLimitedProcedure
     .input(submitFeedbackSchema)
     .mutation(async ({ input }) => {
       try {
@@ -127,7 +127,7 @@ export const feedbackRouter = createTRPCRouter({
   /**
    * Mark feedback as read/unread
    */
-  toggleRead: publicProcedure
+  toggleRead: protectedProcedure
     .input(z.object({ id: z.string(), isRead: z.boolean() }))
     .mutation(async ({ input }) => {
       const feedback = await prisma.feedback.update({
@@ -140,7 +140,7 @@ export const feedbackRouter = createTRPCRouter({
   /**
    * Delete feedback
    */
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       await prisma.feedback.delete({
@@ -152,7 +152,7 @@ export const feedbackRouter = createTRPCRouter({
   /**
    * Get feedback stats
    */
-  getStats: publicProcedure.query(async () => {
+  getStats: protectedProcedure.query(async () => {
     const [total, unread, avgRating] = await Promise.all([
       prisma.feedback.count(),
       prisma.feedback.count({ where: { isRead: false } }),

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 
 const teamMemberInputSchema = z.object({
@@ -35,7 +35,7 @@ export const teamRouter = createTRPCRouter({
     }),
 
   // Create team member
-  create: publicProcedure
+  create: protectedProcedure
     .input(teamMemberInputSchema)
     .mutation(async ({ input }) => {
       return await prisma.teamMember.create({
@@ -53,7 +53,7 @@ export const teamRouter = createTRPCRouter({
     }),
 
   // Update team member
-  update: publicProcedure
+  update: protectedProcedure
     .input(z.object({ id: z.string() }).merge(teamMemberInputSchema.partial()))
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
@@ -64,7 +64,7 @@ export const teamRouter = createTRPCRouter({
     }),
 
   // Delete team member
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       await prisma.teamMember.delete({ where: { id: input.id } });
@@ -72,7 +72,7 @@ export const teamRouter = createTRPCRouter({
     }),
 
   // Reorder team members
-  reorder: publicProcedure
+  reorder: protectedProcedure
     .input(z.array(z.object({ id: z.string(), sortOrder: z.number() })))
     .mutation(async ({ input }) => {
       await Promise.all(
@@ -87,7 +87,7 @@ export const teamRouter = createTRPCRouter({
     }),
 
   // Toggle publish status
-  togglePublish: publicProcedure
+  togglePublish: protectedProcedure
     .input(z.object({ id: z.string(), isPublished: z.boolean() }))
     .mutation(async ({ input }) => {
       return await prisma.teamMember.update({

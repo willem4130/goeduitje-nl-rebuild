@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 
 const contentKeySchema = z.object({
@@ -68,7 +68,7 @@ export const contentRouter = createTRPCRouter({
   }),
 
   // Update or create content
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       contentKeySchema.merge(
         z.object({
@@ -101,7 +101,7 @@ export const contentRouter = createTRPCRouter({
     }),
 
   // Bulk update content for a page
-  updateMany: publicProcedure
+  updateMany: protectedProcedure
     .input(
       z.object({
         page: z.string(),
@@ -143,7 +143,7 @@ export const contentRouter = createTRPCRouter({
     }),
 
   // Delete content
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(contentKeySchema)
     .mutation(async ({ input }) => {
       await prisma.pageContent.delete({

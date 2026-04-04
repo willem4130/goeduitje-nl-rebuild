@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -150,7 +150,7 @@ export const recipesRouter = createTRPCRouter({
   /**
    * Create a new recipe
    */
-  create: publicProcedure
+  create: protectedProcedure
     .input(recipeInputSchema)
     .mutation(async ({ input }) => {
       return await prisma.recipe.create({
@@ -175,7 +175,7 @@ export const recipesRouter = createTRPCRouter({
   /**
    * Update a recipe
    */
-  update: publicProcedure
+  update: protectedProcedure
     .input(z.object({ id: z.string() }).merge(recipeInputSchema.partial()))
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
@@ -188,7 +188,7 @@ export const recipesRouter = createTRPCRouter({
   /**
    * Delete a recipe
    */
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       await prisma.recipe.delete({ where: { id: input.id } });
@@ -198,7 +198,7 @@ export const recipesRouter = createTRPCRouter({
   /**
    * Toggle publish status
    */
-  togglePublish: publicProcedure
+  togglePublish: protectedProcedure
     .input(z.object({ id: z.string(), isPublished: z.boolean() }))
     .mutation(async ({ input }) => {
       return await prisma.recipe.update({

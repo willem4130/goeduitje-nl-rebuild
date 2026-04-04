@@ -3,7 +3,9 @@ import { appRouter } from "@/server/api/root";
 import { prisma } from "@/lib/prisma";
 import { isGooglePlacesConfigured } from "@/lib/google-places";
 
-const caller = appRouter.createCaller({} as any);
+const caller = appRouter.createCaller({
+  headers: new Headers({ "x-api-secret": "test-api-secret" }),
+} as any);
 
 beforeEach(() => {
   vi.clearAllMocks();

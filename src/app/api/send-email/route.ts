@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resend, FROM_EMAIL } from "@/lib/resend";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 import { ContactConfirmationEmail } from "@/emails/contact-confirmation";
 import { WelcomeEmail } from "@/emails/welcome";
 import { OrderConfirmationEmail } from "@/emails/order-confirmation";
@@ -218,6 +219,18 @@ async function sendAdminNotification(
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 10 emails per minute per IP
+  if (process.env.NODE_ENV !== "test") {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    const { success } = rateLimit(`send-email:${ip}`, 10, 60_000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Te veel verzoeken. Probeer het later opnieuw." },
+        { status: 429 }
+      );
+    }
+  }
+
   try {
     const body = await req.json();
     const { type, to, data } = body;

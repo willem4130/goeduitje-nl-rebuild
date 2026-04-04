@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 
 // Default settings to initialize
@@ -27,7 +27,7 @@ export const settingsRouter = createTRPCRouter({
   }),
 
   // Update multiple settings at once
-  updateMany: publicProcedure
+  updateMany: protectedProcedure
     .input(
       z.object({
         siteName: z.string().min(2),

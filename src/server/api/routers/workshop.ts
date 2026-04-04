@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure, rateLimitedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { workshopConfigSchema } from "@/lib/validations/forms";
 import {
@@ -9,7 +9,7 @@ import {
 
 export const workshopRouter = createTRPCRouter({
   // Booking configuration endpoints
-  create: publicProcedure
+  create: rateLimitedProcedure
     .input(workshopConfigSchema)
     .mutation(async ({ input }) => {
       // Resolve workshop IDs to human-readable names for the request
@@ -180,7 +180,7 @@ export const workshopRouter = createTRPCRouter({
     }),
 
   // Admin: Toggle workshop publish status
-  togglePublish: publicProcedure
+  togglePublish: protectedProcedure
     .input(z.object({ id: z.string(), isPublished: z.boolean() }))
     .mutation(async ({ input }) => {
       return await prisma.workshop.update({
@@ -190,7 +190,7 @@ export const workshopRouter = createTRPCRouter({
     }),
 
   // Admin: Delete workshop (cascades to variants and price tiers)
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       await prisma.workshop.delete({ where: { id: input.id } });
@@ -219,7 +219,7 @@ export const workshopRouter = createTRPCRouter({
     }),
 
   // Admin: Create new workshop with nested price tiers and variants
-  createWorkshop: publicProcedure
+  createWorkshop: protectedProcedure
     .input(createWorkshopSchema)
     .mutation(async ({ input }) => {
       const {
@@ -279,7 +279,7 @@ export const workshopRouter = createTRPCRouter({
     }),
 
   // Admin: Update workshop with nested price tiers and variants
-  updateWorkshop: publicProcedure
+  updateWorkshop: protectedProcedure
     .input(updateWorkshopSchema)
     .mutation(async ({ input }) => {
       const {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 
 const userInputSchema = z.object({
@@ -10,13 +10,13 @@ const userInputSchema = z.object({
 });
 
 export const userRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async () => {
+  getAll: protectedProcedure.query(async () => {
     return await prisma.user.findMany({
       orderBy: { createdAt: "desc" },
     });
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await prisma.user.findUnique({
@@ -24,13 +24,13 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  create: publicProcedure.input(userInputSchema).mutation(async ({ input }) => {
+  create: protectedProcedure.input(userInputSchema).mutation(async ({ input }) => {
     return await prisma.user.create({
       data: input,
     });
   }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(z.object({ id: z.string() }).merge(userInputSchema))
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
@@ -40,7 +40,7 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return await prisma.user.delete({

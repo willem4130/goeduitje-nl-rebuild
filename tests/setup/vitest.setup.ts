@@ -1,6 +1,9 @@
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
+// Set API_SECRET for protected tRPC procedures in tests
+process.env.API_SECRET = "test-api-secret";
+
 // Mock env module to avoid t3-env validation
 vi.mock("@/env", () => ({
   env: {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 
 const faqInputSchema = z.object({
@@ -43,7 +43,7 @@ export const faqRouter = createTRPCRouter({
   }),
 
   // Create FAQ
-  create: publicProcedure.input(faqInputSchema).mutation(async ({ input }) => {
+  create: protectedProcedure.input(faqInputSchema).mutation(async ({ input }) => {
     return await prisma.fAQ.create({
       data: {
         question: input.question,
@@ -56,7 +56,7 @@ export const faqRouter = createTRPCRouter({
   }),
 
   // Update FAQ
-  update: publicProcedure
+  update: protectedProcedure
     .input(z.object({ id: z.string() }).merge(faqInputSchema.partial()))
     .mutation(async ({ input }) => {
       const { id, ...data } = input;
@@ -67,7 +67,7 @@ export const faqRouter = createTRPCRouter({
     }),
 
   // Delete FAQ
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       await prisma.fAQ.delete({ where: { id: input.id } });
@@ -75,7 +75,7 @@ export const faqRouter = createTRPCRouter({
     }),
 
   // Reorder FAQs
-  reorder: publicProcedure
+  reorder: protectedProcedure
     .input(z.array(z.object({ id: z.string(), sortOrder: z.number() })))
     .mutation(async ({ input }) => {
       await Promise.all(
@@ -90,7 +90,7 @@ export const faqRouter = createTRPCRouter({
     }),
 
   // Toggle publish status
-  togglePublish: publicProcedure
+  togglePublish: protectedProcedure
     .input(z.object({ id: z.string(), isPublished: z.boolean() }))
     .mutation(async ({ input }) => {
       return await prisma.fAQ.update({

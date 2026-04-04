@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, rateLimitedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -28,7 +28,7 @@ export const bookingRouter = createTRPCRouter({
   /**
    * Create a new booking
    */
-  create: publicProcedure
+  create: rateLimitedProcedure
     .input(createBookingSchema)
     .mutation(async ({ input }) => {
       try {

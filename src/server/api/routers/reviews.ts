@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
 import {
   fetchAllGoogleReviews,
@@ -143,7 +143,7 @@ export const reviewsRouter = createTRPCRouter({
   /**
    * Toggle review visibility (admin feature)
    */
-  toggleVisibility: publicProcedure
+  toggleVisibility: protectedProcedure
     .input(toggleReviewVisibilitySchema)
     .mutation(async ({ input }) => {
       const { reviewId, isVisible } = input;
@@ -160,7 +160,7 @@ export const reviewsRouter = createTRPCRouter({
    * Force refresh reviews from Google API
    * Rate limited to once per hour
    */
-  refreshFromGoogle: publicProcedure
+  refreshFromGoogle: protectedProcedure
     .input(refreshReviewsSchema)
     .mutation(async ({ input }) => {
       const { forceRefresh = false } = input ?? {};

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { TRPCError } from "@trpc/server";
 
 const createCaller = createCallerFactory(appRouter);
-const caller = createCaller({ headers: new Headers() });
+const caller = createCaller({ headers: new Headers({ "x-api-secret": "test-api-secret" }) });
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 describe("Workshop Configurator → tRPC → Database flow", () => {

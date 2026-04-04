@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/lib/prisma";
 
-const caller = appRouter.createCaller({} as any);
+const caller = appRouter.createCaller({
+  headers: new Headers({ "x-api-secret": "test-api-secret" }),
+} as any);
 
 beforeEach(() => {
   vi.clearAllMocks();
