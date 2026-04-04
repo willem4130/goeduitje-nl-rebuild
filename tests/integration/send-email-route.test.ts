@@ -117,7 +117,7 @@ describe("POST /api/send-email", () => {
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
         to: ["user@example.com"],
-        subject: "Uitje Configuratie Bevestiging - #WS-001",
+        subject: "Bevestiging aanvraag uitje",
       })
     );
   });

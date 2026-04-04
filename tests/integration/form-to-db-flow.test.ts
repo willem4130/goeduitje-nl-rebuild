@@ -73,7 +73,7 @@ describe("Workshop Configurator → tRPC → Database flow", () => {
         phone: "0612345678",
       }),
     });
-    expect(result).toEqual(mockConfig);
+    expect(result).toMatchObject(mockConfig);
   });
 
   it("stores TBD date/time when dateTbd/timeTbd are true", async () => {

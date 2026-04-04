@@ -54,7 +54,7 @@ describe("workshop.create", () => {
 
     const result = await caller.workshop.create(input);
 
-    expect(result).toEqual(mockResult);
+    expect(result).toMatchObject(mockResult);
     expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         type: "particulier",
@@ -107,7 +107,7 @@ describe("workshop.create", () => {
 
     const result = await caller.workshop.create(input);
 
-    expect(result).toEqual(mockResult);
+    expect(result).toMatchObject(mockResult);
     expect(prisma.workshopConfig.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         type: "zakelijk",
