@@ -82,6 +82,7 @@ export function CompactContactForm() {
       email: data.email,
       message: data.bericht,
       subject: "Contact formulier (footer)",
+      source: "contact",
     });
   }
 

@@ -12,7 +12,6 @@ import {
 
 interface WorkshopConfirmationEmailProps {
   name: string;
-  workshopId: string;
   workshops: string[];
   participantCount: number;
   location: string;
@@ -28,7 +27,6 @@ interface WorkshopConfirmationEmailProps {
 
 export const WorkshopConfirmationEmail = ({
   name,
-  workshopId,
   workshops,
   participantCount,
   location,
@@ -43,7 +41,7 @@ export const WorkshopConfirmationEmail = ({
 }: WorkshopConfirmationEmailProps) => (
   <Html>
     <Head />
-    <Preview>Bevestiging uitje configuratie - {workshopId}</Preview>
+    <Preview>Bevestiging aanvraag uitje</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={box}>
@@ -68,14 +66,21 @@ export const WorkshopConfirmationEmail = ({
           <ul style={list}>
             {workshops.map((workshop, index) => {
               const rawVariant = selectedVariants?.[workshop];
-              const variants = Array.isArray(rawVariant) ? rawVariant : rawVariant ? [rawVariant] : [];
-              const realVariants = variants.filter((v) => v !== "Nog niet gekozen");
+              const variants = Array.isArray(rawVariant)
+                ? rawVariant
+                : rawVariant
+                  ? [rawVariant]
+                  : [];
+              const realVariants = variants.filter(
+                (v) => v !== "Nog niet gekozen"
+              );
               const isUndecided = variants.includes("Nog niet gekozen");
               return (
                 <li key={index} style={listItem}>
                   {workshop}
                   {realVariants.length > 0 && ` — ${realVariants.join(", ")}`}
-                  {realVariants.length === 0 && isUndecided &&
+                  {realVariants.length === 0 &&
+                    isUndecided &&
                     " — (variant nog niet gekozen)"}
                 </li>
               );
@@ -134,12 +139,8 @@ export const WorkshopConfirmationEmail = ({
           </Text>
 
           <Text style={paragraph}>
-            Je configuratie ID is: <strong>{workshopId}</strong>
-          </Text>
-
-          <Text style={paragraph}>
             Heb je nog vragen of wil je wijzigingen doorgeven? Antwoord dan
-            gerust op deze e-mail met je configuratie ID.
+            gerust op deze e-mail.
           </Text>
 
           <Text style={paragraph}>

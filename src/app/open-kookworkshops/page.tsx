@@ -129,7 +129,7 @@ export default function BookingPage() {
               workshopDate: workshop?.dateDisplay || "",
               numberOfPeople: numPeople,
               totalPrice,
-              paymentMethod: "aanvraag",
+              paymentMethod: "overschrijving per bank",
               location: workshop?.location || "Nijmegen",
               dietaryRequirement,
               allergies: allergies || undefined,
@@ -587,7 +587,11 @@ export default function BookingPage() {
                         <div className="bg-muted/50 border-border rounded-lg border p-4">
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">
-                              {numberOfPeople} {parseInt(numberOfPeople) === 1 ? "persoon" : "personen"} x €{PRICE_PER_PERSON}
+                              {numberOfPeople}{" "}
+                              {parseInt(numberOfPeople) === 1
+                                ? "persoon"
+                                : "personen"}{" "}
+                              x €{PRICE_PER_PERSON}
                             </span>
                             <span className="text-lg font-semibold">
                               €{totalPrice.toFixed(2)}
