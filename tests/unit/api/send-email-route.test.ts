@@ -54,9 +54,7 @@ describe("POST /api/send-email", () => {
   });
 
   it("returns 400 when `type` is missing", async () => {
-    const res = await POST(
-      createRequest({ to: "user@example.com", data: {} })
-    );
+    const res = await POST(createRequest({ to: "user@example.com", data: {} }));
     expect(res.status).toBe(400);
     const json = await res.json();
     expect(json.error).toBe("Email type is required");

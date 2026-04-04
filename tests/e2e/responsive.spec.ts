@@ -28,9 +28,9 @@ test.describe("Mobile Responsive", () => {
 
   test("booking page works on mobile", async ({ page }) => {
     await page.goto("/booking");
-    await expect(
-      page.getByText("Open Kookworkshop Inschrijving")
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Open Kookworkshop Inschrijving")).toBeVisible({
+      timeout: 10000,
+    });
     // Form fields should be visible
     await expect(page.locator("#firstName")).toBeVisible({ timeout: 10000 });
   });

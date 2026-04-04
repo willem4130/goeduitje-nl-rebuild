@@ -140,8 +140,7 @@ describe("workshopConfigSchema", () => {
 
   it("invalid email → fails", () => {
     expect(
-      workshopConfigSchema.safeParse({ ...validZakelijk, email: "bad" })
-        .success
+      workshopConfigSchema.safeParse({ ...validZakelijk, email: "bad" }).success
     ).toBe(false);
   });
 
@@ -199,9 +198,9 @@ describe("userFormSchema", () => {
   });
 
   it("rejects invalid email", () => {
-    expect(
-      userFormSchema.safeParse({ ...valid, email: "bad" }).success
-    ).toBe(false);
+    expect(userFormSchema.safeParse({ ...valid, email: "bad" }).success).toBe(
+      false
+    );
   });
 
   it("rejects invalid role", () => {

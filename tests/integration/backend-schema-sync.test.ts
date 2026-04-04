@@ -17,20 +17,46 @@ describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
     drizzleExport: string;
     drizzleTable: string;
   }> = [
-    { prismaModel: "Feedback", drizzleExport: "contactFeedback", drizzleTable: "Feedback" },
-    { prismaModel: "GoogleReview", drizzleExport: "googleReview", drizzleTable: "GoogleReview" },
-    { prismaModel: "TeamMember", drizzleExport: "teamMember", drizzleTable: "TeamMember" },
+    {
+      prismaModel: "Feedback",
+      drizzleExport: "contactFeedback",
+      drizzleTable: "Feedback",
+    },
+    {
+      prismaModel: "GoogleReview",
+      drizzleExport: "googleReview",
+      drizzleTable: "GoogleReview",
+    },
+    {
+      prismaModel: "TeamMember",
+      drizzleExport: "teamMember",
+      drizzleTable: "TeamMember",
+    },
     { prismaModel: "Recipe", drizzleExport: "recipe", drizzleTable: "Recipe" },
-    { prismaModel: "Workshop", drizzleExport: "workshop", drizzleTable: "Workshop" },
-    { prismaModel: "PriceTier", drizzleExport: "priceTier", drizzleTable: "PriceTier" },
+    {
+      prismaModel: "Workshop",
+      drizzleExport: "workshop",
+      drizzleTable: "Workshop",
+    },
+    {
+      prismaModel: "PriceTier",
+      drizzleExport: "priceTier",
+      drizzleTable: "PriceTier",
+    },
     { prismaModel: "FAQ", drizzleExport: "faq", drizzleTable: "FAQ" },
-    { prismaModel: "PageContent", drizzleExport: "pageContent", drizzleTable: "PageContent" },
+    {
+      prismaModel: "PageContent",
+      drizzleExport: "pageContent",
+      drizzleTable: "PageContent",
+    },
   ];
 
   for (const { prismaModel, drizzleExport, drizzleTable } of sharedTables) {
     it(`backend has Drizzle table for ${prismaModel} (exported as '${drizzleExport}')`, () => {
       // Verify Prisma has the model
-      expect(prismaSchema).toMatch(new RegExp(`model\\s+${prismaModel}\\s*\\{`));
+      expect(prismaSchema).toMatch(
+        new RegExp(`model\\s+${prismaModel}\\s*\\{`)
+      );
 
       // Verify Drizzle has the export with the correct table name
       expect(drizzleSchema).toContain(`export const ${drizzleExport}`);
@@ -46,22 +72,35 @@ describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
 
   it("backend Drizzle schema has companyName column in workshopConfig", () => {
     // Extract from workshopConfig export to the next export
-    const wcMatch = drizzleSchema.match(/export const workshopConfig\s*=[\s\S]*?(?=\nexport )/);
+    const wcMatch = drizzleSchema.match(
+      /export const workshopConfig\s*=[\s\S]*?(?=\nexport )/
+    );
     const wcBlock = wcMatch?.[0] ?? "";
     expect(wcBlock).toContain("companyName");
   });
 
   it("backend Drizzle schema has btwNumber column in workshopConfig", () => {
-    const wcMatch = drizzleSchema.match(/export const workshopConfig\s*=[\s\S]*?(?=\nexport )/);
+    const wcMatch = drizzleSchema.match(
+      /export const workshopConfig\s*=[\s\S]*?(?=\nexport )/
+    );
     const wcBlock = wcMatch?.[0] ?? "";
     expect(wcBlock).toContain("btwNumber");
   });
 
   it("backend Drizzle schema has structured feedback fields", () => {
     // The contactFeedback table maps to Feedback
-    const fbMatch = drizzleSchema.match(/export const contactFeedback\s*=[\s\S]*?\}\)/);
+    const fbMatch = drizzleSchema.match(
+      /export const contactFeedback\s*=[\s\S]*?\}\)/
+    );
     const fbBlock = fbMatch?.[0] ?? "";
-    const fields = ["firstName", "lastName", "eventDate", "eventLocation", "whatWasBest", "whatToImprove"];
+    const fields = [
+      "firstName",
+      "lastName",
+      "eventDate",
+      "eventLocation",
+      "whatWasBest",
+      "whatToImprove",
+    ];
     for (const field of fields) {
       expect(fbBlock).toContain(field);
     }
@@ -78,7 +117,9 @@ describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
   });
 
   it("EmailTemplate Drizzle schema has key, name, subject, body, isActive columns", () => {
-    const etMatch = drizzleSchema.match(/export const emailTemplate\s*=[\s\S]*?\}\)/);
+    const etMatch = drizzleSchema.match(
+      /export const emailTemplate\s*=[\s\S]*?\}\)/
+    );
     const etBlock = etMatch?.[0] ?? "";
     for (const col of ["key", "name", "subject", "body", "isActive"]) {
       expect(etBlock).toContain(col);
@@ -86,9 +127,18 @@ describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
   });
 
   it("EmailLog Drizzle schema has templateKey, to, subject, body, variables, status columns", () => {
-    const elMatch = drizzleSchema.match(/export const emailLog\s*=[\s\S]*?\}\)/);
+    const elMatch = drizzleSchema.match(
+      /export const emailLog\s*=[\s\S]*?\}\)/
+    );
     const elBlock = elMatch?.[0] ?? "";
-    for (const col of ["templateKey", "to", "subject", "body", "variables", "status"]) {
+    for (const col of [
+      "templateKey",
+      "to",
+      "subject",
+      "body",
+      "variables",
+      "status",
+    ]) {
       expect(elBlock).toContain(col);
     }
   });

@@ -65,7 +65,15 @@ describe("Prisma schema validation", () => {
   });
 
   describe("Feedback model fields", () => {
-    const fields = ["name", "email", "phone", "subject", "message", "rating", "isRead"];
+    const fields = [
+      "name",
+      "email",
+      "phone",
+      "subject",
+      "message",
+      "rating",
+      "isRead",
+    ];
 
     const match = schema.match(/model\s+Feedback\s*\{([\s\S]*?)\n\}/);
     const block = match?.[1] ?? "";
@@ -103,7 +111,13 @@ describe("Prisma schema validation", () => {
   });
 
   describe("GoogleReview model fields", () => {
-    const fields = ["googleReviewId", "authorName", "rating", "text", "isVisible"];
+    const fields = [
+      "googleReviewId",
+      "authorName",
+      "rating",
+      "text",
+      "isVisible",
+    ];
 
     const match = schema.match(/model\s+GoogleReview\s*\{([\s\S]*?)\n\}/);
     const block = match?.[1] ?? "";
@@ -149,7 +163,15 @@ describe("Prisma schema validation", () => {
     const match = schema.match(/model\s+EmailTemplate\s*\{([\s\S]*?)\n\}/);
     const block = match?.[1] ?? "";
 
-    const fields = ["id", "key", "name", "subject", "body", "variables", "isActive"];
+    const fields = [
+      "id",
+      "key",
+      "name",
+      "subject",
+      "body",
+      "variables",
+      "isActive",
+    ];
 
     for (const field of fields) {
       it(`has field '${field}'`, () => {
@@ -170,7 +192,15 @@ describe("Prisma schema validation", () => {
     const match = schema.match(/model\s+EmailLog\s*\{([\s\S]*?)\n\}/);
     const block = match?.[1] ?? "";
 
-    const fields = ["id", "templateKey", "to", "subject", "body", "variables", "status"];
+    const fields = [
+      "id",
+      "templateKey",
+      "to",
+      "subject",
+      "body",
+      "variables",
+      "status",
+    ];
 
     for (const field of fields) {
       it(`has field '${field}'`, () => {
@@ -203,13 +233,17 @@ describe("Prisma schema validation", () => {
 
     for (const model of modelsWithBoth) {
       it(`${model} has createdAt`, () => {
-        const match = schema.match(new RegExp(`model\\s+${model}\\s*\\{([\\s\\S]*?)\\n\\}`));
+        const match = schema.match(
+          new RegExp(`model\\s+${model}\\s*\\{([\\s\\S]*?)\\n\\}`)
+        );
         const block = match?.[1] ?? "";
         expect(block).toContain("createdAt");
       });
 
       it(`${model} has updatedAt`, () => {
-        const match = schema.match(new RegExp(`model\\s+${model}\\s*\\{([\\s\\S]*?)\\n\\}`));
+        const match = schema.match(
+          new RegExp(`model\\s+${model}\\s*\\{([\\s\\S]*?)\\n\\}`)
+        );
         const block = match?.[1] ?? "";
         expect(block).toContain("updatedAt");
       });
@@ -217,7 +251,9 @@ describe("Prisma schema validation", () => {
 
     // SessionChangeFeedback has createdAt only (no updatedAt)
     it("SessionChangeFeedback has createdAt", () => {
-      const match = schema.match(/model\s+SessionChangeFeedback\s*\{([\s\S]*?)\n\}/);
+      const match = schema.match(
+        /model\s+SessionChangeFeedback\s*\{([\s\S]*?)\n\}/
+      );
       const block = match?.[1] ?? "";
       expect(block).toContain("createdAt");
     });

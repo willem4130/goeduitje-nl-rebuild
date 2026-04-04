@@ -41,7 +41,9 @@ describe("user.getAll", () => {
     vi.mocked(prisma.user.findMany).mockResolvedValue([mockUser] as any);
     const result = await caller.user.getAll();
     expect(result).toEqual([mockUser]);
-    expect(prisma.user.findMany).toHaveBeenCalledWith({ orderBy: { createdAt: "desc" } });
+    expect(prisma.user.findMany).toHaveBeenCalledWith({
+      orderBy: { createdAt: "desc" },
+    });
   });
 });
 
@@ -56,7 +58,11 @@ describe("user.getById", () => {
 describe("user.create", () => {
   it("creates a user", async () => {
     vi.mocked(prisma.user.create).mockResolvedValue(mockUser as any);
-    const result = await caller.user.create({ name: "Jan Jansen", email: "jan@test.nl", role: "user" });
+    const result = await caller.user.create({
+      name: "Jan Jansen",
+      email: "jan@test.nl",
+      role: "user",
+    });
     expect(result).toEqual(mockUser);
     expect(prisma.user.create).toHaveBeenCalledWith({
       data: { name: "Jan Jansen", email: "jan@test.nl", role: "user" },
@@ -66,8 +72,16 @@ describe("user.create", () => {
 
 describe("user.update", () => {
   it("updates a user", async () => {
-    vi.mocked(prisma.user.update).mockResolvedValue({ ...mockUser, name: "Piet" } as any);
-    await caller.user.update({ id: "u1", name: "Piet", email: "piet@test.nl", role: "admin" });
+    vi.mocked(prisma.user.update).mockResolvedValue({
+      ...mockUser,
+      name: "Piet",
+    } as any);
+    await caller.user.update({
+      id: "u1",
+      name: "Piet",
+      email: "piet@test.nl",
+      role: "admin",
+    });
     expect(prisma.user.update).toHaveBeenCalledWith({
       where: { id: "u1" },
       data: { name: "Piet", email: "piet@test.nl", role: "admin" },

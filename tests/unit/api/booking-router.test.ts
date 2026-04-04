@@ -40,8 +40,12 @@ describe("booking.create", () => {
     };
 
     // Mock $transaction to execute the callback with the prisma client
-    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
-    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(mockSession as any);
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
+    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(
+      mockSession as any
+    );
     vi.mocked(prisma.booking.aggregate).mockResolvedValue({
       _sum: { numberOfPeople: 10 },
     } as any);
@@ -78,8 +82,12 @@ describe("booking.create", () => {
       date: new Date("2025-07-01"),
     };
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
-    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(mockSession as any);
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
+    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(
+      mockSession as any
+    );
     vi.mocked(prisma.booking.aggregate).mockResolvedValue({
       _sum: { numberOfPeople: 28 },
     } as any);
@@ -95,12 +103,12 @@ describe("booking.create", () => {
       sessionId: "session-nonexistent",
     };
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
     vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(null);
 
-    await expect(caller.booking.create(input)).rejects.toThrow(
-      /niet gevonden/
-    );
+    await expect(caller.booking.create(input)).rejects.toThrow(/niet gevonden/);
   });
 
   it("creates a booking with WorkshopRequest when no sessionId is provided", async () => {
@@ -116,7 +124,9 @@ describe("booking.create", () => {
       updatedAt: new Date(),
     };
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
     vi.mocked(prisma.booking.create).mockResolvedValue(mockBooking as any);
     vi.mocked(prisma.workshopRequest.create).mockResolvedValue({} as any);
 
@@ -149,8 +159,12 @@ describe("booking.create", () => {
       updatedAt: new Date(),
     };
 
-    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) => cb(prisma));
-    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(mockSession as any);
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
+    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(
+      mockSession as any
+    );
     vi.mocked(prisma.booking.aggregate).mockResolvedValue({
       _sum: { numberOfPeople: 25 },
     } as any);

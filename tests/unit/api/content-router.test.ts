@@ -11,9 +11,30 @@ beforeEach(() => {
 describe("content.getByPage", () => {
   it("returns content grouped by section", async () => {
     vi.mocked(prisma.pageContent.findMany).mockResolvedValue([
-      { page: "home", section: "hero", key: "title", value: "Welcome", type: "text", updatedAt: new Date() },
-      { page: "home", section: "hero", key: "subtitle", value: "Subtitle", type: "text", updatedAt: new Date() },
-      { page: "home", section: "about", key: "text", value: "About us", type: "text", updatedAt: new Date() },
+      {
+        page: "home",
+        section: "hero",
+        key: "title",
+        value: "Welcome",
+        type: "text",
+        updatedAt: new Date(),
+      },
+      {
+        page: "home",
+        section: "hero",
+        key: "subtitle",
+        value: "Subtitle",
+        type: "text",
+        updatedAt: new Date(),
+      },
+      {
+        page: "home",
+        section: "about",
+        key: "text",
+        value: "About us",
+        type: "text",
+        updatedAt: new Date(),
+      },
     ] as any);
 
     const result = await caller.content.getByPage({ page: "home" });
@@ -33,15 +54,26 @@ describe("content.getByPage", () => {
 describe("content.get", () => {
   it("returns a specific content value", async () => {
     vi.mocked(prisma.pageContent.findUnique).mockResolvedValue({
-      page: "home", section: "hero", key: "title", value: "Welcome",
+      page: "home",
+      section: "hero",
+      key: "title",
+      value: "Welcome",
     } as any);
-    const result = await caller.content.get({ page: "home", section: "hero", key: "title" });
+    const result = await caller.content.get({
+      page: "home",
+      section: "hero",
+      key: "title",
+    });
     expect(result).toBe("Welcome");
   });
 
   it("returns null for nonexistent key", async () => {
     vi.mocked(prisma.pageContent.findUnique).mockResolvedValue(null);
-    const result = await caller.content.get({ page: "home", section: "hero", key: "missing" });
+    const result = await caller.content.get({
+      page: "home",
+      section: "hero",
+      key: "missing",
+    });
     expect(result).toBeNull();
   });
 });
@@ -49,8 +81,20 @@ describe("content.get", () => {
 describe("content.getAll", () => {
   it("returns all content grouped by page", async () => {
     vi.mocked(prisma.pageContent.findMany).mockResolvedValue([
-      { page: "home", section: "hero", key: "title", value: "Welcome", type: "text" },
-      { page: "about", section: "intro", key: "text", value: "About", type: "text" },
+      {
+        page: "home",
+        section: "hero",
+        key: "title",
+        value: "Welcome",
+        type: "text",
+      },
+      {
+        page: "about",
+        section: "intro",
+        key: "text",
+        value: "About",
+        type: "text",
+      },
     ] as any);
 
     const result = await caller.content.getAll();
@@ -63,13 +107,27 @@ describe("content.getAll", () => {
 
 describe("content.update", () => {
   it("upserts a content item", async () => {
-    const mockContent = { id: "c1", page: "home", section: "hero", key: "title", value: "New Title", type: "text" };
+    const mockContent = {
+      id: "c1",
+      page: "home",
+      section: "hero",
+      key: "title",
+      value: "New Title",
+      type: "text",
+    };
     vi.mocked(prisma.pageContent.upsert).mockResolvedValue(mockContent as any);
 
-    await caller.content.update({ page: "home", section: "hero", key: "title", value: "New Title" });
+    await caller.content.update({
+      page: "home",
+      section: "hero",
+      key: "title",
+      value: "New Title",
+    });
     expect(prisma.pageContent.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { page_section_key: { page: "home", section: "hero", key: "title" } },
+        where: {
+          page_section_key: { page: "home", section: "hero", key: "title" },
+        },
         update: { value: "New Title", type: undefined },
         create: expect.objectContaining({ value: "New Title", type: "text" }),
       })
@@ -78,7 +136,13 @@ describe("content.update", () => {
 
   it("supports custom type", async () => {
     vi.mocked(prisma.pageContent.upsert).mockResolvedValue({} as any);
-    await caller.content.update({ page: "p", section: "s", key: "k", value: "v", type: "richtext" });
+    await caller.content.update({
+      page: "p",
+      section: "s",
+      key: "k",
+      value: "v",
+      type: "richtext",
+    });
     expect(prisma.pageContent.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         update: { value: "v", type: "richtext" },
@@ -106,10 +170,16 @@ describe("content.updateMany", () => {
 describe("content.delete", () => {
   it("deletes a content item", async () => {
     vi.mocked(prisma.pageContent.delete).mockResolvedValue({} as any);
-    const result = await caller.content.delete({ page: "home", section: "hero", key: "title" });
+    const result = await caller.content.delete({
+      page: "home",
+      section: "hero",
+      key: "title",
+    });
     expect(result).toEqual({ success: true });
     expect(prisma.pageContent.delete).toHaveBeenCalledWith({
-      where: { page_section_key: { page: "home", section: "hero", key: "title" } },
+      where: {
+        page_section_key: { page: "home", section: "hero", key: "title" },
+      },
     });
   });
 });

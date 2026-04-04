@@ -73,7 +73,9 @@ export default async function BedanktPage({
           <Users className="text-primary h-5 w-5" />
           <span className="text-muted-foreground text-sm">
             Meer dan{" "}
-            <span className="text-foreground font-semibold">{teamsCount} teams</span>{" "}
+            <span className="text-foreground font-semibold">
+              {teamsCount} teams
+            </span>{" "}
             gingen je voor
           </span>
         </div>

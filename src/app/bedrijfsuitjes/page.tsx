@@ -40,9 +40,7 @@ export const metadata: Metadata = {
   },
 };
 
-function formatLowestPrice(
-  priceTiers: { priceExclBtw: number }[]
-): string {
+function formatLowestPrice(priceTiers: { priceExclBtw: number }[]): string {
   if (priceTiers.length === 0) return "Op aanvraag";
   const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
   return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
@@ -165,9 +163,7 @@ export default async function BedrijfsuitjesPage() {
                     : `/onze-uitjes/${workshop.slug}`
                 }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
-                  index === 0
-                    ? "ring-2 ring-emerald-500 ring-offset-2"
-                    : ""
+                  index === 0 ? "ring-2 ring-emerald-500 ring-offset-2" : ""
                 }`}
               >
                 {workshop.image && (
@@ -232,7 +228,9 @@ export default async function BedrijfsuitjesPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
+                  <span className="text-sm font-medium">
+                    {avgRating}/5 op Google
+                  </span>
                 </div>
               </div>
             </div>

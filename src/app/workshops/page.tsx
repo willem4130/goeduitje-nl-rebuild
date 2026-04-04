@@ -39,9 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-function formatLowestPrice(
-  priceTiers: { priceExclBtw: number }[]
-): string {
+function formatLowestPrice(priceTiers: { priceExclBtw: number }[]): string {
   if (priceTiers.length === 0) return "Op aanvraag";
   const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
   return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
@@ -138,9 +136,7 @@ export default async function WorkshopsPage() {
                     : `/onze-uitjes/${workshop.slug}`
                 }
                 className={`group overflow-hidden rounded-xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
-                  index === 0
-                    ? "ring-2 ring-amber-500 ring-offset-2"
-                    : ""
+                  index === 0 ? "ring-2 ring-amber-500 ring-offset-2" : ""
                 }`}
               >
                 {workshop.image && (
@@ -297,7 +293,9 @@ export default async function WorkshopsPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
+                  <span className="text-sm font-medium">
+                    {avgRating}/5 op Google
+                  </span>
                 </div>
               </div>
             </div>
@@ -319,16 +317,16 @@ export default async function WorkshopsPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Link
                 href="/teambuilding"
-                className="group rounded-xl border bg-white p-6 shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
+                className="group hover:border-secondary/30 rounded-xl border bg-white p-6 shadow-sm transition-all hover:shadow-md"
               >
-                <h3 className="mb-2 font-bold group-hover:text-secondary">
+                <h3 className="group-hover:text-secondary mb-2 font-bold">
                   Teambuilding activiteiten
                 </h3>
                 <p className="text-muted-foreground text-sm">
                   Versterk je team met unieke activiteiten begeleid door
                   statushouders.
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
+                <span className="text-secondary mt-3 inline-flex items-center gap-1 text-sm font-medium">
                   Bekijk teambuilding
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </span>

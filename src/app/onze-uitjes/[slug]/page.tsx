@@ -20,7 +20,9 @@ import { CityGallery } from "@/components/city-gallery";
 
 // Helper to format price display
 function formatEuro(amount: number): string {
-  return amount % 1 === 0 ? `€${amount}` : `€${amount.toFixed(2).replace(".", ",")}`;
+  return amount % 1 === 0
+    ? `€${amount}`
+    : `€${amount.toFixed(2).replace(".", ",")}`;
 }
 
 function formatPrice(priceExcl: number, priceIncl: number): string {
@@ -238,7 +240,9 @@ export default async function WorkshopDetailPage({ params }: Props) {
                     <p className="text-muted-foreground text-sm">Prijs</p>
                     <p className="font-semibold">
                       Vanaf{" "}
-                      {formatEuro(getLowestPrice(workshop.priceTiers, workshop.variants))}{" "}
+                      {formatEuro(
+                        getLowestPrice(workshop.priceTiers, workshop.variants)
+                      )}{" "}
                       p.p.
                     </p>
                   </div>
@@ -401,7 +405,9 @@ export default async function WorkshopDetailPage({ params }: Props) {
                 <div className="bg-muted/50 mt-8 rounded-lg p-6">
                   <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
                   <p className="text-primary mb-4 text-3xl font-bold">
-                    {formatEuro(getLowestPrice(workshop.priceTiers, workshop.variants))}{" "}
+                    {formatEuro(
+                      getLowestPrice(workshop.priceTiers, workshop.variants)
+                    )}{" "}
                     <span className="text-muted-foreground text-base font-normal">
                       per persoon
                     </span>
@@ -423,7 +429,10 @@ export default async function WorkshopDetailPage({ params }: Props) {
                               {tier.groupSize}
                             </span>
                             <span className="font-medium">
-                              {formatPrice(tier.priceExclBtw, tier.priceInclBtw)}
+                              {formatPrice(
+                                tier.priceExclBtw,
+                                tier.priceInclBtw
+                              )}
                             </span>
                           </div>
                         ))}

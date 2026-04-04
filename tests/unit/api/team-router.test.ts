@@ -11,7 +11,13 @@ beforeEach(() => {
 describe("team.getAll", () => {
   const mockMembers = [
     { id: "tm1", name: "Jan", role: "Chef", sortOrder: 0, isPublished: true },
-    { id: "tm2", name: "Piet", role: "Sous Chef", sortOrder: 1, isPublished: true },
+    {
+      id: "tm2",
+      name: "Piet",
+      role: "Sous Chef",
+      sortOrder: 1,
+      isPublished: true,
+    },
   ];
 
   it("returns published team members ordered by sortOrder", async () => {
@@ -41,7 +47,9 @@ describe("team.getAll", () => {
 describe("team.getById", () => {
   it("returns team member by ID", async () => {
     const mockMember = { id: "tm1", name: "Jan", role: "Chef" };
-    vi.mocked(prisma.teamMember.findUnique).mockResolvedValue(mockMember as any);
+    vi.mocked(prisma.teamMember.findUnique).mockResolvedValue(
+      mockMember as any
+    );
 
     const result = await caller.team.getById({ id: "tm1" });
 
@@ -60,7 +68,12 @@ describe("team.create", () => {
       bio: "Ervaren kok met passie voor Italiaans",
     };
 
-    const mockCreated = { id: "tm1", ...input, sortOrder: 0, isPublished: true };
+    const mockCreated = {
+      id: "tm1",
+      ...input,
+      sortOrder: 0,
+      isPublished: true,
+    };
     vi.mocked(prisma.teamMember.create).mockResolvedValue(mockCreated as any);
 
     const result = await caller.team.create(input);
@@ -135,7 +148,10 @@ describe("team.togglePublish", () => {
     const mockUpdated = { id: "tm1", isPublished: false };
     vi.mocked(prisma.teamMember.update).mockResolvedValue(mockUpdated as any);
 
-    const result = await caller.team.togglePublish({ id: "tm1", isPublished: false });
+    const result = await caller.team.togglePublish({
+      id: "tm1",
+      isPublished: false,
+    });
 
     expect(result).toEqual(mockUpdated);
     expect(prisma.teamMember.update).toHaveBeenCalledWith({

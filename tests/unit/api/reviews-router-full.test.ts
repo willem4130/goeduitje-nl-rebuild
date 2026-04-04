@@ -29,7 +29,9 @@ const mockReview = {
 
 describe("reviews.getAll", () => {
   it("returns visible reviews with default sorting", async () => {
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([mockReview] as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([
+      mockReview,
+    ] as any);
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
     const result = await caller.reviews.getAll({});
     expect(result).toEqual([mockReview]);
@@ -73,7 +75,9 @@ describe("reviews.getAll", () => {
 
 describe("reviews.getFeatured", () => {
   it("returns visible reviews with rating >= 4 and text", async () => {
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([mockReview] as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([
+      mockReview,
+    ] as any);
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
     const result = await caller.reviews.getFeatured({});
     expect(result).toEqual([mockReview]);
@@ -116,7 +120,13 @@ describe("reviews.getStats", () => {
     expect(result.averageRating).toBe(4.5);
     expect(result.totalCount).toBe(100);
     expect(result.storedCount).toBe(50);
-    expect(result.ratingDistribution).toEqual({ 5: 30, 4: 15, 3: 5, 2: 0, 1: 0 });
+    expect(result.ratingDistribution).toEqual({
+      5: 30,
+      4: 15,
+      3: 5,
+      2: 0,
+      1: 0,
+    });
   });
 
   it("falls back to aggregate when no cache", async () => {
@@ -136,7 +146,9 @@ describe("reviews.getStats", () => {
 
 describe("reviews.getAllAdmin", () => {
   it("returns all reviews including hidden ones", async () => {
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([mockReview] as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([
+      mockReview,
+    ] as any);
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
     const result = await caller.reviews.getAllAdmin();
     expect(result.reviews).toEqual([mockReview]);
@@ -147,8 +159,14 @@ describe("reviews.getAllAdmin", () => {
 
 describe("reviews.toggleVisibility", () => {
   it("updates isVisible field", async () => {
-    vi.mocked(prisma.googleReview.update).mockResolvedValue({ ...mockReview, isVisible: false } as any);
-    const result = await caller.reviews.toggleVisibility({ reviewId: "r1", isVisible: false });
+    vi.mocked(prisma.googleReview.update).mockResolvedValue({
+      ...mockReview,
+      isVisible: false,
+    } as any);
+    const result = await caller.reviews.toggleVisibility({
+      reviewId: "r1",
+      isVisible: false,
+    });
     expect(result.isVisible).toBe(false);
     expect(prisma.googleReview.update).toHaveBeenCalledWith({
       where: { id: "r1" },
@@ -168,7 +186,9 @@ describe("reviews.refreshFromGoogle", () => {
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue({
       lastFetchedAt: new Date(), // just fetched
     } as any);
-    await expect(caller.reviews.refreshFromGoogle({ forceRefresh: false })).rejects.toThrow();
+    await expect(
+      caller.reviews.refreshFromGoogle({ forceRefresh: false })
+    ).rejects.toThrow();
   });
 
   it("calls fetchAllGoogleReviews when configured and not rate limited", async () => {
@@ -178,11 +198,18 @@ describe("reviews.refreshFromGoogle", () => {
       lastFetchedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     } as any);
     vi.mocked(fetchAllGoogleReviews).mockResolvedValue({
-      mostRelevant: [{
-        googleReviewId: "g1", authorName: "Jan", authorPhotoUrl: null,
-        rating: 5, text: "Great!", relativeTime: "1 week ago",
-        reviewTime: new Date(), language: "nl",
-      }],
+      mostRelevant: [
+        {
+          googleReviewId: "g1",
+          authorName: "Jan",
+          authorPhotoUrl: null,
+          rating: 5,
+          text: "Great!",
+          relativeTime: "1 week ago",
+          reviewTime: new Date(),
+          language: "nl",
+        },
+      ],
       newest: [],
       placeDetails: { name: "Goeduitje", rating: 4.8, totalReviews: 50 },
     } as any);
@@ -190,7 +217,9 @@ describe("reviews.refreshFromGoogle", () => {
     vi.mocked(prisma.googleReview.create).mockResolvedValue({} as any);
     vi.mocked(prisma.google_reviews_cache.upsert).mockResolvedValue({} as any);
 
-    const result = await caller.reviews.refreshFromGoogle({ forceRefresh: false });
+    const result = await caller.reviews.refreshFromGoogle({
+      forceRefresh: false,
+    });
     expect(result.success).toBe(true);
     expect(result.newReviews).toBe(1);
   });
@@ -200,19 +229,30 @@ describe("reviews.refreshFromGoogle", () => {
     vi.mocked(isGooglePlacesConfigured).mockReturnValue(true);
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
     vi.mocked(fetchAllGoogleReviews).mockResolvedValue({
-      mostRelevant: [{
-        googleReviewId: "g1", authorName: "Jan", authorPhotoUrl: null,
-        rating: 5, text: "Updated", relativeTime: "2w ago",
-        reviewTime: new Date(), language: "nl",
-      }],
+      mostRelevant: [
+        {
+          googleReviewId: "g1",
+          authorName: "Jan",
+          authorPhotoUrl: null,
+          rating: 5,
+          text: "Updated",
+          relativeTime: "2w ago",
+          reviewTime: new Date(),
+          language: "nl",
+        },
+      ],
       newest: [],
       placeDetails: { name: "Goeduitje", rating: 4.8, totalReviews: 50 },
     } as any);
-    vi.mocked(prisma.googleReview.findUnique).mockResolvedValue({ id: "existing" } as any);
+    vi.mocked(prisma.googleReview.findUnique).mockResolvedValue({
+      id: "existing",
+    } as any);
     vi.mocked(prisma.googleReview.update).mockResolvedValue({} as any);
     vi.mocked(prisma.google_reviews_cache.upsert).mockResolvedValue({} as any);
 
-    const result = await caller.reviews.refreshFromGoogle({ forceRefresh: true });
+    const result = await caller.reviews.refreshFromGoogle({
+      forceRefresh: true,
+    });
     expect(result.success).toBe(true);
     expect(result.updatedReviews).toBe(1);
   });
@@ -224,7 +264,9 @@ describe("reviews.refreshFromGoogle", () => {
     vi.mocked(fetchAllGoogleReviews).mockRejectedValue(new Error("API error"));
     vi.mocked(prisma.google_reviews_cache.upsert).mockResolvedValue({} as any);
 
-    await expect(caller.reviews.refreshFromGoogle({ forceRefresh: true })).rejects.toThrow(/Failed to fetch reviews/);
+    await expect(
+      caller.reviews.refreshFromGoogle({ forceRefresh: true })
+    ).rejects.toThrow(/Failed to fetch reviews/);
   });
 });
 

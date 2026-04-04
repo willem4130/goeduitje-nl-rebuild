@@ -10,8 +10,20 @@ beforeEach(() => {
 
 describe("recipes.getAll", () => {
   const mockRecipes = [
-    { id: "r1", title: "Pasta", slug: "pasta", isPublished: true, category: "Hoofdgerecht" },
-    { id: "r2", title: "Tiramisu", slug: "tiramisu", isPublished: true, category: "Dessert" },
+    {
+      id: "r1",
+      title: "Pasta",
+      slug: "pasta",
+      isPublished: true,
+      category: "Hoofdgerecht",
+    },
+    {
+      id: "r2",
+      title: "Tiramisu",
+      slug: "tiramisu",
+      isPublished: true,
+      category: "Dessert",
+    },
   ];
 
   it("returns published recipes by default", async () => {
@@ -30,7 +42,9 @@ describe("recipes.getAll", () => {
   });
 
   it("filters by category", async () => {
-    vi.mocked(prisma.recipe.findMany).mockResolvedValue([mockRecipes[0]!] as any);
+    vi.mocked(prisma.recipe.findMany).mockResolvedValue([
+      mockRecipes[0]!,
+    ] as any);
 
     await caller.recipes.getAll({ category: "Hoofdgerecht" });
 
@@ -42,7 +56,9 @@ describe("recipes.getAll", () => {
   });
 
   it("filters by search", async () => {
-    vi.mocked(prisma.recipe.findMany).mockResolvedValue([mockRecipes[0]!] as any);
+    vi.mocked(prisma.recipe.findMany).mockResolvedValue([
+      mockRecipes[0]!,
+    ] as any);
 
     await caller.recipes.getAll({ search: "Pasta" });
 
@@ -70,7 +86,12 @@ describe("recipes.getAll", () => {
 
 describe("recipes.getBySlug", () => {
   it("returns recipe by slug", async () => {
-    const mockRecipe = { id: "r1", title: "Pasta", slug: "pasta", isPublished: true };
+    const mockRecipe = {
+      id: "r1",
+      title: "Pasta",
+      slug: "pasta",
+      isPublished: true,
+    };
     vi.mocked(prisma.recipe.findUnique).mockResolvedValue(mockRecipe as any);
 
     const result = await caller.recipes.getBySlug({ slug: "pasta" });
@@ -93,7 +114,12 @@ describe("recipes.getCategories", () => {
 
     const result = await caller.recipes.getCategories();
 
-    expect(result).toEqual(["Voorgerecht", "Hoofdgerecht", "Bijgerecht", "Dessert"]);
+    expect(result).toEqual([
+      "Voorgerecht",
+      "Hoofdgerecht",
+      "Bijgerecht",
+      "Dessert",
+    ]);
   });
 });
 
@@ -129,7 +155,10 @@ describe("recipes.update", () => {
     const mockUpdated = { id: "r1", title: "Updated Pasta" };
     vi.mocked(prisma.recipe.update).mockResolvedValue(mockUpdated as any);
 
-    const result = await caller.recipes.update({ id: "r1", title: "Updated Pasta" });
+    const result = await caller.recipes.update({
+      id: "r1",
+      title: "Updated Pasta",
+    });
 
     expect(result).toEqual(mockUpdated);
     expect(prisma.recipe.update).toHaveBeenCalledWith({
@@ -155,7 +184,10 @@ describe("recipes.togglePublish", () => {
     const mockUpdated = { id: "r1", isPublished: false };
     vi.mocked(prisma.recipe.update).mockResolvedValue(mockUpdated as any);
 
-    const result = await caller.recipes.togglePublish({ id: "r1", isPublished: false });
+    const result = await caller.recipes.togglePublish({
+      id: "r1",
+      isPublished: false,
+    });
 
     expect(result).toEqual(mockUpdated);
     expect(prisma.recipe.update).toHaveBeenCalledWith({

@@ -39,9 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-function formatLowestPrice(
-  priceTiers: { priceExclBtw: number }[]
-): string {
+function formatLowestPrice(priceTiers: { priceExclBtw: number }[]): string {
   if (priceTiers.length === 0) return "Op aanvraag";
   const lowest = Math.min(...priceTiers.map((t) => t.priceExclBtw));
   return `vanaf €${lowest % 1 === 0 ? lowest : lowest.toFixed(2).replace(".", ",")} p.p.`;
@@ -71,10 +69,10 @@ export default async function TeambuildingPage() {
   return (
     <main className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary/10 via-indigo-50 to-white py-16 lg:py-24">
+      <section className="from-secondary/10 bg-gradient-to-br via-indigo-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge className="mb-4 bg-secondary/15 text-secondary hover:bg-secondary/15">
+            <Badge className="bg-secondary/15 text-secondary hover:bg-secondary/15 mb-4">
               <Users className="mr-1 h-3 w-3" />
               Teambuilding
             </Badge>
@@ -113,7 +111,7 @@ export default async function TeambuildingPage() {
         <div className="container mx-auto max-w-7xl px-6">
           <div className="grid gap-6 md:grid-cols-3">
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <Heart className="mx-auto mb-3 h-8 w-8 text-secondary" />
+              <Heart className="text-secondary mx-auto mb-3 h-8 w-8" />
               <h3 className="mb-2 font-bold">Sociale impact</h3>
               <p className="text-muted-foreground text-sm">
                 Onze activiteiten worden begeleid door statushouders en
@@ -121,7 +119,7 @@ export default async function TeambuildingPage() {
               </p>
             </div>
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <MapPin className="mx-auto mb-3 h-8 w-8 text-secondary" />
+              <MapPin className="text-secondary mx-auto mb-3 h-8 w-8" />
               <h3 className="mb-2 font-bold">Op locatie naar keuze</h3>
               <p className="text-muted-foreground text-sm">
                 Wij komen naar jullie toe of organiseren op een van onze
@@ -129,7 +127,7 @@ export default async function TeambuildingPage() {
               </p>
             </div>
             <div className="rounded-xl border bg-white p-6 text-center shadow-sm">
-              <Star className="mx-auto mb-3 h-8 w-8 text-secondary" />
+              <Star className="text-secondary mx-auto mb-3 h-8 w-8" />
               <h3 className="mb-2 font-bold">Op maat gemaakt</h3>
               <p className="text-muted-foreground text-sm">
                 Elk programma wordt aangepast aan jullie wensen, groepsgrootte
@@ -185,14 +183,14 @@ export default async function TeambuildingPage() {
                   </div>
                 )}
                 <div className="p-6">
-                  <h3 className="mb-2 text-xl font-bold group-hover:text-secondary">
+                  <h3 className="group-hover:text-secondary mb-2 text-xl font-bold">
                     {workshop.title}
                   </h3>
                   <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                     {workshop.description}
                   </p>
                   <div className="flex flex-wrap gap-4 text-sm">
-                    <span className="font-semibold text-secondary">
+                    <span className="text-secondary font-semibold">
                       {formatLowestPrice(workshop.priceTiers)}
                     </span>
                     <span className="text-muted-foreground">
@@ -225,27 +223,27 @@ export default async function TeambuildingPage() {
               </p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
+                  <CheckCircle2 className="text-secondary mt-0.5 h-5 w-5 flex-shrink-0" />
                   <span>
                     Verbeter teamcommunicatie en samenwerking op een
                     laagdrempelige manier
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
+                  <CheckCircle2 className="text-secondary mt-0.5 h-5 w-5 flex-shrink-0" />
                   <span>
                     Maak kennis met andere culturen en verbreed je perspectief
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
+                  <CheckCircle2 className="text-secondary mt-0.5 h-5 w-5 flex-shrink-0" />
                   <span>
                     Draag bij aan de integratie en arbeidsparticipatie van
                     statushouders
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-secondary" />
+                  <CheckCircle2 className="text-secondary mt-0.5 h-5 w-5 flex-shrink-0" />
                   <span>
                     Kies uit actieve, culinaire of creatieve activiteiten voor
                     elk type team
@@ -271,7 +269,9 @@ export default async function TeambuildingPage() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
+                  <span className="text-sm font-medium">
+                    {avgRating}/5 op Google
+                  </span>
                 </div>
               </div>
             </div>
@@ -293,16 +293,16 @@ export default async function TeambuildingPage() {
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/teambuilding-nijmegen"
-                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
+                className="hover:border-secondary/30 inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:shadow-md"
               >
-                <MapPin className="h-4 w-4 text-secondary" />
+                <MapPin className="text-secondary h-4 w-4" />
                 Teambuilding Nijmegen
               </Link>
               <Link
                 href="/teambuilding-arnhem"
-                className="inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:border-secondary/30 hover:shadow-md"
+                className="hover:border-secondary/30 inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-3 font-medium shadow-sm transition-all hover:shadow-md"
               >
-                <MapPin className="h-4 w-4 text-secondary" />
+                <MapPin className="text-secondary h-4 w-4" />
                 Teambuilding Arnhem
               </Link>
             </div>
@@ -310,7 +310,7 @@ export default async function TeambuildingPage() {
               Niet in de buurt? Geen probleem — we komen door heel Nederland.{" "}
               <Link
                 href="/contact"
-                className="text-secondary underline hover:text-secondary"
+                className="text-secondary hover:text-secondary underline"
               >
                 Neem contact op
               </Link>{" "}
@@ -334,7 +334,7 @@ export default async function TeambuildingPage() {
             <Button
               asChild
               size="lg"
-              className="bg-white text-secondary hover:bg-white/90"
+              className="text-secondary bg-white hover:bg-white/90"
             >
               <Link href="/onze-uitjes#configurator">
                 <Calendar className="mr-2 h-5 w-5" />

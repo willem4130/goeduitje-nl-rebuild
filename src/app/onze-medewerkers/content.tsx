@@ -150,8 +150,7 @@ export function OnzeMedewerkersContent({
                       <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
 
                       {/* Photo or placeholder */}
-                      {member.image &&
-                      !member.image.includes("placeholder") ? (
+                      {member.image && !member.image.includes("placeholder") ? (
                         <img
                           src={member.image}
                           alt={member.name}
@@ -159,9 +158,7 @@ export function OnzeMedewerkersContent({
                         />
                       ) : (
                         <>
-                          <div
-                            className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/60 to-primary/40"
-                          />
+                          <div className="from-primary/80 via-primary/60 to-primary/40 absolute inset-0 bg-gradient-to-br" />
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-4xl font-bold text-white/60 sm:text-5xl">
                               {member.name.charAt(0)}

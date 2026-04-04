@@ -23,7 +23,9 @@ const mockMedia = {
 
 describe("media.getAll", () => {
   it("returns visible content media excluding site assets", async () => {
-    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([mockMedia] as any);
+    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([
+      mockMedia,
+    ] as any);
     const result = await caller.media.getAll();
     expect(result).toEqual([mockMedia]);
     expect(prisma.mediaGallery.findMany).toHaveBeenCalledWith(
@@ -57,7 +59,9 @@ describe("media.getAll", () => {
 
 describe("media.getFeatured", () => {
   it("returns featured homepage media", async () => {
-    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([mockMedia] as any);
+    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([
+      mockMedia,
+    ] as any);
     const result = await caller.media.getFeatured();
     expect(result).toEqual([mockMedia]);
     expect(prisma.mediaGallery.findMany).toHaveBeenCalledWith(
@@ -83,7 +87,9 @@ describe("media.getFeatured", () => {
 
 describe("media.getByCategory", () => {
   it("returns media by content category", async () => {
-    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([mockMedia] as any);
+    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([
+      mockMedia,
+    ] as any);
     const result = await caller.media.getByCategory({ category: "workshop" });
     expect(result).toEqual([mockMedia]);
     expect(prisma.mediaGallery.findMany).toHaveBeenCalledWith(
@@ -96,7 +102,9 @@ describe("media.getByCategory", () => {
 
 describe("media.getById", () => {
   it("returns single media item", async () => {
-    vi.mocked(prisma.mediaGallery.findUnique).mockResolvedValue(mockMedia as any);
+    vi.mocked(prisma.mediaGallery.findUnique).mockResolvedValue(
+      mockMedia as any
+    );
     const result = await caller.media.getById({ id: 1 });
     expect(result).toEqual(mockMedia);
   });
@@ -104,14 +112,23 @@ describe("media.getById", () => {
 
 describe("media.getSiteAsset", () => {
   it("returns site asset by category", async () => {
-    vi.mocked(prisma.mediaGallery.findFirst).mockResolvedValue(mockMedia as any);
-    const result = await caller.media.getSiteAsset({ category: "site-hero-video" });
+    vi.mocked(prisma.mediaGallery.findFirst).mockResolvedValue(
+      mockMedia as any
+    );
+    const result = await caller.media.getSiteAsset({
+      category: "site-hero-video",
+    });
     expect(result).toEqual(mockMedia);
   });
 
   it("filters by variant tag", async () => {
-    vi.mocked(prisma.mediaGallery.findFirst).mockResolvedValue(mockMedia as any);
-    await caller.media.getSiteAsset({ category: "site-hero-poster", variant: "mobile" });
+    vi.mocked(prisma.mediaGallery.findFirst).mockResolvedValue(
+      mockMedia as any
+    );
+    await caller.media.getSiteAsset({
+      category: "site-hero-poster",
+      variant: "mobile",
+    });
     expect(prisma.mediaGallery.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
@@ -125,7 +142,9 @@ describe("media.getSiteAsset", () => {
 
 describe("media.getSiteAssets", () => {
   it("returns all site assets for category", async () => {
-    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([mockMedia] as any);
+    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([
+      mockMedia,
+    ] as any);
     const result = await caller.media.getSiteAssets({ category: "site-logo" });
     expect(result).toEqual([mockMedia]);
   });
@@ -133,9 +152,24 @@ describe("media.getSiteAssets", () => {
 
 describe("media.getHeroMedia", () => {
   it("returns structured hero media with variants", async () => {
-    const desktopVideo = { ...mockMedia, id: 1, category: "site-hero-video", tags: ["desktop"] };
-    const mobileVideo = { ...mockMedia, id: 2, category: "site-hero-video", tags: ["mobile"] };
-    const desktopPoster = { ...mockMedia, id: 3, category: "site-hero-poster", tags: ["desktop"] };
+    const desktopVideo = {
+      ...mockMedia,
+      id: 1,
+      category: "site-hero-video",
+      tags: ["desktop"],
+    };
+    const mobileVideo = {
+      ...mockMedia,
+      id: 2,
+      category: "site-hero-video",
+      tags: ["mobile"],
+    };
+    const desktopPoster = {
+      ...mockMedia,
+      id: 3,
+      category: "site-hero-poster",
+      tags: ["desktop"],
+    };
 
     vi.mocked(prisma.mediaGallery.findMany)
       .mockResolvedValueOnce([desktopVideo, mobileVideo] as any) // videos
@@ -149,7 +183,12 @@ describe("media.getHeroMedia", () => {
   });
 
   it("falls back to first item when no variant tag", async () => {
-    const video = { ...mockMedia, id: 1, category: "site-hero-video", tags: null };
+    const video = {
+      ...mockMedia,
+      id: 1,
+      category: "site-hero-video",
+      tags: null,
+    };
     vi.mocked(prisma.mediaGallery.findMany)
       .mockResolvedValueOnce([video] as any)
       .mockResolvedValueOnce([]);
@@ -164,7 +203,10 @@ describe("media.getLogos", () => {
   it("returns nav and footer logos", async () => {
     const navLogo = { ...mockMedia, id: 1, tags: ["nav"] };
     const footerLogo = { ...mockMedia, id: 2, tags: ["footer"] };
-    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([navLogo, footerLogo] as any);
+    vi.mocked(prisma.mediaGallery.findMany).mockResolvedValue([
+      navLogo,
+      footerLogo,
+    ] as any);
 
     const result = await caller.media.getLogos();
     expect(result.nav).toEqual(navLogo);

@@ -45,7 +45,9 @@ test.describe("Site Navigation", () => {
 
   test("booking page loads", async ({ page }) => {
     await page.goto("/booking");
-    await expect(page.getByRole("heading", { name: "Open Kookworkshop Inschrijving" })).toBeVisible({
+    await expect(
+      page.getByRole("heading", { name: "Open Kookworkshop Inschrijving" })
+    ).toBeVisible({
       timeout: 10000,
     });
   });

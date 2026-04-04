@@ -39,7 +39,9 @@ test.describe("Workshop Configurator", () => {
     // Wait for hydration and animations to complete
     await page.waitForTimeout(1000);
     // Click the zakelijk checkbox using the label text
-    const label = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    const label = page
+      .locator("label")
+      .filter({ hasText: "Zakelijke aanvraag" });
     await label.click({ force: true });
     await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
       timeout: 5000,
@@ -55,7 +57,9 @@ test.describe("Workshop Configurator", () => {
 
   test("shows company fields when zakelijk is selected", async ({ page }) => {
     await page.waitForTimeout(1000);
-    const label = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    const label = page
+      .locator("label")
+      .filter({ hasText: "Zakelijke aanvraag" });
     await label.click({ force: true });
     await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
       timeout: 5000,
@@ -65,10 +69,14 @@ test.describe("Workshop Configurator", () => {
     });
   });
 
-  test("hides company fields when particulier is selected", async ({ page }) => {
+  test("hides company fields when particulier is selected", async ({
+    page,
+  }) => {
     await page.waitForTimeout(1000);
     // First select zakelijk
-    const zakelijkLabel = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    const zakelijkLabel = page
+      .locator("label")
+      .filter({ hasText: "Zakelijke aanvraag" });
     await zakelijkLabel.click({ force: true });
     await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
       timeout: 5000,
@@ -81,7 +89,9 @@ test.describe("Workshop Configurator", () => {
   test("company name field is required for zakelijk", async ({ page }) => {
     await page.waitForTimeout(1000);
     // Select zakelijk
-    const zakelijkLabel = page.locator("label").filter({ hasText: "Zakelijke aanvraag" });
+    const zakelijkLabel = page
+      .locator("label")
+      .filter({ hasText: "Zakelijke aanvraag" });
     await zakelijkLabel.click({ force: true });
     await expect(page.getByText("Bedrijfsnaam").first()).toBeVisible({
       timeout: 5000,

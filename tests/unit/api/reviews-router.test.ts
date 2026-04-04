@@ -29,7 +29,9 @@ describe("reviews.getAll", () => {
   ];
 
   it("returns visible reviews with sorting", async () => {
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue(mockReviews as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue(
+      mockReviews as any
+    );
     // Mock the cache check (non-blocking)
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
 
@@ -50,7 +52,9 @@ describe("reviews.getAll", () => {
   });
 
   it("filters by minRating", async () => {
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([mockReviews[0]!] as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue([
+      mockReviews[0]!,
+    ] as any);
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
 
     await caller.reviews.getAll({ minRating: 5 });
@@ -69,9 +73,17 @@ describe("reviews.getAll", () => {
 describe("reviews.getFeatured", () => {
   it("returns reviews with rating >= 4 and text", async () => {
     const mockFeatured = [
-      { id: "rev1", authorName: "Jan", rating: 5, text: "Geweldig!", isVisible: true },
+      {
+        id: "rev1",
+        authorName: "Jan",
+        rating: 5,
+        text: "Geweldig!",
+        isVisible: true,
+      },
     ];
-    vi.mocked(prisma.googleReview.findMany).mockResolvedValue(mockFeatured as any);
+    vi.mocked(prisma.googleReview.findMany).mockResolvedValue(
+      mockFeatured as any
+    );
     vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(null);
 
     const result = await caller.reviews.getFeatured({ limit: 5 });
@@ -100,7 +112,9 @@ describe("reviews.getStats", () => {
       lastFetchedAt: new Date(),
       placeName: "Goeduitje",
     };
-    vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(mockCache as any);
+    vi.mocked(prisma.google_reviews_cache.findFirst).mockResolvedValue(
+      mockCache as any
+    );
     vi.mocked(prisma.googleReview.aggregate).mockResolvedValue({
       _avg: { rating: 4.3 },
       _count: { id: 50 },

@@ -49,7 +49,9 @@ describe("Email system — DB template loading", () => {
       expect.objectContaining({
         to: ["user@example.com"],
         subject: "Hallo Jan!",
-        html: expect.stringContaining("Welkom Jan, je workshops: kookworkshop, stadsspel"),
+        html: expect.stringContaining(
+          "Welkom Jan, je workshops: kookworkshop, stadsspel"
+        ),
       })
     );
     // Should NOT have react prop when using DB template
@@ -77,7 +79,8 @@ describe("Email system — DB template loading", () => {
       })
     );
     // Should NOT have html prop (that's the DB template path)
-    const callArgs = vi.mocked(resend.emails.send).mock.calls[0]![0] as unknown as Record<string, unknown>;
+    const callArgs = vi.mocked(resend.emails.send).mock
+      .calls[0]![0] as unknown as Record<string, unknown>;
     expect(callArgs).toHaveProperty("react");
     expect(callArgs).not.toHaveProperty("html");
   });
@@ -324,7 +327,9 @@ describe("Email system — variable replacement", () => {
 
     expect(resend.emails.send).toHaveBeenCalledWith(
       expect.objectContaining({
-        html: expect.stringContaining("Je uitjes: kookworkshop, stadsspel, buffet"),
+        html: expect.stringContaining(
+          "Je uitjes: kookworkshop, stadsspel, buffet"
+        ),
       })
     );
   });

@@ -915,7 +915,13 @@ export default async function LandingPage({ params }: Props) {
   // Non-kookworkshop types use a separate template
   if (type !== "kookworkshop") {
     return (
-      <TypedLandingPage landing={landing} type={type} heroImage={heroImage} workshops={workshops} avgRating={avgRating} />
+      <TypedLandingPage
+        landing={landing}
+        type={type}
+        heroImage={heroImage}
+        workshops={workshops}
+        avgRating={avgRating}
+      />
     );
   }
 
@@ -1024,7 +1030,9 @@ export default async function LandingPage({ params }: Props) {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
+                  <span className="text-sm font-medium">
+                    {avgRating}/5 op Google
+                  </span>
                 </div>
               </div>
             </div>
@@ -1054,7 +1062,9 @@ export default async function LandingPage({ params }: Props) {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Duur</p>
-                <p className="text-lg font-bold text-gray-900">{kookworkshop?.duration ?? "Vanaf 2,5 uur"}</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {kookworkshop?.duration ?? "Vanaf 2,5 uur"}
+                </p>
                 <p className="text-xs text-gray-500">volledig naar wens</p>
               </div>
             </div>
@@ -1694,7 +1704,13 @@ const ICON_MAP = {
   Building2,
 } as const;
 
-function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: TypedLandingPageProps) {
+function TypedLandingPage({
+  landing,
+  type,
+  heroImage,
+  workshops,
+  avgRating,
+}: TypedLandingPageProps) {
   const theme = THEMES[type];
   const label = landing.displayTitle || TYPE_LABELS[type];
   const pageTitle = `${label} ${landing.city}`;
@@ -1708,19 +1724,34 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
   const koffieWs = workshops.find((w) => w.slug === "koffie-thee-workshop");
   const kookWs = workshops.find((w) => w.slug === "kookworkshop");
 
-  const stadsspelLowest = stadsspelWs ? getLowestPriceFromWorkshop(stadsspelWs) : null;
-  const theGameLowest = theGameWs ? getLowestPriceFromWorkshop(theGameWs) : null;
+  const stadsspelLowest = stadsspelWs
+    ? getLowestPriceFromWorkshop(stadsspelWs)
+    : null;
+  const theGameLowest = theGameWs
+    ? getLowestPriceFromWorkshop(theGameWs)
+    : null;
   const koffieLowest = koffieWs ? getLowestPriceFromWorkshop(koffieWs) : null;
   const kookLowest = kookWs ? getLowestPriceFromWorkshop(kookWs) : null;
 
   // Incl BTW prices
-  const stadsspelLowestIncl = stadsspelWs ? getLowestInclFromWorkshop(stadsspelWs) : null;
-  const theGameLowestIncl = theGameWs ? getLowestInclFromWorkshop(theGameWs) : null;
-  const koffieLowestIncl = koffieWs ? getLowestInclFromWorkshop(koffieWs) : null;
+  const stadsspelLowestIncl = stadsspelWs
+    ? getLowestInclFromWorkshop(stadsspelWs)
+    : null;
+  const theGameLowestIncl = theGameWs
+    ? getLowestInclFromWorkshop(theGameWs)
+    : null;
+  const koffieLowestIncl = koffieWs
+    ? getLowestInclFromWorkshop(koffieWs)
+    : null;
   const kookLowestIncl = kookWs ? getLowestInclFromWorkshop(kookWs) : null;
 
   // Overall lowest for teambuilding/bedrijfsuitje
-  const allPrices = [stadsspelLowest, theGameLowest, koffieLowest, kookLowest].filter((p): p is number => p !== null);
+  const allPrices = [
+    stadsspelLowest,
+    theGameLowest,
+    koffieLowest,
+    kookLowest,
+  ].filter((p): p is number => p !== null);
   const overallLowest = allPrices.length > 0 ? Math.min(...allPrices) : null;
 
   const heroDescriptions: Record<
@@ -1868,7 +1899,11 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     teambuilding: {
       title: "Tarieven teambuilding activiteiten",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelLowestIncl) },
+        {
+          label: "Stadsspel / Citygame",
+          exclBtw: formatEuro(stadsspelLowest),
+          inclBtw: formatEuro(stadsspelLowestIncl),
+        },
         {
           label: "The Game - Koffer Challenge",
           exclBtw: formatEuro(theGameLowest),
@@ -1891,7 +1926,11 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     bedrijfsuitje: {
       title: "Tarieven bedrijfsuitjes",
       tiers: [
-        { label: "Stadsspel / Citygame", exclBtw: formatEuro(stadsspelLowest), inclBtw: formatEuro(stadsspelLowestIncl) },
+        {
+          label: "Stadsspel / Citygame",
+          exclBtw: formatEuro(stadsspelLowest),
+          inclBtw: formatEuro(stadsspelLowestIncl),
+        },
         {
           label: "The Game - Koffer Challenge",
           exclBtw: formatEuro(theGameLowest),
@@ -1913,16 +1952,21 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     },
     stadsspel: {
       title: "Tarieven stadsspel",
-      tiers: stadsspelWs && stadsspelWs.priceTiers.length > 0
-        ? stadsspelWs.priceTiers.map((tier, index) => ({
-            label: tier.groupSize,
-            exclBtw: formatEuro(tier.priceExclBtw),
-            inclBtw: formatEuro(tier.priceInclBtw),
-            highlight: index === stadsspelWs.priceTiers.length - 1,
-          }))
-        : [
-            { label: "Op aanvraag", exclBtw: "Op aanvraag", inclBtw: "Op aanvraag" },
-          ],
+      tiers:
+        stadsspelWs && stadsspelWs.priceTiers.length > 0
+          ? stadsspelWs.priceTiers.map((tier, index) => ({
+              label: tier.groupSize,
+              exclBtw: formatEuro(tier.priceExclBtw),
+              inclBtw: formatEuro(tier.priceInclBtw),
+              highlight: index === stadsspelWs.priceTiers.length - 1,
+            }))
+          : [
+              {
+                label: "Op aanvraag",
+                exclBtw: "Op aanvraag",
+                inclBtw: "Op aanvraag",
+              },
+            ],
       note: "Prijzen zijn per persoon. Het stadsspel kan ook gecombineerd worden met een kookworkshop.",
     },
   };
@@ -2034,7 +2078,9 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">{avgRating}/5 op Google</span>
+                  <span className="text-sm font-medium">
+                    {avgRating}/5 op Google
+                  </span>
                 </div>
               </div>
             </div>
@@ -2332,7 +2378,11 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
             </div>
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src={type === "stadsspel" ? "/images/workshops/stadsspel.jpg" : "/images/workshops/wat-uniek-maakt.jpg"}
+                src={
+                  type === "stadsspel"
+                    ? "/images/workshops/stadsspel.jpg"
+                    : "/images/workshops/wat-uniek-maakt.jpg"
+                }
                 alt={`${label} ${landing.city} met sociale impact`}
                 fill
                 className="object-cover"
@@ -2532,4 +2582,3 @@ function TypedLandingPage({ landing, type, heroImage, workshops, avgRating }: Ty
     </main>
   );
 }
-

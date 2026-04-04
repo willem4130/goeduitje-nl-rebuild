@@ -6,9 +6,9 @@ import { test, expect } from "@playwright/test";
 test.describe("Booking Page", () => {
   test("booking page loads with header", async ({ page }) => {
     await page.goto("/booking");
-    await expect(
-      page.getByText("Open Kookworkshop Inschrijving")
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Open Kookworkshop Inschrijving")).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test("shows price badge", async ({ page }) => {

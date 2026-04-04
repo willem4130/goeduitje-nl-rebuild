@@ -130,7 +130,10 @@ describe("faq.reorder", () => {
 
 describe("faq.togglePublish", () => {
   it("toggles publish status", async () => {
-    vi.mocked(prisma.fAQ.update).mockResolvedValue({ ...mockFAQ, isPublished: false } as any);
+    vi.mocked(prisma.fAQ.update).mockResolvedValue({
+      ...mockFAQ,
+      isPublished: false,
+    } as any);
     await caller.faq.togglePublish({ id: "faq1", isPublished: false });
     expect(prisma.fAQ.update).toHaveBeenCalledWith({
       where: { id: "faq1" },

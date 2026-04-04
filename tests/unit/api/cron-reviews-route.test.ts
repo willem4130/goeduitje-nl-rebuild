@@ -110,9 +110,7 @@ describe("GET /api/cron/refresh-google-reviews", () => {
   it("returns 500 when fetchAllGoogleReviews throws", async () => {
     mockHeaders("Bearer test-secret");
     vi.mocked(isGooglePlacesConfigured).mockReturnValue(true);
-    vi.mocked(fetchAllGoogleReviews).mockRejectedValue(
-      new Error("API down")
-    );
+    vi.mocked(fetchAllGoogleReviews).mockRejectedValue(new Error("API down"));
 
     const res = await GET();
     expect(res.status).toBe(500);

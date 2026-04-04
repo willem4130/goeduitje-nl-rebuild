@@ -40,15 +40,15 @@ test.describe("Homepage", () => {
     await page.goto("/");
     // Wait for client-side hydration
     await page.waitForTimeout(2000);
-    await expect(
-      page.getByText(/stel je uitje samen/i).first()
-    ).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/stel je uitje samen/i).first()).toBeVisible({
+      timeout: 15000,
+    });
   });
 
   test("has contact CTA section", async ({ page }) => {
     await page.goto("/");
-    await expect(
-      page.getByText("Heb je vragen?")
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Heb je vragen?")).toBeVisible({
+      timeout: 10000,
+    });
   });
 });

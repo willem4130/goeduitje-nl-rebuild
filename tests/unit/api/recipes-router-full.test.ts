@@ -10,11 +10,18 @@ beforeEach(() => {
 
 describe("recipes.getById", () => {
   it("returns recipe by ID (including unpublished)", async () => {
-    const mockRecipe = { id: "r1", title: "Pasta", slug: "pasta", isPublished: false };
+    const mockRecipe = {
+      id: "r1",
+      title: "Pasta",
+      slug: "pasta",
+      isPublished: false,
+    };
     vi.mocked(prisma.recipe.findUnique).mockResolvedValue(mockRecipe as any);
     const result = await caller.recipes.getById({ id: "r1" });
     expect(result).toEqual(mockRecipe);
-    expect(prisma.recipe.findUnique).toHaveBeenCalledWith({ where: { id: "r1" } });
+    expect(prisma.recipe.findUnique).toHaveBeenCalledWith({
+      where: { id: "r1" },
+    });
   });
 });
 
@@ -31,10 +38,17 @@ describe("recipes.getAll with difficulty", () => {
 
   it("filters by both category and difficulty", async () => {
     vi.mocked(prisma.recipe.findMany).mockResolvedValue([]);
-    await caller.recipes.getAll({ category: "Dessert", difficulty: "Moeilijk", limit: 10 });
+    await caller.recipes.getAll({
+      category: "Dessert",
+      difficulty: "Moeilijk",
+      limit: 10,
+    });
     expect(prisma.recipe.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: expect.objectContaining({ category: "Dessert", difficulty: "Moeilijk" }),
+        where: expect.objectContaining({
+          category: "Dessert",
+          difficulty: "Moeilijk",
+        }),
         take: 10,
       })
     );
@@ -88,7 +102,10 @@ describe("recipes.getStats", () => {
 
 describe("recipes.create with isPublished=false", () => {
   it("creates an unpublished recipe", async () => {
-    vi.mocked(prisma.recipe.create).mockResolvedValue({ id: "r1", isPublished: false } as any);
+    vi.mocked(prisma.recipe.create).mockResolvedValue({
+      id: "r1",
+      isPublished: false,
+    } as any);
     await caller.recipes.create({
       title: "Draft Recipe",
       slug: "draft-recipe",

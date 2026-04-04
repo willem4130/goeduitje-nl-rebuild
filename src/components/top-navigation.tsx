@@ -59,10 +59,8 @@ export function TopNavigation({
   return (
     <motion.nav
       className={cn(
-        "fixed top-0 z-50 w-full transition-all duration-300 bg-background",
-        isScrolled
-          ? "shadow-editorial"
-          : "shadow-editorial-sm"
+        "bg-background fixed top-0 z-50 w-full transition-all duration-300",
+        isScrolled ? "shadow-editorial" : "shadow-editorial-sm"
       )}
     >
       <div className="container">

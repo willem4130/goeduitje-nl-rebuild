@@ -1,337 +1,493 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Goeduitje.nl - Wijzigingen Overzicht</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
-      background: #fafafa;
-      color: #333;
-      line-height: 1.6;
-    }
-    h1 { color: #8b4c5a; border-bottom: 3px solid #8b4c5a; padding-bottom: 0.5rem; }
-    .admin-link {
-      background: linear-gradient(135deg, #8b4c5a 0%, #6d3a47 100%);
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      margin: 1.5rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      text-decoration: none;
-    }
-    .admin-link:hover { opacity: 0.95; }
-    .admin-link span { font-size: 0.9rem; opacity: 0.9; }
-    .change {
-      background: white;
-      border: 1px solid #ddd;
-      border-left: 4px solid #8b4c5a;
-      border-radius: 0 8px 8px 0;
-      padding: 1.25rem;
-      margin: 1rem 0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .change h3 { margin: 0 0 0.5rem 0; color: #333; font-size: 1.1rem; }
-    .change-meta { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .badge {
-      display: inline-block;
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    .badge-category { background: #e9ecef; color: #495057; }
-    .badge-deployed { background: #d4edda; color: #155724; }
-    .files {
-      font-family: monospace;
-      font-size: 0.8rem;
-      background: #f8f9fa;
-      padding: 0.5rem 0.75rem;
-      border-radius: 4px;
-      margin: 0.75rem 0;
-      color: #6c757d;
-    }
-    ul { margin: 0.5rem 0; padding-left: 1.25rem; }
-    li { margin: 0.25rem 0; font-size: 0.95rem; }
-    a { color: #8b4c5a; }
-    a:hover { color: #6d3a47; }
-    .note {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      padding: 0.75rem 1rem;
-      border-radius: 4px;
-      margin: 0.75rem 0;
-      font-size: 0.9rem;
-    }
-    code { background: #e9ecef; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85rem; }
-  </style>
-</head>
-<body>
-  <h1>Goeduitje.nl - Wijzigingen</h1>
-  <p>Overzicht van alle ontwikkelingswijzigingen. Voor feedback en validatie, gebruik de admin tool.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goeduitje.nl - Wijzigingen Overzicht</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #fafafa;
+        color: #333;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #8b4c5a;
+        border-bottom: 3px solid #8b4c5a;
+        padding-bottom: 0.5rem;
+      }
+      .admin-link {
+        background: linear-gradient(135deg, #8b4c5a 0%, #6d3a47 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+      }
+      .admin-link:hover {
+        opacity: 0.95;
+      }
+      .admin-link span {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+      .change {
+        background: white;
+        border: 1px solid #ddd;
+        border-left: 4px solid #8b4c5a;
+        border-radius: 0 8px 8px 0;
+        padding: 1.25rem;
+        margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .change h3 {
+        margin: 0 0 0.5rem 0;
+        color: #333;
+        font-size: 1.1rem;
+      }
+      .change-meta {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-category {
+        background: #e9ecef;
+        color: #495057;
+      }
+      .badge-deployed {
+        background: #d4edda;
+        color: #155724;
+      }
+      .files {
+        font-family: monospace;
+        font-size: 0.8rem;
+        background: #f8f9fa;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        margin: 0.75rem 0;
+        color: #6c757d;
+      }
+      ul {
+        margin: 0.5rem 0;
+        padding-left: 1.25rem;
+      }
+      li {
+        margin: 0.25rem 0;
+        font-size: 0.95rem;
+      }
+      a {
+        color: #8b4c5a;
+      }
+      a:hover {
+        color: #6d3a47;
+      }
+      .note {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        margin: 0.75rem 0;
+        font-size: 0.9rem;
+      }
+      code {
+        background: #e9ecef;
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Goeduitje.nl - Wijzigingen</h1>
+    <p>
+      Overzicht van alle ontwikkelingswijzigingen. Voor feedback en validatie,
+      gebruik de admin tool.
+    </p>
 
-  <a href="https://goeduitje-backend.vercel.app/wijzigingen" target="_blank" class="admin-link">
-    <div>
-      <strong>Wijzigingen Admin</strong><br>
-      <span>Bekijk, valideer en geef feedback op wijzigingen</span>
+    <a
+      href="https://goeduitje-backend.vercel.app/wijzigingen"
+      target="_blank"
+      class="admin-link"
+    >
+      <div>
+        <strong>Wijzigingen Admin</strong><br />
+        <span>Bekijk, valideer en geef feedback op wijzigingen</span>
+      </div>
+      <svg
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M7 17L17 7M17 7H7M17 7V17" />
+      </svg>
+    </a>
+
+    <!-- 1. Fake Reviews Verwijderd -->
+    <div class="change">
+      <h3>Fake Reviews Verwijderd</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Content</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>
+        Alle nep-testimonials zijn verwijderd. Alleen echte Google Reviews
+        worden getoond.
+      </p>
+      <p>
+        <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        prisma/seed-testimonials.ts, src/app/page.tsx,
+        src/app/onze-uitjes/page.tsx
+      </div>
+      <ul>
+        <li>4 fake testimonials verwijderd</li>
+        <li>CompactTestimonials component verwijderd</li>
+      </ul>
     </div>
-    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-  </a>
 
-  <!-- 1. Fake Reviews Verwijderd -->
-  <div class="change">
-    <h3>Fake Reviews Verwijderd</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Content</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 2. Kookworkshop Prijzen -->
+    <div class="change">
+      <h3>Kookworkshop Prijzen Aangepast</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Content</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Vanaf prijs en groepsgrootte aangepast.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">prisma/seed-workshops.ts</div>
+      <ul>
+        <li>Vanaf prijs: €30 → €55</li>
+        <li>Groepsgrootte: "8-30 personen" → "vanaf 8 personen"</li>
+      </ul>
     </div>
-    <p>Alle nep-testimonials zijn verwijderd. Alleen echte Google Reviews worden getoond.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Bekijk live</a></p>
-    <div class="files">prisma/seed-testimonials.ts, src/app/page.tsx, src/app/onze-uitjes/page.tsx</div>
-    <ul>
-      <li>4 fake testimonials verwijderd</li>
-      <li>CompactTestimonials component verwijderd</li>
-    </ul>
-  </div>
 
-  <!-- 2. Kookworkshop Prijzen -->
-  <div class="change">
-    <h3>Kookworkshop Prijzen Aangepast</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Content</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 3. Uitjes Grid -->
+    <div class="change">
+      <h3>Uitjes Grid Compacter</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Design</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Alle 6 uitjes passen nu in een 3x2 matrix.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/components/workshop-carousel.tsx</div>
+      <ul>
+        <li>Grid layout: 3 kolommen</li>
+        <li>16:9 aspect ratio afbeeldingen</li>
+        <li>Beschrijving verwijderd van cards</li>
+      </ul>
     </div>
-    <p>Vanaf prijs en groepsgrootte aangepast.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop" target="_blank">Bekijk live</a></p>
-    <div class="files">prisma/seed-workshops.ts</div>
-    <ul>
-      <li>Vanaf prijs: €30 → €55</li>
-      <li>Groepsgrootte: "8-30 personen" → "vanaf 8 personen"</li>
-    </ul>
-  </div>
 
-  <!-- 3. Uitjes Grid -->
-  <div class="change">
-    <h3>Uitjes Grid Compacter</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Design</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 4. Open Kookworkshops Tab -->
+    <div class="change">
+      <h3>Open Kookworkshops Tab met Agenda</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Feature</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Nieuwe tab voor particulieren met echte workshop data.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        src/lib/open-workshops.ts, src/app/onze-uitjes/[slug]/page.tsx,
+        src/app/booking/page.tsx
+      </div>
+      <ul>
+        <li>Amber/oranje gradient design</li>
+        <li>Echte agenda met workshop data</li>
+        <li>Direct inschrijven knop</li>
+      </ul>
+      <div class="note">
+        Data bijwerken: bewerk <code>src/lib/open-workshops.ts</code>
+      </div>
     </div>
-    <p>Alle 6 uitjes passen nu in een 3x2 matrix.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/workshop-carousel.tsx</div>
-    <ul>
-      <li>Grid layout: 3 kolommen</li>
-      <li>16:9 aspect ratio afbeeldingen</li>
-      <li>Beschrijving verwijderd van cards</li>
-    </ul>
-  </div>
 
-  <!-- 4. Open Kookworkshops Tab -->
-  <div class="change">
-    <h3>Open Kookworkshops Tab met Agenda</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Feature</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 5. Onze Uitjes Header -->
+    <div class="change">
+      <h3>Onze Uitjes Header Aangepast</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Content</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Tekst en interactie verbeterd.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/app/onze-uitjes/page.tsx</div>
+      <ul>
+        <li>"Configureer" is nu klikbare button</li>
+        <li>"en" veranderd naar "of"</li>
+      </ul>
     </div>
-    <p>Nieuwe tab voor particulieren met echte workshop data.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes/kookworkshop#open-kookworkshops" target="_blank">Bekijk live</a></p>
-    <div class="files">src/lib/open-workshops.ts, src/app/onze-uitjes/[slug]/page.tsx, src/app/booking/page.tsx</div>
-    <ul>
-      <li>Amber/oranje gradient design</li>
-      <li>Echte agenda met workshop data</li>
-      <li>Direct inschrijven knop</li>
-    </ul>
-    <div class="note">Data bijwerken: bewerk <code>src/lib/open-workshops.ts</code></div>
-  </div>
 
-  <!-- 5. Onze Uitjes Header -->
-  <div class="change">
-    <h3>Onze Uitjes Header Aangepast</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Content</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 6. Pop-up Kleine Groepen -->
+    <div class="change">
+      <h3>Pop-up voor Kleine Groepen</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Feature</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Modal verschijnt bij minder dan 8 personen.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/components/workshop-configurator.tsx</div>
+      <ul>
+        <li>Popup na 800ms wachttijd</li>
+        <li>Toont eerste 3 workshop data</li>
+        <li>Prijs €50 p.p. incl. BTW</li>
+      </ul>
     </div>
-    <p>Tekst en interactie verbeterd.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes" target="_blank">Bekijk live</a></p>
-    <div class="files">src/app/onze-uitjes/page.tsx</div>
-    <ul>
-      <li>"Configureer" is nu klikbare button</li>
-      <li>"en" veranderd naar "of"</li>
-    </ul>
-  </div>
 
-  <!-- 6. Pop-up Kleine Groepen -->
-  <div class="change">
-    <h3>Pop-up voor Kleine Groepen</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Feature</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 7. Leading Zeros -->
+    <div class="change">
+      <h3>Voorloop-0 Verwijderd uit Invoerveld</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Bug</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>"02" wordt automatisch "2".</p>
+      <div class="files">src/components/workshop-configurator.tsx</div>
     </div>
-    <p>Modal verschijnt bij minder dan 8 personen.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/workshop-configurator.tsx</div>
-    <ul>
-      <li>Popup na 800ms wachttijd</li>
-      <li>Toont eerste 3 workshop data</li>
-      <li>Prijs €50 p.p. incl. BTW</li>
-    </ul>
-  </div>
 
-  <!-- 7. Leading Zeros -->
-  <div class="change">
-    <h3>Voorloop-0 Verwijderd uit Invoerveld</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Bug</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 8. Telefoonnummer Verplicht -->
+    <div class="change">
+      <h3>Telefoonnummer Verplicht + Redirect</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Feature</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Telefoonnummer is nu verplicht, redirect naar Ervaringen.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        src/lib/validations/forms.ts, src/components/workshop-configurator.tsx
+      </div>
     </div>
-    <p>"02" wordt automatisch "2".</p>
-    <div class="files">src/components/workshop-configurator.tsx</div>
-  </div>
 
-  <!-- 8. Telefoonnummer Verplicht -->
-  <div class="change">
-    <h3>Telefoonnummer Verplicht + Redirect</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Feature</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 9. Telefoonnummer Navigatie -->
+    <div class="change">
+      <h3>Telefoonnummer in Navigatie + Footer</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Navigatie</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Contactnummer Guus toegevoegd aan navigatie en footer.</p>
+      <p>
+        <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        src/components/top-navigation.tsx, src/components/footer.tsx
+      </div>
     </div>
-    <p>Telefoonnummer is nu verplicht, redirect naar Ervaringen.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-uitjes#configurator" target="_blank">Bekijk live</a></p>
-    <div class="files">src/lib/validations/forms.ts, src/components/workshop-configurator.tsx</div>
-  </div>
 
-  <!-- 9. Telefoonnummer Navigatie -->
-  <div class="change">
-    <h3>Telefoonnummer in Navigatie + Footer</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Navigatie</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 10. Booking Pagina -->
+    <div class="change">
+      <h3>Booking Pagina Redesign</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Design</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Volledig herontworpen met consistente styling.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/booking"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/app/booking/page.tsx</div>
+      <ul>
+        <li>Hero sectie met primary gradient</li>
+        <li>Two-column layout</li>
+        <li>ScrollReveal animaties</li>
+      </ul>
     </div>
-    <p>Contactnummer Guus toegevoegd aan navigatie en footer.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/top-navigation.tsx, src/components/footer.tsx</div>
-  </div>
 
-  <!-- 10. Booking Pagina -->
-  <div class="change">
-    <h3>Booking Pagina Redesign</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Design</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 11. Ons Verhaal -->
+    <div class="change">
+      <h3>Ons Verhaal Pagina - Magazine Redesign</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Design</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Professionele magazine-stijl layout.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/ons-verhaal"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/app/ons-verhaal/page.tsx</div>
+      <ul>
+        <li>Magazine-stijl hero</li>
+        <li>Twee-koloms layout met iconen</li>
+        <li>Pull quote sectie</li>
+      </ul>
     </div>
-    <p>Volledig herontworpen met consistente styling.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/booking" target="_blank">Bekijk live</a></p>
-    <div class="files">src/app/booking/page.tsx</div>
-    <ul>
-      <li>Hero sectie met primary gradient</li>
-      <li>Two-column layout</li>
-      <li>ScrollReveal animaties</li>
-    </ul>
-  </div>
 
-  <!-- 11. Ons Verhaal -->
-  <div class="change">
-    <h3>Ons Verhaal Pagina - Magazine Redesign</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Design</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 12. Ons Verhaal CMS -->
+    <div class="change">
+      <h3>Ons Verhaal - CMS Integratie</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Feature</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Pagina is nu beheerbaar via backend CMS.</p>
+      <p>
+        <a
+          href="https://goeduitje-backend.vercel.app/content/ons-verhaal"
+          target="_blank"
+          >Open in CMS</a
+        >
+      </p>
+      <div class="files">
+        Backend: src/app/content/ons-verhaal/page.tsx,
+        src/app/api/content/ons-verhaal/route.ts
+      </div>
+      <ul>
+        <li>12 bewerkbare content secties</li>
+        <li>Floating save bar</li>
+        <li>Completion badges</li>
+      </ul>
     </div>
-    <p>Professionele magazine-stijl layout.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/ons-verhaal" target="_blank">Bekijk live</a></p>
-    <div class="files">src/app/ons-verhaal/page.tsx</div>
-    <ul>
-      <li>Magazine-stijl hero</li>
-      <li>Twee-koloms layout met iconen</li>
-      <li>Pull quote sectie</li>
-    </ul>
-  </div>
 
-  <!-- 12. Ons Verhaal CMS -->
-  <div class="change">
-    <h3>Ons Verhaal - CMS Integratie</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Feature</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 13. Contact Formulier -->
+    <div class="change">
+      <h3>Contact Pagina Verbeterd</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Contact</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Directe contactmogelijkheden toegevoegd, footer opgeschoond.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/contact"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        src/components/contact-form.tsx, src/components/footer.tsx
+      </div>
+      <ul>
+        <li>Contact formulier verwijderd uit footer</li>
+        <li>Mail + telefoon iconen in header</li>
+        <li>Directe contact tekst met Guus' nummer</li>
+      </ul>
     </div>
-    <p>Pagina is nu beheerbaar via backend CMS.</p>
-    <p><a href="https://goeduitje-backend.vercel.app/content/ons-verhaal" target="_blank">Open in CMS</a></p>
-    <div class="files">Backend: src/app/content/ons-verhaal/page.tsx, src/app/api/content/ons-verhaal/route.ts</div>
-    <ul>
-      <li>12 bewerkbare content secties</li>
-      <li>Floating save bar</li>
-      <li>Completion badges</li>
-    </ul>
-  </div>
 
-  <!-- 13. Contact Formulier -->
-  <div class="change">
-    <h3>Contact Pagina Verbeterd</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Contact</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 14. Mail Icoon -->
+    <div class="change">
+      <h3>Mail Icoon in Top Navigatie</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Navigatie</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Mail icoon toegevoegd naast telefoon icoon.</p>
+      <p>
+        <a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">src/components/top-navigation.tsx</div>
     </div>
-    <p>Directe contactmogelijkheden toegevoegd, footer opgeschoond.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/contact" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/contact-form.tsx, src/components/footer.tsx</div>
-    <ul>
-      <li>Contact formulier verwijderd uit footer</li>
-      <li>Mail + telefoon iconen in header</li>
-      <li>Directe contact tekst met Guus' nummer</li>
-    </ul>
-  </div>
 
-  <!-- 14. Mail Icoon -->
-  <div class="change">
-    <h3>Mail Icoon in Top Navigatie</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Navigatie</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 15. Open Workshops Link Fix -->
+    <div class="change">
+      <h3>Open Workshops Link Fix</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Bug</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Link in contactformulier verwees naar verkeerde URL.</p>
+      <div class="files">src/components/contact-form.tsx</div>
+      <ul>
+        <li>Was: /open-kookworkshops</li>
+        <li>Nu: /booking</li>
+      </ul>
     </div>
-    <p>Mail icoon toegevoegd naast telefoon icoon.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/top-navigation.tsx</div>
-  </div>
 
-  <!-- 15. Open Workshops Link Fix -->
-  <div class="change">
-    <h3>Open Workshops Link Fix</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Bug</span>
-      <span class="badge badge-deployed">Deployed</span>
+    <!-- 16. Theory of Change -->
+    <div class="change">
+      <h3>Theory of Change - Onze Impact</h3>
+      <div class="change-meta">
+        <span class="badge badge-category">Design</span>
+        <span class="badge badge-deployed">Deployed</span>
+      </div>
+      <p>Diagrammen herontworpen naar origineel design.</p>
+      <p>
+        <a
+          href="https://goeduitje-nl-rebuild.vercel.app/onze-impact"
+          target="_blank"
+          >Bekijk live</a
+        >
+      </p>
+      <div class="files">
+        src/components/theory-of-change.tsx, src/app/onze-impact/page.tsx
+      </div>
+      <ul>
+        <li>5-kolom layout</li>
+        <li>Matching kleuren (Brown, Red, Gold)</li>
+        <li>SVG verbindingslijnen</li>
+      </ul>
+      <div class="note">TODO: Verbindingslijnen nog te optimaliseren</div>
     </div>
-    <p>Link in contactformulier verwees naar verkeerde URL.</p>
-    <div class="files">src/components/contact-form.tsx</div>
-    <ul>
-      <li>Was: /open-kookworkshops</li>
-      <li>Nu: /booking</li>
-    </ul>
-  </div>
-
-  <!-- 16. Theory of Change -->
-  <div class="change">
-    <h3>Theory of Change - Onze Impact</h3>
-    <div class="change-meta">
-      <span class="badge badge-category">Design</span>
-      <span class="badge badge-deployed">Deployed</span>
-    </div>
-    <p>Diagrammen herontworpen naar origineel design.</p>
-    <p><a href="https://goeduitje-nl-rebuild.vercel.app/onze-impact" target="_blank">Bekijk live</a></p>
-    <div class="files">src/components/theory-of-change.tsx, src/app/onze-impact/page.tsx</div>
-    <ul>
-      <li>5-kolom layout</li>
-      <li>Matching kleuren (Brown, Red, Gold)</li>
-      <li>SVG verbindingslijnen</li>
-    </ul>
-    <div class="note">TODO: Verbindingslijnen nog te optimaliseren</div>
-  </div>
-
-</body>
+  </body>
 </html>

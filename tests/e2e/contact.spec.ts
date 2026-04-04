@@ -40,7 +40,9 @@ test.describe("Contact Page", () => {
     await expect(page.getByRole("link", { name: /06 5267/i })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByRole("link", { name: /info@goeduitje/i }).first()).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /info@goeduitje/i }).first()
+    ).toBeVisible();
   });
 
   test("has link to configurator", async ({ page }) => {
