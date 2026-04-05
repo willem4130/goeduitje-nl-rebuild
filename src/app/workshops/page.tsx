@@ -13,6 +13,7 @@ import {
   ChefHat,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Workshops met Sociale Impact | Goeduitje.nl",
@@ -36,6 +37,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "nl_NL",
     siteName: "Goeduitje.nl",
+    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Workshops met Sociale Impact | Goeduitje.nl",
+    description:
+      "Ontdek onze unieke workshops: kookworkshops, koffie & thee workshops en meer. Hands-on ervaringen begeleid door statushouders en nieuwkomers.",
+    images: [`${SITE_URL}/og-image.png`],
   },
 };
 

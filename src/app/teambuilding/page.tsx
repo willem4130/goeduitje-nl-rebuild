@@ -13,6 +13,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Teambuilding Activiteiten | Goeduitje.nl",
@@ -36,6 +37,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "nl_NL",
     siteName: "Goeduitje.nl",
+    images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Teambuilding Activiteiten | Goeduitje.nl",
+    description:
+      "Organiseer een onvergetelijke teambuilding met sociale impact. Van kookworkshops tot stadsspellen en sportieve uitjes.",
+    images: [`${SITE_URL}/og-image.png`],
   },
 };
 

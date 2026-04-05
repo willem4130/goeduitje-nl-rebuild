@@ -20,6 +20,7 @@ import {
   Euro,
 } from "lucide-react";
 import { getCityImage } from "@/lib/city-data";
+import { SITE_URL } from "@/lib/site-config";
 import { prisma } from "@/lib/prisma";
 import type { Workshop, PriceTier, WorkshopVariant } from "@prisma/client";
 
@@ -856,6 +857,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const metaDescription = metaDescriptions[type];
 
+  const cityImage = getCityImage(extractCitySlug(landing.slug));
+  const ogImage = cityImage
+    ? `${SITE_URL}${cityImage}`
+    : `${SITE_URL}/og-image.png`;
+
   return {
     title: `${pageTitle} | ${landing.tagline} | Goed Uitje`,
     description: metaDescription,
@@ -872,6 +878,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       locale: "nl_NL",
       siteName: "Goeduitje.nl",
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${pageTitle} | ${landing.tagline} | Goed Uitje`,
+      description: metaDescription,
+      images: [ogImage],
     },
   };
 }

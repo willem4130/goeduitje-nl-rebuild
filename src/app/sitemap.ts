@@ -182,6 +182,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/onze-medewerkers`,
+      lastModified: new Date("2026-03-01"),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
       url: `${baseUrl}/privacy`,
       lastModified: new Date("2026-01-01"),
       changeFrequency: "yearly",

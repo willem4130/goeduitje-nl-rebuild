@@ -6,10 +6,10 @@ const templates = [
   {
     key: "workshop-confirmation",
     name: "Uitje Configuratie Bevestiging",
-    subject: "Uitje Configuratie Ontvangen - #{workshopId}",
+    subject: "Uitje Configuratie Ontvangen - #{workshopRequestId}",
     variables: [
       "{name}",
-      "{workshopId}",
+      "{workshopRequestId}",
       "{workshops}",
       "{workshopsDisplay}",
       "{participantCount}",
@@ -39,8 +39,8 @@ const templates = [
 <p style="font-size:16px;color:#484848;margin-bottom:8px;"><strong>Telefoon:</strong> {phone}</p>
 <hr style="border-color:#e6ebf1;margin:20px 0;" />
 <p style="font-size:16px;line-height:1.6;color:#484848;">Ons team zal binnen 24 uur contact met je opnemen om de details te bespreken en de boeking definitief te maken.</p>
-<p style="font-size:16px;line-height:1.6;color:#484848;">Je configuratie ID is: <strong>{workshopId}</strong></p>
-<p style="font-size:16px;line-height:1.6;color:#484848;">Heb je nog vragen of wil je wijzigingen doorgeven? Antwoord dan gerust op deze e-mail met je configuratie ID.</p>
+<p style="font-size:16px;line-height:1.6;color:#484848;">Je aanvraagnummer is: <strong>#{workshopRequestId}</strong></p>
+<p style="font-size:16px;line-height:1.6;color:#484848;">Heb je nog vragen of wil je wijzigingen doorgeven? Antwoord dan gerust op deze e-mail met je aanvraagnummer.</p>
 <p style="font-size:16px;line-height:1.6;color:#484848;">Met vriendelijke groet,<br />Het Goeduitje.nl Team</p>`,
   },
   {

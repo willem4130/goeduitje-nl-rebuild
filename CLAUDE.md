@@ -320,6 +320,16 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 | `src/app/sitemap.ts` | Dynamic sitemap: static pages + DB workshops/recipes + 87 landing pages |
 | `src/app/layout.tsx` | Organization + WebSite JSON-LD (global)                                 |
 
+### JSON-LD Structured Data
+
+| Schema | Location | Notes |
+| --- | --- | --- |
+| Organization + WebSite | `src/app/layout.tsx` | Global, all pages |
+| Service | `src/app/onze-uitjes/[slug]/page.tsx` | Per workshop detail page |
+| Recipe | `src/app/recepten/[slug]/page.tsx` | Per recipe (ingredients, steps, times) |
+| FAQPage | `src/app/faq/layout.tsx` | Server-side Prisma fetch, revalidate 300 |
+| LocalBusiness | `src/app/jullie-ervaringen/layout.tsx` | Reviews page |
+
 ### Per-Page Metadata
 
 Pages using `"use client"` can't export metadata directly. These use **layout.tsx** files for metadata:
@@ -329,15 +339,18 @@ Pages using `"use client"` can't export metadata directly. These use **layout.ts
 | `src/app/onze-uitjes/layout.tsx`       | `/onze-uitjes` (client page)                 |
 | `src/app/ons-verhaal/layout.tsx`       | `/ons-verhaal` (client page)                 |
 | `src/app/jullie-ervaringen/layout.tsx` | `/jullie-ervaringen` + LocalBusiness JSON-LD |
-| `src/app/faq/layout.tsx`               | `/faq` (client page)                         |
+| `src/app/faq/layout.tsx`               | `/faq` + FAQPage JSON-LD (server-side fetch) |
 | `src/app/onze-impact/layout.tsx`       | `/onze-impact` (client page)                 |
 | `src/app/recepten/layout.tsx`          | `/recepten` (client page)                    |
+| `src/app/open-kookworkshops/layout.tsx`| `/open-kookworkshops` (client page)          |
 
 Server component pages export metadata directly:
 
 - `src/app/contact/page.tsx` — metadata export
 - `src/app/onze-uitjes/[slug]/page.tsx` — dynamic OG/Twitter + Service JSON-LD
-- `src/app/recepten/[slug]/page.tsx` — dynamic OG/Twitter
+- `src/app/recepten/[slug]/page.tsx` — dynamic OG/Twitter + Recipe JSON-LD
+- `src/app/(landing)/[slug]/page.tsx` — dynamic OG/Twitter with city images
+- `src/app/teambuilding/page.tsx`, `bedrijfsuitjes/page.tsx`, `workshops/page.tsx` — OG/Twitter
 
 ### OG Image URLs
 

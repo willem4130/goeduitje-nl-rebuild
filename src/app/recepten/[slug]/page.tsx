@@ -80,8 +80,40 @@ export default async function RecipeDetailPage({ params }: Props) {
 
   const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
 
+  const imageUrl = recipe.imageUrl
+    ? recipe.imageUrl.startsWith("http")
+      ? recipe.imageUrl
+      : `${SITE_URL}${recipe.imageUrl}`
+    : undefined;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: recipe.title,
+    ...(recipe.description && { description: recipe.description }),
+    ...(imageUrl && { image: imageUrl }),
+    ...(recipe.prepTime && { prepTime: `PT${recipe.prepTime}M` }),
+    ...(recipe.cookTime && { cookTime: `PT${recipe.cookTime}M` }),
+    ...(totalTime > 0 && { totalTime: `PT${totalTime}M` }),
+    ...(recipe.servings && { recipeYield: `${recipe.servings} porties` }),
+    recipeIngredient: recipe.ingredients,
+    recipeInstructions: recipe.steps.map((step) => ({
+      "@type": "HowToStep",
+      text: step,
+    })),
+    ...(recipe.category && { recipeCategory: recipe.category }),
+    author: {
+      "@type": "Organization",
+      name: "Goeduitje",
+    },
+  };
+
   return (
     <main className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
         {recipe.imageUrl ? (
