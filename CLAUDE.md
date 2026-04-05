@@ -318,13 +318,13 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 | -------------------- | ----------------------------------------------------------------------- |
 | `src/app/robots.ts`  | Crawl rules + sitemap reference                                         |
 | `src/app/sitemap.ts` | Dynamic sitemap: static pages + DB workshops/recipes + 87 landing pages |
-| `src/app/layout.tsx` | Organization + WebSite JSON-LD (global)                                 |
+| `src/app/layout.tsx` | Organization + LocalBusiness + WebSite JSON-LD (global)                 |
 
 ### JSON-LD Structured Data
 
 | Schema | Location | Notes |
 | --- | --- | --- |
-| Organization + WebSite | `src/app/layout.tsx` | Global, all pages |
+| Organization + LocalBusiness + WebSite | `src/app/layout.tsx` | Global; address: Groenestraat 48, Nijmegen |
 | Service | `src/app/onze-uitjes/[slug]/page.tsx` | Per workshop detail page |
 | Recipe | `src/app/recepten/[slug]/page.tsx` | Per recipe (ingredients, steps, times) |
 | FAQPage | `src/app/faq/layout.tsx` | Server-side Prisma fetch, revalidate 300 |
