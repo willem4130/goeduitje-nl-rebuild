@@ -119,10 +119,34 @@ export default async function RootLayout({
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "LocalBusiness"],
     name: "Goeduitje",
+    legalName: "Goeduitje B.V.",
     url: SITE_URL,
     logo: `${SITE_URL}/images/logo/logo-nav.png`,
+    image: `${SITE_URL}/og-image.png`,
+    description:
+      "Sociale onderneming die unieke bedrijfsuitjes en workshops organiseert, begeleid door statushouders en nieuwkomers.",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Groenestraat 48",
+      addressLocality: "Nijmegen",
+      addressRegion: "Gelderland",
+      postalCode: "6531 HS",
+      addressCountry: "NL",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 51.8426,
+      longitude: 5.8668,
+    },
+    telephone: "+31-6-5267-5891",
+    email: "guus@goeduitje.nl",
+    priceRange: "$$",
+    areaServed: {
+      "@type": "Country",
+      name: "Netherlands",
+    },
     sameAs: [
       "https://www.instagram.com/goeduitje/",
       "https://www.facebook.com/goeduitje",
@@ -131,6 +155,7 @@ export default async function RootLayout({
       "@type": "ContactPoint",
       telephone: "+31-6-5267-5891",
       contactType: "customer service",
+      availableLanguage: ["Dutch", "English"],
     },
   };
 
