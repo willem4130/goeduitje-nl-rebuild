@@ -65,11 +65,11 @@ Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwi
 
 ### tRPC Procedure Types (`src/server/api/trpc.ts`)
 
-| Procedure | Auth | Rate Limit | Use For |
-|-----------|------|-----------|---------|
-| `publicProcedure` | None | None | Public read queries (getAll, getBySlug, etc.) |
-| `rateLimitedProcedure` | None | 5/min per IP | Public form submissions (workshop.create, booking.create, feedback.submit) |
-| `protectedProcedure` | `x-api-secret` header | None | CMS write operations (create, update, delete, togglePublish) |
+| Procedure              | Auth                  | Rate Limit   | Use For                                                                    |
+| ---------------------- | --------------------- | ------------ | -------------------------------------------------------------------------- |
+| `publicProcedure`      | None                  | None         | Public read queries (getAll, getBySlug, etc.)                              |
+| `rateLimitedProcedure` | None                  | 5/min per IP | Public form submissions (workshop.create, booking.create, feedback.submit) |
+| `protectedProcedure`   | `x-api-secret` header | None         | CMS write operations (create, update, delete, togglePublish)               |
 
 - **API_SECRET** env var must be set on Vercel — all `protectedProcedure` mutations return 401 without it
 - **Rate limiting**: In-memory sliding window (`src/lib/rate-limit.ts`), skipped in test environment
@@ -322,27 +322,27 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 
 ### JSON-LD Structured Data
 
-| Schema | Location | Notes |
-| --- | --- | --- |
-| Organization + LocalBusiness + WebSite | `src/app/layout.tsx` | Global; address: Groenestraat 48, Nijmegen |
-| Service | `src/app/onze-uitjes/[slug]/page.tsx` | Per workshop detail page |
-| Recipe | `src/app/recepten/[slug]/page.tsx` | Per recipe (ingredients, steps, times) |
-| FAQPage | `src/app/faq/layout.tsx` | Server-side Prisma fetch, revalidate 300 |
-| LocalBusiness | `src/app/jullie-ervaringen/layout.tsx` | Reviews page |
+| Schema                                 | Location                               | Notes                                      |
+| -------------------------------------- | -------------------------------------- | ------------------------------------------ |
+| Organization + LocalBusiness + WebSite | `src/app/layout.tsx`                   | Global; address: Groenestraat 48, Nijmegen |
+| Service                                | `src/app/onze-uitjes/[slug]/page.tsx`  | Per workshop detail page                   |
+| Recipe                                 | `src/app/recepten/[slug]/page.tsx`     | Per recipe (ingredients, steps, times)     |
+| FAQPage                                | `src/app/faq/layout.tsx`               | Server-side Prisma fetch, revalidate 300   |
+| LocalBusiness                          | `src/app/jullie-ervaringen/layout.tsx` | Reviews page                               |
 
 ### Per-Page Metadata
 
 Pages using `"use client"` can't export metadata directly. These use **layout.tsx** files for metadata:
 
-| Layout file                            | Provides metadata for                        |
-| -------------------------------------- | -------------------------------------------- |
-| `src/app/onze-uitjes/layout.tsx`       | `/onze-uitjes` (client page)                 |
-| `src/app/ons-verhaal/layout.tsx`       | `/ons-verhaal` (client page)                 |
-| `src/app/jullie-ervaringen/layout.tsx` | `/jullie-ervaringen` + LocalBusiness JSON-LD |
-| `src/app/faq/layout.tsx`               | `/faq` + FAQPage JSON-LD (server-side fetch) |
-| `src/app/onze-impact/layout.tsx`       | `/onze-impact` (client page)                 |
-| `src/app/recepten/layout.tsx`          | `/recepten` (client page)                    |
-| `src/app/open-kookworkshops/layout.tsx`| `/open-kookworkshops` (client page)          |
+| Layout file                             | Provides metadata for                        |
+| --------------------------------------- | -------------------------------------------- |
+| `src/app/onze-uitjes/layout.tsx`        | `/onze-uitjes` (client page)                 |
+| `src/app/ons-verhaal/layout.tsx`        | `/ons-verhaal` (client page)                 |
+| `src/app/jullie-ervaringen/layout.tsx`  | `/jullie-ervaringen` + LocalBusiness JSON-LD |
+| `src/app/faq/layout.tsx`                | `/faq` + FAQPage JSON-LD (server-side fetch) |
+| `src/app/onze-impact/layout.tsx`        | `/onze-impact` (client page)                 |
+| `src/app/recepten/layout.tsx`           | `/recepten` (client page)                    |
+| `src/app/open-kookworkshops/layout.tsx` | `/open-kookworkshops` (client page)          |
 
 Server component pages export metadata directly:
 
@@ -469,6 +469,7 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 
 ## Reference Docs
 
+- `../go-live/GO-LIVE-PLAN.md` — **Go-live plan** (DNS cutover, Vercel domains, env vars, verification checklist)
 - `docs/ACTIVE_DEBUG_SESSION.md` — debug session history (all issues resolved)
 - `docs/IMAGE_UPLOAD_GUIDE.md` — client-facing guide for CMS-managed images
 - Client image Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
@@ -477,24 +478,29 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 
 ## Deployment
 
-**Production**: https://goeduitje-nl-rebuild.vercel.app
+**Production**: https://www.goeduitje.nl (target domain, DNS cutover pending)
+**Current**: https://goeduitje-nl-rebuild.vercel.app (pre-launch URL)
+**Admin**: https://admin.goeduitje.nl (target) / https://goeduitje-backend.vercel.app (current)
 
 Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 
+See `../go-live/GO-LIVE-PLAN.md` for the full cutover checklist.
+
 ### Vercel Environment Variables (Production)
 
-| Variable                   | Purpose                                               |
-| -------------------------- | ----------------------------------------------------- |
-| `DATABASE_URL`             | Neon PostgreSQL connection string                     |
-| `NEXT_PUBLIC_APP_URL`      | Public app URL                                        |
-| `NEXT_PUBLIC_GTM_ID`       | Google Tag Manager container ID (`GTM-PZCH2S3R`)      |
-| `GOOGLE_PLACES_API_KEY`    | Google Places API for reviews                         |
-| `GOOGLE_PLACE_ID`          | Google Place ID for Goeduitje                         |
-| `RESEND_API_KEY`           | Resend email service API key                          |
-| `FROM_EMAIL`               | Sender email (`guus@goeduitje.nl`)                    |
-| `ADMIN_NOTIFICATION_EMAIL` | Admin notification recipient (test: `willem@scex.nl`) |
-| `API_SECRET`               | Shared secret for tRPC `protectedProcedure` mutations |
-| `SKIP_ENV_VALIDATION`      | Skip t3-env validation on build                       |
+| Variable                   | Purpose                                                            |
+| -------------------------- | ------------------------------------------------------------------ |
+| `DATABASE_URL`             | Neon PostgreSQL connection string                                  |
+| `NEXT_PUBLIC_SITE_URL`     | SEO base URL (`https://www.goeduitje.nl`)                          |
+| `NEXT_PUBLIC_APP_URL`      | Public app URL                                                     |
+| `NEXT_PUBLIC_GTM_ID`       | Google Tag Manager container ID (`GTM-PZCH2S3R`)                   |
+| `GOOGLE_PLACES_API_KEY`    | Google Places API for reviews                                      |
+| `GOOGLE_PLACE_ID`          | Google Place ID for Goeduitje                                      |
+| `RESEND_API_KEY`           | Resend email service API key                                       |
+| `FROM_EMAIL`               | Sender email (`guus@goeduitje.nl`)                                 |
+| `ADMIN_NOTIFICATION_EMAIL` | Admin notification recipients (`willem@scex.nl,guus@goeduitje.nl`) |
+| `API_SECRET`               | Shared secret for tRPC `protectedProcedure` mutations              |
+| `SKIP_ENV_VALIDATION`      | Skip t3-env validation on build                                    |
 
 ## ⚠️ CMS Image/Video Override Pattern
 
