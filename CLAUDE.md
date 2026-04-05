@@ -76,6 +76,10 @@ Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwi
 - **POST /api/send-email**: Rate limited to 10/min per IP
 - When adding new tRPC mutations: use `protectedProcedure` for admin/CMS writes, `rateLimitedProcedure` for public form submissions, `publicProcedure` for reads
 
+### Security Headers (`next.config.mjs`)
+
+All responses include: X-Frame-Options DENY, X-Content-Type-Options nosniff, HSTS (2yr + preload), Referrer-Policy, Permissions-Policy, CSP. The CSP allows GTM/GA4 scripts and restricts everything else to `'self'`. `frame-ancestors 'none'`, `object-src 'none'`, `form-action 'self'`.
+
 ## Code Quality
 
 ```bash
@@ -448,6 +452,7 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 - Use client-side tRPC `useQuery` for pages that can be Server Components — use Prisma directly in Server Components instead (see onze-medewerkers pattern)
 - Use `StaggerChildren` with CSS `columns` layout — the `useInView` + `opacity: 0` initial state creates a deadlock where the container has no measurable height, so `IntersectionObserver` never fires. Use a plain `<div>` instead for column layouts with dynamic content.
 - Use local timezone methods (`.getDay()`, `.getDate()`, `.getMonth()`) on DB dates — dates stored as midnight UTC shift by -1 day for viewers west of UTC. Always use `.getUTCDay()`, `.getUTCDate()`, `.getUTCMonth()` or `toLocaleDateString()` with explicit `timeZone: 'Europe/Amsterdam'`.
+- Remove or weaken security headers or CSP in `next.config.mjs` — they protect against clickjacking, XSS, and injection attacks
 
 ## Reference Docs
 
