@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
 const prismaSchemaPath = join(process.cwd(), "prisma/schema.prisma");
@@ -8,10 +8,16 @@ const drizzleSchemaPath = join(
   "../goeduitje-backend/src/db/schema.ts"
 );
 
-const prismaSchema = readFileSync(prismaSchemaPath, "utf-8");
-const drizzleSchema = readFileSync(drizzleSchemaPath, "utf-8");
+const backendAvailable = existsSync(drizzleSchemaPath);
 
-describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
+const prismaSchema = readFileSync(prismaSchemaPath, "utf-8");
+const drizzleSchema = backendAvailable
+  ? readFileSync(drizzleSchemaPath, "utf-8")
+  : "";
+
+describe.skipIf(!backendAvailable)(
+  "Backend Drizzle schema sync with frontend Prisma schema",
+  () => {
   const sharedTables: Array<{
     prismaModel: string;
     drizzleExport: string;
@@ -157,4 +163,5 @@ describe("Backend Drizzle schema sync with frontend Prisma schema", () => {
     expect(prismaSchema).toContain('@@map("media_gallery")');
     expect(drizzleSchema).toContain("pgTable('media_gallery'");
   });
-});
+  },
+);
