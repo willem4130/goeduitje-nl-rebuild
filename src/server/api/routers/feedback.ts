@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure, protectedProcedure, rateLimitedProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  rateLimitedProcedure,
+} from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -101,7 +105,7 @@ export const feedbackRouter = createTRPCRouter({
   /**
    * Get all feedback (for admin)
    */
-  getAll: publicProcedure
+  getAll: protectedProcedure
     .input(
       z
         .object({

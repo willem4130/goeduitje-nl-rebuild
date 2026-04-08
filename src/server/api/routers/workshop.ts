@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure, rateLimitedProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+  rateLimitedProcedure,
+} from "../trpc";
 import { prisma } from "@/lib/prisma";
 import { workshopConfigSchema } from "@/lib/validations/forms";
 import {
@@ -88,13 +93,13 @@ export const workshopRouter = createTRPCRouter({
       return workshopConfig;
     }),
 
-  getConfigs: publicProcedure.query(async () => {
+  getConfigs: protectedProcedure.query(async () => {
     return await prisma.workshopConfig.findMany({
       orderBy: { createdAt: "desc" },
     });
   }),
 
-  getConfigById: publicProcedure
+  getConfigById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return await prisma.workshopConfig.findUnique({

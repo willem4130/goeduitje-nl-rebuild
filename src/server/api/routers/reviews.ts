@@ -122,7 +122,7 @@ export const reviewsRouter = createTRPCRouter({
   /**
    * Get all reviews including hidden ones (for admin)
    */
-  getAllAdmin: publicProcedure.query(async () => {
+  getAllAdmin: protectedProcedure.query(async () => {
     const reviews = await prisma.googleReview.findMany({
       orderBy: [{ isVisible: "desc" }, { reviewTime: "desc" }],
     });
