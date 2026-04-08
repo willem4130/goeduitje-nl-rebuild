@@ -69,12 +69,13 @@ Next.js 14 | TypeScript | Prisma + PostgreSQL (Neon) | tRPC | shadcn/ui + Tailwi
 | ---------------------- | --------------------- | ------------ | -------------------------------------------------------------------------- |
 | `publicProcedure`      | None                  | None         | Public read queries (getAll, getBySlug, etc.)                              |
 | `rateLimitedProcedure` | None                  | 5/min per IP | Public form submissions (workshop.create, booking.create, feedback.submit) |
-| `protectedProcedure`   | `x-api-secret` header | None         | CMS write operations (create, update, delete, togglePublish)               |
+| `protectedProcedure`   | `x-api-secret` header | None         | CMS write operations + admin-only read queries with PII                    |
 
 - **API_SECRET** env var must be set on Vercel — all `protectedProcedure` mutations return 401 without it
 - **Rate limiting**: In-memory sliding window (`src/lib/rate-limit.ts`), skipped in test environment
 - **POST /api/send-email**: Rate limited to 10/min per IP
-- When adding new tRPC mutations: use `protectedProcedure` for admin/CMS writes, `rateLimitedProcedure` for public form submissions, `publicProcedure` for reads
+- **Admin-only queries**: `booking.getAll`, `feedback.getAll`, `workshop.getConfigs`, `workshop.getConfigById`, `reviews.getAllAdmin` use `protectedProcedure` because they return customer PII (names, emails, dietary info, payment status)
+- When adding new tRPC procedures: use `protectedProcedure` for admin/CMS writes AND admin-only reads with PII, `rateLimitedProcedure` for public form submissions, `publicProcedure` only for public-facing reads with no sensitive data
 
 ### Security Headers (`next.config.mjs`)
 
@@ -274,7 +275,7 @@ All 87 city landing pages follow the same programmatic SEO pattern established b
 
 ### Stadsspel Content (Client Feedback 2026-03-21)
 
-Key content decisions for stadsspel pages (from client feedback in `staddspel-pages/Feedback for text stadsspel-pagina's/`):
+Key content decisions for stadsspel pages (from client feedback in `_project-docs/client-input/stadsspel-feedback/Feedback for text stadsspel-pagina's/`):
 
 - **"speurtocht in"** (not "door") — Hero, USPs, meta description, workshop cards all use "in" for stadsspel context
 - **FAQ "Hoe werkt het"** uses "door of in" — The FAQ answer specifically uses "door of in {city}" to reflect flexibility
@@ -366,7 +367,7 @@ All SEO URLs (sitemap, robots, JSON-LD, OG tags) use `SITE_URL` from `src/lib/si
 
 ### SEO Redirects
 
-75 old Wix URLs handled via redirect schema (`/Redirect schema/Goeduitje.nl - Redirect schema.xlsx`):
+75 old Wix URLs handled via redirect schema (`_project-docs/client-input/redirect-schema/Goeduitje.nl - Redirect schema.xlsx`):
 
 - **17 explicit 301 redirects** in `next.config.mjs` (path changes like `/contactpagina` → `/contact`)
 - **52 same-path URLs** served directly by existing pages/landing pages (no redirect needed)
@@ -376,7 +377,7 @@ All SEO URLs (sitemap, robots, JSON-LD, OG tags) use `SITE_URL` from `src/lib/si
 
 ## Images
 
-All client photos from `/All photo positions/Fotos nieuwe website maart 2026/` are processed and in use:
+All client photos from `_project-docs/client-input/photos-maart-2026/Fotos nieuwe website maart 2026/` are processed and in use:
 
 ```
 public/images/
@@ -472,9 +473,9 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 - `../go-live/GO-LIVE-PLAN.md` — **Go-live plan** (DNS cutover, Vercel domains, env vars, verification checklist)
 - `docs/ACTIVE_DEBUG_SESSION.md` — debug session history (all issues resolved)
 - `docs/IMAGE_UPLOAD_GUIDE.md` — client-facing guide for CMS-managed images
-- Client image Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All photo positions/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
-- Pages audit Excel: `/Users/willemvandenberg/Dev/Goeduitjeweb/All current pages/Wix Webpaginas _2026.02.19.xlsx`
-- Pages audit report: `/Users/willemvandenberg/Dev/Goeduitjeweb/All current pages/AUDIT_REPORT.md`
+- Client image Excel: `../_project-docs/client-input/photos-maart-2026/Fotos nieuwe website maart 2026/Alle_afbeeldingen_Goeduitje.xlsx`
+- Pages audit Excel: `../_project-docs/client-input/wix-pages-audit/Wix Webpaginas _2026.02.19.xlsx`
+- Pages audit report: `../_project-docs/client-input/wix-pages-audit/AUDIT_REPORT.md`
 
 ## Deployment
 
@@ -485,6 +486,14 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 
 See `../go-live/GO-LIVE-PLAN.md` for the full cutover checklist.
+
+### CI/CD Pipeline
+
+- **CI**: GitHub Actions runs typecheck + lint + tests on every PR to `main` (`.github/workflows/ci.yml`)
+- **Claude Code**: `@claude` in GitHub issues/PRs triggers AI code review (`.github/workflows/claude.yml`)
+- **Branch protection**: `main` requires PR + passing `Typecheck + Lint + Tests` check before merge
+- **Preview deploys**: Vercel auto-deploys every PR branch with a preview URL
+- **Workflow**: `git checkout -b feature/x` → develop → `git push` → `gh pr create` → CI + preview → merge → production
 
 ### Vercel Environment Variables (Production)
 
