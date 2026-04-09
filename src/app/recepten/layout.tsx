@@ -12,6 +12,12 @@ export const metadata: Metadata = {
     locale: "nl_NL",
     siteName: "Goeduitje.nl",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Recepten | Goeduitje.nl",
+    description:
+      "Ontdek heerlijke recepten uit onze kookworkshops. Arabische en Perzische gerechten stap-voor-stap uitgelegd.",
+  },
 };
 
 export default function ReceptenLayout({

@@ -925,16 +925,59 @@ export default async function LandingPage({ params }: Props) {
   ]);
   const avgRating = reviewStats._avg.rating?.toFixed(1) || "4.9";
 
+  // BreadcrumbList JSON-LD for all landing page types
+  const breadcrumbParent: Record<string, { name: string; path: string }> = {
+    kookworkshop: { name: "Kookworkshop", path: "/kookworkshop" },
+    stadsspel: { name: "Onze Uitjes", path: "/onze-uitjes" },
+    teambuilding: { name: "Teambuilding", path: "/teambuilding" },
+    bedrijfsuitje: { name: "Bedrijfsuitjes", path: "/bedrijfsuitjes" },
+  };
+  const parent = breadcrumbParent[type] || breadcrumbParent.kookworkshop;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: parent.name,
+        item: `${SITE_URL}${parent.path}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${landing.displayTitle || TYPE_LABELS[type]} ${landing.city}`,
+      },
+    ],
+  };
+  const breadcrumbScript = (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(breadcrumbJsonLd),
+      }}
+    />
+  );
+
   // Non-kookworkshop types use a separate template
   if (type !== "kookworkshop") {
     return (
-      <TypedLandingPage
-        landing={landing}
-        type={type}
-        heroImage={heroImage}
-        workshops={workshops}
-        avgRating={avgRating}
-      />
+      <>
+        {breadcrumbScript}
+        <TypedLandingPage
+          landing={landing}
+          type={type}
+          heroImage={heroImage}
+          workshops={workshops}
+          avgRating={avgRating}
+        />
+      </>
     );
   }
 
@@ -955,6 +998,7 @@ export default async function LandingPage({ params }: Props) {
 
   return (
     <main className="min-h-screen">
+      {breadcrumbScript}
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">

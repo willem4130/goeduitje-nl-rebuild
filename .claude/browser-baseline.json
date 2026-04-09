@@ -1,0 +1,133 @@
+{
+  "created": "2026-04-08",
+  "baseUrl": "https://goeduitje-nl-rebuild.vercel.app",
+  "framework": "Next.js 14 (App Router)",
+  "routes": [
+    { "path": "/", "name": "Home", "requiresAuth": false, "hasForm": true },
+    {
+      "path": "/bedankt",
+      "name": "Bedankt (Thank You)",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/bedrijfsuitjes",
+      "name": "Bedrijfsuitjes",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/contact",
+      "name": "Contact",
+      "requiresAuth": false,
+      "hasForm": true
+    },
+    {
+      "path": "/cookies",
+      "name": "Cookiebeleid",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    { "path": "/faq", "name": "FAQ", "requiresAuth": false, "hasForm": false },
+    {
+      "path": "/feedback",
+      "name": "Feedback Form",
+      "requiresAuth": false,
+      "hasForm": true
+    },
+    {
+      "path": "/jullie-ervaringen",
+      "name": "Reviews",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/kookworkshop",
+      "name": "Kookworkshop Detail",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/ons-team",
+      "name": "Ons Team (Coming Soon)",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/ons-verhaal",
+      "name": "Ons Verhaal",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/onze-impact",
+      "name": "Onze Impact",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/onze-medewerkers",
+      "name": "Onze Medewerkers",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/onze-uitjes",
+      "name": "Onze Uitjes",
+      "requiresAuth": false,
+      "hasForm": true
+    },
+    {
+      "path": "/open-kookworkshops",
+      "name": "Open Kookworkshop Booking",
+      "requiresAuth": false,
+      "hasForm": true
+    },
+    {
+      "path": "/privacy",
+      "name": "Privacybeleid",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/recepten",
+      "name": "Recepten",
+      "requiresAuth": false,
+      "hasForm": true
+    },
+    {
+      "path": "/teambuilding",
+      "name": "Teambuilding",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/voorwaarden",
+      "name": "Voorwaarden",
+      "requiresAuth": false,
+      "hasForm": false
+    },
+    {
+      "path": "/workshops",
+      "name": "Workshops",
+      "requiresAuth": false,
+      "hasForm": false
+    }
+  ],
+  "dynamicRoutes": [
+    { "pattern": "/[slug]", "name": "City Landing Pages", "count": 87 },
+    {
+      "pattern": "/onze-uitjes/[slug]",
+      "name": "Workshop Detail",
+      "count": "DB-driven"
+    },
+    {
+      "pattern": "/recepten/[slug]",
+      "name": "Recipe Detail",
+      "count": "DB-driven"
+    }
+  ],
+  "authFlow": null,
+  "testConfig": { "baseUrl": "https://goeduitje-nl-rebuild.vercel.app" },
+  "knownIssues": []
+}

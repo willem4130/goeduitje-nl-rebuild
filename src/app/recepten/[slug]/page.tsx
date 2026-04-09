@@ -108,11 +108,41 @@ export default async function RecipeDetailPage({ params }: Props) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Recepten",
+        item: `${SITE_URL}/recepten`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: recipe.title,
+      },
+    ],
+  };
+
   return (
     <main className="flex min-h-screen flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
       />
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden">

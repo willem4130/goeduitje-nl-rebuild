@@ -74,13 +74,42 @@ export default async function WorkshopsPage() {
   const otherActivities = allWorkshops.slice(3);
 
   // Fetch average Google rating from DB (same source as social-proof-stats)
-  const reviewStats = await prisma.googleReview.aggregate({
-    where: { isVisible: true },
-    _avg: { rating: true },
-  });
+  const [reviewStats, reviewCount] = await Promise.all([
+    prisma.googleReview.aggregate({
+      where: { isVisible: true },
+      _avg: { rating: true },
+    }),
+    prisma.googleReview.count({ where: { isVisible: true } }),
+  ]);
   const avgRating = reviewStats._avg.rating?.toFixed(1) || "4.9";
+
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Workshops met Sociale Impact",
+    description:
+      "Ontdek unieke workshops begeleid door statushouders en nieuwkomers. Van kookworkshops tot stadsspellen — ervaringen die verbinden.",
+    provider: {
+      "@type": "Organization",
+      name: "Goeduitje",
+      url: SITE_URL,
+    },
+    areaServed: "Netherlands",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: avgRating,
+      reviewCount: reviewCount.toString(),
+    },
+  };
+
   return (
     <main className="min-h-screen pt-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(serviceJsonLd),
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-white py-16 lg:py-24">
         <div className="container mx-auto max-w-7xl px-6">

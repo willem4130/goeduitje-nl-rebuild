@@ -14,6 +14,12 @@ export const metadata: Metadata = {
     locale: "nl_NL",
     siteName: "Goeduitje.nl",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jullie Ervaringen | Goeduitje.nl",
+    description:
+      "Lees echte Google Reviews van teams die een uitje bij Goeduitje hebben geboekt.",
+  },
 };
 
 export default async function JullieErvaringenLayout({
@@ -37,12 +43,32 @@ export default async function JullieErvaringenLayout({
     },
   };
 
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Jullie Ervaringen",
+    url: `${SITE_URL}/jullie-ervaringen`,
+    datePublished: "2026-03-01",
+    dateModified: "2026-03-01",
+    author: {
+      "@type": "Organization",
+      name: "Goeduitje",
+      url: SITE_URL,
+    },
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(reviewsJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageJsonLd),
         }}
       />
       {children}

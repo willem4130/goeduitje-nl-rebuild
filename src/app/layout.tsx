@@ -151,6 +151,11 @@ export default async function RootLayout({
       "https://www.instagram.com/goeduitje/",
       "https://www.facebook.com/goeduitje",
     ],
+    founder: {
+      "@type": "Person",
+      name: "Guus",
+      jobTitle: "Oprichter",
+    },
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+31-6-5267-5891",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   title: "Onze Impact - Impactmeting & Rapportage",
@@ -12,6 +13,12 @@ export const metadata: Metadata = {
     locale: "nl_NL",
     siteName: "Goeduitje.nl",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Onze Impact | Goeduitje.nl",
+    description:
+      "Ontdek de sociale impact van Goeduitje. Bekijk onze Theory of Change en impactrapporten.",
+  },
 };
 
 export default function OnzeImpactLayout({
@@ -19,5 +26,29 @@ export default function OnzeImpactLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Onze Impact",
+    url: `${SITE_URL}/onze-impact`,
+    datePublished: "2026-02-01",
+    dateModified: "2026-03-01",
+    author: {
+      "@type": "Organization",
+      name: "Goeduitje",
+      url: SITE_URL,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageJsonLd),
+        }}
+      />
+      {children}
+    </>
+  );
 }

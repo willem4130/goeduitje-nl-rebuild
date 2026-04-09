@@ -25,6 +25,7 @@ const footerLinks = {
       { name: "Teambuilding Arnhem", href: "/teambuilding-arnhem" },
       { name: "Bedrijfsuitje Nijmegen", href: "/bedrijfsuitje-nijmegen" },
       { name: "Bedrijfsuitje Arnhem", href: "/bedrijfsuitje-arnhem" },
+      { name: "Open kookworkshops", href: "/open-kookworkshops" },
     ],
   },
   company: {

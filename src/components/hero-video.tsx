@@ -100,6 +100,8 @@ export function HeroVideo({
           poster={posterImage}
           className="h-full w-full object-cover"
           preload="auto"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...({ fetchPriority: "high" } as any)}
           onEnded={handleVideoEnded}
         >
           {/* Mobile video sources (portrait 1080x1920) */}
