@@ -479,9 +479,9 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 
 ## Deployment
 
-**Production**: https://www.goeduitje.nl (target domain, DNS cutover pending)
-**Current**: https://goeduitje-nl-rebuild.vercel.app (pre-launch URL)
-**Admin**: https://admin.goeduitje.nl (target) / https://goeduitje-backend.vercel.app (current)
+**Production**: https://www.goeduitje.nl
+**Admin**: https://admin.goeduitje.nl
+**Legacy URLs** (still work): goeduitje-nl-rebuild.vercel.app, goeduitje-backend.vercel.app
 
 Push to `main` → Vercel auto-deploys. Also deployable via `npx vercel --prod`.
 
