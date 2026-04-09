@@ -173,7 +173,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data:",
               "font-src 'self' https:",
-              "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://analytics.google.com https://www.google.com https://www.google.nl",
+              "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://analytics.google.com https://www.google.com https://www.google.nl https://stats.g.doubleclick.net",
               "frame-src https://www.googletagmanager.com https://cdn.lightwidget.com",
               "frame-ancestors 'none'",
               "form-action 'self'",
