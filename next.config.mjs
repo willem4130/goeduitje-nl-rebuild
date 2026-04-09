@@ -167,8 +167,18 @@ const nextConfig = {
           { key: "X-DNS-Prefetch-Control", value: "on" },
           {
             key: "Content-Security-Policy",
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://tagmanager.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self' https:; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com; frame-src https://www.googletagmanager.com; frame-ancestors 'none'; form-action 'self'; object-src 'none';",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://tagmanager.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://cdn.lightwidget.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' https: data:",
+              "font-src 'self' https:",
+              "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://region1.google-analytics.com https://analytics.google.com https://www.google.com https://www.google.nl",
+              "frame-src https://www.googletagmanager.com https://cdn.lightwidget.com",
+              "frame-ancestors 'none'",
+              "form-action 'self'",
+              "object-src 'none'",
+            ].join("; ") + ";",
           },
         ],
       },
