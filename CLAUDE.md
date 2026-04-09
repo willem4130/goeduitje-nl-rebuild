@@ -179,7 +179,7 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Small group popup (<8 persons) suggests open workshops
 - "Bekijk agenda" button links to `/open-kookworkshops`
 - Located in `src/components/workshop-configurator.tsx`
-- On submit → redirects to `/bedankt` (with workshop names + variants in query params) + pushes GA4 purchase event via dataLayer
+- On submit → redirects to `/bedankt` (with workshop names + variants in query params) + pushes GA4 `purchase` event via dataLayer with estimated value (participants x price per person)
 - **Dual-write**: On submit, creates BOTH a `WorkshopConfig` record AND a `WorkshopRequest` record (source: 'configurator', with configId FK) in a single transaction. This feeds the unified admin CRM pipeline at `/workshops`
 - Saves `companyName` and `btwNumber` for zakelijk bookings
 - Builds `workshopsDisplay` string (human-readable workshop names with variants) for email and bedankt page
@@ -228,9 +228,18 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - GTM container `GTM-PZCH2S3R` loaded via `@next/third-parties/google` `GoogleTagManager` component in `src/app/layout.tsx`
 - Env var: `NEXT_PUBLIC_GTM_ID` (set on Vercel production)
 - GTM noscript fallback in `<body>` for crawlers (added manually — the official component doesn't include it)
-- GA4 `purchase` event pushed via `window.dataLayer` on configurator submit → `/bedankt`
-- Conversion tracking on `/bedankt` thank-you page
 - `window.dataLayer` type is declared by `@next/third-parties` — do NOT add a duplicate `declare global` in components
+
+#### dataLayer Events
+
+| Event           | Trigger             | Location                    | Value                                                     |
+| --------------- | ------------------- | --------------------------- | --------------------------------------------------------- |
+| `purchase`      | Configurator submit | `workshop-configurator.tsx` | Estimated price (participants x price per person from DB) |
+| `generate_lead` | Contact form submit | `contact-form.tsx`          | N/A (`event_label: "contact_form"`)                       |
+| `generate_lead` | Footer form submit  | `compact-contact-form.tsx`  | N/A (`event_label: "compact_contact_form"`)               |
+
+- **Configurator value estimation**: Uses workshop-level price tiers when available, falls back to first variant's tiers for workshops with variant-only pricing (kookworkshop, lunch-diner). This is a rough estimate for Google Ads bidding, not an exact quote.
+- **CSP allowlist** (`next.config.mjs`): Must include all domains GTM/GA4 loads dynamically — `googleadservices.com`, `doubleclick.net`, `analytics.google.com`, `stats.g.doubleclick.net`, `cdn.lightwidget.com`
 
 ### Dynamic Pricing on Landing Pages
 
