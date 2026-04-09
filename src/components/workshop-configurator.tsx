@@ -130,6 +130,16 @@ export function WorkshopConfigurator() {
         priceExclBtw: t.priceExclBtw,
         priceInclBtw: t.priceInclBtw,
       })),
+      // Fallback tiers from first variant (for workshops with variant-only pricing like kookworkshop)
+      variantPriceTiers:
+        w.priceTiers.length === 0 && w.variants?.[0]?.priceTiers
+          ? w.variants[0].priceTiers.map((t) => ({
+              minParticipants: t.minParticipants ?? 0,
+              maxParticipants: t.maxParticipants ?? null,
+              priceExclBtw: t.priceExclBtw,
+              priceInclBtw: t.priceInclBtw,
+            }))
+          : [],
       variants: (w.variants || []).map((v) => ({
         id: v.id,
         name: v.name,
@@ -379,12 +389,17 @@ export function WorkshopConfigurator() {
   ) {
     const workshop = workshopList.find((w) => w.id === workshopId);
     if (!workshop) return null;
-    const tier = workshop.priceTiers.find(
+    // Use workshop-level tiers, fall back to first variant's tiers for price estimate
+    const tiers =
+      workshop.priceTiers.length > 0
+        ? workshop.priceTiers
+        : workshop.variantPriceTiers;
+    const tier = tiers.find(
       (t) =>
         participantCount >= t.minParticipants &&
         (t.maxParticipants === null || participantCount <= t.maxParticipants)
     );
-    return tier || workshop.priceTiers[workshop.priceTiers.length - 1] || null;
+    return tier || tiers[tiers.length - 1] || null;
   }
 
   function calculateEstimatedPriceFromList(

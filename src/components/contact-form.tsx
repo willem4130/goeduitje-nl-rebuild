@@ -69,6 +69,14 @@ export function ContactForm() {
         // Email failed but feedback was saved - still show success
       }
 
+      // Push GA4 generate_lead event for conversion tracking
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "generate_lead",
+        event_category: "contact",
+        event_label: "contact_form",
+      });
+
       toast.success("Bericht verzonden!", {
         description: "Controleer je e-mail voor een bevestiging.",
       });
