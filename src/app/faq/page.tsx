@@ -34,14 +34,10 @@ export default function FAQPage() {
       {} as Record<string, typeof faqs>
     );
 
-    // Sort categories in a specific order
-    // "Betaling & Annulering" kept as legacy fallback during migration window —
-    // remove after DB rename migration has run in production.
     const categoryOrder = [
       "Over Goeduitje",
       "Boekingen",
       "Prijzen, Betaling & Annulering",
-      "Betaling & Annulering",
       "Praktische informatie",
       "Voor bedrijven",
     ];
