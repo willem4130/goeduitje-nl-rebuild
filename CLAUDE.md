@@ -332,13 +332,13 @@ Theory of Change diagrams are **static images** (not dynamic SVG):
 
 ### JSON-LD Structured Data
 
-| Schema                                 | Location                               | Notes                                      |
-| -------------------------------------- | -------------------------------------- | ------------------------------------------ |
-| Organization + LocalBusiness + WebSite | `src/app/layout.tsx`                   | Global; address: Groenestraat 48, Nijmegen |
-| Service                                | `src/app/onze-uitjes/[slug]/page.tsx`  | Per workshop detail page                   |
-| Recipe                                 | `src/app/recepten/[slug]/page.tsx`     | Per recipe (ingredients, steps, times)     |
-| FAQPage                                | `src/app/faq/layout.tsx`               | Server-side Prisma fetch, revalidate 300   |
-| LocalBusiness                          | `src/app/jullie-ervaringen/layout.tsx` | Reviews page                               |
+| Schema                                 | Location                               | Notes                                                            |
+| -------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| Organization + LocalBusiness + WebSite | `src/app/layout.tsx`                   | Global; address: Groenestraat 48, Nijmegen                       |
+| Service                                | `src/app/onze-uitjes/[slug]/page.tsx`  | Per workshop detail page                                         |
+| Recipe                                 | `src/app/recepten/[slug]/page.tsx`     | Per recipe (ingredients, steps, times)                           |
+| FAQPage                                | `src/app/faq/layout.tsx`               | Server-side Prisma fetch, revalidate 300 (see FAQ section below) |
+| LocalBusiness                          | `src/app/jullie-ervaringen/layout.tsx` | Reviews page                                                     |
 
 ### Per-Page Metadata
 
@@ -365,6 +365,37 @@ Server component pages export metadata directly:
 ### OG Image URLs
 
 Workshop and recipe images stored in DB may be relative paths (`/images/workshops/...`). The `generateMetadata` functions prepend `SITE_URL` to relative paths for OG/Twitter tags. Already-absolute URLs (e.g. Wix CDN) are passed through unchanged.
+
+### FAQ
+
+FAQ is fully DB-driven (`FAQ` Prisma model). Content is managed via admin CMS at `admin.goeduitje.nl/content/faq` — do not edit FAQ content in code.
+
+**Categories (5, in display order):**
+
+1. Over Goeduitje — identity, mission, team, impact (GEO/AEO-optimized)
+2. Boekingen
+3. Prijzen, Betaling & Annulering
+4. Praktische informatie
+5. Voor bedrijven
+
+**Category order is hardcoded in two places that MUST stay in sync:**
+
+- Frontend display: `categoryOrder` array in `src/app/faq/page.tsx`
+- Backend admin dropdown: `CATEGORIES` constant in `goeduitje-backend/src/app/content/faq/page.tsx`
+
+When adding/renaming/removing a category, update BOTH files in paired PRs. Mismatch causes rows to be filtered out (frontend) or the dropdown to lose options (backend admin). During transitions (e.g. category rename), keep the old name as a legacy fallback in both `categoryOrder` and the backend `CATEGORY_ORDER` map until the DB migration has run.
+
+**Rendering:**
+
+- `src/app/faq/page.tsx` — client component, fetches via tRPC (`api.faq.getAll`), renders `<Accordion>` per category
+- `src/app/faq/layout.tsx` — server component, fetches via Prisma, emits `FAQPage` JSON-LD (revalidate 300)
+- tRPC router: `src/server/api/routers/faq.ts` (getAll, getByCategory, getCategories, create, update, delete, reorder, togglePublish)
+
+**Safe FAQ data changes:**
+
+- **Preferred**: via admin CMS (live edit, zero risk)
+- **Via migration script**: follow the `prisma/migrate-faq-*.ts` pattern — `updateMany` + fallback `create`, never `deleteMany`. Existing examples: `migrate-faq-cadeaubon.ts` (content update), `migrate-faq-category-rename.ts` (category rename). Idempotent, logs before/after, throws on verification failure.
+- **NEVER** run `prisma/seed-faq.ts` on production — it calls `deleteMany()` and wipes all admin edits.
 
 ### Site URL Configuration
 
@@ -471,6 +502,8 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 - Skip typecheck before committing
 - Use 21% BTW for food service (use 9%)
 - Run `seed-workshops.ts` on production — it deletes ALL workshops first. Use targeted migration scripts instead (e.g. `prisma/migrate-stadsspel-tiers.ts`)
+- Run `seed-faq.ts` on production — it calls `deleteMany()` and wipes admin edits. Use the `prisma/migrate-faq-*.ts` pattern (updateMany + fallback create) for targeted changes
+- Change FAQ category names in only one repo — the `categoryOrder` array (frontend) and `CATEGORIES` constant (backend admin) must be updated together, otherwise rows get filtered out or the admin dropdown breaks
 - Add `export const dynamic = "force-dynamic"` to root layout — causes redirect bug via prefetch race condition. Use per-page `dynamic` exports or `{ next: { revalidate: N } }` on fetches instead
 - Use client-side tRPC `useQuery` for pages that can be Server Components — use Prisma directly in Server Components instead (see onze-medewerkers pattern)
 - Use `StaggerChildren` with CSS `columns` layout — the `useInView` + `opacity: 0` initial state creates a deadlock where the container has no measurable height, so `IntersectionObserver` never fires. Use a plain `<div>` instead for column layouts with dynamic content.
