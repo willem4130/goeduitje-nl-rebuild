@@ -49,6 +49,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "static.wixstatic.com",
       },
+      {
+        // Vercel Blob storage — admin-uploaded images (recipe photos, etc.)
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
     ],
 
     // Disable image optimization warnings for unoptimized prop
