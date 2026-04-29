@@ -2,6 +2,10 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site-config";
 
+// Regenerate hourly so newly published recipes / workshops appear in
+// search-engine sitemaps without waiting for the next deploy.
+export const revalidate = 3600;
+
 // All landing page slugs (city pages + type-specific pages)
 const LANDING_PAGE_SLUGS = [
   "kookworkshop-amsterdam",

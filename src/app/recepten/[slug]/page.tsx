@@ -14,6 +14,11 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+// Re-render at most every 5 min so admin edits to title/image/ingredients
+// propagate without a redeploy. Matches the ISR cadence used on city
+// landing pages and category pages.
+export const revalidate = 300;
+
 async function getRecipe(slug: string) {
   return prisma.recipe.findUnique({
     where: { slug, isPublished: true },
