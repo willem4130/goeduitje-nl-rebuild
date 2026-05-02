@@ -186,6 +186,19 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Confirmation email includes type, company info, phone number, and selected variants
 - **Backfill script**: `prisma/migrate-configs-to-requests.ts` — one-time migration to create WorkshopRequest records for historical WorkshopConfig entries
 
+### De Duurzame Dag — Per-Slug Special Cases
+
+This uitje (added 2026-05-02) has a base+marginal pricing model ("€5.960 voor 8 personen + €160 p.p. extra t/m 20") that doesn't fit the standard per-person tier model. To keep the configurator's `participants × pricePerPerson` math accurate at every group size, the DB stores **13 per-headcount tiers** (one row per headcount 8..20 with the correct effective per-person rate). The customer-facing UI then special-cases `slug === "duurzame-dag"` in three spots to show the original quote format instead of the misleading "Vanaf €394 p.p." derived from the lowest tier:
+
+- `src/components/workshop-carousel.tsx` — tile price string (`"€5.960 voor 8 pers., +€160 p.p. extra"`)
+- `src/app/onze-uitjes/[slug]/page.tsx` — header "Prijs" line + sidebar price card (custom block, no tier table)
+- `src/app/onze-uitjes/[slug]/page.tsx` — `whitespace-pre-line` on the longDescription `<p>` so the dagprogramma schedule renders each tijd on its own line
+- `src/components/workshop-configurator.tsx` — auto-bumps duration default from 2.5h to 8h when this uitje is first selected (program is 6-8h)
+
+Migration: `prisma/migrate-add-duurzame-dag.ts` (idempotent upsert + tier rebuild). Re-run after editing tier amounts. Mirrors the `migrate-stadsspel-tiers.ts` pattern.
+
+If a second uitje ever needs base+marginal pricing, generalise via a `priceDisplayMode` field on `Workshop` instead of stacking more slug checks. AI quote generator does NOT yet know about this uitje — see `goeduitje-backend/CLAUDE.md` § "Per-uitje AI quote coverage".
+
 ### Email System (DB-Driven)
 
 - **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). Domain verified in Resend via Cloudflare DNS.
@@ -532,6 +545,7 @@ Onze uitjes | Ons verhaal | Onze medewerkers | Onze impact | Jullie ervaringen
 - Use `StaggerChildren` with CSS `columns` layout — the `useInView` + `opacity: 0` initial state creates a deadlock where the container has no measurable height, so `IntersectionObserver` never fires. Use a plain `<div>` instead for column layouts with dynamic content.
 - Use local timezone methods (`.getDay()`, `.getDate()`, `.getMonth()`) on DB dates — dates stored as midnight UTC shift by -1 day for viewers west of UTC. Always use `.getUTCDay()`, `.getUTCDate()`, `.getUTCMonth()` or `toLocaleDateString()` with explicit `timeZone: 'Europe/Amsterdam'`.
 - Remove or weaken security headers or CSP in `next.config.mjs` — they protect against clickjacking, XSS, and injection attacks
+- Remove the `slug === "duurzame-dag"` UI overrides without replacing them — the underlying 13-tier DB pricing exists for configurator math, not for display. Without the overrides, the detail page shows a misleading "Vanaf €394 p.p." headline (the lowest per-person rate at MAX group size, not minimum). See § "De Duurzame Dag — Per-Slug Special Cases".
 
 ## Reference Docs
 
