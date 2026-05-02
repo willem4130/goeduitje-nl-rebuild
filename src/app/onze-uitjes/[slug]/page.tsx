@@ -421,7 +421,14 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   {(workshop.longDescription ?? workshop.description)
                     .split("\n\n")
                     .map((paragraph, i) => (
-                      <p key={i} className="text-muted-foreground mb-4">
+                      <p
+                        key={i}
+                        className={`text-muted-foreground mb-4 ${
+                          workshop.slug === "duurzame-dag"
+                            ? "whitespace-pre-line"
+                            : ""
+                        }`}
+                      >
                         {paragraph.trim()}
                       </p>
                     ))}
