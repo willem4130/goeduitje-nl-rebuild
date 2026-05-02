@@ -86,7 +86,10 @@ export function WorkshopCarousel({
         slug: w.slug,
         duration: w.duration,
         groupSize: w.groupSize,
-        price: getLowestPrice(w.priceTiers, w.variants),
+        price:
+          w.slug === "duurzame-dag"
+            ? "€5.960 voor 8 pers., +€160 p.p. extra"
+            : getLowestPrice(w.priceTiers, w.variants),
       }));
 
   return (

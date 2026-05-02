@@ -269,11 +269,20 @@ export default async function WorkshopDetailPage({ params }: Props) {
                   <div>
                     <p className="text-muted-foreground text-sm">Prijs</p>
                     <p className="font-semibold">
-                      Vanaf{" "}
-                      {formatEuro(
-                        getLowestPrice(workshop.priceTiers, workshop.variants)
-                      )}{" "}
-                      p.p.
+                      {workshop.slug === "duurzame-dag" ? (
+                        <>€5.960 voor 8 pers.</>
+                      ) : (
+                        <>
+                          Vanaf{" "}
+                          {formatEuro(
+                            getLowestPrice(
+                              workshop.priceTiers,
+                              workshop.variants
+                            )
+                          )}{" "}
+                          p.p.
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -433,46 +442,83 @@ export default async function WorkshopDetailPage({ params }: Props) {
 
                 {/* Price card */}
                 <div className="bg-muted/50 mt-8 rounded-lg p-6">
-                  <p className="text-muted-foreground mb-1 text-sm">Vanaf</p>
-                  <p className="text-primary mb-4 text-3xl font-bold">
-                    {formatEuro(
-                      getLowestPrice(workshop.priceTiers, workshop.variants)
-                    )}{" "}
-                    <span className="text-muted-foreground text-base font-normal">
-                      per persoon
-                    </span>
-                  </p>
-
-                  {/* Price tiers */}
-                  {workshop.priceTiers && workshop.priceTiers.length > 0 && (
-                    <div className="mb-4">
-                      <p className="mb-3 text-sm font-semibold">
-                        Prijzen per groepsgrootte:
+                  {workshop.slug === "duurzame-dag" ? (
+                    <>
+                      <p className="text-muted-foreground mb-1 text-sm">
+                        8 personen
                       </p>
-                      <div className="space-y-2">
-                        {workshop.priceTiers.map((tier, i) => (
-                          <div
-                            key={i}
-                            className="flex items-baseline gap-3 text-sm"
-                          >
-                            <span className="text-muted-foreground w-24 shrink-0">
-                              {tier.groupSize}
-                            </span>
-                            <span className="font-medium">
-                              {formatPrice(
-                                tier.priceExclBtw,
-                                tier.priceInclBtw
-                              )}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                      <p className="text-primary mb-1 text-3xl font-bold">
+                        €5.960
+                      </p>
+                      <p className="text-muted-foreground mb-6 text-sm">
+                        excl. btw (€6.496,40 incl. btw)
+                      </p>
 
-                  <Button asChild className="w-full">
-                    <Link href="/onze-uitjes#configurator">Nu boeken</Link>
-                  </Button>
+                      <div className="mb-2 border-t pt-4">
+                        <p className="mb-1 text-sm font-semibold">
+                          + €160 p.p. extra
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                          excl. btw (€174,40 incl. btw) per persoon t/m 20
+                          personen
+                        </p>
+                      </div>
+
+                      <p className="text-muted-foreground mb-6 text-xs">
+                        Grotere groep? Vraag een prijs op maat aan.
+                      </p>
+
+                      <Button asChild className="w-full">
+                        <Link href="/onze-uitjes#configurator">Nu boeken</Link>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-muted-foreground mb-1 text-sm">
+                        Vanaf
+                      </p>
+                      <p className="text-primary mb-4 text-3xl font-bold">
+                        {formatEuro(
+                          getLowestPrice(workshop.priceTiers, workshop.variants)
+                        )}{" "}
+                        <span className="text-muted-foreground text-base font-normal">
+                          per persoon
+                        </span>
+                      </p>
+
+                      {/* Price tiers */}
+                      {workshop.priceTiers &&
+                        workshop.priceTiers.length > 0 && (
+                          <div className="mb-4">
+                            <p className="mb-3 text-sm font-semibold">
+                              Prijzen per groepsgrootte:
+                            </p>
+                            <div className="space-y-2">
+                              {workshop.priceTiers.map((tier, i) => (
+                                <div
+                                  key={i}
+                                  className="flex items-baseline gap-3 text-sm"
+                                >
+                                  <span className="text-muted-foreground w-24 shrink-0">
+                                    {tier.groupSize}
+                                  </span>
+                                  <span className="font-medium">
+                                    {formatPrice(
+                                      tier.priceExclBtw,
+                                      tier.priceInclBtw
+                                    )}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                      <Button asChild className="w-full">
+                        <Link href="/onze-uitjes#configurator">Nu boeken</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
