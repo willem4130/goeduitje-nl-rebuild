@@ -223,12 +223,35 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - Minimum persons displayed: Buffet 30, Lunch 15, Diner 15
 - Prices in `prisma/seed-workshops.ts`
 
-### GTM / GA4 Tracking
+### GTM / GA4 Tracking + Consent Mode v2
 
-- GTM container `GTM-PZCH2S3R` loaded via `@next/third-parties/google` `GoogleTagManager` component in `src/app/layout.tsx`
-- Env var: `NEXT_PUBLIC_GTM_ID` (set on Vercel production)
-- GTM noscript fallback in `<body>` for crawlers (added manually — the official component doesn't include it)
-- `window.dataLayer` type is declared by `@next/third-parties` — do NOT add a duplicate `declare global` in components
+Loading order in `<head>` is critical — must be exactly:
+
+1. **Consent Mode v2 init** (inline `<script id="consent-init">` in `src/app/layout.tsx`) — defines `window.gtag`, sets all consent categories to `denied` by default, then reads `localStorage["goeduitje_consent_v1"]` and pushes a `gtag('consent','update', ...)` if the visitor has prior consent. Runs FIRST so GTM sees the correct state.
+2. **GTM bootstrap** (inline `<script id="gtm-init">`) — standard GTM IIFE, loads `gtm.js` async. Container ID from `NEXT_PUBLIC_GTM_ID` env var.
+3. **JSON-LD** structured data.
+
+**noscript** GTM iframe in `<body>` for crawlers.
+
+**Consent banner**: `src/components/cookie-consent.tsx` — Dutch, brand-styled, three states: hidden / summary / preferences. Three categories: Noodzakelijk (always on), Analytisch, Marketing. Buttons push `gtag('consent','update', ...)` and persist to `localStorage`. Listens for `goeduitje:open-cookie-settings` window event — footer "Cookie-instellingen" button dispatches this to reopen.
+
+**Consent state model** (`src/lib/consent.ts`):
+
+- `analytics: boolean` → `analytics_storage`
+- `marketing: boolean` → `ad_storage` + `ad_user_data` + `ad_personalization`
+- Stored as `{analytics, marketing, version, timestamp}` under `goeduitje_consent_v1`. Bump `CONSENT_VERSION` to force re-prompt after policy changes.
+
+**SPA pageview tracking**: `src/components/gtm-pageview.tsx` (mounted under Suspense in layout) pushes `event: "page_view"` on every route change — required because Next.js client-side navigation doesn't reload the page. Skips first mount to avoid double-counting (GTM's `gtm.js` trigger handles initial pageview).
+
+**GTM container config (consultant's responsibility)**:
+
+- GA4 Configuration tag must have _"Send a page view event when this configuration loads"_ enabled.
+- Add Custom Event trigger `event = page_view` → fires GA4 Event tag for SPA navigations.
+- All marketing tags must have **Additional Consent Checks** for `ad_storage`; analytics tags for `analytics_storage`. (Consent Mode v2 handles modeled data automatically when default=denied.)
+
+`window.dataLayer` and `window.gtag` typed globally in `src/types/global.d.ts` — do NOT add duplicate `declare global` in components.
+
+The `@next/third-parties` package is still installed but unused; safe to remove in a future cleanup.
 
 #### dataLayer Events
 

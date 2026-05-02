@@ -1,10 +1,42 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { ClientLayout } from "@/components/client-layout";
+import { CookieConsent } from "@/components/cookie-consent";
+import { GTMPageView } from "@/components/gtm-pageview";
+import { CONSENT_STORAGE_KEY, CONSENT_VERSION } from "@/lib/consent";
 import { getSiteAssets } from "@/lib/site-assets";
 import { SITE_URL } from "@/lib/site-config";
+
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+
+const CONSENT_INIT_SCRIPT = `(function(){
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = window.gtag || gtag;
+  gtag('consent','default',{
+    ad_storage:'denied',
+    ad_user_data:'denied',
+    ad_personalization:'denied',
+    analytics_storage:'denied',
+    wait_for_update:500
+  });
+  try{
+    var raw = localStorage.getItem(${JSON.stringify(CONSENT_STORAGE_KEY)});
+    if(raw){
+      var c = JSON.parse(raw);
+      if(c && c.version === ${CONSENT_VERSION}){
+        gtag('consent','update',{
+          analytics_storage: c.analytics ? 'granted' : 'denied',
+          ad_storage: c.marketing ? 'granted' : 'denied',
+          ad_user_data: c.marketing ? 'granted' : 'denied',
+          ad_personalization: c.marketing ? 'granted' : 'denied'
+        });
+      }
+    }
+  }catch(e){}
+})();`;
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -173,10 +205,21 @@ export default async function RootLayout({
 
   return (
     <html lang="nl">
-      {process.env.NEXT_PUBLIC_GTM_ID && (
-        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
-      )}
       <head>
+        {GTM_ID && (
+          <>
+            <script
+              id="consent-init"
+              dangerouslySetInnerHTML={{ __html: CONSENT_INIT_SCRIPT }}
+            />
+            <script
+              id="gtm-init"
+              dangerouslySetInnerHTML={{
+                __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`,
+              }}
+            />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -193,15 +236,20 @@ export default async function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} ${fontPoppins.variable} antialiased`}
       >
-        {process.env.NEXT_PUBLIC_GTM_ID && (
+        {GTM_ID && (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
               height="0"
               width="0"
               style={{ display: "none", visibility: "hidden" }}
             />
           </noscript>
+        )}
+        {GTM_ID && (
+          <Suspense fallback={null}>
+            <GTMPageView />
+          </Suspense>
         )}
         <ClientLayout
           navLogoUrl={assets.logos.nav}
@@ -209,6 +257,7 @@ export default async function RootLayout({
         >
           {children}
         </ClientLayout>
+        {GTM_ID && <CookieConsent />}
       </body>
     </html>
   );

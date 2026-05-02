@@ -160,6 +160,11 @@ interface WorkshopCardProps {
 }
 
 function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
+  const blurDataURL =
+    WORKSHOP_BLUR_PLACEHOLDERS[
+      workshop.slug as keyof typeof WORKSHOP_BLUR_PLACEHOLDERS
+    ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -198,12 +203,8 @@ function WorkshopCard({ workshop, index, className }: WorkshopCardProps) {
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 33vw"
-                placeholder="blur"
-                blurDataURL={
-                  WORKSHOP_BLUR_PLACEHOLDERS[
-                    workshop.id as keyof typeof WORKSHOP_BLUR_PLACEHOLDERS
-                  ]
-                }
+                placeholder={blurDataURL ? "blur" : "empty"}
+                blurDataURL={blurDataURL}
               />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />

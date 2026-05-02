@@ -11,6 +11,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { openCookieSettings } from "@/lib/consent";
 
 const footerLinks = {
   workshops: {
@@ -229,6 +230,13 @@ export function Footer({
               >
                 Cookiebeleid
               </Link>
+              <button
+                type="button"
+                onClick={openCookieSettings}
+                className="hover:text-foreground cursor-pointer transition-colors"
+              >
+                Cookie-instellingen
+              </button>
             </div>
           </div>
         </div>
