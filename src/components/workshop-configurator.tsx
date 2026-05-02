@@ -178,6 +178,16 @@ export function WorkshopConfigurator() {
     if (timeTbd) form.setValue("time", "");
   }, [timeTbd, form]);
 
+  // De Duurzame Dag is a 6-8h program; bump the default 2.5h to 8h when first selected
+  useEffect(() => {
+    if (
+      selectedWorkshops.includes("duurzame-dag") &&
+      form.getValues("duration") === 2.5
+    ) {
+      form.setValue("duration", 8);
+    }
+  }, [selectedWorkshops, form]);
+
   // Show popup when participant count is below minimum (8) - with debounce
   useEffect(() => {
     // Don't show popup if count is 0 (empty field) or >= 8
