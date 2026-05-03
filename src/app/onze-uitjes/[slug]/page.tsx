@@ -454,11 +454,8 @@ export default async function WorkshopDetailPage({ params }: Props) {
                       <p className="text-muted-foreground mb-1 text-sm">
                         8 personen
                       </p>
-                      <p className="text-primary mb-1 text-3xl font-bold">
+                      <p className="text-primary mb-6 text-3xl font-bold">
                         €5.960
-                      </p>
-                      <p className="text-muted-foreground mb-6 text-sm">
-                        excl. btw (€6.496,40 incl. btw)
                       </p>
 
                       <div className="mb-2 border-t pt-4">
@@ -466,8 +463,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                           + €160 p.p. extra
                         </p>
                         <p className="text-muted-foreground text-sm">
-                          excl. btw (€174,40 incl. btw) per persoon t/m 20
-                          personen
+                          per persoon t/m 20 personen
                         </p>
                       </div>
 
