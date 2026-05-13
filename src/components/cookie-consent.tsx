@@ -50,6 +50,15 @@ export function CookieConsent() {
     return () => window.removeEventListener(OPEN_CONSENT_EVENT, handleOpen);
   }, []);
 
+  useEffect(() => {
+    if (mode === "hidden") return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mode]);
+
   const commit = useCallback((next: ConsentCategories) => {
     setCategories(next);
     persistConsent(next);
@@ -64,17 +73,27 @@ export function CookieConsent() {
   return (
     <AnimatePresence>
       {mode !== "hidden" && (
-        <motion.div
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 80, opacity: 0 }}
-          transition={{ type: "spring", damping: 28, stiffness: 220 }}
-          className="fixed inset-x-0 bottom-0 z-50 p-4 md:p-6"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6"
           role="dialog"
-          aria-modal="false"
+          aria-modal="true"
           aria-labelledby="cookie-consent-title"
         >
-          <div className="shadow-editorial-lg border-border bg-background mx-auto max-w-3xl border p-6 md:p-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            aria-hidden="true"
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 10 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 10 }}
+            transition={{ type: "spring", damping: 28, stiffness: 240 }}
+            className="shadow-editorial-lg border-border bg-background relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto border p-6 md:p-8"
+          >
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 hidden h-10 w-10 flex-shrink-0 items-center justify-center sm:flex">
                 <Cookie className="text-primary h-5 w-5" aria-hidden="true" />
@@ -193,8 +212,8 @@ export function CookieConsent() {
                 </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
