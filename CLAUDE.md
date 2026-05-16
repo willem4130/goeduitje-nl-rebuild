@@ -275,7 +275,7 @@ The `@next/third-parties` package is still installed but unused; safe to remove 
 | `generate_lead` | Footer form submit  | `compact-contact-form.tsx`  | N/A (`event_label: "compact_contact_form"`)               |
 
 - **Configurator value estimation**: Uses workshop-level price tiers when available, falls back to first variant's tiers for workshops with variant-only pricing (kookworkshop, lunch-diner). This is a rough estimate for Google Ads bidding, not an exact quote.
-- **CSP allowlist** (`next.config.mjs`): Must include all domains GTM/GA4 loads dynamically — `googleadservices.com`, `doubleclick.net`, `analytics.google.com`, `stats.g.doubleclick.net`, `cdn.lightwidget.com`
+- **CSP allowlist** (`next.config.mjs`): Must include all domains GTM/GA4/Google Ads load dynamically. `script-src` covers `googletagmanager.com`, `google-analytics.com`, `googleadservices.com`, `googleads.g.doubleclick.net`, `cdn.lightwidget.com`. `connect-src` mirrors these with wildcards for Google Ads conversion pings: `*.googlesyndication.com` (CCM/Enhanced Conversions endpoint `pagead2.googlesyndication.com/ccm/collect`), `*.googleadservices.com`, `*.g.doubleclick.net`. When the consultant adds a new tag, check GTM preview's CSP report — block patterns: GA4 → already covered; Google Ads → covered by wildcards above; new third party → add explicit host.
 
 ### Dynamic Pricing on Landing Pages
 
