@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -10,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/client";
+import { trackFormStart, trackGenerateLead } from "@/lib/analytics";
+
+const FORM_NAME = "compact_contact_form";
 
 // Simplified schema for compact form
 const compactContactSchema = z.object({
@@ -27,6 +31,13 @@ const compactContactSchema = z.object({
 type CompactContactValues = z.infer<typeof compactContactSchema>;
 
 export function CompactContactForm() {
+  const formStartFiredRef = useRef(false);
+  const handleFirstInteraction = () => {
+    if (formStartFiredRef.current) return;
+    formStartFiredRef.current = true;
+    trackFormStart(FORM_NAME);
+  };
+
   const {
     register,
     handleSubmit,
@@ -64,13 +75,7 @@ export function CompactContactForm() {
         // Email failed but feedback was saved - still show success
       }
 
-      // Push GA4 generate_lead event for conversion tracking
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "generate_lead",
-        event_category: "contact",
-        event_label: "compact_contact_form",
-      });
+      trackGenerateLead(FORM_NAME, { category: "contact" });
 
       toast.success("Bericht verzonden!", {
         description: "We nemen zo snel mogelijk contact met je op.",
@@ -101,7 +106,12 @@ export function CompactContactForm() {
       <h3 className="text-sm font-semibold tracking-wider uppercase">
         Stel een vraag
       </h3>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onFocus={handleFirstInteraction}
+        onChange={handleFirstInteraction}
+        className="space-y-3"
+      >
         <div>
           <Input
             placeholder="Je naam"

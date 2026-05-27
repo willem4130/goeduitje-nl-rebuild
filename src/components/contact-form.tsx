@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -34,8 +35,18 @@ import {
   type ContactFormValues,
 } from "@/lib/validations/forms";
 import { api } from "@/trpc/client";
+import { trackFormStart, trackGenerateLead } from "@/lib/analytics";
+
+const FORM_NAME = "contact_form";
 
 export function ContactForm() {
+  const formStartFiredRef = useRef(false);
+  const handleFirstInteraction = () => {
+    if (formStartFiredRef.current) return;
+    formStartFiredRef.current = true;
+    trackFormStart(FORM_NAME);
+  };
+
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -69,13 +80,7 @@ export function ContactForm() {
         // Email failed but feedback was saved - still show success
       }
 
-      // Push GA4 generate_lead event for conversion tracking
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "generate_lead",
-        event_category: "contact",
-        event_label: "contact_form",
-      });
+      trackGenerateLead(FORM_NAME, { category: "contact" });
 
       toast.success("Bericht verzonden!", {
         description: "Controleer je e-mail voor een bevestiging.",
@@ -165,7 +170,12 @@ export function ContactForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            onFocus={handleFirstInteraction}
+            onChange={handleFirstInteraction}
+            className="space-y-6"
+          >
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}

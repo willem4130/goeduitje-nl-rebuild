@@ -52,6 +52,9 @@ export function pushConsentUpdate(categories: ConsentCategories): void {
       ad_user_data: categories.marketing ? "granted" : "denied",
       ad_personalization: categories.marketing ? "granted" : "denied",
     });
+    // Stop redacting ad data once the visitor opts into marketing — lets
+    // GA4 / Google Ads receive full conversion data instead of modeled.
+    gtag("set", "ads_data_redaction", !categories.marketing);
   }
 
   window.dataLayer = window.dataLayer || [];
@@ -60,6 +63,35 @@ export function pushConsentUpdate(categories: ConsentCategories): void {
     analytics_consent: categories.analytics,
     marketing_consent: categories.marketing,
   });
+
+  // Visitors who land + accept + leave without navigating would only show up
+  // in modeled/cookieless data. Fire a real page_view for the current URL
+  // once analytics is granted so GA4 records at least one full pageview per
+  // consenting session. Guarded by sessionStorage flag to avoid double-count
+  // if the user re-opens the cookie preferences from the footer.
+  if (categories.analytics) {
+    try {
+      const sentKey = "goeduitje_post_consent_pageview_sent";
+      if (!window.sessionStorage.getItem(sentKey)) {
+        window.dataLayer.push({
+          event: "page_view",
+          page_path: window.location.pathname + window.location.search,
+          page_location: window.location.href,
+          page_title: document.title,
+          page_referrer: document.referrer || undefined,
+        });
+        window.sessionStorage.setItem(sentKey, "1");
+      }
+    } catch {
+      // sessionStorage disabled — skip the safety guard, still fire once
+      window.dataLayer.push({
+        event: "page_view",
+        page_path: window.location.pathname + window.location.search,
+        page_location: window.location.href,
+        page_title: document.title,
+      });
+    }
+  }
 }
 
 export function openCookieSettings(): void {

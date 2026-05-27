@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -52,6 +52,12 @@ import {
 } from "@/lib/validations/forms";
 import { api } from "@/trpc/client";
 import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
+import {
+  trackAddToCart,
+  trackBeginCheckout,
+  trackPurchase,
+  trackRemoveFromCart,
+} from "@/lib/analytics";
 
 const STEPS = [
   { number: 1, title: "Configureren", description: "Uitje details" },
@@ -188,6 +194,43 @@ export function WorkshopConfigurator() {
     }
   }, [selectedWorkshops, form]);
 
+  // Track add_to_cart / remove_from_cart as the visitor toggles workshops.
+  // Diffs against the previous selection so we fire one event per toggle.
+  const prevSelectionRef = useRef<string[]>([]);
+  useEffect(() => {
+    if (!workshops.length) return;
+    const prev = prevSelectionRef.current;
+    const added = selectedWorkshops.filter((id) => !prev.includes(id));
+    const removed = prev.filter((id) => !selectedWorkshops.includes(id));
+
+    for (const id of added) {
+      const ws = workshops.find((w) => w.id === id);
+      if (!ws) continue;
+      const tier = getWorkshopPriceFromList(workshops, id, participantCount);
+      trackAddToCart({
+        item_id: id,
+        item_name: ws.name,
+        item_category: "Workshop",
+        price: tier?.priceExclBtw ?? 0,
+        quantity: participantCount,
+      });
+    }
+    for (const id of removed) {
+      const ws = workshops.find((w) => w.id === id);
+      if (!ws) continue;
+      const tier = getWorkshopPriceFromList(workshops, id, participantCount);
+      trackRemoveFromCart({
+        item_id: id,
+        item_name: ws.name,
+        item_category: "Workshop",
+        price: tier?.priceExclBtw ?? 0,
+        quantity: participantCount,
+      });
+    }
+    prevSelectionRef.current = selectedWorkshops;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWorkshops, workshops]);
+
   // Show popup when participant count is below minimum (8) - with debounce
   useEffect(() => {
     // Don't show popup if count is 0 (empty field) or >= 8
@@ -264,6 +307,33 @@ export function WorkshopConfigurator() {
     }
 
     if (currentStep < STEPS.length) {
+      // Entering the final step counts as begin_checkout in the GA4 funnel.
+      if (currentStep === 1 && selectedWorkshops.length > 0) {
+        const value = calculateEstimatedPriceFromList(
+          workshops,
+          selectedWorkshops,
+          participantCount
+        );
+        trackBeginCheckout(
+          selectedWorkshops.map((id) => {
+            const ws = workshops.find((w) => w.id === id);
+            const tier = getWorkshopPriceFromList(
+              workshops,
+              id,
+              participantCount
+            );
+            return {
+              item_id: id,
+              item_name: ws?.name ?? id,
+              item_category: "Workshop",
+              price: tier?.priceExclBtw ?? 0,
+              quantity: participantCount,
+            };
+          }),
+          value
+        );
+      }
+
       setDirection(1);
       setCurrentStep((prev) => prev + 1);
     }
@@ -336,30 +406,24 @@ export function WorkshopConfigurator() {
         data.workshops,
         data.participantCount
       );
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce data
-      window.dataLayer.push({
-        event: "purchase",
-        ecommerce: {
-          transaction_id: workshopConfig.id || crypto.randomUUID(),
-          value: estimatedPrice,
-          currency: "EUR",
-          items: data.workshops.map((workshopId) => {
-            const workshop = workshops.find((w) => w.id === workshopId);
-            const tier = getWorkshopPriceFromList(
-              workshops,
-              workshopId,
-              data.participantCount
-            );
-            return {
-              item_id: workshopId,
-              item_name: workshop?.name || workshopId,
-              item_category: "Workshop",
-              quantity: data.participantCount,
-              price: tier?.priceExclBtw || 0,
-            };
-          }),
-        },
+      trackPurchase({
+        transactionId: workshopConfig.id || crypto.randomUUID(),
+        value: estimatedPrice,
+        items: data.workshops.map((workshopId) => {
+          const workshop = workshops.find((w) => w.id === workshopId);
+          const tier = getWorkshopPriceFromList(
+            workshops,
+            workshopId,
+            data.participantCount
+          );
+          return {
+            item_id: workshopId,
+            item_name: workshop?.name || workshopId,
+            item_category: "Workshop",
+            quantity: data.participantCount,
+            price: tier?.priceExclBtw || 0,
+          };
+        }),
       });
 
       toast.success("Aanvraag verzonden! 🎉", {

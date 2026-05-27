@@ -240,8 +240,8 @@ If a second uitje ever needs base+marginal pricing, generalise via a `priceDispl
 
 Loading order in `<head>` is critical — must be exactly:
 
-1. **Consent Mode v2 init** (inline `<script id="consent-init">` in `src/app/layout.tsx`) — defines `window.gtag`, sets all consent categories to `denied` by default, then reads `localStorage["goeduitje_consent_v1"]` and pushes a `gtag('consent','update', ...)` if the visitor has prior consent. Runs FIRST so GTM sees the correct state.
-2. **GTM bootstrap** (inline `<script id="gtm-init">`) — standard GTM IIFE, loads `gtm.js` async. Container ID from `NEXT_PUBLIC_GTM_ID` env var.
+1. **Consent Mode v2 init** (inline `<script id="consent-init">` in `src/app/layout.tsx`) — defines `window.gtag`, sets all 7 consent signals to `denied` / `granted` defaults per GDPR, then calls `gtag('set','ads_data_redaction',true)` + `gtag('set','url_passthrough',true)` so GA4 can model cookieless pings into recoverable data. Finally reads `localStorage["goeduitje_consent_v1"]` and pushes a `gtag('consent','update', ...)` if the visitor has prior consent (turns off `ads_data_redaction` when marketing is granted). Runs FIRST so GTM sees the correct state.
+2. **GTM bootstrap** (inline `<script id="gtm-init">`) — standard GTM IIFE, loads `gtm.js` async. Container ID from `NEXT_PUBLIC_GTM_ID` env var (validated in `env.ts`).
 3. **JSON-LD** structured data.
 
 **noscript** GTM iframe in `<body>` for crawlers.
@@ -251,16 +251,28 @@ Loading order in `<head>` is critical — must be exactly:
 **Consent state model** (`src/lib/consent.ts`):
 
 - `analytics: boolean` → `analytics_storage`
-- `marketing: boolean` → `ad_storage` + `ad_user_data` + `ad_personalization`
+- `marketing: boolean` → `ad_storage` + `ad_user_data` + `ad_personalization` + flips `ads_data_redaction`
 - Stored as `{analytics, marketing, version, timestamp}` under `goeduitje_consent_v1`. Bump `CONSENT_VERSION` to force re-prompt after policy changes.
+- On grant, `pushConsentUpdate` fires a **synthetic `page_view`** for the current URL (guarded by sessionStorage flag) so GA4 records at least one full pageview per consenting session — without this, landing-and-bounce sessions would only appear in modeled data.
 
-**SPA pageview tracking**: `src/components/gtm-pageview.tsx` (mounted under Suspense in layout) pushes `event: "page_view"` on every route change — required because Next.js client-side navigation doesn't reload the page. Skips first mount to avoid double-counting (GTM's `gtm.js` trigger handles initial pageview).
+**SPA pageview tracking**: `src/components/gtm-pageview.tsx` (mounted under Suspense in layout) pushes `event: "page_view"` on every route change with `page_category` (derived via `getPageCategory()` in `analytics.ts`) and `page_referrer`. Required because Next.js client-side navigation doesn't reload the page. Skips first mount to avoid double-counting (GTM's `gtm.js` trigger handles the initial pageview when the GA4 Config tag has "Send a page view event when this configuration loads" enabled — see consultant checklist).
 
-**GTM container config (consultant's responsibility)**:
+**Central analytics helpers** (`src/lib/analytics.ts`) — all dataLayer pushes go through typed helpers so event names + payload shape match Google's GA4 spec exactly. Use these instead of raw `window.dataLayer.push`:
 
-- GA4 Configuration tag must have _"Send a page view event when this configuration loads"_ enabled.
-- Add Custom Event trigger `event = page_view` → fires GA4 Event tag for SPA navigations.
-- All marketing tags must have **Additional Consent Checks** for `ad_storage`; analytics tags for `analytics_storage`. (Consent Mode v2 handles modeled data automatically when default=denied.)
+- `trackViewItem`, `trackViewItemList`, `trackSelectItem` — list/detail interactions
+- `trackAddToCart`, `trackRemoveFromCart` — configurator workshop selection diffs
+- `trackBeginCheckout` — configurator step-1 → step-2 transition
+- `trackPurchase` — configurator submit success
+- `trackGenerateLead` — contact form submit success
+- `trackFormStart` — first focus/change on a form
+- `trackOutboundClick` — outbound link clicks (currently unused; consultant can enable via GTM auto-event listener)
+- `getPageCategory(pathname)` — derives `home` / `workshop_detail` / `workshop_list` / `city_landing` / `recipe_detail` / `form` / etc.
+
+**Declarative trackers for Server Components** (`src/components/analytics-trackers.tsx`):
+
+- `<TrackViewItem item={...} />` — drop into any Server Component page, fires `view_item` once on mount.
+- `<TrackViewItemList items={...} listName="..." />` — list pages.
+- `<TrackBeginCheckout items={...} value={...} />` — alt entrypoint into checkout.
 
 `window.dataLayer` and `window.gtag` typed globally in `src/types/global.d.ts` — do NOT add duplicate `declare global` in components.
 
@@ -268,13 +280,79 @@ The `@next/third-parties` package is still installed but unused; safe to remove 
 
 #### dataLayer Events
 
-| Event           | Trigger             | Location                    | Value                                                     |
-| --------------- | ------------------- | --------------------------- | --------------------------------------------------------- |
-| `purchase`      | Configurator submit | `workshop-configurator.tsx` | Estimated price (participants x price per person from DB) |
-| `generate_lead` | Contact form submit | `contact-form.tsx`          | N/A (`event_label: "contact_form"`)                       |
-| `generate_lead` | Footer form submit  | `compact-contact-form.tsx`  | N/A (`event_label: "compact_contact_form"`)               |
+| Event              | Trigger                                | Location                                                  | Notes                                             |
+| ------------------ | -------------------------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| `page_view`        | SPA route change (and after consent)   | `gtm-pageview.tsx`, `consent.ts`                          | Enriched with `page_category`, `page_referrer`    |
+| `view_item`        | Workshop / recipe detail page mount    | `onze-uitjes/[slug]/page.tsx`, `recepten/[slug]/page.tsx` | Via `<TrackViewItem>`                             |
+| `add_to_cart`      | Workshop checkbox toggled on           | `workshop-configurator.tsx`                               | One event per workshop added                      |
+| `remove_from_cart` | Workshop checkbox toggled off          | `workshop-configurator.tsx`                               | One event per workshop removed                    |
+| `begin_checkout`   | Configurator step 1 → step 2 click     | `workshop-configurator.tsx`                               | With full cart + estimated value                  |
+| `purchase`         | Configurator submit success            | `workshop-configurator.tsx`                               | Transaction ID = workshopConfig.id                |
+| `form_start`       | First focus/change on a contact form   | `contact-form.tsx`, `compact-contact-form.tsx`            | Fires once per page-load                          |
+| `generate_lead`    | Contact form submit success            | `contact-form.tsx`, `compact-contact-form.tsx`            | `form_name` parameter distinguishes them          |
+| `consent_update`   | User accepts/rejects in consent banner | `consent.ts`                                              | Includes `analytics_consent`, `marketing_consent` |
 
 - **Configurator value estimation**: Uses workshop-level price tiers when available, falls back to first variant's tiers for workshops with variant-only pricing (kookworkshop, lunch-diner). This is a rough estimate for Google Ads bidding, not an exact quote.
+
+#### Consultant Checklist — GA4 / GTM Container Setup
+
+This codebase pushes the full GA4 standard ecommerce funnel to `dataLayer`. To turn that into reportable data + Google Ads conversions, the consultant must verify the following in **GTM** and **GA4 admin**. Without these, the events fire but don't show up in reports.
+
+**GTM Container (web)**:
+
+1. **GA4 Configuration tag** — must be set with the GA4 Measurement ID (`G-XXXXXXXX`).
+   - "Send a page view event when this configuration loads" = **enabled** (the SPA tracker intentionally skips the first mount, so the GA4 Config tag must cover it).
+   - Fields to set: `page_category` (variable: `{{DLV - page_category}}`), `page_referrer` (`{{DLV - page_referrer}}`).
+2. **Custom Event triggers** for every event in the table above (`view_item`, `add_to_cart`, `remove_from_cart`, `begin_checkout`, `purchase`, `generate_lead`, `form_start`, `page_view`, `consent_update`).
+3. **GA4 Event tag per ecommerce event** — pull the `ecommerce` object via DataLayer Variable + tick "Send Ecommerce data" → Data source: Data Layer.
+4. **Consent settings on every tag**:
+   - Analytics tags require `analytics_storage`.
+   - Marketing / Ads tags require `ad_storage` + `ad_user_data` + `ad_personalization`.
+   - This is what makes Consent Mode v2 work — without it, denied users send no data at all instead of cookieless pings.
+5. **Built-in variables** to enable: Click variables, Form variables, Scroll variables, History Change variables — they power Enhanced Measurement events.
+6. **Data Layer Variables** to define for the custom dimensions: `page_category`, `form_name`, `consent_status`.
+
+**GA4 Admin (Property → Data Streams → Web stream)**:
+
+1. **Enhanced Measurement** — turn ON: page_view, scrolls, outbound clicks, site search (N/A), video engagement, file downloads, form interactions.
+2. **Cookie Settings**: cookie domain = `auto` (covers `www.goeduitje.nl` + any subdomain).
+3. **Cross-domain measurement** — if `admin.goeduitje.nl` should share visitors, add it here. Otherwise leave blank.
+4. **Internal traffic** — add the office IP so admin traffic is filtered.
+5. **Reporting Identity**: set to **Blended** (uses observed → modeled → Google signals) — required to see modeled data from cookieless pings.
+6. **Data retention**: 14 months (max for free tier).
+7. **Consent settings → Behavioral & Conversion modeling**: enable both. Modeling kicks in around 1k events/day per consent-status combo — small site may need to wait until traffic grows.
+8. **Mark conversions** (Admin → Events → toggle "Mark as conversion"):
+   - `purchase` ✓
+   - `generate_lead` ✓
+   - `begin_checkout` (optional, depends on funnel reporting needs)
+   - `form_start` (NOT a conversion — keep off)
+
+**GA4 Admin → Custom definitions**:
+
+1. **Custom dimensions** (event-scoped unless noted):
+   - `page_category` (event) — segments by content type (workshop_detail vs city_landing etc.)
+   - `form_name` (event) — distinguishes contact_form / compact_contact_form
+   - `analytics_consent`, `marketing_consent` (event, from `consent_update`) — measure consent rate
+2. **Custom metrics**: `value` from `purchase` / `begin_checkout` (currency EUR, already in payload).
+
+**Linking & integrations**:
+
+1. **Search Console** → GA4 link (Admin → Product links → Search Console) — required for organic-search reports.
+2. **Google Ads** → GA4 link (Admin → Product links → Google Ads) — required for conversion import + audiences.
+   - Enable **Enhanced Conversions for Web** (Ads admin) — hashed email/phone from form submits boosts conversion attribution. Will require additional code wiring; flag back if needed.
+3. **BigQuery export** (Admin → BigQuery Links) — free for GA4, gives unlimited retention + custom SQL on raw event data. Recommended for any serious reporting.
+4. **Merchant Center** — N/A for this site (no product feed).
+
+**Diagnostics (consultant should run these to confirm)**:
+
+1. GTM **Preview mode** → load production page → verify each event fires with the correct payload + the GA4 tag matches.
+2. GA4 **DebugView** (Admin → DebugView) — install the [GA4 Debugger Chrome extension](https://chrome.google.com/webstore/detail/google-analytics-debugger/jnkmfdileelhofjcijamephohjechhna), navigate the site, watch events stream in.
+3. GA4 **Realtime** report — should show pageviews + events within ~10 seconds.
+4. **GTM/Tag Assistant** → load any page → confirm no warnings on the Consent Mode v2 banner.
+5. **Tag Assistant Companion** in Chrome → check `Consent State` shows correct denied/granted per signal.
+
+If data is still low after all of the above: the most common remaining cause is the **Reporting Identity setting** stuck on "Observed" instead of "Blended" — Blended unlocks modeled data from cookieless pings.
+
 - **CSP allowlist** (`next.config.mjs`): GA4 sends to **region-dependent subdomains** (`region1.analytics.google.com`, `region1.google-analytics.com`, future `region14.*`, etc.) — visitor location decides which one. CSP host-source matching is exact, so listing `analytics.google.com` does NOT match `region1.analytics.google.com`. **Always use wildcards** for the Google tracking families: `*.google-analytics.com`, `*.analytics.google.com`, `*.googletagmanager.com`, `*.g.doubleclick.net`, `*.googlesyndication.com`, `*.googleadservices.com`. This covers all current + future regional endpoints — do NOT replace wildcards with specific subdomains. When the consultant adds a new tag, check GTM preview's CSP report: Google families → already wildcarded; new third party (e.g. Meta, LinkedIn) → add explicit host. Note: `*.analytics.google.com` does not match the bare `analytics.google.com` in CSP3, so keep both listed.
 
 ### Dynamic Pricing on Landing Pages

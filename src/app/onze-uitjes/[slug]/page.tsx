@@ -17,6 +17,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site-config";
 import { CityGallery } from "@/components/city-gallery";
+import { TrackViewItem } from "@/components/analytics-trackers";
 
 // Helper to format price display
 function formatEuro(amount: number): string {
@@ -177,8 +178,18 @@ export default async function WorkshopDetailPage({ params }: Props) {
     ],
   };
 
+  const lowestPrice = getLowestPrice(workshop.priceTiers, workshop.variants);
+
   return (
     <main className="min-h-screen">
+      <TrackViewItem
+        item={{
+          item_id: workshop.slug,
+          item_name: workshop.title,
+          item_category: "Workshop",
+          price: lowestPrice,
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

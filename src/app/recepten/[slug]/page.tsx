@@ -9,6 +9,7 @@ import { Clock, Users, ArrowLeft, ChefHat, Lightbulb } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site-config";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { TrackViewItem } from "@/components/analytics-trackers";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -139,6 +140,13 @@ export default async function RecipeDetailPage({ params }: Props) {
 
   return (
     <main className="flex min-h-screen flex-col">
+      <TrackViewItem
+        item={{
+          item_id: recipe.slug,
+          item_name: recipe.title,
+          item_category: recipe.category ?? "Recipe",
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

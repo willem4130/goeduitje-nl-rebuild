@@ -20,8 +20,13 @@ const CONSENT_INIT_SCRIPT = `(function(){
     ad_user_data:'denied',
     ad_personalization:'denied',
     analytics_storage:'denied',
+    personalization_storage:'denied',
+    functionality_storage:'granted',
+    security_storage:'granted',
     wait_for_update:500
   });
+  gtag('set','ads_data_redaction',true);
+  gtag('set','url_passthrough',true);
   try{
     var raw = localStorage.getItem(${JSON.stringify(CONSENT_STORAGE_KEY)});
     if(raw){
@@ -33,6 +38,7 @@ const CONSENT_INIT_SCRIPT = `(function(){
           ad_user_data: c.marketing ? 'granted' : 'denied',
           ad_personalization: c.marketing ? 'granted' : 'denied'
         });
+        if(c.marketing){ gtag('set','ads_data_redaction',false); }
       }
     }
   }catch(e){}

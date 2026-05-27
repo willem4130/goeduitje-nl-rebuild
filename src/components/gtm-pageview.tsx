@@ -3,6 +3,8 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
+import { getPageCategory } from "@/lib/analytics";
+
 let lastTrackedUrl: string | null = null;
 
 export function GTMPageView() {
@@ -27,6 +29,8 @@ export function GTMPageView() {
       page_path: url,
       page_location: window.location.href,
       page_title: document.title,
+      page_referrer: document.referrer || undefined,
+      page_category: getPageCategory(pathname ?? ""),
     });
   }, [pathname, searchParams]);
 
