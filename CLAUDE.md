@@ -296,62 +296,7 @@ The `@next/third-parties` package is still installed but unused; safe to remove 
 
 #### Consultant Checklist — GA4 / GTM Container Setup
 
-This codebase pushes the full GA4 standard ecommerce funnel to `dataLayer`. To turn that into reportable data + Google Ads conversions, the consultant must verify the following in **GTM** and **GA4 admin**. Without these, the events fire but don't show up in reports.
-
-**GTM Container (web)**:
-
-1. **GA4 Configuration tag** — must be set with the GA4 Measurement ID (`G-XXXXXXXX`).
-   - "Send a page view event when this configuration loads" = **enabled** (the SPA tracker intentionally skips the first mount, so the GA4 Config tag must cover it).
-   - Fields to set: `page_category` (variable: `{{DLV - page_category}}`), `page_referrer` (`{{DLV - page_referrer}}`).
-2. **Custom Event triggers** for every event in the table above (`view_item`, `add_to_cart`, `remove_from_cart`, `begin_checkout`, `purchase`, `generate_lead`, `form_start`, `page_view`, `consent_update`).
-3. **GA4 Event tag per ecommerce event** — pull the `ecommerce` object via DataLayer Variable + tick "Send Ecommerce data" → Data source: Data Layer.
-4. **Consent settings on every tag**:
-   - Analytics tags require `analytics_storage`.
-   - Marketing / Ads tags require `ad_storage` + `ad_user_data` + `ad_personalization`.
-   - This is what makes Consent Mode v2 work — without it, denied users send no data at all instead of cookieless pings.
-5. **Built-in variables** to enable: Click variables, Form variables, Scroll variables, History Change variables — they power Enhanced Measurement events.
-6. **Data Layer Variables** to define for the custom dimensions: `page_category`, `form_name`, `consent_status`.
-
-**GA4 Admin (Property → Data Streams → Web stream)**:
-
-1. **Enhanced Measurement** — turn ON: page_view, scrolls, outbound clicks, site search (N/A), video engagement, file downloads, form interactions.
-2. **Cookie Settings**: cookie domain = `auto` (covers `www.goeduitje.nl` + any subdomain).
-3. **Cross-domain measurement** — if `admin.goeduitje.nl` should share visitors, add it here. Otherwise leave blank.
-4. **Internal traffic** — add the office IP so admin traffic is filtered.
-5. **Reporting Identity**: set to **Blended** (uses observed → modeled → Google signals) — required to see modeled data from cookieless pings.
-6. **Data retention**: 14 months (max for free tier).
-7. **Consent settings → Behavioral & Conversion modeling**: enable both. Modeling kicks in around 1k events/day per consent-status combo — small site may need to wait until traffic grows.
-8. **Mark conversions** (Admin → Events → toggle "Mark as conversion"):
-   - `purchase` ✓
-   - `generate_lead` ✓
-   - `begin_checkout` (optional, depends on funnel reporting needs)
-   - `form_start` (NOT a conversion — keep off)
-
-**GA4 Admin → Custom definitions**:
-
-1. **Custom dimensions** (event-scoped unless noted):
-   - `page_category` (event) — segments by content type (workshop_detail vs city_landing etc.)
-   - `form_name` (event) — distinguishes contact_form / compact_contact_form
-   - `analytics_consent`, `marketing_consent` (event, from `consent_update`) — measure consent rate
-2. **Custom metrics**: `value` from `purchase` / `begin_checkout` (currency EUR, already in payload).
-
-**Linking & integrations**:
-
-1. **Search Console** → GA4 link (Admin → Product links → Search Console) — required for organic-search reports.
-2. **Google Ads** → GA4 link (Admin → Product links → Google Ads) — required for conversion import + audiences.
-   - Enable **Enhanced Conversions for Web** (Ads admin) — hashed email/phone from form submits boosts conversion attribution. Will require additional code wiring; flag back if needed.
-3. **BigQuery export** (Admin → BigQuery Links) — free for GA4, gives unlimited retention + custom SQL on raw event data. Recommended for any serious reporting.
-4. **Merchant Center** — N/A for this site (no product feed).
-
-**Diagnostics (consultant should run these to confirm)**:
-
-1. GTM **Preview mode** → load production page → verify each event fires with the correct payload + the GA4 tag matches.
-2. GA4 **DebugView** (Admin → DebugView) — install the [GA4 Debugger Chrome extension](https://chrome.google.com/webstore/detail/google-analytics-debugger/jnkmfdileelhofjcijamephohjechhna), navigate the site, watch events stream in.
-3. GA4 **Realtime** report — should show pageviews + events within ~10 seconds.
-4. **GTM/Tag Assistant** → load any page → confirm no warnings on the Consent Mode v2 banner.
-5. **Tag Assistant Companion** in Chrome → check `Consent State` shows correct denied/granted per signal.
-
-If data is still low after all of the above: the most common remaining cause is the **Reporting Identity setting** stuck on "Observed" instead of "Blended" — Blended unlocks modeled data from cookieless pings.
+See [`Jelle-SEO/README.md`](./Jelle-SEO/README.md) for the full consultant-facing checklist (GTM container config, GA4 admin settings, custom dimensions, Search Console + Google Ads linking, BigQuery export, diagnostics, troubleshooting). That file is the canonical handoff doc — keep it in sync with the event catalog above when adding new events.
 
 - **CSP allowlist** (`next.config.mjs`): GA4 sends to **region-dependent subdomains** (`region1.analytics.google.com`, `region1.google-analytics.com`, future `region14.*`, etc.) — visitor location decides which one. CSP host-source matching is exact, so listing `analytics.google.com` does NOT match `region1.analytics.google.com`. **Always use wildcards** for the Google tracking families: `*.google-analytics.com`, `*.analytics.google.com`, `*.googletagmanager.com`, `*.g.doubleclick.net`, `*.googlesyndication.com`, `*.googleadservices.com`. This covers all current + future regional endpoints — do NOT replace wildcards with specific subdomains. When the consultant adds a new tag, check GTM preview's CSP report: Google families → already wildcarded; new third party (e.g. Meta, LinkedIn) → add explicit host. Note: `*.analytics.google.com` does not match the bare `analytics.google.com` in CSP3, so keep both listed.
 
