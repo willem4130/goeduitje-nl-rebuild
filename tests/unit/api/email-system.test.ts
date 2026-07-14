@@ -359,3 +359,71 @@ describe("Email system — variable replacement", () => {
     );
   });
 });
+
+describe("admin notification resilience", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("still sends the admin notification (with warning) when the customer email fails", async () => {
+    vi.mocked(prisma.emailTemplate.findUnique).mockResolvedValue(null);
+    vi.mocked(resend.emails.send)
+      .mockRejectedValueOnce(new Error("Resend is down"))
+      .mockResolvedValueOnce({ id: "admin-mail-id", error: null } as any);
+
+    const res = await POST(
+      createRequest({
+        to: "klant@example.com",
+        type: "booking-confirmation",
+        data: {
+          firstName: "Jan",
+          lastName: "Jansen",
+          workshopDate: "2026-12-13",
+          numberOfPeople: 2,
+          totalPrice: 120,
+          paymentMethod: "overschrijving per bank",
+          location: "Nijmegen",
+        },
+      })
+    );
+
+    expect(res.status).toBe(500);
+    expect(resend.emails.send).toHaveBeenCalledTimes(2);
+    const calls = vi
+      .mocked(resend.emails.send)
+      .mock.calls.map((c) => c[0] as any);
+    const adminCall = calls.find(
+      (c) =>
+        typeof c.subject === "string" && c.subject.startsWith("Nieuwe aanvraag")
+    );
+    expect(adminCall).toBeDefined();
+    expect(adminCall.text).toContain(
+      "LET OP: de automatische bevestigingsmail naar de klant is NIET verzonden"
+    );
+    expect(adminCall.text).toContain("Jan Jansen");
+  });
+
+  it("logs the failed customer email so it is visible in /email-log", async () => {
+    vi.mocked(prisma.emailTemplate.findUnique).mockResolvedValue(null);
+    vi.mocked(resend.emails.send)
+      .mockRejectedValueOnce(new Error("Resend is down"))
+      .mockResolvedValueOnce({ id: "admin-mail-id", error: null } as any);
+
+    await POST(
+      createRequest({
+        to: "klant@example.com",
+        type: "contact-confirmation",
+        data: { name: "Jan", subject: "Vraag", message: "Hallo" },
+      })
+    );
+
+    expect(prisma.emailLog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          status: "failed",
+          errorMessage: "Resend is down",
+        }),
+      })
+    );
+  });
+});

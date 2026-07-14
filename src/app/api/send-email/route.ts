@@ -176,7 +176,8 @@ function buildAdminNotificationBody(
 async function sendAdminNotification(
   type: string,
   customerEmail: string,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
+  customerEmailFailed = false
 ) {
   // Skip admin notification for types that aren't customer-facing form submissions
   const notifyTypes = [
@@ -193,7 +194,11 @@ async function sendAdminNotification(
   };
 
   const subject = `Nieuwe aanvraag: ${typeLabels[type] || type}`;
-  const body = buildAdminNotificationBody(type, customerEmail, data);
+  const failureWarning = customerEmailFailed
+    ? "LET OP: de automatische bevestigingsmail naar de klant is NIET verzonden. Neem zelf contact op met de klant.\n\n"
+    : "";
+  const body =
+    failureWarning + buildAdminNotificationBody(type, customerEmail, data);
 
   try {
     await resend.emails.send({
@@ -282,6 +287,9 @@ export async function POST(req: NextRequest) {
     }
 
     let emailData;
+    // A failed customer email must never suppress the admin notification —
+    // record the failure, still notify the admin (with a warning), then 500.
+    let customerEmailError: string | null = null;
 
     // If a DB template exists and is active, use it
     if (dbTemplate && dbTemplate.isActive) {
@@ -309,131 +317,149 @@ export async function POST(req: NextRequest) {
           "failed",
           errMsg
         );
-        throw err;
+        customerEmailError = errMsg;
       }
     } else {
-      // Fall back to hardcoded React email templates
-      switch (type) {
-        case "contact-confirmation": {
-          const subject = `Bedankt voor je bericht - ${data.subject || "Contact"}`;
-          const component = ContactConfirmationEmail({
-            name: data.name,
-            subject: data.subject,
-            message: data.message,
-          });
-          emailData = await resend.emails.send({
-            from: FROM_EMAIL,
-            to: [to],
-            subject,
-            react: component,
-          });
-          const html = await render(component);
-          await logEmail(type, to, subject, html, data, "sent");
-          break;
-        }
-
-        case "welcome":
-          emailData = await resend.emails.send({
-            from: FROM_EMAIL,
-            to: [to],
-            subject: "Welcome aboard! 🎉",
-            react: WelcomeEmail({
+      try {
+        // Fall back to hardcoded React email templates
+        switch (type) {
+          case "contact-confirmation": {
+            const subject = `Bedankt voor je bericht - ${data.subject || "Contact"}`;
+            const component = ContactConfirmationEmail({
               name: data.name,
-              dashboardUrl: data.dashboardUrl,
-            }),
-          });
-          await logEmail(type, to, "Welcome aboard!", "", data, "sent");
-          break;
+              subject: data.subject,
+              message: data.message,
+            });
+            emailData = await resend.emails.send({
+              from: FROM_EMAIL,
+              to: [to],
+              subject,
+              react: component,
+            });
+            const html = await render(component);
+            await logEmail(type, to, subject, html, data, "sent");
+            break;
+          }
 
-        case "order-confirmation":
-          emailData = await resend.emails.send({
-            from: FROM_EMAIL,
-            to: [to],
-            subject: `Order Confirmed - #${data.orderNumber}`,
-            react: OrderConfirmationEmail({
+          case "welcome":
+            emailData = await resend.emails.send({
+              from: FROM_EMAIL,
+              to: [to],
+              subject: "Welcome aboard! 🎉",
+              react: WelcomeEmail({
+                name: data.name,
+                dashboardUrl: data.dashboardUrl,
+              }),
+            });
+            await logEmail(type, to, "Welcome aboard!", "", data, "sent");
+            break;
+
+          case "order-confirmation":
+            emailData = await resend.emails.send({
+              from: FROM_EMAIL,
+              to: [to],
+              subject: `Order Confirmed - #${data.orderNumber}`,
+              react: OrderConfirmationEmail({
+                name: data.name,
+                orderNumber: data.orderNumber,
+                amount: data.amount,
+                productName: data.productName,
+                receiptUrl: data.receiptUrl,
+              }),
+            });
+            await logEmail(
+              type,
+              to,
+              `Order Confirmed - #${data.orderNumber}`,
+              "",
+              data,
+              "sent"
+            );
+            break;
+
+          case "workshop-confirmation": {
+            const subject = `Bevestiging aanvraag uitje`;
+            const component = WorkshopConfirmationEmail({
               name: data.name,
-              orderNumber: data.orderNumber,
-              amount: data.amount,
-              productName: data.productName,
-              receiptUrl: data.receiptUrl,
-            }),
-          });
-          await logEmail(
-            type,
-            to,
-            `Order Confirmed - #${data.orderNumber}`,
-            "",
-            data,
-            "sent"
-          );
-          break;
+              workshops: data.workshops,
+              participantCount: data.participantCount,
+              location: data.location,
+              date: data.date,
+              time: data.time,
+              duration: data.duration,
+              type: data.type,
+              companyName: data.companyName,
+              btwNumber: data.btwNumber,
+              phone: data.phone,
+              selectedVariants: data.selectedVariants,
+            });
+            emailData = await resend.emails.send({
+              from: FROM_EMAIL,
+              to: [to],
+              subject,
+              react: component,
+            });
+            const html = await render(component);
+            await logEmail(type, to, subject, html, data, "sent");
+            break;
+          }
 
-        case "workshop-confirmation": {
-          const subject = `Bevestiging aanvraag uitje`;
-          const component = WorkshopConfirmationEmail({
-            name: data.name,
-            workshops: data.workshops,
-            participantCount: data.participantCount,
-            location: data.location,
-            date: data.date,
-            time: data.time,
-            duration: data.duration,
-            type: data.type,
-            companyName: data.companyName,
-            btwNumber: data.btwNumber,
-            phone: data.phone,
-            selectedVariants: data.selectedVariants,
-          });
-          emailData = await resend.emails.send({
-            from: FROM_EMAIL,
-            to: [to],
-            subject,
-            react: component,
-          });
-          const html = await render(component);
-          await logEmail(type, to, subject, html, data, "sent");
-          break;
+          case "booking-confirmation": {
+            const subject = "Boeking Bevestigd - Open Kookworkshop";
+            const component = BookingConfirmationEmail({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              workshopDate: data.workshopDate,
+              cuisine: data.cuisine,
+              numberOfPeople: data.numberOfPeople,
+              totalPrice: data.totalPrice,
+              paymentMethod: data.paymentMethod,
+              voucherCode: data.voucherCode,
+              location: data.location,
+              dietaryRequirement: data.dietaryRequirement,
+              allergies: data.allergies,
+            });
+            emailData = await resend.emails.send({
+              from: FROM_EMAIL,
+              to: [to],
+              subject,
+              react: component,
+            });
+            const html = await render(component);
+            await logEmail(type, to, subject, html, data, "sent");
+            break;
+          }
+
+          default:
+            return NextResponse.json(
+              { error: "Invalid email type" },
+              { status: 400 }
+            );
         }
-
-        case "booking-confirmation": {
-          const subject = "Boeking Bevestigd - Open Kookworkshop";
-          const component = BookingConfirmationEmail({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            workshopDate: data.workshopDate,
-            cuisine: data.cuisine,
-            numberOfPeople: data.numberOfPeople,
-            totalPrice: data.totalPrice,
-            paymentMethod: data.paymentMethod,
-            voucherCode: data.voucherCode,
-            location: data.location,
-            dietaryRequirement: data.dietaryRequirement,
-            allergies: data.allergies,
-          });
-          emailData = await resend.emails.send({
-            from: FROM_EMAIL,
-            to: [to],
-            subject,
-            react: component,
-          });
-          const html = await render(component);
-          await logEmail(type, to, subject, html, data, "sent");
-          break;
-        }
-
-        default:
-          return NextResponse.json(
-            { error: "Invalid email type" },
-            { status: 400 }
-          );
+      } catch (err) {
+        const errMsg =
+          err instanceof Error ? err.message : "Unknown send error";
+        await logEmail(
+          type,
+          to,
+          `Verzenden mislukt (${type})`,
+          "",
+          data,
+          "failed",
+          errMsg
+        );
+        customerEmailError = errMsg;
       }
     }
 
     // Await the admin notification: a floating promise gets killed when the
     // serverless function freezes after responding, silently dropping mails.
     // sendAdminNotification catches internally, so this can't fail the response.
-    await sendAdminNotification(type, to, data);
+    await sendAdminNotification(type, to, data, customerEmailError !== null);
 
+    if (customerEmailError) {
+      return NextResponse.json({ error: customerEmailError }, { status: 500 });
+    }
     return NextResponse.json({ success: true, data: emailData });
   } catch (error) {
     console.error("Error sending email:", error);
