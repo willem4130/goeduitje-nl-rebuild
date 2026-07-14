@@ -179,6 +179,143 @@ describe("booking.create", () => {
   });
 });
 
+describe("booking.create voucher recognition", () => {
+  const sessionInput = {
+    ...baseBookingInput,
+    sessionId: "session-1",
+  };
+
+  const mockSession = {
+    id: "session-1",
+    maxCapacity: 30,
+    cuisine: "perzisch",
+    date: new Date("2026-07-01"),
+  };
+
+  const setupSessionMocks = () => {
+    vi.mocked(prisma.$transaction).mockImplementation(async (cb: any) =>
+      cb(prisma)
+    );
+    vi.mocked(prisma.openWorkshopSession.findUnique).mockResolvedValue(
+      mockSession as any
+    );
+    vi.mocked(prisma.booking.aggregate).mockResolvedValue({
+      _sum: { numberOfPeople: 0 },
+    } as any);
+    vi.mocked(prisma.booking.create).mockResolvedValue({
+      id: "booking-v1",
+    } as any);
+    vi.mocked(prisma.workshopRequest.create).mockResolvedValue({} as any);
+  };
+
+  it("links an active gift card and reports it as recognized", async () => {
+    setupSessionMocks();
+    vi.mocked(prisma.giftCard.findFirst).mockResolvedValue({
+      id: "gc-1",
+      code: "GU-2026-ABCDE",
+      status: "active",
+      valueInEuros: 240,
+      expiresAt: null,
+    } as any);
+
+    const result = await caller.booking.create({
+      ...sessionInput,
+      voucherCode: "gu-2026-abcde",
+    });
+
+    expect(prisma.giftCard.findFirst).toHaveBeenCalledWith({
+      where: { code: { equals: "gu-2026-abcde", mode: "insensitive" } },
+    });
+    expect(prisma.booking.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        voucherCode: "gu-2026-abcde",
+        hasGiftCard: true,
+        giftCardId: "gc-1",
+        giftCardValue: 240,
+      }),
+    });
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        notes: expect.stringContaining("herkend, waarde €240"),
+      }),
+    });
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        notes: expect.stringContaining("Keuken: Perzische keuken"),
+      }),
+    });
+    expect(result.voucher).toEqual({
+      code: "gu-2026-abcde",
+      recognized: true,
+      valueInEuros: 240,
+    });
+  });
+
+  it("stores an unknown code without blocking the signup", async () => {
+    setupSessionMocks();
+    vi.mocked(prisma.giftCard.findFirst).mockResolvedValue(null);
+
+    const result = await caller.booking.create({
+      ...sessionInput,
+      voucherCode: "ONBEKEND-123",
+    });
+
+    expect(result.success).toBe(true);
+    expect(prisma.booking.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        voucherCode: "ONBEKEND-123",
+        hasGiftCard: false,
+        giftCardId: undefined,
+        giftCardValue: undefined,
+      }),
+    });
+    expect(prisma.workshopRequest.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        notes: expect.stringContaining("niet herkend"),
+      }),
+    });
+    expect(result.voucher).toEqual({
+      code: "ONBEKEND-123",
+      recognized: false,
+      valueInEuros: null,
+    });
+  });
+
+  it("does not link a gift card that is already used", async () => {
+    setupSessionMocks();
+    vi.mocked(prisma.giftCard.findFirst).mockResolvedValue({
+      id: "gc-2",
+      code: "GU-2025-USED1",
+      status: "used",
+      valueInEuros: 120,
+      expiresAt: null,
+    } as any);
+
+    const result = await caller.booking.create({
+      ...sessionInput,
+      voucherCode: "GU-2025-USED1",
+    });
+
+    expect(result.success).toBe(true);
+    expect(prisma.booking.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        voucherCode: "GU-2025-USED1",
+        hasGiftCard: false,
+      }),
+    });
+    expect(result.voucher?.recognized).toBe(false);
+  });
+
+  it("skips the gift card lookup when no code is entered", async () => {
+    setupSessionMocks();
+
+    const result = await caller.booking.create(sessionInput);
+
+    expect(prisma.giftCard.findFirst).not.toHaveBeenCalled();
+    expect(result.voucher).toBeNull();
+  });
+});
+
 describe("booking.getAll", () => {
   it("returns bookings with default limit 50", async () => {
     const mockBookings = [

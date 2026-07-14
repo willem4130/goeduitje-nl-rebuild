@@ -228,6 +228,7 @@ model OpenWorkshopSession {
   startTime      String    // "14:00"
   endTime        String    // "16:30"
   location       String    @default("Nijmegen")
+  cuisine        String    @default("arabisch") // "arabisch" | "perzisch" — allowed values in src/lib/open-workshops.ts
   maxCapacity    Int       @default(12)
   pricePerPerson Float     @default(60)
   isActive       Boolean   @default(true)
@@ -262,9 +263,10 @@ model Booking {
   dietaryRequirement String?
   allergies          String?
 
-  // Gift card
+  // Gift card / discount code
+  voucherCode        String?  // Raw "Cadeaubon/Kortingscode" as typed by customer — stored even when not recognized
   hasGiftCard        Boolean  @default(false)
-  giftCardId         String?
+  giftCardId         String?  // GiftCard.id when voucherCode matched an active gift card
   giftCardValue      Float?
 
   // Payment

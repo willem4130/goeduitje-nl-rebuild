@@ -115,6 +115,9 @@ vi.mock("@/lib/prisma", () => {
       findUnique: vi.fn(),
       aggregate: vi.fn(),
     },
+    giftCard: {
+      findFirst: vi.fn(),
+    },
     openWorkshopSession: {
       findUnique: vi.fn(),
       findMany: vi.fn(),

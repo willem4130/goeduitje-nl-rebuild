@@ -77,6 +77,7 @@ export const openSessionsRouter = createTRPCRouter({
         month: DUTCH_MONTHS[monthIndex],
         time: `${session.startTime} - ${session.endTime}`,
         location: session.location,
+        cuisine: session.cuisine,
         maxCapacity: session.maxCapacity,
         availableSeats: session.isFull
           ? 0

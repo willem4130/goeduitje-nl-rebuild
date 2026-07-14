@@ -6,6 +6,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { cuisineLabel } from "@/lib/open-workshops";
 
 const createBookingSchema = z.object({
   firstName: z.string().min(1),
@@ -17,9 +18,8 @@ const createBookingSchema = z.object({
   sessionId: z.string().optional(),
   dietaryRequirement: z.string().optional(),
   allergies: z.string().optional(),
-  hasGiftCard: z.boolean().default(false),
-  giftCardId: z.string().optional(),
-  giftCardValue: z.number().optional(),
+  // Raw "Cadeaubon/Kortingscode" — gift card fields are derived server-side
+  voucherCode: z.string().trim().max(60).optional(),
   totalPrice: z.number(),
   remainingAmount: z.number(),
   amountPaid: z.number().optional(),
@@ -36,6 +36,25 @@ export const bookingRouter = createTRPCRouter({
     .input(createBookingSchema)
     .mutation(async ({ input }) => {
       try {
+        // Non-blocking cadeaubon recognition: an unknown or mistyped code must
+        // never block a signup. Recognized cards are linked but NOT marked
+        // "used" — admin settles payment manually and updates the card status
+        // in the backend afterwards.
+        const voucherCode = input.voucherCode?.trim() || null;
+        let giftCard: { id: string; valueInEuros: number } | null = null;
+        if (voucherCode) {
+          const found = await prisma.giftCard.findFirst({
+            where: { code: { equals: voucherCode, mode: "insensitive" } },
+          });
+          if (
+            found &&
+            found.status === "active" &&
+            (!found.expiresAt || found.expiresAt > new Date())
+          ) {
+            giftCard = { id: found.id, valueInEuros: found.valueInEuros };
+          }
+        }
+
         const bookingData = {
           firstName: input.firstName,
           lastName: input.lastName,
@@ -46,9 +65,10 @@ export const bookingRouter = createTRPCRouter({
           sessionId: input.sessionId,
           dietaryRequirement: input.dietaryRequirement,
           allergies: input.allergies,
-          hasGiftCard: input.hasGiftCard,
-          giftCardId: input.giftCardId,
-          giftCardValue: input.giftCardValue,
+          voucherCode,
+          hasGiftCard: giftCard !== null,
+          giftCardId: giftCard?.id,
+          giftCardValue: giftCard?.valueInEuros,
           totalPrice: input.totalPrice,
           remainingAmount: input.remainingAmount,
           amountPaid: input.amountPaid,
@@ -56,6 +76,38 @@ export const bookingRouter = createTRPCRouter({
           paymentMethod: input.paymentMethod,
           paymentStatus: input.paymentStatus,
         };
+
+        const specialRequirements =
+          [
+            input.dietaryRequirement && input.dietaryRequirement !== "geen"
+              ? `Dieet: ${input.dietaryRequirement}`
+              : null,
+            input.allergies ? `Allergieën: ${input.allergies}` : null,
+          ]
+            .filter(Boolean)
+            .join("\n") || null;
+
+        const buildNotes = (cuisine?: string) =>
+          [
+            `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
+            cuisine ? `Keuken: ${cuisineLabel(cuisine)}` : null,
+            voucherCode
+              ? `Cadeaubon/kortingscode: ${voucherCode}` +
+                (giftCard
+                  ? ` (herkend, waarde €${giftCard.valueInEuros})`
+                  : " (niet herkend — handmatig controleren)")
+              : null,
+          ]
+            .filter(Boolean)
+            .join("\n");
+
+        const voucher = voucherCode
+          ? {
+              code: voucherCode,
+              recognized: giftCard !== null,
+              valueInEuros: giftCard?.valueInEuros ?? null,
+            }
+          : null;
 
         // Use transaction with capacity check when booking a session
         if (input.sessionId) {
@@ -106,17 +158,8 @@ export const bookingRouter = createTRPCRouter({
                 preferredDate: input.workshopDate || null,
                 source: "open_kookworkshop",
                 status: "leeg",
-                specialRequirements:
-                  [
-                    input.dietaryRequirement &&
-                    input.dietaryRequirement !== "geen"
-                      ? `Dieet: ${input.dietaryRequirement}`
-                      : null,
-                    input.allergies ? `Allergieën: ${input.allergies}` : null,
-                  ]
-                    .filter(Boolean)
-                    .join("\n") || null,
-                notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
+                specialRequirements,
+                notes: buildNotes(session.cuisine),
                 updatedAt: new Date(),
               },
             });
@@ -124,7 +167,7 @@ export const bookingRouter = createTRPCRouter({
             return created;
           });
 
-          return { success: true, booking };
+          return { success: true, booking, voucher };
         }
 
         const booking = await prisma.$transaction(async (tx) => {
@@ -139,17 +182,8 @@ export const bookingRouter = createTRPCRouter({
               preferredDate: input.workshopDate || null,
               source: "open_kookworkshop",
               status: "leeg",
-              specialRequirements:
-                [
-                  input.dietaryRequirement &&
-                  input.dietaryRequirement !== "geen"
-                    ? `Dieet: ${input.dietaryRequirement}`
-                    : null,
-                  input.allergies ? `Allergieën: ${input.allergies}` : null,
-                ]
-                  .filter(Boolean)
-                  .join("\n") || null,
-              notes: `Open kookworkshop aanmelding — ${input.numberOfPeople} personen, €${input.totalPrice}`,
+              specialRequirements,
+              notes: buildNotes(),
               updatedAt: new Date(),
             },
           });
@@ -157,7 +191,7 @@ export const bookingRouter = createTRPCRouter({
           return created;
         });
 
-        return { success: true, booking };
+        return { success: true, booking, voucher };
       } catch (error) {
         if (error instanceof TRPCError) throw error;
         throw new TRPCError({

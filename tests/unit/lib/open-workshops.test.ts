@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
+import {
+  OPEN_WORKSHOP_PRICE,
+  cuisineLabel,
+  cuisineLabelShort,
+} from "@/lib/open-workshops";
 import type { OpenWorkshop } from "@/lib/open-workshops";
 
 describe("OPEN_WORKSHOP_PRICE", () => {
@@ -21,6 +25,7 @@ describe("OpenWorkshop type", () => {
       availableSeats: 10,
       maxCapacity: 12,
       location: "Nijmegen",
+      cuisine: "arabisch",
       pricePerPerson: 60,
       isFull: false,
     };
@@ -28,5 +33,19 @@ describe("OpenWorkshop type", () => {
     expect(workshop.id).toBe("test-id");
     expect(workshop.maxCapacity).toBe(12);
     expect(workshop.pricePerPerson).toBe(60);
+  });
+});
+
+describe("cuisine labels", () => {
+  it("maps known cuisines to full and short labels", () => {
+    expect(cuisineLabel("arabisch")).toBe("Arabische keuken");
+    expect(cuisineLabel("perzisch")).toBe("Perzische keuken");
+    expect(cuisineLabelShort("arabisch")).toBe("Arabisch");
+    expect(cuisineLabelShort("perzisch")).toBe("Perzisch");
+  });
+
+  it("falls back to the raw value for unknown cuisines", () => {
+    expect(cuisineLabel("italiaans")).toBe("italiaans");
+    expect(cuisineLabelShort("italiaans")).toBe("italiaans");
   });
 });

@@ -141,10 +141,18 @@ function buildAdminNotificationBody(
       if (data.numberOfPeople)
         lines.push(`Aantal personen: ${data.numberOfPeople}`);
       if (data.workshopDate) lines.push(`Datum: ${data.workshopDate}`);
+      if (data.cuisine) lines.push(`Keuken: ${data.cuisine}`);
       if (data.location) lines.push(`Locatie: ${data.location}`);
       if (data.totalPrice) lines.push(`Totaalprijs: €${data.totalPrice}`);
       if (data.paymentMethod)
         lines.push(`Betaalmethode: ${data.paymentMethod}`);
+      if (data.voucherCode)
+        lines.push(
+          `Cadeaubon/kortingscode: ${data.voucherCode}` +
+            (data.voucherRecognized
+              ? ` — cadeaubon herkend, waarde €${data.giftCardValue}`
+              : " — niet herkend, handmatig controleren")
+        );
       if (data.dietaryRequirement)
         lines.push(`Dieetwens: ${data.dietaryRequirement}`);
       if (data.allergies) lines.push(`Allergieën: ${data.allergies}`);
@@ -247,6 +255,15 @@ export async function POST(req: NextRequest) {
         { error: "Email type is required" },
         { status: 400 }
       );
+    }
+
+    // The DB template engine has no conditionals, so pre-compose the optional
+    // voucher line: {voucherInfo} renders as an empty string when no code was
+    // entered instead of a dangling "Cadeaubon/kortingscode:" label.
+    if (type === "booking-confirmation" && data) {
+      data.voucherInfo = data.voucherCode
+        ? `Cadeaubon/kortingscode: ${data.voucherCode} (wordt verrekend bij de betaling)`
+        : "";
     }
 
     // Try to load a DB template for this email type
@@ -384,10 +401,11 @@ export async function POST(req: NextRequest) {
             firstName: data.firstName,
             lastName: data.lastName,
             workshopDate: data.workshopDate,
+            cuisine: data.cuisine,
             numberOfPeople: data.numberOfPeople,
             totalPrice: data.totalPrice,
             paymentMethod: data.paymentMethod,
-            giftCardId: data.giftCardId,
+            voucherCode: data.voucherCode,
             location: data.location,
             dietaryRequirement: data.dietaryRequirement,
             allergies: data.allergies,

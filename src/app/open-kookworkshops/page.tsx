@@ -26,7 +26,11 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/client";
-import { OPEN_WORKSHOP_PRICE } from "@/lib/open-workshops";
+import {
+  OPEN_WORKSHOP_PRICE,
+  cuisineLabel,
+  cuisineLabelShort,
+} from "@/lib/open-workshops";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 /**
@@ -46,6 +50,7 @@ export default function BookingPage() {
   const [numberOfPeople, setNumberOfPeople] = useState("");
   const [dietaryRequirement, setDietaryRequirement] = useState("geen");
   const [allergies, setAllergies] = useState("");
+  const [voucherCode, setVoucherCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateCollapsed, setDateCollapsed] = useState(false);
   const dateCardRef = useRef<HTMLDivElement>(null);
@@ -98,7 +103,7 @@ export default function BookingPage() {
       const workshop = workshops.find((w) => w.id === selectedWorkshop);
 
       // Save booking (for capacity tracking) + creates WorkshopRequest (for CRM pipeline)
-      await createBooking.mutateAsync({
+      const result = await createBooking.mutateAsync({
         sessionId: selectedWorkshop,
         workshopId: selectedWorkshop,
         workshopDate: workshop?.dateDisplay || "",
@@ -108,6 +113,7 @@ export default function BookingPage() {
         numberOfPeople: numPeople,
         dietaryRequirement,
         allergies: allergies || undefined,
+        voucherCode: voucherCode.trim() || undefined,
         totalPrice,
         remainingAmount: totalPrice,
         paymentStatus: "pending",
@@ -128,12 +134,16 @@ export default function BookingPage() {
               firstName,
               lastName,
               workshopDate: workshop?.dateDisplay || "",
+              cuisine: workshop ? cuisineLabel(workshop.cuisine) : undefined,
               numberOfPeople: numPeople,
               totalPrice,
               paymentMethod: "overschrijving per bank",
               location: workshop?.location || "Nijmegen",
               dietaryRequirement,
               allergies: allergies || undefined,
+              voucherCode: result.voucher?.code,
+              voucherRecognized: result.voucher?.recognized,
+              giftCardValue: result.voucher?.valueInEuros ?? undefined,
             },
           }),
         });
@@ -155,6 +165,7 @@ export default function BookingPage() {
       setNumberOfPeople("");
       setDietaryRequirement("geen");
       setAllergies("");
+      setVoucherCode("");
       setIsSubmitting(false);
     } catch (error) {
       console.error("Booking error:", error);
@@ -305,7 +316,7 @@ export default function BookingPage() {
                               <IconCheck className="text-primary-foreground size-3" />
                             </div>
                             <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                              <div className="flex items-baseline gap-2">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-primary text-sm font-semibold">
                                   {selected.dateDisplay}{" "}
                                   {selected.date.split("-")[0]}
@@ -313,6 +324,9 @@ export default function BookingPage() {
                                 <span className="text-muted-foreground text-sm">
                                   {selected.time}
                                 </span>
+                                <Badge variant="outline" className="text-xs">
+                                  {cuisineLabelShort(selected.cuisine)}
+                                </Badge>
                               </div>
                               <span className="text-primary text-xs font-medium">
                                 Wijzig
@@ -427,6 +441,17 @@ export default function BookingPage() {
 
                                         {/* Status badges */}
                                         <div className="flex shrink-0 items-center gap-2">
+                                          <Badge
+                                            variant="outline"
+                                            className={cn(
+                                              "text-xs",
+                                              isFull && "opacity-60"
+                                            )}
+                                          >
+                                            {cuisineLabelShort(
+                                              workshop.cuisine
+                                            )}
+                                          </Badge>
                                           {isFull && (
                                             <Badge
                                               variant="destructive"
@@ -583,6 +608,21 @@ export default function BookingPage() {
                         </div>
                       </div>
 
+                      {/* Voucher / Discount Code */}
+                      <div className="space-y-2">
+                        <Label htmlFor="voucherCode">
+                          Cadeaubon of kortingscode
+                        </Label>
+                        <Input
+                          id="voucherCode"
+                          type="text"
+                          placeholder="Bijvoorbeeld: GU-2026-ABCDE"
+                          value={voucherCode}
+                          onChange={(e) => setVoucherCode(e.target.value)}
+                          maxLength={60}
+                        />
+                      </div>
+
                       {/* Price Info */}
                       {totalPrice > 0 && (
                         <div className="bg-muted/50 border-border rounded-lg border p-4">
@@ -601,6 +641,12 @@ export default function BookingPage() {
                           <p className="text-muted-foreground mt-1 text-xs">
                             Betaling wordt na aanmelding geregeld via Guus.
                           </p>
+                          {voucherCode.trim() && (
+                            <p className="text-muted-foreground mt-1 text-xs">
+                              Je cadeaubon of kortingscode wordt verrekend bij
+                              de betaling.
+                            </p>
+                          )}
                         </div>
                       )}
 

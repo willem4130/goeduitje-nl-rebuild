@@ -14,10 +14,11 @@ interface BookingConfirmationEmailProps {
   firstName: string;
   lastName: string;
   workshopDate: string;
+  cuisine?: string;
   numberOfPeople: number;
   totalPrice: number;
   paymentMethod: string;
-  giftCardId?: string;
+  voucherCode?: string;
   location: string;
   dietaryRequirement?: string;
   allergies?: string;
@@ -27,10 +28,11 @@ export const BookingConfirmationEmail = ({
   firstName,
   lastName,
   workshopDate,
+  cuisine,
   numberOfPeople,
   totalPrice,
   paymentMethod,
-  giftCardId,
+  voucherCode,
   location,
   dietaryRequirement,
   allergies,
@@ -58,6 +60,12 @@ export const BookingConfirmationEmail = ({
             <strong>Datum:</strong> {workshopDate}
           </Text>
 
+          {cuisine && (
+            <Text style={detailItem}>
+              <strong>Keuken:</strong> {cuisine}
+            </Text>
+          )}
+
           <Text style={detailItem}>
             <strong>Locatie:</strong> {location}
           </Text>
@@ -76,9 +84,10 @@ export const BookingConfirmationEmail = ({
             {paymentMethod === "gift_card" ? "Cadeaubon" : paymentMethod}
           </Text>
 
-          {giftCardId && (
+          {voucherCode && (
             <Text style={detailItem}>
-              <strong>Cadeaubon:</strong> {giftCardId}
+              <strong>Cadeaubon/kortingscode:</strong> {voucherCode} (wordt
+              verrekend bij de betaling)
             </Text>
           )}
 

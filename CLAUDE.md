@@ -162,6 +162,9 @@ Available via `/test` in Claude Code (Shift+\`). Runs all tests, coverage, typec
 - "Volgeboekt" badge when session is full (manual or capacity), "Nog X plekken" when low availability
 - **3 consumers**: booking page, workshop configurator popup (first 3 bookable dates — skips full sessions), `/onze-uitjes/[slug]` sidebar
 - Seed script: `prisma/seed-open-workshops.ts` (idempotent, migrates old hardcoded data)
+- **Keuken** (added 2026-07-14): `OpenWorkshopSession.cuisine` (`arabisch` | `perzisch`, default `arabisch`) — badge on date rows + collapsed summary, "Keuken:" line in emails + CRM notes. Labels in `src/lib/open-workshops.ts` (`CUISINE_LABELS` full / `CUISINE_LABELS_SHORT` badge); keep in sync with `CUISINE_OPTIONS` in the backend /sessions page when adding a cuisine.
+- **Cadeaubon/kortingscode** (added 2026-07-14): optional form field; raw code stored on `Booking.voucherCode`. `booking.create` derives gift-card fields SERVER-SIDE via a non-blocking case-insensitive `GiftCard` lookup (active + non-expired → fills `hasGiftCard`/`giftCardId`/`giftCardValue`; typo never blocks signup; card NOT auto-marked "used"). Returns `voucher: { code, recognized, valueInEuros } | null`, forwarded to `/api/send-email` for the admin notification. Shown total stays unchanged; note "wordt verrekend bij de betaling" (client decision 2026-07-13). No automated price/discount logic — Guus settles manually.
+- **Email note**: the ACTIVE DB template `booking-confirmation` overrides `src/emails/booking-confirmation.tsx`. It uses `{cuisine}` and `{voucherInfo}`; `{voucherInfo}` is pre-composed in `send-email/route.ts` (DB templates have no conditionals). Template updated via `prisma/migrate-booking-template-cuisine-voucher.ts`. Full spec/history: `../_project-docs/planning/open-sessies-keuken-cadeaubon.md` (workspace root, outside repo).
 
 ### Workshop Data (100% DB-Driven)
 
