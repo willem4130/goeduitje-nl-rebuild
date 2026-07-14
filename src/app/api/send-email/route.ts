@@ -429,10 +429,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Send admin notification (fire-and-forget — won't affect customer response)
-    sendAdminNotification(type, to, data).catch((err) =>
-      console.error("[Admin notification failed]", err)
-    );
+    // Await the admin notification: a floating promise gets killed when the
+    // serverless function freezes after responding, silently dropping mails.
+    // sendAdminNotification catches internally, so this can't fail the response.
+    await sendAdminNotification(type, to, data);
 
     return NextResponse.json({ success: true, data: emailData });
   } catch (error) {
