@@ -205,7 +205,10 @@ If a second uitje ever needs base+marginal pricing, generalise via a `priceDispl
 ### Email System (DB-Driven)
 
 - **Sender**: `guus@goeduitje.nl` (env var `FROM_EMAIL` in `src/lib/resend.ts`). Domain verified in Resend via Cloudflare DNS.
-- **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to admin(s) with form type, customer details, and admin panel link. Fire-and-forget (`.catch`) so customer flow is never broken. Recipients configured via `ADMIN_NOTIFICATION_EMAIL` env var — supports comma-separated emails (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl,guus@goeduitje.nl` for testing.
+- **Admin notifications**: After each customer confirmation email, a plain-text notification is sent to admin(s) with form type, customer details, and admin panel link. Recipients configured via `ADMIN_NOTIFICATION_EMAIL` env var — supports comma-separated emails (defaults to `guus@goeduitje.nl`). Currently `willem@scex.nl,guus@goeduitje.nl`.
+  - **MUST be `await`ed, never fire-and-forget** (fixed 2026-07-14, commits `1aa303a` + `63acd4c`). A floating promise gets killed when the Vercel function freezes after responding — an audit found ~39% of admin notifications silently dropped since April. `sendAdminNotification` catches internally, so awaiting it cannot fail the customer response.
+  - **A failed customer email must not suppress the admin notification.** On a Resend error the customer send is logged to `EmailLog` as `failed`, the route still sends the admin notification (carrying a "bevestigingsmail naar klant is NIET verzonden" warning) and then returns 500. Covered by tests in `tests/unit/api/email-system.test.ts` ("admin notification resilience").
+  - **Order invariant**: all three forms write their DB record (Booking/WorkshopRequest/feedback) BEFORE calling `/api/send-email`, so a total mail outage never loses a submission — it stays visible in the admin.
 - **DB templates**: `EmailTemplate` model stores editable templates with `{variable}` placeholders
 - **Fallback**: If no DB template exists (or `isActive: false`), hardcoded React email components in `src/emails/` are used
 - **Logging**: Every sent email is logged to `EmailLog` table (resolved subject, body, variables, status)
