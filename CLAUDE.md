@@ -538,6 +538,12 @@ To reseed recipes:
 npx tsx prisma/seed-recipes.ts
 ```
 
+### Image hosting
+
+- **Seeded recipes (13)**: `static.wixstatic.com` URLs from the original site
+- **Admin uploads**: file picker in `goeduitje-backend` `/content/recipes` posts to `/api/media/upload`, which writes to Vercel Blob and stores the URL in `Recipe.imageUrl`. URLs look like `*.public.blob.vercel-storage.com`.
+- Both hostnames are allowlisted in `next.config.mjs` `images.remotePatterns` — required for `<Image>` to render either source. When admins upload images for any new content type, their hostname must be added there or the public site shows a broken image.
+
 ## CLAUDE.md Maintenance
 
 **Always update this file** when making structural changes: adding new pages, routes, layouts, database models, seed files, SEO files, or changing architecture patterns. This file is the primary context for AI agents working on this codebase.
